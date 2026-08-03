@@ -189,7 +189,7 @@ StaticPopupDialogs["DRAGONSKILL_COPY_IMPORT_STRING"] = {
 frame:SetScript("OnShow", function() SelectTab(frame.selectedTab) end)
 
 SLASH_DRAGONSKILL1 = "/dragonskill"
-SLASH_DRAGONSKILL2 = "/ds"
+SLASH_DRAGONSKILL2 = "/dskill"
 SlashCmdList["DRAGONSKILL"] = function()
     if frame:IsShown() then
         frame:Hide()
