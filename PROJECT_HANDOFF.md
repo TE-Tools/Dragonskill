@@ -62,15 +62,41 @@ gebündelte Daten im Addon-Release), nur mit eigenem, hier neu geschriebenem Cod
 - Automatisierung: `.github/workflows/scrape.yml` - läuft Mo+Do automatisch,
   scraped alle Specs, baut `GuideData.lua` neu, committed bei Änderungen
 
+**Seit letzter Übergabe erledigt (Claude Code, mit echtem Internetzugriff):**
+- [x] **Scraper gegen echte Live-Seiten getestet und komplett neu geschrieben.**
+      Beide alten Parser-Strategien gingen von falschen Annahmen aus:
+      - Wowhead: Die alten URLs (`.../talent-builds`) existieren nicht mehr -
+        Wowhead hat Talente und Stat-Priorität in zwei eigene Guide-Seiten
+        aufgeteilt (`.../talent-builds-pve-<rolle>` und
+        `.../stat-priority-pve-<rolle>`, Rolle = tank/healer/dps). Außerdem
+        rendert Wowhead die Talent-Codes nicht als fertiges HTML, sondern als
+        BBCode-Markup, das im rohen HTML JSON-string-escaped vorliegt und erst
+        client-seitig per JS in die sichtbare Seite gerendert wird - deshalb
+        fanden die alten `cheerio`-DOM-Selektoren (`table`, `input`, `textarea`)
+        nie etwas. Der neue Scraper unescaped das Markup und matcht direkt
+        gegen die `[copy="Label"]CODE[/copy]` Shortcodes.
+      - Archon.gg: Die alten URLs (`.../wow/builds/<class>/<spec>/talents`)
+        existieren nicht mehr. Aktuelle URL-Struktur:
+        `.../wow/builds/<spec>/<class>/mythic-plus/overview/10/all-dungeons/this-week`
+        (Reihenfolge Spec/Class vertauscht ggü. der alten Annahme). Die
+        Talent-Codes stecken nicht in `data-*`-Attributen, sondern im
+        `__NEXT_DATA__`-JSON-Blob unter
+        `page.sections[].props.talentTreeBuildSets[].alternatives[].talentTree.exportCodeParams.exportCode`.
+      - Beide Scraper wurden entsprechend neu implementiert (siehe
+        `scrape-wowhead.js`, `scrape-archon.js`) und gegen zwei echte Specs
+        (Warrior Protection, Paladin Holy - je eine Tank- und eine Healer-Spec)
+        end-to-end verifiziert: `scrape-all.js` → `build-data.js` →
+        `addon/Data/GuideData.lua` mit echten Import-Codes.
+      - `spec-list.json`-Schema geändert: statt einer `wowheadUrl` jetzt
+        `wowheadTalentsUrl` + `wowheadStatsUrl` (da beide Infos auf getrennten
+        Seiten liegen). `scrape-all.js` entsprechend angepasst.
+
 **Noch offen / nächste Schritte:**
-- [ ] **Scraper-Selektoren gegen echte, aktuelle Wowhead/Archon-Seiten testen
-      und anpassen.** Die HTML-Parsing-Strategien in `scrape-wowhead.js` und
-      `scrape-archon.js` sind aus Best-Guess-Heuristiken gebaut (kein echter
-      Zugriff auf die Seiten während der Entwicklung möglich). Das ist der
-      wichtigste erste Schritt für Claude Code, da hier echter Internetzugriff
-      zum Testen/Debuggen der Parser nötig ist.
 - [ ] `spec-list.json` auf alle 40 Specs erweitern (aktuell nur 2 Beispiele:
-      Warrior Protection, Paladin Holy)
+      Warrior Protection, Paladin Holy). URL-Muster siehe README.md
+      ("Workflow" Abschnitt) - insbesondere das Rollen-Suffix bei Wowhead
+      (tank/healer/dps) je Spec verifizieren, da es nicht immer aus dem
+      Spec-Namen ableitbar ist.
 - [ ] Rotation-Anzeige (bewusst zurückgestellt, siehe Chatverlauf)
 - [ ] Weitere Module gemäß ursprünglicher Roadmap: BiS Gear, Enchants, Gems,
       Consumables, Trinkets, Crafting (siehe Class-Codex-Funktionsumfang als

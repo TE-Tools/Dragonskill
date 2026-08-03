@@ -22,14 +22,14 @@ function parseArgs() {
   return out;
 }
 
-function runScraper(scriptName, url, outFile) {
+function runScraper(scriptName, args, outFile, label) {
   try {
-    execFileSync("node", [scriptName, "--url", url, "--out", outFile], {
+    execFileSync("node", [scriptName, ...args, "--out", outFile], {
       stdio: "inherit"
     });
     return true;
   } catch (err) {
-    console.error(`⚠️  ${scriptName} fehlgeschlagen für ${url}: ${err.message}`);
+    console.error(`⚠️  ${scriptName} fehlgeschlagen für ${label}: ${err.message}`);
     return false;
   }
 }
@@ -51,12 +51,15 @@ function main() {
     const outFile = path.join(outDir, `${spec.classToken}_${spec.specID}.json`);
     console.log(`\n=== ${spec.classToken} (Spec ${spec.specID}) ===`);
 
-    if (spec.wowheadUrl) {
-      const ok = runScraper("scrape-wowhead.js", spec.wowheadUrl, outFile);
+    if (spec.wowheadTalentsUrl || spec.wowheadStatsUrl) {
+      const args = [];
+      if (spec.wowheadTalentsUrl) args.push("--talentsUrl", spec.wowheadTalentsUrl);
+      if (spec.wowheadStatsUrl) args.push("--statsUrl", spec.wowheadStatsUrl);
+      const ok = runScraper("scrape-wowhead.js", args, outFile, "wowhead");
       ok ? successCount++ : failCount++;
     }
     if (spec.archonUrl) {
-      const ok = runScraper("scrape-archon.js", spec.archonUrl, outFile);
+      const ok = runScraper("scrape-archon.js", ["--url", spec.archonUrl], outFile, spec.archonUrl);
       ok ? successCount++ : failCount++;
     }
   }

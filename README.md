@@ -9,14 +9,30 @@ Entwickler: **wear-alleria** (Gilde: Dragon Lords)
 ```
 cd scraper
 npm install
-node scrape-wowhead.js --url "<wowhead-guide-url>" --out data-raw/WARRIOR_73.json
-node scrape-archon.js  --url "<archon-guide-url>"  --out data-raw/WARRIOR_73.json
+node scrape-wowhead.js --talentsUrl "<wowhead-talent-builds-url>" --statsUrl "<wowhead-stat-priority-url>" --out data-raw/WARRIOR_73.json
+node scrape-archon.js  --url "<archon-build-url>" --out data-raw/WARRIOR_73.json
 node build-data.js --dataDir data-raw --out ../addon/Data/GuideData.lua
 ```
 Dateiname MUSS dem Format `<CLASSTOKEN>_<SPECID>.json` folgen (beide Scraper schreiben
 in dieselbe Datei, mergen aber nur ihre eigene Provider-Sektion - kein Datenverlust).
 Class-Tokens: WARRIOR, PALADIN, HUNTER, ROGUE, PRIEST, DEATHKNIGHT, SHAMAN,
 MAGE, WARLOCK, MONK, DEMONHUNTER, DRUID, EVOKER.
+
+**URL-Format Wowhead** (seit Relaunch getrennte Guide-Seiten für Talente und Stats):
+```
+https://www.wowhead.com/guide/classes/<class>/<spec>/talent-builds-pve-<rolle>
+https://www.wowhead.com/guide/classes/<class>/<spec>/stat-priority-pve-<rolle>
+```
+`<rolle>` ist `tank`, `healer` oder `dps` - im Zweifel die Guide-Übersichtsseite
+(`.../guide/classes/<class>/<spec>/overview-pve-<rolle>`) öffnen und den Link
+"Talent Builds" im Inhaltsverzeichnis prüfen.
+
+**URL-Format Archon.gg**:
+```
+https://www.archon.gg/wow/builds/<spec-slug>/<class-slug>/mythic-plus/overview/10/all-dungeons/this-week
+```
+Achtung: Reihenfolge ist `<spec>/<class>` (nicht `<class>/<spec>`), beide klein-
+geschrieben mit Bindestrich bei mehrteiligen Namen (z.B. `beast-mastery`).
 
 ### Alle konfigurierten Specs auf einmal
 Trage neue Specs in `scraper/spec-list.json` ein, dann:
@@ -40,8 +56,8 @@ Voraussetzung: Repo auf GitHub, Actions aktiviert. Manuell auslösbar über
 - [x] Talent-Diff: Ähnlichkeits-% + Anzahl Abweichungen (Byte-Level, siehe Kommentar
       in TalentCompare.lua - kein vollständiger Bit-Decoder, da Blizzard-Format
       inoffiziell/patch-abhängig ist)
-- [x] Scraper: Wowhead (Talent-Strings + Stat-Priorität)
-- [x] Scraper: Archon.gg als zweite Quelle (Provider-getaggt, beide sichtbar)
+- [x] Scraper: Wowhead (Talent-Strings + Stat-Priorität) - gegen echte Live-Seiten getestet
+- [x] Scraper: Archon.gg als zweite Quelle (Provider-getaggt, beide sichtbar) - gegen echte Live-Seiten getestet
 - [x] Stat-Prioritäten UI-Tab (Wowhead + Archon nebeneinander)
 - [x] Automatisierung: `scrape-all.js` + GitHub Actions (2x/Woche + manuell)
 - [ ] Rotation-Anzeige (bewusst zurückgestellt)

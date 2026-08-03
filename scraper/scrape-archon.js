@@ -5,7 +5,7 @@
  * merged Talent-Builds + Stat-Priorität mit einer bestehenden JSON-Datei (Provider-Tag).
  *
  * Benutzung:
- *   node scrape-archon.js --url "https://www.archon.gg/wow/builds/warrior/protection/talents" --out data-raw/WARRIOR_73.json
+ *   node scrape-archon.js --url "https://www.archon.gg/wow/builds/protection/warrior/mythic-plus/overview/10/all-dungeons/this-week" --out data-raw/WARRIOR_73.json
  *
  * Voraussetzung: npm install node-fetch cheerio
  */
@@ -13,7 +13,6 @@
 const fs = require("fs");
 const path = require("path");
 const fetch = require("node-fetch");
-const cheerio = require("cheerio");
 
 function parseArgs() {
   const args = process.argv.slice(2);
@@ -35,54 +34,74 @@ async function fetchPage(url) {
 }
 
 /**
- * Archon rendert Builds oft über eingebettete JSON-Blobs (Next.js __NEXT_DATA__)
- * statt reinem HTML - deshalb zwei Strategien: erst JSON-Blob versuchen, dann HTML-Fallback.
+ * Archon (Next.js) liefert die komplette Seiten-Payload als JSON im
+ * <script id="__NEXT_DATA__"> Tag. Talent-Builds und Stat-Priorität stecken
+ * in page.sections, identifiziert über den jeweiligen "component"-Namen -
+ * kein DOM-Parsing der (client-seitig gerenderten) sichtbaren HTML nötig.
  */
-function extractFromNextData($) {
-  const script = $("#__NEXT_DATA__").html();
-  if (!script) return [];
-  let json;
+function extractNextData(html) {
+  const m = html.match(
+    /<script id="__NEXT_DATA__" type="application\/json">([\s\S]*?)<\/script>/
+  );
+  if (!m) return null;
   try {
-    json = JSON.parse(script);
+    return JSON.parse(m[1]);
   } catch {
-    return [];
+    return null;
   }
+}
 
+function getPage(nextData) {
+  return nextData &&
+    nextData.props &&
+    nextData.props.pageProps &&
+    nextData.props.pageProps.page;
+}
+
+/**
+ * Jede Sektion vom Typ "BuildsTalentTreeBuildSection" enthält talentTreeBuildSets,
+ * deren "alternatives" jeweils einen konkreten Build mit Blizzard-Export-Code
+ * (talentTree.exportCodeParams.exportCode) und Popularität liefern.
+ */
+function extractTalentBuilds(page) {
   const builds = [];
-  const raw = JSON.stringify(json);
-  // Blizzard Talent-Strings suchen (lange Base64-ähnliche Sequenzen) irgendwo im Blob
-  const matches = raw.match(/"[A-Za-z0-9+/=_-]{40,}"/g) || [];
-  for (const m of matches) {
-    const code = m.replace(/"/g, "");
-    // Grobfilter: enthält typische Zeichenmischung, keine reine URL
-    if (!code.includes("http") && /[A-Za-z]/.test(code) && /[0-9]/.test(code)) {
-      builds.push({ context: null, label: null, importString: code });
+  const sections = (page && page.sections) || [];
+  for (const section of sections) {
+    if (section.component !== "BuildsTalentTreeBuildSection") continue;
+    const sets = (section.props && section.props.talentTreeBuildSets) || [];
+    for (const set of sets) {
+      for (const alt of set.alternatives || []) {
+        const exportCodeParams = alt.talentTree && alt.talentTree.exportCodeParams;
+        const code = exportCodeParams && exportCodeParams.exportCode;
+        if (code && code.trim().length > 20) {
+          builds.push({
+            context: alt.popularity || null,
+            label: alt.title || null,
+            importString: code.trim()
+          });
+        }
+      }
     }
   }
   return builds;
 }
 
-function extractFromHtml($) {
-  const builds = [];
-  $("[data-import-string], [data-talent-code]").each((_, el) => {
-    const code = $(el).attr("data-import-string") || $(el).attr("data-talent-code");
-    if (code && code.trim().length > 30) {
-      builds.push({ context: null, label: $(el).attr("data-label") || null, importString: code.trim() });
-    }
-  });
-  return builds;
-}
-
-function extractStatPriority($) {
-  let priority = null;
-  $("h2, h3").each((_, h) => {
-    const text = $(h).text().trim().toLowerCase();
-    if (text.includes("stat") && (text.includes("priorit") || text.includes("weight"))) {
-      const next = $(h).nextAll("ul, ol, p").first();
-      priority = next.text().trim().replace(/\s+/g, " ");
-    }
-  });
-  return priority;
+/**
+ * Die Sektion "BuildsStatPrioritySection" liefert stats[] mit einem "order"
+ * Feld (Rang) - daraus bauen wir eine einfache priorisierte Liste.
+ */
+function extractStatPriority(page) {
+  const sections = (page && page.sections) || [];
+  for (const section of sections) {
+    if (section.component !== "BuildsStatPrioritySection") continue;
+    const stats = (section.props && section.props.stats) || [];
+    const names = [...stats]
+      .sort((a, b) => (a.order || 0) - (b.order || 0))
+      .map((s) => s.name)
+      .filter(Boolean);
+    if (names.length > 0) return names.join(" > ");
+  }
+  return null;
 }
 
 async function main() {
@@ -94,24 +113,37 @@ async function main() {
 
   console.log(`Lade ${url} ...`);
   const html = await fetchPage(url);
-  const $ = cheerio.load(html);
+  const nextData = extractNextData(html);
+  if (!nextData) {
+    throw new Error(
+      "Konnte __NEXT_DATA__ nicht finden/parsen - Archon-Seitenstruktur hat sich evtl. geändert."
+    );
+  }
+  const page = getPage(nextData);
 
-  let builds = extractFromNextData($);
-  if (builds.length === 0) builds = extractFromHtml($);
-
+  let builds = extractTalentBuilds(page);
   const seen = new Set();
-  builds = builds.filter((b) => {
-    if (seen.has(b.importString)) return false;
-    seen.add(b.importString);
-    return true;
-  }).map((b) => ({ ...b, provider: "archon" }));
+  builds = builds
+    .filter((b) => {
+      if (seen.has(b.importString)) return false;
+      seen.add(b.importString);
+      return true;
+    })
+    .map((b) => ({ ...b, provider: "archon" }));
+
+  const statPrio = extractStatPriority(page);
 
   if (builds.length === 0) {
     console.warn(
-      "⚠️  Keine Talent-Strings gefunden. Archon-Seitenstruktur hat sich evtl. geändert - Parser prüfen (data-import-string Attribute oder __NEXT_DATA__ Format)."
+      "⚠️  Keine Talent-Strings gefunden. Archon-Seitenstruktur hat sich evtl. geändert - Parser prüfen (__NEXT_DATA__ / BuildsTalentTreeBuildSection)."
     );
   } else {
     console.log(`✅ ${builds.length} Talent-Build(s) von Archon gefunden.`);
+  }
+  if (!statPrio) {
+    console.warn(
+      "⚠️  Keine Stat-Priorität gefunden. Archon-Seitenstruktur hat sich evtl. geändert - Parser prüfen (BuildsStatPrioritySection)."
+    );
   }
 
   const outPath = path.resolve(out);
@@ -125,7 +157,7 @@ async function main() {
     scrapedAt: new Date().toISOString(),
     statPriority: {
       ...(existing.statPriority || {}),
-      archon: extractStatPriority($) || (existing.statPriority && existing.statPriority.archon) || null
+      archon: statPrio || (existing.statPriority && existing.statPriority.archon) || null
     },
     talentBuilds: [...keptBuilds, ...builds]
   };
