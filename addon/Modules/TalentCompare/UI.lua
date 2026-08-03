@@ -1,8 +1,11 @@
 -- Dragon Skill - Haupt-UI
 -- Fenster mit zwei Tabs: Talente (Vergleich + Import) und Stats (Prioritäten).
--- Nutzt Blizzard-Templates (ButtonFrameTemplate, PanelTabButtonTemplate).
+-- Titel/Rahmen/Close-Button werden bewusst NICHT über ButtonFrameTemplate
+-- gebaut (dessen interne Regions wie TitleText ändern sich zwischen
+-- Expansions/Patches - siehe Interface: 12.0.5) sondern manuell über die
+-- stabilen Primitives BackdropTemplate + UIPanelCloseButton.
 
-local frame = CreateFrame("Frame", "DragonSkillFrame", UIParent, "ButtonFrameTemplate")
+local frame = CreateFrame("Frame", "DragonSkillFrame", UIParent, "BackdropTemplate")
 frame:SetSize(420, 480)
 frame:SetPoint("CENTER")
 frame:Hide()
@@ -11,9 +14,22 @@ frame:EnableMouse(true)
 frame:RegisterForDrag("LeftButton")
 frame:SetScript("OnDragStart", frame.StartMoving)
 frame:SetScript("OnDragStop", frame.StopMovingOrSizing)
+frame:SetBackdrop({
+    bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
+    edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Border",
+    tile = true,
+    tileSize = 32,
+    edgeSize = 32,
+    insets = { left = 11, right = 12, top = 12, bottom = 11 }
+})
 
-ButtonFrameTemplate_HidePortrait(frame)
-frame.TitleText:SetText("Dragon Skill")
+local title = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+title:SetPoint("TOP", 0, -14)
+title:SetText("Dragon Skill")
+
+local closeBtn = CreateFrame("Button", nil, frame, "UIPanelCloseButton")
+closeBtn:SetPoint("TOPRIGHT", -4, -4)
+closeBtn:SetScript("OnClick", function() frame:Hide() end)
 
 -- ===== Tabs =====
 local TAB_TALENTS = 1
@@ -34,7 +50,7 @@ PanelTemplates_SetNumTabs(frame, 2)
 
 -- ===== Scroll-Content (gemeinsam genutzt, wird pro Tab neu befüllt) =====
 local scrollFrame = CreateFrame("ScrollFrame", nil, frame, "UIPanelScrollFrameTemplate")
-scrollFrame:SetPoint("TOPLEFT", 12, -32)
+scrollFrame:SetPoint("TOPLEFT", 12, -36)
 scrollFrame:SetPoint("BOTTOMRIGHT", -30, 40)
 
 local content = CreateFrame("Frame", nil, scrollFrame)
