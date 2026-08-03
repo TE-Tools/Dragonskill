@@ -1,0 +1,15 @@
+## Interface: 110100
+## Title: Dragon Skill
+## Notes: Talent-Guides, Vergleich und Import - by wear-alleria
+## Author: wear-alleria
+## Version: 0.1.0
+## SavedVariables: DragonSkillDB
+## SavedVariablesPerCharacter: DragonSkillCharDB
+
+Core\Namespace.lua
+Core\EventManager.lua
+Core\Database.lua
+Data\GuideData.lua
+Modules\TalentCompare\TalentCompare.lua
+Modules\StatPriority\StatPriority.lua
+Modules\TalentCompare\UI.lua

@@ -1,0 +1,14 @@
+[
+  {
+    "classToken": "WARRIOR",
+    "specID": 73,
+    "wowheadUrl": "https://www.wowhead.com/guide/classes/warrior/protection/talent-builds",
+    "archonUrl": "https://www.archon.gg/wow/builds/warrior/protection/talents"
+  },
+  {
+    "classToken": "PALADIN",
+    "specID": 65,
+    "wowheadUrl": "https://www.wowhead.com/guide/classes/paladin/holy/talent-builds",
+    "archonUrl": "https://www.archon.gg/wow/builds/paladin/holy/talents"
+  }
+]

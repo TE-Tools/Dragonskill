@@ -1,0 +1,13 @@
+{
+  "name": "dragon-skill-scraper",
+  "version": "0.1.0",
+  "description": "Lokaler Scraper für Dragon Skill Addon - holt Talent-Build-Daten von Wowhead",
+  "main": "scrape-wowhead.js",
+  "scripts": {
+    "scrape": "node scrape-wowhead.js"
+  },
+  "dependencies": {
+    "cheerio": "^1.0.0",
+    "node-fetch": "^2.7.0"
+  }
+}

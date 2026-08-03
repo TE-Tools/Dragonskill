@@ -1,0 +1,5 @@
+node_modules/
+scraper/data-raw/*.json
+!scraper/data-raw/.gitkeep
+*.log
+.DS_Store
