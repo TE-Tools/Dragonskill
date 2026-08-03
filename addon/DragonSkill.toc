@@ -1,4 +1,4 @@
-## Interface: 110100
+## Interface: 120005
 ## Title: Dragon Skill
 ## Notes: Talent-Guides, Vergleich und Import - by wear-alleria
 ## Author: wear-alleria
