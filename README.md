@@ -60,6 +60,11 @@ Voraussetzung: Repo auf GitHub, Actions aktiviert. Manuell auslösbar über
 - [x] Scraper: Archon.gg als zweite Quelle (Provider-getaggt, beide sichtbar) - gegen echte Live-Seiten getestet
 - [x] Stat-Prioritäten UI-Tab (Wowhead + Archon nebeneinander)
 - [x] Automatisierung: `scrape-all.js` + GitHub Actions (2x/Woche + manuell)
+- [x] `spec-list.json` auf alle 40 Specs erweitert, `GuideData.lua` mit echten
+      Daten für alle Klassen/Specs befüllt. Ausnahme: Demon Hunter "Devourer"
+      (neue Spec) hat noch keine verifizierte Blizzard-Spec-ID (Platzhalter
+      `9999`, siehe `specIDNote` im entsprechenden `spec-list.json`-Eintrag) -
+      bitte in-game verifizieren.
 - [ ] Rotation-Anzeige (bewusst zurückgestellt)
 - [ ] Weitere Module lt. Roadmap (BiS Gear, Enchants, Consumables, etc.)
 

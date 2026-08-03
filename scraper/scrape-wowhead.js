@@ -91,22 +91,27 @@ function extractTalentBuilds(markup) {
 }
 
 /**
- * Stat-Prioritäten stehen als [ol]/[li][b]Stat[/b][/li] Listen unter einer
+ * Stat-Prioritäten stehen als [ol]/[ul] Liste unter einer
  * "<Kategorie> Stat Priority"-Überschrift (Kategorie ist z.B. "Survivability"
- * / "DPS" oder ein Hero-Talent-Name wie "Lightsmith").
+ * / "DPS", ein Hero-Talent-Name wie "Lightsmith" oder "Colossus"/"Slayer").
+ * Formatierungs-Details variieren leicht je Spec (mit/ohne [hr]-Trenner,
+ * [li]Stat[/li] vs. [li][b]Stat[/b][/li]) - Regex ist entsprechend tolerant.
  */
 function extractStatPriority(markup) {
+  // Überschrift ist meist "... Stat Priority", bei Tank-Specs teils getrennt
+  // in "... Defensive Priority" / "... Offensive Priority".
   const blockRe =
-    /\[color=[^\]]+\]([A-Za-z]+)\[\/color\] Stat Priority\[\/b\]\[\/center\]\n\[hr\]\n\[ol\]([\s\S]{0,800}?)\[\/ol\]/g;
+    /\[color=[^\]]+\]([^\[]+)\[\/color\] (?:Stat |Defensive |Offensive )?Priority\[\/b\]\[\/center\][\s\S]{0,300}?\[(?:ol|ul)\]([\s\S]{0,800}?)\[\/(?:ol|ul)\]/g;
   const sections = [];
   let m;
   while ((m = blockRe.exec(markup))) {
     const [, category, body] = m;
-    const items = [...body.matchAll(/\[li\]\[b\]([^\[]+)\[\/b\]\[\/li\]/g)].map(
-      (x) => x[1]
-    );
+    const liBlocks = body.match(/\[li\][\s\S]*?\[\/li\]/g) || [];
+    const items = liBlocks
+      .map((li) => li.replace(/\[li\]|\[\/li\]|\[b\]|\[\/b\]/g, "").trim())
+      .filter(Boolean);
     if (items.length > 0) {
-      sections.push(`${category}: ${items.join(" > ")}`);
+      sections.push(`${category.trim()}: ${items.join(" > ")}`);
     }
   }
   return sections.length > 0 ? sections.join(" | ") : null;

@@ -91,12 +91,26 @@ gebündelte Daten im Addon-Release), nur mit eigenem, hier neu geschriebenem Cod
         `wowheadTalentsUrl` + `wowheadStatsUrl` (da beide Infos auf getrennten
         Seiten liegen). `scrape-all.js` entsprechend angepasst.
 
+**`spec-list.json` auf alle 40 Specs erweitert:**
+- [x] Alle 13 Klassen / 40 Specs eingetragen (aktueller Spec-Stand direkt von
+      Archon.gg's Klassen-Übersicht abgeleitet, nicht aus dem Gedächtnis -
+      der Spec-Stand hat sich ggü. älterem Wissen verändert, z.B. hat Demon
+      Hunter inzwischen 3 Specs: Havoc, Vengeance, **Devourer** (neu)).
+      End-to-end mit `scrape-all.js` gegen alle 40 Specs verifiziert (0
+      Warnungen, jede Spec liefert Talent-Builds + Stat-Priorität von beiden
+      Quellen) und zu `GuideData.lua` gebaut.
+- [ ] **Offene Ausnahme:** Für "Devourer" (Demon Hunter) konnte die echte
+      Blizzard-Spec-ID nicht über Wowhead/Archon ermittelt werden (weder in
+      HTML noch in den JSON-Datenblobs auffindbar - Archon nutzt dort eigene
+      interne IDs, keine Blizzard-Spec-IDs). `spec-list.json` nutzt aktuell
+      den Platzhalter `specID: 9999` mit `specIDVerified: false` +
+      `specIDNote`. Bitte in-game auf einem Devourer-Demon-Hunter verifizieren
+      (z.B. `/run print(select(2, GetSpecializationInfo(GetSpecialization())))`)
+      und sowohl den `spec-list.json`-Eintrag als auch die Datei
+      `data-raw/DEMONHUNTER_9999.json` auf die echte ID umbenennen/anpassen,
+      dann `build-data.js` neu laufen lassen.
+
 **Noch offen / nächste Schritte:**
-- [ ] `spec-list.json` auf alle 40 Specs erweitern (aktuell nur 2 Beispiele:
-      Warrior Protection, Paladin Holy). URL-Muster siehe README.md
-      ("Workflow" Abschnitt) - insbesondere das Rollen-Suffix bei Wowhead
-      (tank/healer/dps) je Spec verifizieren, da es nicht immer aus dem
-      Spec-Namen ableitbar ist.
 - [ ] Rotation-Anzeige (bewusst zurückgestellt, siehe Chatverlauf)
 - [ ] Weitere Module gemäß ursprünglicher Roadmap: BiS Gear, Enchants, Gems,
       Consumables, Trinkets, Crafting (siehe Class-Codex-Funktionsumfang als
