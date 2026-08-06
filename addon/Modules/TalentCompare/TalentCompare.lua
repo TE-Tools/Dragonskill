@@ -121,7 +121,16 @@ function TalentCompare:GetDetailedDiff(importString)
             local entryID = (importedEntryID > 0) and importedEntryID or currentEntryID
             local entryInfo = C_Traits.GetEntryInfo(configID, entryID)
             local definitionInfo = entryInfo and C_Traits.GetDefinitionInfo(entryInfo.definitionID)
-            local talentName = definitionInfo and (definitionInfo.overrideName or GetSpellInfo(definitionInfo.spellID)) or "Unbekanntes Talent"
+
+            local talentName = "Unbekanntes Talent"
+            if definitionInfo then
+                if definitionInfo.overrideName then
+                    talentName = definitionInfo.overrideName
+                elseif definitionInfo.spellID then
+                    local spellInfo = C_Spell.GetSpellInfo(definitionInfo.spellID)
+                    talentName = spellInfo and spellInfo.name or "Spell " .. definitionInfo.spellID
+                end
+            end
 
             table.insert(diffs, {
                 name = talentName,

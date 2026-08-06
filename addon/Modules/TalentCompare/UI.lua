@@ -1,4 +1,4 @@
--- Dragon Skill - Haupt UI (v0.4)
+-- Dragon Skill - Haupt UI (v0.4.2) - Optimized for Retail 12.x
 -- Baut das Hauptfenster mit Tabs auf und integriert Talente, Stats, Trinkets, Crafting und Rotation.
 
 local UI = {}
@@ -8,37 +8,40 @@ local tabs = {"Talente", "Stats", "Trinkets", "Crafting", "Rotation", "Gear", "E
 function UI:Init()
     if DragonSkillMainFrame then return end
 
-    -- Hauptfenster
+    -- Hauptfenster erstellen (Modernes Template)
     local f = CreateFrame("Frame", "DragonSkillMainFrame", UIParent, "ButtonFrameTemplate")
-    if not f then
-        print("|cffff0000Dragon Skill Fehler:|r Konnte Hauptfenster nicht erstellen.")
-        return
-    end
-    self.frame = f
+    if not f then return end
 
-    f:SetSize(400, 500)
+    self.frame = f
+    f:SetSize(450, 550) -- Etwas breiter und höher
     f:SetPoint("CENTER")
     f:SetMovable(true)
     f:EnableMouse(true)
     f:RegisterForDrag("LeftButton")
-    f:SetScript("OnDragStart", f.StartMoving)
-    f:SetScript("OnDragStop", f.StopMovingOrSizing)
+    f:SetScript("OnDragStart", function(self) self:StartMoving() end)
+    f:SetScript("OnDragStop", function(self) self:StopMovingOrSizing() end)
     f:SetClampedToScreen(true)
 
-    -- Robuste Titel-Setzung für Retail (11.0+)
-    local title = f.SetTitle and f or f.TitleText or (f.TitleContainer and f.TitleContainer.TitleText)
-    if title and title.SetText then
-        title:SetText("Dragon Skill v0.4")
-    elseif f.SetTitle then
+    -- Titel setzen (Sicherer Weg für 12.x)
+    if f.SetTitle then
         f:SetTitle("Dragon Skill v0.4")
     end
 
-    if f.portrait then
-        f.portrait:SetTexture("Interface\\Icons\\Inv_misc_head_dragon_01")
+    -- Fallback für den Titel-Text
+    local titleText = _G[f:GetName() .. "TitleText"] or (f.TitleContainer and f.TitleContainer.TitleText)
+    if titleText and titleText.SetText then
+        titleText:SetText("Dragon Skill v0.4")
     end
 
+    -- Icon
+    if f.portrait then
+        f.portrait:SetTexture("Interface\\Icons\\Inv_misc_head_dragon_01")
+    elseif f.PortraitContainer and f.PortraitContainer.portrait then
+        f.PortraitContainer.portrait:SetTexture("Interface\\Icons\\Inv_misc_head_dragon_01")
+    end
+
+    -- Initial verstecken (Verhindert Auto-Open Bug)
     f:Hide()
-    self.frame = f
 
     -- Tab-System
     f.Tabs = {}
@@ -46,12 +49,12 @@ function UI:Init()
         local tab = CreateFrame("Button", "$parentTab"..i, f, "PanelTabButtonTemplate")
         tab:SetID(i)
         tab:SetText(name)
-        tab:SetScript("OnClick", function(self) UI:SelectTab(self:GetID()) end)
+        tab:SetScript("OnClick", function(tabBtn) UI:SelectTab(tabBtn:GetID()) end)
         f.Tabs[i] = tab
         if i == 1 then
-            tab:SetPoint("TOPLEFT", f, "BOTTOMLEFT", 15, 1)
+            tab:SetPoint("TOPLEFT", f, "BOTTOMLEFT", 15, 2)
         else
-            tab:SetPoint("LEFT", f.Tabs[i-1], "RIGHT", -16, 0)
+            tab:SetPoint("LEFT", f.Tabs[i-1], "RIGHT", -15, 0)
         end
     end
     PanelTemplates_SetNumTabs(f, #tabs)
@@ -60,27 +63,28 @@ function UI:Init()
     -- Content Area
     local inset = f.Inset or _G[f:GetName() .. "Inset"]
     if inset then
-        local scrollFrame = CreateFrame("ScrollFrame", "$parentScroll", inset, "UIPanelScrollFrameTemplate")
+        inset:SetPoint("TOPLEFT", 4, -60) -- Mehr Platz oben für Titel/Portrait
+        inset:SetPoint("BOTTOMRIGHT", -6, 26) -- Platz unten für Tabs
+
+        local scrollFrame = CreateFrame("ScrollFrame", "DragonSkillScrollFrame", inset, "UIPanelScrollFrameTemplate")
         scrollFrame:SetPoint("TOPLEFT", 8, -8)
         scrollFrame:SetPoint("BOTTOMRIGHT", -25, 8)
 
-        local content = CreateFrame("Frame", "$parentContent", scrollFrame)
-        content:SetSize(350, 400)
-        scrollFrame:SetScrollChild(content)
-        f.Content = content
-    else
-        -- Fallback falls Inset nicht existiert
-        local content = CreateFrame("Frame", "$parentContent", f)
-        content:SetPoint("TOPLEFT", 15, -60)
-        content:SetPoint("BOTTOMRIGHT", -15, 30)
-        f.Content = content
-    end
+    local content = CreateFrame("Frame", "DragonSkillContentFrame", scrollFrame)
+    content:SetSize(350, 1000) -- Viel Platz für Content
+    scrollFrame:SetScrollChild(content)
+    f.Content = content
 
     -- Slash Commands
     SLASH_DRAGONSKILL1 = "/ds"
     SLASH_DRAGONSKILL2 = "/dragonskill"
     SlashCmdList["DRAGONSKILL"] = function()
-        if f:IsShown() then f:Hide() else f:Show() UI:Update() end
+        if f:IsShown() then
+            f:Hide()
+        else
+            f:Show()
+            UI:Update()
+        end
     end
 end
 
@@ -94,7 +98,7 @@ function UI:Update()
     if not self.frame or not self.frame.Content then return end
     local content = self.frame.Content
 
-    -- Clear content children
+    -- UI Reset
     local children = {content:GetChildren()}
     for _, child in ipairs(children) do child:Hide() end
 
@@ -107,21 +111,18 @@ function UI:Update()
     content.text:SetText("")
     content.text:Show()
 
-    if currentTab == 1 then
-        self:DrawTalents(content)
-    elseif currentTab == 2 then
-        self:DrawStats(content)
-    elseif currentTab == 3 then
-        self:DrawTrinkets(content)
-    elseif currentTab == 4 then
-        self:DrawCrafting(content)
-    elseif currentTab == 5 then
-        self:DrawRotation(content)
-    else
-        content.text:SetText("Modul '" .. tabs[currentTab] .. "' noch in Arbeit.")
+    -- Routing zu den Modulen
+    if currentTab == 1 then self:DrawTalents(content)
+    elseif currentTab == 2 then self:DrawStats(content)
+    elseif currentTab == 3 then self:DrawTrinkets(content)
+    elseif currentTab == 4 then self:DrawCrafting(content)
+    elseif currentTab == 5 then self:DrawRotation(content)
+    elseif currentTab == 6 then self:DrawGear(content)
+    elseif currentTab == 7 then self:DrawEnchants(content)
     end
 end
 
+-- Hilfsfunktion für Listen (Items/Spells)
 function UI:Helper_DrawListWithIcons(content, items, title)
     local yOffset = -10
     if title then
@@ -142,15 +143,15 @@ function UI:Helper_DrawListWithIcons(content, items, title)
         if item.icon then
             texture = item.icon
         elseif item.itemId then
-            texture = GetItemIcon(item.itemId)
+            texture = C_Item.GetItemIconByID(item.itemId) or texture
         elseif item.spellId then
-            texture = C_Spell.GetSpellTexture(item.spellId)
+            texture = C_Spell.GetSpellTexture(item.spellId) or texture
         end
         icon:SetTexture(texture)
 
         local text = row:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
         text:SetPoint("LEFT", icon, "RIGHT", 5, 0)
-        text:SetText(item.text or item.name)
+        text:SetText(item.text or item.name or "Unbekannt")
 
         if item.itemId then
             row:SetScript("OnEnter", function(self)
@@ -162,10 +163,7 @@ function UI:Helper_DrawListWithIcons(content, items, title)
             row:SetScript("OnClick", function()
                 if IsShiftKeyDown() then
                     local _, link = GetItemInfo(item.itemId)
-                    if not link then
-                        -- Falls Item nicht im Cache, versuche Link zu bauen
-                        link = string.format("|Hitem:%d:::::::::|h[%s]|h", item.itemId, item.name or "Item")
-                    end
+                    if not link then link = string.format("|Hitem:%d:::::::::|h[%s]|h", item.itemId, item.name or "Item") end
                     if link then HandleModifiedItemClick(link) end
                 end
             end)
@@ -186,7 +184,9 @@ end
 function UI:DrawTalents(content)
     local TC = DragonSkill:GetModule("TalentCompare")
     local _, class = UnitClass("player")
-    local spec = GetSpecializationInfo(GetSpecialization())
+    local specIndex = GetSpecialization()
+    if not specIndex then content.text:SetText("Bitte wähle eine Spezialisierung.") return end
+    local spec = GetSpecializationInfo(specIndex)
     local guideData = DragonSkill.Database:GetGuideData(class, spec)
 
     if not guideData or not guideData.talentBuilds then
@@ -195,8 +195,8 @@ function UI:DrawTalents(content)
     end
 
     local yOffset = -10
-    for _, build in ipairs(guideData.talentBuilds) do
-        local btn = CreateFrame("Button", nil, content, "UIPanelButtonTemplate")
+    for i, build in ipairs(guideData.talentBuilds) do
+        local btn = CreateFrame("Button", "DragonSkillBuildBtn"..i, content, "UIPanelButtonTemplate")
         btn:SetSize(330, 25)
         btn:SetPoint("TOPLEFT", 10, yOffset)
         btn:SetText(string.format("[%s] %s", build.provider, build.label))
@@ -221,9 +221,7 @@ function UI:ShowTalentDiff(build, result)
             local d = detailed[i]
             diffText = diffText .. string.format("\n- %s (%d/%d -> %d/%d)", d.name, d.currentRank, d.maxRank, d.importedRank, d.maxRank)
         end
-        if #detailed > 5 then
-            diffText = diffText .. "\n... und " .. (#detailed - 5) .. " weitere."
-        end
+        if #detailed > 5 then diffText = diffText .. "\n... und " .. (#detailed - 5) .. " weitere." end
     end
 
     StaticPopupDialogs["DRAGONSKILL_IMPORT"] = {
@@ -245,7 +243,9 @@ end
 
 function UI:DrawStats(content)
     local _, class = UnitClass("player")
-    local spec = GetSpecializationInfo(GetSpecialization())
+    local specIndex = GetSpecialization()
+    if not specIndex then return end
+    local spec = GetSpecializationInfo(specIndex)
     local guideData = DragonSkill.Database:GetGuideData(class, spec)
 
     local txt = "|cffffff00Stat-Prioritäten:|r\n"
@@ -272,13 +272,14 @@ function UI:DrawStats(content)
     local vers = GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_DONE)
 
     txt = txt .. string.format("Crit: %.1f%%\nHaste: %.1f%%\nMastery: %.1f%%\nVers: %.1f%%", crit, haste, mastery, vers)
-
     content.text:SetText(txt)
 end
 
 function UI:DrawTrinkets(content)
     local _, class = UnitClass("player")
-    local spec = GetSpecializationInfo(GetSpecialization())
+    local specIndex = GetSpecialization()
+    if not specIndex then return end
+    local spec = GetSpecializationInfo(specIndex)
     local guideData = DragonSkill.Database:GetGuideData(class, spec)
 
     if not guideData or not guideData.trinkets or not guideData.trinkets.archon then
@@ -299,7 +300,9 @@ end
 
 function UI:DrawCrafting(content)
     local _, class = UnitClass("player")
-    local spec = GetSpecializationInfo(GetSpecialization())
+    local specIndex = GetSpecialization()
+    if not specIndex then return end
+    local spec = GetSpecializationInfo(specIndex)
     local guideData = DragonSkill.Database:GetGuideData(class, spec)
 
     if not guideData or not guideData.crafting or not guideData.crafting.wowhead then
@@ -316,7 +319,9 @@ end
 
 function UI:DrawRotation(content)
     local _, class = UnitClass("player")
-    local spec = GetSpecializationInfo(GetSpecialization())
+    local specIndex = GetSpecialization()
+    if not specIndex then return end
+    local spec = GetSpecializationInfo(specIndex)
     local guideData = DragonSkill.Database:GetGuideData(class, spec)
 
     if not guideData or not guideData.rotation or not guideData.rotation.wowhead then
@@ -327,6 +332,51 @@ function UI:DrawRotation(content)
     self:Helper_DrawListWithIcons(content, guideData.rotation.wowhead, "|cffffff00Rotations-Priorität:|r")
 end
 
+function UI:DrawGear(content)
+    local _, class = UnitClass("player")
+    local specIndex = GetSpecialization()
+    if not specIndex then return end
+    local spec = GetSpecializationInfo(specIndex)
+    local guideData = DragonSkill.Database:GetGuideData(class, spec)
+
+    local txt = "|cffffff00Best-in-Slot Gear (Wowhead):|r\n\n"
+    local gear = guideData and guideData.bisGear and guideData.bisGear.wowhead
+    if gear and #gear > 0 then
+        for _, item in ipairs(gear) do
+            txt = txt .. string.format("|cff00ff00%s:|r %s\n|cff888888Quelle: %s|r\n\n", item.slot, item.item, item.source)
+        end
+    else
+        txt = txt .. "Keine Gear-Daten verfügbar."
+    end
+    content.text:SetText(txt)
+end
+
+function UI:DrawEnchants(content)
+    local _, class = UnitClass("player")
+    local specIndex = GetSpecialization()
+    if not specIndex then return end
+    local spec = GetSpecializationInfo(specIndex)
+    local guideData = DragonSkill.Database:GetGuideData(class, spec)
+
+    local txt = "|cffffff00Empfohlene Verzauberungen:|r\n"
+    local list = guideData and guideData.enchants and guideData.enchants.wowhead
+    if list and #list > 0 then
+        for _, v in ipairs(list) do txt = txt .. "- " .. v .. "\n" end
+    else
+        txt = txt .. "Keine Daten.\n"
+    end
+
+    txt = txt .. "\n|cffffff00Empfohlene Edelsteine:|r\n"
+    list = guideData and guideData.gems and guideData.gems.wowhead
+    if list and #list > 0 then
+        for _, v in ipairs(list) do txt = txt .. "- " .. v .. "\n" end
+    else
+        txt = txt .. "Keine Daten.\n"
+    end
+    content.text:SetText(txt)
+end
+
+-- Globaler Event Listener
 DragonSkill.Events:On("PLAYER_LOGIN", function()
     UI:Init()
 end)
