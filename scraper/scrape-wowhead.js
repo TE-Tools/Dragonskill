@@ -38,6 +38,7 @@ async function fetchPage(url) {
         "Mozilla/5.0 (DragonSkillAddon-Scraper; contact: wear-alleria)"
     }
   });
+  if (res.status === 404) return null; // Tolerant handling
   if (!res.ok) {
     throw new Error(`Fetch failed: ${res.status} ${res.statusText} (${url})`);
   }
@@ -162,10 +163,10 @@ function extractConsumables(markup) {
 }
 
 async function main() {
-  const { talentsUrl, statsUrl, rotationUrl, out } = parseArgs();
-  if (!talentsUrl && !statsUrl && !rotationUrl) {
+  const { talentsUrl, statsUrl, rotationUrl, gearUrl, out } = parseArgs();
+  if (!talentsUrl && !statsUrl && !rotationUrl && !gearUrl) {
     console.error(
-      'Benutzung: node scrape-wowhead.js --talentsUrl "<url>" --statsUrl "<url>" --rotationUrl "<url>" --out "<output.json>"'
+      'Benutzung: node scrape-wowhead.js --talentsUrl "<url>" --statsUrl "<url>" --rotationUrl "<url>" --gearUrl "<url>" --out "<output.json>"'
     );
     process.exit(1);
   }
@@ -177,11 +178,16 @@ async function main() {
   let newTalents = [];
   if (talentsUrl) {
     console.log(`Lade ${talentsUrl} ...`);
-    const markup = unescapeWowheadMarkup(await fetchPage(talentsUrl));
-    newTalents = extractTalentBuilds(markup).map((b) => ({
-      ...b,
-      provider: "wowhead"
-    }));
+    const html = await fetchPage(talentsUrl);
+    if (html) {
+      const markup = unescapeWowheadMarkup(html);
+      newTalents = extractTalentBuilds(markup).map((b) => ({
+        ...b,
+        provider: "wowhead"
+      }));
+    } else {
+      console.warn(`⚠️  Talent-Seite nicht gefunden: ${talentsUrl}`);
+    }
   }
 
   let newStatPrio = null;
@@ -191,39 +197,83 @@ async function main() {
 
   if (statsUrl) {
     console.log(`Lade ${statsUrl} ...`);
-    const markup = unescapeWowheadMarkup(await fetchPage(statsUrl));
-    newStatPrio = extractStatPriority(markup);
-    bisGear = extractBiSGear(markup);
-    consumables = extractConsumables(markup);
+    const html = await fetchPage(statsUrl);
+    if (html) {
+      const markup = unescapeWowheadMarkup(html);
+      newStatPrio = extractStatPriority(markup);
+      bisGear = extractBiSGear(markup);
+      consumables = extractConsumables(markup);
 
-    // Extrahiere Crafting/Embellishments
-    const embRe = /\[b\]Best Embellishments\[\/b\][\s\S]{0,500}?\[(?:ol|ul)\]([\s\S]{0,1000}?)\[\/(?:ol|ul)\]/gi;
-    let m = embRe.exec(markup);
-    if (m) {
-      crafting.embellishments = (m[1].match(/\[li\][\s\S]*?\[\/li\]/g) || [])
-        .map(li => li.replace(/\[li\]|\[\/li\]|\[b\]|\[\/b\]|\[url=[^\]]+\]|\[\/url\]/g, "").trim())
-        .filter(Boolean);
+      // Extrahiere Crafting/Embellishments
+      const embRe = /\[b\](?:Best )?Embellishments\[\/b\][\s\S]{0,500}?\[(?:ol|ul)\]([\s\S]{0,1000}?)\[\/(?:ol|ul)\]/gi;
+      let m = embRe.exec(markup);
+      if (m) {
+        crafting.embellishments = (m[1].match(/\[li\][\s\S]*?\[\/li\]/g) || [])
+          .map(li => li.replace(/\[li\]|\[\/li\]|\[b\]|\[\/b\]|\[url=[^\]]+\]|\[\/url\]/g, "").trim())
+          .filter(Boolean);
+      }
+    } else {
+      console.warn(`⚠️  Stats-Seite nicht gefunden: ${statsUrl}`);
+    }
+  }
+
+  if (gearUrl) {
+    console.log(`Lade ${gearUrl} ...`);
+    let html = await fetchPage(gearUrl);
+    if (!html) {
+        // Fallback: Probiere URL ohne Suffix falls es eines gab
+        const fallback = gearUrl.replace(/-pve-(tank|healer|dps)$/, "");
+        if (fallback !== gearUrl) {
+            console.log(`Probier Fallback: ${fallback}`);
+            html = await fetchPage(fallback);
+        }
+    }
+
+    if (html) {
+      const markup = unescapeWowheadMarkup(html);
+      const newGear = extractBiSGear(markup);
+      if (newGear.length > 0) bisGear = newGear;
+
+      const newConsumables = extractConsumables(markup);
+      if (newConsumables.enchants.length > 0) consumables.enchants = newConsumables.enchants;
+      if (newConsumables.gems.length > 0) consumables.gems = newConsumables.gems;
+      if (newConsumables.consumables.length > 0) consumables.consumables = newConsumables.consumables;
+    } else {
+      console.warn(`⚠️  Gear-Seite nicht gefunden: ${gearUrl}`);
     }
   }
 
   let rotation = [];
   if (rotationUrl) {
     console.log(`Lade ${rotationUrl} ...`);
-    const markup = unescapeWowheadMarkup(await fetchPage(rotationUrl));
-    const rotRe = /\[b\]Rotation Priority\[\/b\][\s\S]{0,500}?\[ol\]([\s\S]{0,2000}?)\[\/ol\]/gi;
-    let m = rotRe.exec(markup);
-    if (m) {
-      rotation = (m[1].match(/\[li\][\s\S]*?\[\/li\]/g) || [])
-        .map(li => {
-          const text = li.replace(/\[li\]|\[\/li\]|\[b\]|\[\/b\]/g, "").trim();
-          // Versuche Spell-ID/Icon zu finden falls im Markup (oft als [spell=123])
-          const spellMatch = li.match(/\[spell=(\d+)\]/);
-          return {
-            text: text.replace(/\[spell=\d+\]|\[url=[^\]]+\]|\[\/url\]/g, "").trim(),
-            spellId: spellMatch ? spellMatch[1] : null
-          };
-        })
-        .filter(r => r.text.length > 0);
+    let html = await fetchPage(rotationUrl);
+    if (!html) {
+        const fallback = rotationUrl.replace(/-pve-(tank|healer|dps)$/, "");
+        if (fallback !== rotationUrl) {
+            console.log(`Probier Fallback: ${fallback}`);
+            html = await fetchPage(fallback);
+        }
+    }
+
+    if (html) {
+      const markup = unescapeWowheadMarkup(html);
+      // Lockerer Regex für Rotation
+      const rotRe = /\[b\](?:PvE |Single Target )?Rotation (?:Priority)?\[\/b\][\s\S]{0,500}?\[ol\]([\s\S]{0,3000}?)\[\/ol\]/gi;
+      let m = rotRe.exec(markup);
+      if (m) {
+        rotation = (m[1].match(/\[li\][\s\S]*?\[\/li\]/g) || [])
+          .map(li => {
+            const text = li.replace(/\[li\]|\[\/li\]|\[b\]|\[\/b\]/g, "").trim();
+            const spellMatch = li.match(/\[spell=(\d+)\]/);
+            return {
+              text: text.replace(/\[spell=\d+\]|\[url=[^\]]+\]|\[\/url\]/g, "").trim(),
+              spellId: spellMatch ? spellMatch[1] : null
+            };
+          })
+          .filter(r => r.text.length > 0);
+      }
+    } else {
+      console.warn(`⚠️  Rotation-Seite nicht gefunden: ${rotationUrl}`);
     }
   }
 

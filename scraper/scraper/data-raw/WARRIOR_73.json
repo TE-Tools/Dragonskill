@@ -1,0 +1,38 @@
+{
+  "scrapedAt": "2026-08-06T14:37:33.950Z",
+  "statPriority": {
+    "archon": "Strength > Haste > Crit > Mastery > Vers"
+  },
+  "statAverages": {
+    "archon": null
+  },
+  "trinkets": {
+    "archon": []
+  },
+  "talentBuilds": [
+    {
+      "context": "29.2%",
+      "label": "Recommended Class Tree",
+      "importString": "CkEAAAAAAAAAAAAAAAAAAAAAAkBAAGzwMzMzMmNzMLzYMGNmxwyMmZGzwMDAAAAWmZAmxAMwGssY0YGAzCmZDGzMDjtBAzMAAMDYA",
+      "provider": "archon"
+    },
+    {
+      "context": "17.6%",
+      "label": "Alternative Class Tree #1",
+      "importString": "CkEAAAAAAAAAAAAAAAAAAAAAAkBAAGzwMzMzMmNzMLzYMGNmxwiZmZGzwMDAAAAWmZAmxAMwGssY0YGAzCmZDGzMDmtBAzMAAMDYA",
+      "provider": "archon"
+    },
+    {
+      "context": "7.3%",
+      "label": "Alternative Class Tree #2",
+      "importString": "CkEAAAAAAAAAAAAAAAAAAAAAAkBAAGzwMzMzMmNzMLzYMGNmxYbxMzMjZYmBAAAALzMAzYAGYDWWMaMDgZBzsBjZmBjBAzMAAMDYA",
+      "provider": "archon"
+    },
+    {
+      "context": "6.9%",
+      "label": "Alternative Class Tree #3",
+      "importString": "CkEAAAAAAAAAAAAAAAAAAAAAAkBAAGzwMzMzMmNzMLzYMGNmxwyMmZGmxMDAAAAWmZAmxAMwGssY0YGAzCmZDGzMDmtBAzMAAMDYA",
+      "provider": "archon"
+    }
+  ]
+}

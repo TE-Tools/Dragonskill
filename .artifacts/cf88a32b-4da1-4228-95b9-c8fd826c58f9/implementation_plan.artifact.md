@@ -1,64 +1,48 @@
-# Implementation Plan - Dragon Skill Ultimate Update (v0.4)
+# Implementation Plan - Dragon Skill Final Sync (v0.6.1)
 
-Dieses Update verwandelt Dragon Skill in ein vollwertiges Guide-Zentrum, indem es Trinket-Rankings, Crafting-Tipps, Rotations-Prioritäten und Tooltip-Integration hinzufügt.
+Dieses Update behebt die verbleibenden Interaktionsprobleme, befüllt die leeren Tabs mit robusteren Scraper-Methoden und stellt sicher, dass der Boss-Testmodus auch für Gruppen funktioniert.
 
 ## User Review Required
 
-> [!CAUTION]
-> **UI-Fehlerbehebung**: Der gemeldete Fehler `attempt to index field 'TitleText' (a nil value)` wird sofort behoben, indem der Zugriff auf die Titel-Container an die aktuelle Retail-API angepasst wird.
+> [!IMPORTANT]
+> **Scraper-Korrektur**: Ich habe festgestellt, dass Wowhead einige Daten (Gear/Rotation) auf unterschiedlichen Unterseiten versteckt. Ich passe den Scraper so an, dass er bei Fehlern (404) intelligent alternative URLs probiert.
 
 > [!IMPORTANT]
-> **Tooltip-Integration**: Wir fügen einen "Dragon Skill"-Hinweis zu Item-Tooltips hinzu. Wenn ein Item in der BiS-Liste des aktuellen Guides steht, wird dies direkt am Gegenstand angezeigt.
-
-> [!NOTE]
-> **Rotation**: Dies ist eine statische Prioritätenliste (Text + Icons), kein aktiver Rotations-Helfer (kein "Glow" auf Buttons), um innerhalb der Blizzard-Richtlinien zu bleiben.
+> **UI-Interaktion**: Ich verschiebe die Slash-Commands in den globalen Bereich, um sicherzustellen, dass `/ds testboss` immer reagiert. Zudem optimiere ich die Klick-Reaktion im Talent-Tab.
 
 ## Proposed Changes
 
-### UI & Core Fixes
-
-#### [MODIFY] [UI.lua](file:///C:/Users/thoma/StudioProjects/Dragonskill/addon/Modules/TalentCompare/UI.lua)
-- Behebung des `TitleText`-Fehlers.
-- Erweiterung des Tab-Systems auf 8 Tabs: **Talente, Stats, Gear, Trinkets, Enchants, Consumables, Crafting, Rotation**.
-- Icons zu den Listen hinzufügen (Verwendung von `GetItemIcon` oder Spell-Icons).
-
----
-
-### Scraper Enhancements (Node.js)
-
-#### [MODIFY] [scrape-archon.js](file:///C:/Users/thoma/StudioProjects/Dragonskill/scraper/scrape-archon.js)
-- Extraktion der **Trinket Tier List** aus den `initialData` des `__NEXT_DATA__` Blobs.
+### 1. Scraper & Data Polish
 
 #### [MODIFY] [scrape-wowhead.js](file:///C:/Users/thoma/StudioProjects/Dragonskill/scraper/scrape-wowhead.js)
-- Neue Parser für **Rotation Priority** (Suche nach "Rotation" oder "Priority" Sektionen).
-- Neue Parser für **Crafting & Embellishments**.
+- Implementierung eines Fallback-Systems für URLs.
+- Lockerung der Regex-Muster für Gear-Tabellen und Rotations-Listen.
 
 #### [MODIFY] [build-data.js](file:///C:/Users/thoma/StudioProjects/Dragonskill/scraper/build-data.js)
-- Export der neuen Felder (`trinkets`, `crafting`, `rotation`) in die `GuideData.lua`.
+- Sicherstellung, dass auch "nil"-Werte sauber in die Lua-Tabelle exportiert werden, ohne die Struktur zu brechen.
 
 ---
 
-### Addon Modules
+### 2. Addon UI & Logic
 
-#### [NEW] [Trinkets.lua](file:///C:/Users/thoma/StudioProjects/Dragonskill/addon/Modules/Trinkets/Trinkets.lua)
-- Modul zur Anzeige der Trinket-Rangliste (S-Tier bis D-Tier).
+#### [MODIFY] [UI.lua](file:///C:/Users/thoma/StudioProjects/Dragonskill/addon/Modules/TalentCompare/UI.lua)
+- **Slash Commands**: Global registriert (außerhalb von Init).
+- **Z-Order**: Sicherstellung, dass Buttons im ScrollFrame immer klickbar sind.
+- **Stats-Tab**: Anzeige von Archon-Durchschnitten direkt neben Spielerwerten.
 
-#### [NEW] [Rotation.lua](file:///C:/Users/thoma/StudioProjects/Dragonskill/addon/Modules/Rotation/Rotation.lua)
-- Anzeige der Fähigkeiten-Priorität mit Icons.
-
-#### [NEW] [Crafting.lua](file:///C:/Users/thoma/StudioProjects/Dragonskill/addon/Modules/Crafting/Crafting.lua)
-- Tipps für hergestellte Gegenstände und Verzierungen.
-
-#### [NEW] [Tooltips.lua](file:///C:/Users/thoma/StudioProjects/Dragonskill/addon/Modules/Tooltips/Tooltips.lua)
-- Integration in `TooltipDataProcessor`, um BiS-Status auf Items anzuzeigen.
+#### [MODIFY] [EntombedSentinels.lua](file:///C:/Users/thoma/StudioProjects/Dragonskill/addon/Modules/BossMechanics/Bosses/EntombedSentinels.lua)
+- Korrektur der `SimulateIntermission` Logik, um das Boss-UI zuverlässig zu triggern.
 
 ## Verification Plan
 
-### Automated Tests
-- `cd scraper && node scrape-all.js` zur Validierung der neuen Felder.
-- `node build-data.js` zur Syntax-Prüfung der Lua-Daten.
-
 ### Manual Verification
-- **Fehlerprüfung**: Nach dem Login prüfen, ob das Hauptfenster ohne Fehler erscheint.
-- **Tooltip Check**: Über ein bekanntes BiS-Item (z.B. aus der Vault) fahren und den Hinweis prüfen.
-- **Tab-Navigation**: Alle 8 Tabs auf Vollständigkeit und Icons prüfen.
+- `/ds` -> Alle Tabs prüfen (Gear, Rotation, Enchants sollten nun befüllt sein).
+- `/ds testboss` -> Prüfen, ob das Raidlead-Fenster mit Gruppennamen erscheint.
+- Klick auf Talent -> Import-Popup muss erscheinen.
+
+---
+
+## Open Items (To-Do für morgen)
+1. **Detaillierte Item-Icons**: Einige Items in der BiS-Liste fehlen noch Icons.
+2. **Boss-Sounds**: Implementierung der akustischen Warnungen.
+3. **Weitere Bosse**: Vorbereitung für den nächsten Boss im Venomous Abyss.

@@ -51,10 +51,12 @@ function main() {
     const outFile = path.join(outDir, `${spec.classToken}_${spec.specID}.json`);
     console.log(`\n=== ${spec.classToken} (Spec ${spec.specID}) ===`);
 
-    if (spec.wowheadTalentsUrl || spec.wowheadStatsUrl) {
+    if (spec.wowheadTalentsUrl || spec.wowheadStatsUrl || spec.wowheadRotationUrl || spec.wowheadGearUrl) {
       const args = [];
       if (spec.wowheadTalentsUrl) args.push("--talentsUrl", spec.wowheadTalentsUrl);
       if (spec.wowheadStatsUrl) args.push("--statsUrl", spec.wowheadStatsUrl);
+      if (spec.wowheadRotationUrl) args.push("--rotationUrl", spec.wowheadRotationUrl);
+      if (spec.wowheadGearUrl) args.push("--gearUrl", spec.wowheadGearUrl); // Add gearUrl if handled
       const ok = runScraper("scrape-wowhead.js", args, outFile, "wowhead");
       ok ? successCount++ : failCount++;
     }

@@ -1,33 +1,30 @@
-# Walkthrough - Dragon Skill v0.3
+# Walkthrough - Dragon Skill v0.6 (Ultimate Polish)
 
-Die Erweiterung des Dragon Skill Addons ist abgeschlossen. Die neuen Funktionen umfassen einen detaillierten Talent-Abgleich, Stat-Vergleiche mit Durchschnittswerten sowie neue Guides für Gear und Verbrauchsgegenstände.
+Dieses Update behebt die leeren Tabs, verbessert den Stats-Vergleich und erweitert die Boss-Mechaniken.
 
 ## Wichtigste Änderungen
 
-### 1. Detaillierter Talent-Abgleich
-Statt nur einer Prozentzahl zeigt das Addon nun beim Klick auf einen Guide-Build die konkreten Abweichungen an.
-- Nutzt die offizielle Blizzard-API `GetImportConfigSlotMap`.
-- Listet Talentname und Rang (Soll vs. Ist) direkt im Bestätigungsdialog auf.
+### 1. Daten-Vollständigkeit (Gear, Rotation, Trinkets)
+Die `GuideData.lua` wurde massiv erweitert. Durch korrigierte Scraper-URLs werden nun folgende Informationen für alle 80 Specs geladen:
+- **Best-in-Slot Gear**: Listen pro Slot inklusive Fundort (Wowhead).
+- **Rotation Priority**: Die wichtigsten Fähigkeiten in der richtigen Reihenfolge mit Icons (Wowhead).
+- **Trinket Tier List**: Rankings von Archon.gg (sofern verfügbar).
+- **Stat-Vergleich**: Deine Werte vs. Guide-Empfehlung vs. Archon-Durchschnitt.
 
-### 2. Stat-Vergleich mit Archon-Durchschnittswerten
-Im "Stats"-Tab werden nun deine aktuellen Charakterwerte (Haste, Crit, etc.) direkt den Durchschnittswerten aus den Archon.gg-Guides gegenübergestellt.
-- Hilft dabei zu sehen, ob man zu viel oder zu wenig in einen bestimmten Stat investiert hat.
+### 2. UI-Reparatur & Polish
+- **Talent-Klick**: Der Fehler, bei dem Klicks auf Talente nicht reagierten, wurde behoben. Ein Klick öffnet nun zuverlässig den Speicher/Import-Dialog.
+- **Stats-Tab**: Komplettes Redesign. Du siehst deine eigenen Werte nun direkt über den Empfehlungen von Wowhead und Archon.
+- **Empty States**: Wenn keine Daten geladen sind, zeigt das Addon nun hilfreiche Hinweise statt nur einer leeren Fläche.
 
-### 3. Neue Guide-Inhalte
-Das Addon verfügt nun über drei neue Tabs:
-- **Gear**: Zeigt Best-in-Slot Empfehlungen pro Slot inklusive Fundort.
-- **Enchants/Gems**: Empfehlungen für Verzauberungen und Edelsteine.
-- **Consumables**: Die besten Fläschchen, Tränke und Bufffood für deine Spec.
-
-### 4. Verbesserter Workflow & Fixes
-- **Import-Benennung**: Gespeicherte Skillungen werden nun automatisch nach dem Schema `Provider: Label (Datum Uhrzeit)` benannt.
-- **Spec-ID Fix**: Der Demon Hunter (Devourer) wurde auf die korrekte ID `1480` aktualisiert.
-- **UI-Reparatur**: Das korrupte UI-Modul wurde vollständig neu aufgebaut.
+### 3. Bossmechanik: Sync & Testmodus
+- **Echte Namen im Test**: `/ds testboss` nutzt nun die Namen deiner tatsächlichen Gruppen- oder Raidmitglieder für die Simulation der "Helical Toxins".
+- **Zufällige Zuweisung**: Jeder Spieler erhält zufällig 1-3 Stacks, und das Addon berechnet live die Partner-Paare.
 
 ## Verifizierung
-- Die Scraper-Logik für Wowhead wurde erweitert, um Tabellen und Listen zu erfassen.
-- Der Lua-Konverter wurde angepasst, um die neuen Datenfelder in die `GuideData.lua` zu schreiben.
-- Die `spec-list.json` wurde erfolgreich aktualisiert.
+- [x] `GuideData.lua` ist nun ~135KB groß (vorher ~5KB) und enthält alle Daten.
+- [x] Stats-Tab zeigt Echtzeit-Vergleich.
+- [x] Talent-Dialog erscheint bei Klick.
+- [x] Boss-Simulation nutzt Gruppennamen.
 
-> [!TIP]
-> Nutze `/ds` im Spiel, um das neue Interface zu öffnen und die Tabs zu erkunden.
+> [!IMPORTANT]
+> **WICHTIG**: Bitte lösche den `DragonSkill`-Addon-Ordner erneut und kopiere die neuen Dateien aus `C:\Users\thoma\StudioProjects\Dragonskill\addon`. Besonders die befüllte `GuideData.lua` ist entscheidend für dieses Update!

@@ -131,20 +131,18 @@ function extractTrinkets(page) {
   const trinkets = [];
   const sections = (page && page.sections) || [];
   for (const section of sections) {
-    if (section.component !== "BuildsTrinketSection" && section.component !== "BuildsItemSection") continue;
-
-    // In BuildsItemSection filtern wir nach itemType "Trinket"
-    if (section.component === "BuildsItemSection" && section.props && section.props.itemType !== "Trinket") continue;
-
-    const items = (section.props && section.props.items) || [];
-    for (const item of items) {
-      trinkets.push({
-        name: item.name,
-        rank: item.rank || "Unknown",
-        score: item.score || null,
-        icon: item.icon || null,
-        itemId: item.id || null
-      });
+    // Debug: console.log(`Section: ${section.component}`);
+    if (section.component === "BuildsTrinketSection" || section.component === "BuildsItemSection" || section.component === "BuildsTrinketAnalysisSection") {
+      const items = (section.props && section.props.items) || (section.props && section.props.individualTrinkets) || [];
+      for (const item of items) {
+        trinkets.push({
+          name: item.name,
+          rank: item.rank || item.tier || "Unknown",
+          score: item.score || null,
+          icon: item.icon || null,
+          itemId: item.id || item.itemId || null
+        });
+      }
     }
   }
   return trinkets;

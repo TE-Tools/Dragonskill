@@ -5,7 +5,7 @@ DragonSkillData = DragonSkillData or {}
 
 DragonSkillData["DEATHKNIGHT"] = DragonSkillData["DEATHKNIGHT"] or {}
 DragonSkillData["DEATHKNIGHT"][250] = {
-    scrapedAt = "2026-08-06T13:53:40.782Z",
+    scrapedAt = "2026-08-06T14:51:55.717Z",
     statPriority = {
         wowhead = "San'layn: Strength > Haste > Mastery / Critical Strike / Versatility | Deathbringer: Strength > Critical Strike > Mastery / Versatility > Haste",
         archon = "Strength > Mastery > Crit > Haste > Vers",
@@ -95,7 +95,7 @@ DragonSkillData["DEATHKNIGHT"][250] = {
 }
 
 DragonSkillData["DEATHKNIGHT"][251] = {
-    scrapedAt = "2026-08-06T13:53:41.639Z",
+    scrapedAt = "2026-08-06T14:51:57.193Z",
     statPriority = {
         wowhead = "Deathbringer: Strength > Critical Strike > Mastery > Haste > Versatility | Rider of the Apocalypse: Strength > Critical Strike > Mastery > Haste > Versatility",
         archon = "Strength > Mastery > Crit > Haste > Vers",
@@ -185,7 +185,7 @@ DragonSkillData["DEATHKNIGHT"][251] = {
 }
 
 DragonSkillData["DEATHKNIGHT"][252] = {
-    scrapedAt = "2026-08-06T13:53:42.105Z",
+    scrapedAt = "2026-08-06T14:51:58.321Z",
     statPriority = {
         wowhead = "San'layn: Strength > Mastery > Crit > Haste > Versatility | Rider of the Apocalypse: Strength > Mastery > Crit > Haste > Versatility",
         archon = "Strength > Mastery > Crit > Haste > Vers",
@@ -270,7 +270,7 @@ DragonSkillData["DEATHKNIGHT"][252] = {
 
 DragonSkillData["DEMONHUNTER"] = DragonSkillData["DEMONHUNTER"] or {}
 DragonSkillData["DEMONHUNTER"][577] = {
-    scrapedAt = "2026-08-06T13:53:42.905Z",
+    scrapedAt = "2026-08-06T14:51:59.080Z",
     statPriority = {
         wowhead = "Fel-Scarred: Agility > Critical Strike > Mastery > Haste > Versatility | Aldrachi Reaver: Agility > Critical Strike > Mastery > Haste > Versatility",
         archon = "Agility > Crit > Mastery > Haste > Vers",
@@ -360,7 +360,7 @@ DragonSkillData["DEMONHUNTER"][577] = {
 }
 
 DragonSkillData["DEMONHUNTER"][581] = {
-    scrapedAt = "2026-08-06T13:53:43.407Z",
+    scrapedAt = "2026-08-06T14:52:00.020Z",
     statPriority = {
         wowhead = "Aldrachi Reaver: Item Level (Agility+Stamina) > Haste > Crit > Versatility > Mastery | Annihilator: Item Level (Agility+Stamina) > Haste > Crit > Versatility > Mastery",
         archon = "Agility > Haste > Crit > Mastery > Vers",
@@ -474,7 +474,7 @@ DragonSkillData["DEMONHUNTER"][581] = {
 }
 
 DragonSkillData["DEMONHUNTER"][1480] = {
-    scrapedAt = "2026-08-06T13:53:44.213Z",
+    scrapedAt = "2026-08-06T14:52:01.100Z",
     statPriority = {
         wowhead = "Annihilator: Intellect > Haste > Mastery > Critical Strike > Versatility | Void-Scarred: Intellect > Mastery > Haste > Critical Strike > Versatility",
         archon = "Intellect > Mastery > Haste > Crit > Vers",
@@ -565,7 +565,7 @@ DragonSkillData["DEMONHUNTER"][1480] = {
 
 DragonSkillData["DRUID"] = DragonSkillData["DRUID"] or {}
 DragonSkillData["DRUID"][102] = {
-    scrapedAt = "2026-08-06T13:53:44.697Z",
+    scrapedAt = "2026-08-06T14:52:01.914Z",
     statPriority = {
         wowhead = "Keeper of the Grove: Intellect > Mastery > Haste = Critical Strike > Versatility | Elune's Chosen: Intellect > Mastery > Haste > Critical Strike > Versatility",
         archon = "Intellect > Mastery > Haste > Crit > Vers",
@@ -655,7 +655,7 @@ DragonSkillData["DRUID"][102] = {
 }
 
 DragonSkillData["DRUID"][103] = {
-    scrapedAt = "2026-08-06T13:53:45.602Z",
+    scrapedAt = "2026-08-06T14:52:03.080Z",
     statPriority = {
         wowhead = "Druid of the Claw: Agility > Mastery > Haste > Critical Strike > Versatility | Wildstalker: Agility > Mastery > Critical Strike > Haste > Versatility",
         archon = "Agility > Mastery > Haste > Crit > Vers",
@@ -745,7 +745,7 @@ DragonSkillData["DRUID"][103] = {
 }
 
 DragonSkillData["DRUID"][104] = {
-    scrapedAt = "2026-08-06T13:53:46.425Z",
+    scrapedAt = "2026-08-06T14:52:03.843Z",
     statPriority = {
         wowhead = "Survivability: Agility > Haste > Versatility > Critical Strike > Mastery | DPS: Agility > Haste > Versatility > Critical Strike > Mastery",
         archon = "Agility > Haste > Mastery > Vers > Crit",
@@ -835,7 +835,7 @@ DragonSkillData["DRUID"][104] = {
 }
 
 DragonSkillData["DRUID"][105] = {
-    scrapedAt = "2026-08-06T13:53:47.026Z",
+    scrapedAt = "2026-08-06T14:52:04.770Z",
     statPriority = {
         wowhead = "Keeper of the Grove: Intellect > Haste > Mastery > Versatility > Critical Strike | Wildstalker: Intellect > Haste > Mastery > Versatility > Critical Strike",
         archon = "Intellect > Haste > Mastery > Crit > Vers",
@@ -926,7 +926,7 @@ DragonSkillData["DRUID"][105] = {
 
 DragonSkillData["EVOKER"] = DragonSkillData["EVOKER"] or {}
 DragonSkillData["EVOKER"][1467] = {
-    scrapedAt = "2026-08-06T13:53:47.877Z",
+    scrapedAt = "2026-08-06T14:52:06.467Z",
     statPriority = {
         wowhead = "Flameshaper: Intellect > Critical Strike > Haste > Mastery > Versatility | Scalecommander: Intellect > Critical Strike > Haste > Mastery > Versatility",
         archon = "Intellect > Crit > Haste > Mastery > Vers",
@@ -1016,7 +1016,7 @@ DragonSkillData["EVOKER"][1467] = {
 }
 
 DragonSkillData["EVOKER"][1468] = {
-    scrapedAt = "2026-08-06T13:53:48.723Z",
+    scrapedAt = "2026-08-06T14:52:07.975Z",
     statPriority = {
         wowhead = "Flameshaper: Intellect > Mastery > Crit > Haste > Versatility | Chronowarden: Intellect > Mastery > Crit [i](Haste better in Mythic+)[/i] > Haste > Versatility",
         archon = "Intellect > Mastery > Haste > Crit > Vers",
@@ -1100,7 +1100,7 @@ DragonSkillData["EVOKER"][1468] = {
 }
 
 DragonSkillData["EVOKER"][1473] = {
-    scrapedAt = "2026-08-06T13:53:49.446Z",
+    scrapedAt = "2026-08-06T14:52:09.372Z",
     statPriority = {
         wowhead = "Chronowarden: Intellect > Critical Strike > Haste > Mastery > Versatility | Scalecommander: Intellect > Critical Strike > Haste > Mastery > Versatility",
         archon = "Intellect > Crit > Haste > Mastery > Vers",
@@ -1191,7 +1191,7 @@ DragonSkillData["EVOKER"][1473] = {
 
 DragonSkillData["HUNTER"] = DragonSkillData["HUNTER"] or {}
 DragonSkillData["HUNTER"][253] = {
-    scrapedAt = "2026-08-06T13:53:49.983Z",
+    scrapedAt = "2026-08-06T14:52:10.217Z",
     statPriority = {
         wowhead = "Pack Leader: Weapon Damage > Agility > Mastery > Critical Strike > Haste > Versatility | Dark Ranger: Weapon Damage > Agility > Mastery > Haste > Critical Strike > Versatility",
         archon = "Agility > Crit > Mastery > Haste > Vers",
@@ -1281,7 +1281,7 @@ DragonSkillData["HUNTER"][253] = {
 }
 
 DragonSkillData["HUNTER"][254] = {
-    scrapedAt = "2026-08-06T13:53:50.813Z",
+    scrapedAt = "2026-08-06T14:52:11.004Z",
     statPriority = {
         wowhead = "Sentinel: Agility > Critical Strike > Mastery > Versatility > Haste | Dark Ranger: Agility > Critical Strike > Mastery > Versatility > Haste",
         archon = "Agility > Crit > Mastery > Haste > Vers",
@@ -1383,7 +1383,7 @@ DragonSkillData["HUNTER"][254] = {
 }
 
 DragonSkillData["HUNTER"][255] = {
-    scrapedAt = "2026-08-06T13:53:51.860Z",
+    scrapedAt = "2026-08-06T14:52:12.222Z",
     statPriority = {
         wowhead = "Pack Leader: Agility > Mastery > Critical Strike and Haste > Versatility | Sentinel: Agility > Mastery > Critical Strike > Haste > Versatility",
         archon = "Agility > Mastery > Crit > Haste > Vers",
@@ -1474,7 +1474,7 @@ DragonSkillData["HUNTER"][255] = {
 
 DragonSkillData["MAGE"] = DragonSkillData["MAGE"] or {}
 DragonSkillData["MAGE"][62] = {
-    scrapedAt = "2026-08-06T13:53:52.305Z",
+    scrapedAt = "2026-08-06T14:52:13.001Z",
     statPriority = {
         wowhead = "Spellslinger: Intellect > Mastery > Haste > Critical Strike > Versatility | Sunfury: Intellect > Mastery > Haste > Critical Strike > Versatility",
         archon = "Intellect > Mastery > Haste > Crit > Vers",
@@ -1564,7 +1564,7 @@ DragonSkillData["MAGE"][62] = {
 }
 
 DragonSkillData["MAGE"][63] = {
-    scrapedAt = "2026-08-06T13:53:53.259Z",
+    scrapedAt = "2026-08-06T14:52:14.578Z",
     statPriority = {
         wowhead = "Sunfury: Intellect > Haste > Mastery > Versatility > Critical Strike | Frostfire: Intellect > Haste > Mastery > Versatility > Critical Strike",
         archon = "Intellect > Haste > Mastery > Crit > Vers",
@@ -1654,7 +1654,7 @@ DragonSkillData["MAGE"][63] = {
 }
 
 DragonSkillData["MAGE"][64] = {
-    scrapedAt = "2026-08-06T13:53:54.351Z",
+    scrapedAt = "2026-08-06T14:52:15.008Z",
     statPriority = {
         wowhead = "Frostfire: Intellect > Mastery > Critical Strike > Haste > Versatility | Spellslinger: Intellect > Mastery > Critical Strike > Haste > Versatility",
         archon = "Intellect > Crit > Mastery > Haste > Vers",
@@ -1745,7 +1745,7 @@ DragonSkillData["MAGE"][64] = {
 
 DragonSkillData["MONK"] = DragonSkillData["MONK"] or {}
 DragonSkillData["MONK"][268] = {
-    scrapedAt = "2026-08-06T13:53:55.161Z",
+    scrapedAt = "2026-08-06T14:52:15.793Z",
     statPriority = {
         wowhead = "Shado-Pan: Item Level / Agility / Armor / Stamina > Versatility = Critical Strike = Mastery > Haste | Master of Harmony: Item Level / Agility / Armor / Stamina > Versatility = Critical Strike = Mastery > Haste | Shado-Pan: Item Level / Agility > Critical Strike > Mastery > Versatility > Haste | Master of Harmony: Item Level / Agility > Critical Strike > Mastery > Versatility > Haste",
         archon = "Agility > Crit > Vers > Mastery > Haste",
@@ -1835,7 +1835,7 @@ DragonSkillData["MONK"][268] = {
 }
 
 DragonSkillData["MONK"][269] = {
-    scrapedAt = "2026-08-06T13:53:56.285Z",
+    scrapedAt = "2026-08-06T14:52:16.491Z",
     statPriority = {
         wowhead = "Shado-pan: Agility > Haste > Critical Strike > Mastery > Versatility | Conduit of the Celestials: Agility > Haste > Mastery > Critical Strike > Versatility",
         archon = "Agility > Haste > Crit > Mastery > Vers",
@@ -1937,7 +1937,7 @@ DragonSkillData["MONK"][269] = {
 }
 
 DragonSkillData["MONK"][270] = {
-    scrapedAt = "2026-08-06T13:53:56.761Z",
+    scrapedAt = "2026-08-06T14:52:17.671Z",
     statPriority = {
         wowhead = "Raid: Intellect > Haste > Critical Strike > Versatility > Mastery | Mythic+: Intellect > Haste > Critical Strike > Versatility > Mastery",
         archon = "Intellect > Haste > Crit > Vers > Mastery",
@@ -2028,7 +2028,7 @@ DragonSkillData["MONK"][270] = {
 
 DragonSkillData["PALADIN"] = DragonSkillData["PALADIN"] or {}
 DragonSkillData["PALADIN"][65] = {
-    scrapedAt = "2026-08-06T13:53:57.531Z",
+    scrapedAt = "2026-08-06T14:52:18.106Z",
     statPriority = {
         wowhead = "Herald of the Sun: Intellect > Mastery > Haste = Crit > Versatility | Lightsmith: Intellect > Mastery > Haste = Crit > Versatility",
         archon = "Intellect > Haste > Mastery > Crit > Vers",
@@ -2130,7 +2130,7 @@ DragonSkillData["PALADIN"][65] = {
 }
 
 DragonSkillData["PALADIN"][66] = {
-    scrapedAt = "2026-08-06T13:53:58.019Z",
+    scrapedAt = "2026-08-06T14:52:18.885Z",
     statPriority = {
         wowhead = "Survivability: Strength > Haste > Versatility > Mastery > Critical Strike | DPS: Strength > Haste > Versatility > Critical Strike > Mastery",
         archon = "Strength > Haste > Crit > Mastery > Vers",
@@ -2220,7 +2220,7 @@ DragonSkillData["PALADIN"][66] = {
 }
 
 DragonSkillData["PALADIN"][70] = {
-    scrapedAt = "2026-08-06T13:53:59.091Z",
+    scrapedAt = "2026-08-06T14:52:19.716Z",
     statPriority = {
         wowhead = "Templar: Strength > Mastery > Critical Strike > Haste > Versatility | Herald of the Sun: Strength > Mastery > Critical Strike > Haste > Versatility",
         archon = "Strength > Mastery > Crit > Haste > Vers",
@@ -2311,7 +2311,7 @@ DragonSkillData["PALADIN"][70] = {
 
 DragonSkillData["PRIEST"] = DragonSkillData["PRIEST"] or {}
 DragonSkillData["PRIEST"][256] = {
-    scrapedAt = "2026-08-06T13:53:59.779Z",
+    scrapedAt = "2026-08-06T14:52:21.087Z",
     statPriority = {
         wowhead = "Oracle: Intellect > Haste > Critical Strike > Mastery > Versatility | Voidweaver: Intellect > Haste > Critical Strike > Mastery > Versatility | Oracle: Intellect > Haste > Critical Strike > Versatility > Mastery | Voidweaver: Intellect > Haste > Critical Strike > Versatility > Mastery",
         archon = "Intellect > Haste > Crit > Mastery > Vers",
@@ -2395,7 +2395,7 @@ DragonSkillData["PRIEST"][256] = {
 }
 
 DragonSkillData["PRIEST"][257] = {
-    scrapedAt = "2026-08-06T13:54:00.858Z",
+    scrapedAt = "2026-08-06T14:52:22.255Z",
     statPriority = {
         wowhead = "Archon: Intellect > Crit > Versatility = Mastery > Haste | Oracle: Intellect > Crit > Versatility = Mastery > Haste | Archon: Intellect > Versatility > Critical Strike > Haste > Mastery | Oracle: Intellect > Versatility > Critical Strike > Haste > Mastery",
         archon = "Intellect > Crit > Haste > Mastery > Vers",
@@ -2479,7 +2479,7 @@ DragonSkillData["PRIEST"][257] = {
 }
 
 DragonSkillData["PRIEST"][258] = {
-    scrapedAt = "2026-08-06T13:54:01.325Z",
+    scrapedAt = "2026-08-06T14:52:23.228Z",
     statPriority = {
         wowhead = "Archon: Intellect > Haste > Mastery > Critical Strike > Versatility | Voidweaver: Intellect > Haste > Mastery > Critical Strike > Versatility",
         archon = "Intellect > Haste > Mastery > Crit > Vers",
@@ -2582,7 +2582,7 @@ DragonSkillData["PRIEST"][258] = {
 
 DragonSkillData["ROGUE"] = DragonSkillData["ROGUE"] or {}
 DragonSkillData["ROGUE"][259] = {
-    scrapedAt = "2026-08-06T13:54:02.319Z",
+    scrapedAt = "2026-08-06T14:52:24.625Z",
     statPriority = {
         wowhead = "Fatebound: Agility > Critical Strike > Haste > Mastery > Versatility | Deathstalker: Agility > Critical Strike > Haste > Mastery > Versatility",
         archon = "Agility > Crit > Haste > Mastery > Vers",
@@ -2684,7 +2684,7 @@ DragonSkillData["ROGUE"][259] = {
 }
 
 DragonSkillData["ROGUE"][260] = {
-    scrapedAt = "2026-08-06T13:54:03.019Z",
+    scrapedAt = "2026-08-06T14:52:25.629Z",
     statPriority = {
         wowhead = "Trickster: Agility > Haste > Critical Strike > Versatility > Mastery | Fatebound: Agility > Haste > Critical Strike > Versatility > Mastery",
         archon = "Agility > Crit > Haste > Mastery > Vers",
@@ -2774,7 +2774,7 @@ DragonSkillData["ROGUE"][260] = {
 }
 
 DragonSkillData["ROGUE"][261] = {
-    scrapedAt = "2026-08-06T13:54:03.891Z",
+    scrapedAt = "2026-08-06T14:52:26.531Z",
     statPriority = {
         wowhead = "Deathstalker: Agility > Mastery > Haste (~1100 Haste) > Critical Strike > Versatility | Trickster: Agility > Mastery > Haste (~700 Haste) > Critical Strike > Versatility | Deathstalker: Agility > Mastery > Haste (~700 Haste) > Critical Strike > Versatility | Trickster: Agility > Mastery > Haste (~700 Haste) > Critical Strike > Versatility",
         archon = "Agility > Mastery > Crit > Haste > Vers",
@@ -2865,7 +2865,7 @@ DragonSkillData["ROGUE"][261] = {
 
 DragonSkillData["SHAMAN"] = DragonSkillData["SHAMAN"] or {}
 DragonSkillData["SHAMAN"][262] = {
-    scrapedAt = "2026-08-06T13:54:04.552Z",
+    scrapedAt = "2026-08-06T14:52:26.984Z",
     statPriority = {
         wowhead = "Farseer: Mastery to 1200 rating > Haste/Crit > Versatility > Intellect | Stormbringer: Mastery to 1200 rating > Haste/Crit > Versatility > Intellect",
         archon = "Intellect > Mastery > Crit > Haste > Vers",
@@ -2955,7 +2955,7 @@ DragonSkillData["SHAMAN"][262] = {
 }
 
 DragonSkillData["SHAMAN"][263] = {
-    scrapedAt = "2026-08-06T13:54:06.065Z",
+    scrapedAt = "2026-08-06T14:52:28.307Z",
     statPriority = {
         wowhead = "Stormbringer: Agility > Haste > Mastery = Critical Strike > Versatility | Totemic: Agility > Mastery > Haste > Critical Strike > Versatility",
         archon = "Agility > Mastery > Haste > Crit > Vers",
@@ -3045,7 +3045,7 @@ DragonSkillData["SHAMAN"][263] = {
 }
 
 DragonSkillData["SHAMAN"][264] = {
-    scrapedAt = "2026-08-06T13:54:06.516Z",
+    scrapedAt = "2026-08-06T14:52:29.538Z",
     statPriority = {
         wowhead = "Farseer: Intellect > Critical Strike > Haste > Versatility = Mastery | Totemic: Intellect > Critical Strike > Haste > Versatility = Mastery",
         archon = "Intellect > Crit > Haste > Vers > Mastery",
@@ -3136,7 +3136,7 @@ DragonSkillData["SHAMAN"][264] = {
 
 DragonSkillData["WARLOCK"] = DragonSkillData["WARLOCK"] or {}
 DragonSkillData["WARLOCK"][265] = {
-    scrapedAt = "2026-08-06T13:54:07.361Z",
+    scrapedAt = "2026-08-06T14:52:30.497Z",
     statPriority = {
         wowhead = "Hellcaller: Intellect > Haste > Critical Strike > Versatility > Mastery | Soul Harvester: Intellect > Haste > Critical Strike > Versatility > Mastery",
         archon = "Intellect > Crit > Haste > Mastery > Vers",
@@ -3238,7 +3238,7 @@ DragonSkillData["WARLOCK"][265] = {
 }
 
 DragonSkillData["WARLOCK"][266] = {
-    scrapedAt = "2026-08-06T13:54:07.870Z",
+    scrapedAt = "2026-08-06T14:52:30.942Z",
     statPriority = {
         wowhead = "Diabolist: Intellect > Haste=Critical Strike > Mastery > Versatility | Soul Harvester: Intellect > Haste=Critical Strike > Mastery > Versatility",
         archon = "Intellect > Crit > Haste > Mastery > Vers",
@@ -3340,7 +3340,7 @@ DragonSkillData["WARLOCK"][266] = {
 }
 
 DragonSkillData["WARLOCK"][267] = {
-    scrapedAt = "2026-08-06T13:54:08.655Z",
+    scrapedAt = "2026-08-06T14:52:31.627Z",
     statPriority = {
         wowhead = "Diabolist: Intellect > Haste > Mastery>=Critical Strike > Versatility | Hellcaller: Intellect > Haste > Mastery>=Critical Strike > Versatility",
         archon = "Intellect > Haste > Crit > Mastery > Vers",
@@ -3455,7 +3455,7 @@ DragonSkillData["WARLOCK"][267] = {
 
 DragonSkillData["WARRIOR"] = DragonSkillData["WARRIOR"] or {}
 DragonSkillData["WARRIOR"][71] = {
-    scrapedAt = "2026-08-06T13:54:09.084Z",
+    scrapedAt = "2026-08-06T14:52:32.466Z",
     statPriority = {
         wowhead = "Colossus: Strength > Critical Strike > Haste > Mastery > Versatility | Slayer: Strength > Critical Strike > Haste > Mastery > Versatility",
         archon = "Strength > Crit > Haste > Mastery > Vers",
@@ -3557,7 +3557,7 @@ DragonSkillData["WARRIOR"][71] = {
 }
 
 DragonSkillData["WARRIOR"][72] = {
-    scrapedAt = "2026-08-06T13:54:09.810Z",
+    scrapedAt = "2026-08-06T14:52:33.219Z",
     statPriority = {
         wowhead = "Mountain Thane: Strength > Haste > Mastery > Critical Strike > Versatility | Slayer: Strength > Haste > Mastery > Critical Strike > Versatility",
         archon = "Strength > Haste > Mastery > Crit > Vers",
@@ -3659,7 +3659,7 @@ DragonSkillData["WARRIOR"][72] = {
 }
 
 DragonSkillData["WARRIOR"][73] = {
-    scrapedAt = "2026-08-06T13:54:10.355Z",
+    scrapedAt = "2026-08-06T14:52:34.555Z",
     statPriority = {
         wowhead = "Survivability: Strength > Haste > Critical Strike > Versatility > Mastery | DPS: Strength > Haste > Critical Strike > Versatility > Mastery",
         archon = "Strength > Haste > Crit > Mastery > Vers",
