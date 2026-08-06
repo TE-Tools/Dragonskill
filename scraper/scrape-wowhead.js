@@ -97,7 +97,7 @@ function extractTalentBuilds(markup) {
  * Formatierungs-Details variieren leicht je Spec (mit/ohne [hr]-Trenner,
  * [li]Stat[/li] vs. [li][b]Stat[/b][/li]) - Regex ist entsprechend tolerant.
  */
-function extractStatPriority(markup)
+function extractStatPriority(markup) {
   const blockRe =
     /\[color=[^\]]+\]([^\[]+)\[\/color\] (?:Stat |Defensive |Offensive )?Priority\[\/b\]\[\/center\][\s\S]{0,300}?\[(?:ol|ul)\]([\s\S]{0,800}?)\[\/(?:ol|ul)\]/g;
   const sections = [];
@@ -162,10 +162,10 @@ function extractConsumables(markup) {
 }
 
 async function main() {
-  const { talentsUrl, statsUrl, out } = parseArgs();
-  if (!talentsUrl && !statsUrl) {
+  const { talentsUrl, statsUrl, rotationUrl, out } = parseArgs();
+  if (!talentsUrl && !statsUrl && !rotationUrl) {
     console.error(
-      'Benutzung: node scrape-wowhead.js --talentsUrl "<url>" --statsUrl "<url>" --out "<output.json>"'
+      'Benutzung: node scrape-wowhead.js --talentsUrl "<url>" --statsUrl "<url>" --rotationUrl "<url>" --out "<output.json>"'
     );
     process.exit(1);
   }
@@ -187,6 +187,7 @@ async function main() {
   let newStatPrio = null;
   let bisGear = [];
   let consumables = { enchants: [], gems: [], consumables: [] };
+  let crafting = { embellishments: [], items: [] };
 
   if (statsUrl) {
     console.log(`Lade ${statsUrl} ...`);
@@ -194,6 +195,36 @@ async function main() {
     newStatPrio = extractStatPriority(markup);
     bisGear = extractBiSGear(markup);
     consumables = extractConsumables(markup);
+
+    // Extrahiere Crafting/Embellishments
+    const embRe = /\[b\]Best Embellishments\[\/b\][\s\S]{0,500}?\[(?:ol|ul)\]([\s\S]{0,1000}?)\[\/(?:ol|ul)\]/gi;
+    let m = embRe.exec(markup);
+    if (m) {
+      crafting.embellishments = (m[1].match(/\[li\][\s\S]*?\[\/li\]/g) || [])
+        .map(li => li.replace(/\[li\]|\[\/li\]|\[b\]|\[\/b\]|\[url=[^\]]+\]|\[\/url\]/g, "").trim())
+        .filter(Boolean);
+    }
+  }
+
+  let rotation = [];
+  if (rotationUrl) {
+    console.log(`Lade ${rotationUrl} ...`);
+    const markup = unescapeWowheadMarkup(await fetchPage(rotationUrl));
+    const rotRe = /\[b\]Rotation Priority\[\/b\][\s\S]{0,500}?\[ol\]([\s\S]{0,2000}?)\[\/ol\]/gi;
+    let m = rotRe.exec(markup);
+    if (m) {
+      rotation = (m[1].match(/\[li\][\s\S]*?\[\/li\]/g) || [])
+        .map(li => {
+          const text = li.replace(/\[li\]|\[\/li\]|\[b\]|\[\/b\]/g, "").trim();
+          // Versuche Spell-ID/Icon zu finden falls im Markup (oft als [spell=123])
+          const spellMatch = li.match(/\[spell=(\d+)\]/);
+          return {
+            text: text.replace(/\[spell=\d+\]|\[url=[^\]]+\]|\[\/url\]/g, "").trim(),
+            spellId: spellMatch ? spellMatch[1] : null
+          };
+        })
+        .filter(r => r.text.length > 0);
+    }
   }
 
   const outPath = path.resolve(out);
@@ -201,7 +232,6 @@ async function main() {
     ? JSON.parse(fs.readFileSync(outPath, "utf-8"))
     : { talentBuilds: [], statPriority: null };
 
-  // Alte wowhead-Builds ersetzen, andere Provider (z.B. archon) behalten
   const keptBuilds = (existing.talentBuilds || []).filter(
     (b) => b.provider !== "wowhead"
   );
@@ -210,10 +240,7 @@ async function main() {
     scrapedAt: new Date().toISOString(),
     statPriority: {
       ...(existing.statPriority || {}),
-      wowhead:
-        newStatPrio ||
-        (existing.statPriority && existing.statPriority.wowhead) ||
-        null
+      wowhead: newStatPrio || (existing.statPriority && existing.statPriority.wowhead) || null
     },
     bisGear: {
       ...(existing.bisGear || {}),
@@ -230,6 +257,14 @@ async function main() {
     consumables: {
       ...(existing.consumables || {}),
       wowhead: consumables.consumables.length > 0 ? consumables.consumables : (existing.consumables && existing.consumables.wowhead) || []
+    },
+    crafting: {
+      ...(existing.crafting || {}),
+      wowhead: crafting.embellishments.length > 0 ? crafting : (existing.crafting && existing.crafting.wowhead) || { embellishments: [], items: [] }
+    },
+    rotation: {
+      ...(existing.rotation || {}),
+      wowhead: rotation.length > 0 ? rotation : (existing.rotation && existing.rotation.wowhead) || []
     },
     talentBuilds: talentsUrl ? [...keptBuilds, ...newTalents] : keptBuilds
   };

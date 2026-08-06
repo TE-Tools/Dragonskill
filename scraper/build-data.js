@@ -97,6 +97,41 @@ function buildLuaTable(entries) {
       }
       lua += `    },\n`;
 
+      // Crafting
+      lua += `    crafting = {\n`;
+      for (const [provider, cData] of Object.entries(data.crafting || {})) {
+        lua += `        ${provider} = {\n`;
+        lua += `            embellishments = {\n`;
+        for (const val of cData.embellishments || []) {
+          lua += `                ${luaEscape(val)},\n`;
+        }
+        lua += `            },\n`;
+        lua += `        },\n`;
+      }
+      lua += `    },\n`;
+
+      // Rotation
+      lua += `    rotation = {\n`;
+      for (const [provider, list] of Object.entries(data.rotation || {})) {
+        lua += `        ${provider} = {\n`;
+        for (const entry of list || []) {
+          lua += `            { text = ${luaEscape(entry.text)}, spellId = ${luaEscape(entry.spellId)} },\n`;
+        }
+        lua += `        },\n`;
+      }
+      lua += `    },\n`;
+
+      // Trinkets
+      lua += `    trinkets = {\n`;
+      for (const [provider, list] of Object.entries(data.trinkets || {})) {
+        lua += `        ${provider} = {\n`;
+        for (const t of list || []) {
+          lua += `            { name = ${luaEscape(t.name)}, rank = ${luaEscape(t.rank)}, score = ${luaEscape(t.score)}, itemId = ${luaEscape(t.itemId)} },\n`;
+        }
+        lua += `        },\n`;
+      }
+      lua += `    },\n`;
+
       // Talent Builds
       lua += `    talentBuilds = {\n`;
       for (const build of data.talentBuilds || []) {

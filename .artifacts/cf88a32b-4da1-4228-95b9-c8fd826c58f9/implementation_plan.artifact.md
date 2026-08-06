@@ -1,63 +1,64 @@
-# Implementation Plan - Dragon Skill Expansion (v0.3)
+# Implementation Plan - Dragon Skill Ultimate Update (v0.4)
 
-Dieses Projekt erweitert das Dragon Skill Addon um zusätzliche Guides (Gear, Enchants, Gems, Consumables), verfeinert den Talent-Diff, implementiert einen Stat-Abgleich und repariert das korrupte UI-Modul.
+Dieses Update verwandelt Dragon Skill in ein vollwertiges Guide-Zentrum, indem es Trinket-Rankings, Crafting-Tipps, Rotations-Prioritäten und Tooltip-Integration hinzufügt.
 
 ## User Review Required
 
-> [!IMPORTANT]
-> **Detaillierter Talent-Diff**: Statt nur einer Prozentzahl werden wir `C_ClassTalents.GetImportConfigSlotMap` nutzen, um genau anzuzeigen, welche Talente abweichen (Soll vs. Ist). Das UI wird dies in einer Liste oder Gegenüberstellung darstellen.
+> [!CAUTION]
+> **UI-Fehlerbehebung**: Der gemeldete Fehler `attempt to index field 'TitleText' (a nil value)` wird sofort behoben, indem der Zugriff auf die Titel-Container an die aktuelle Retail-API angepasst wird.
 
 > [!IMPORTANT]
-> **Stat-Abgleich**: Wir werden versuchen, von Archon.gg die durchschnittlichen Stat-Prozentwerte (z.B. "Haste 32%") zu scrapen. Im Addon werden diese neben den aktuellen Spielerwerten (aus `GetCombatRatingBonus` etc.) angezeigt, um einen direkten Vergleich zu ermöglichen.
+> **Tooltip-Integration**: Wir fügen einen "Dragon Skill"-Hinweis zu Item-Tooltips hinzu. Wenn ein Item in der BiS-Liste des aktuellen Guides steht, wird dies direkt am Gegenstand angezeigt.
 
 > [!NOTE]
-> **Import-Workflow**: Beim Speichern einer Skillung wird der Name automatisch um Provider (Wowhead/Archon), Build-Label und Zeitstempel ergänzt, um die Historie besser nachvollziehbar zu machen.
+> **Rotation**: Dies ist eine statische Prioritätenliste (Text + Icons), kein aktiver Rotations-Helfer (kein "Glow" auf Buttons), um innerhalb der Blizzard-Richtlinien zu bleiben.
 
 ## Proposed Changes
 
-### Core & Data Configuration
-
-#### [MODIFY] [spec-list.json](file:///C:/Users/thoma/StudioProjects/Dragonskill/scraper/spec-list.json)
-- Korrektur der Spec-ID für "Devourer" Demon Hunter auf `1480`.
-- Entfernen der Platzhalter-Notizen.
-
----
-
-### Scraper (Node.js)
-
-#### [MODIFY] [scrape-wowhead.js](file:///C:/Users/thoma/StudioProjects/Dragonskill/scraper/scrape-wowhead.js)
-- Erweiterung um `extractBiSGear`, `extractEnchantsAndGems` und `extractConsumables`.
-
-#### [MODIFY] [scrape-archon.js](file:///C:/Users/thoma/StudioProjects/Dragonskill/scraper/scrape-archon.js)
-- Erweiterung um das Scraping von **durchschnittlichen Stat-Prozentwerten** aus dem `__NEXT_DATA__` Blob (falls dort vorhanden) oder per Selektor.
-
-#### [MODIFY] [build-data.js](file:///C:/Users/thoma/StudioProjects/Dragonskill/scraper/build-data.js)
-- Lua-Konverter anpassen für neue Felder: `bisGear`, `enchants`, `gems`, `consumables` und `statAverages` (Archon).
-
----
-
-### Addon (Lua)
+### UI & Core Fixes
 
 #### [MODIFY] [UI.lua](file:///C:/Users/thoma/StudioProjects/Dragonskill/addon/Modules/TalentCompare/UI.lua)
-- **Kompletter Neubau**:
-    - Hauptfenster mit Tabs: **Talente**, **Stats**, **Gear**, **Enchants**, **Consumables**.
-    - **Talent-Tab**: Zeigt den %-Vergleich UND eine Liste der abweichenden Talente (Name + Rang) durch Nutzung von `C_ClassTalents.GetImportConfigSlotMap`.
-    - **Stats-Tab**: Gegenüberstellung Guide-Priorität vs. Guide-Durchschnittswerte vs. Aktuelle Spielerwerte.
-    - Slash-Commands `/ds` / `/dragonskill`.
+- Behebung des `TitleText`-Fehlers.
+- Erweiterung des Tab-Systems auf 8 Tabs: **Talente, Stats, Gear, Trinkets, Enchants, Consumables, Crafting, Rotation**.
+- Icons zu den Listen hinzufügen (Verwendung von `GetItemIcon` oder Spell-Icons).
 
-#### [MODIFY] [Database.lua](file:///C:/Users/thoma/StudioProjects/Dragonskill/addon/Core/Database.lua)
-- `CreateSkilling` anpassen, um Metadaten (Provider, Timestamp) in den Standardnamen zu integrieren.
+---
 
-#### [NEW] [Gear.lua](file:///C:/Users/thoma/StudioProjects/Dragonskill/addon/Modules/Gear/Gear.lua)
-#### [NEW] [Enchants.lua](file:///C:/Users/thoma/StudioProjects/Dragonskill/addon/Modules/Enchants/Enchants.lua)
+### Scraper Enhancements (Node.js)
+
+#### [MODIFY] [scrape-archon.js](file:///C:/Users/thoma/StudioProjects/Dragonskill/scraper/scrape-archon.js)
+- Extraktion der **Trinket Tier List** aus den `initialData` des `__NEXT_DATA__` Blobs.
+
+#### [MODIFY] [scrape-wowhead.js](file:///C:/Users/thoma/StudioProjects/Dragonskill/scraper/scrape-wowhead.js)
+- Neue Parser für **Rotation Priority** (Suche nach "Rotation" oder "Priority" Sektionen).
+- Neue Parser für **Crafting & Embellishments**.
+
+#### [MODIFY] [build-data.js](file:///C:/Users/thoma/StudioProjects/Dragonskill/scraper/build-data.js)
+- Export der neuen Felder (`trinkets`, `crafting`, `rotation`) in die `GuideData.lua`.
+
+---
+
+### Addon Modules
+
+#### [NEW] [Trinkets.lua](file:///C:/Users/thoma/StudioProjects/Dragonskill/addon/Modules/Trinkets/Trinkets.lua)
+- Modul zur Anzeige der Trinket-Rangliste (S-Tier bis D-Tier).
+
+#### [NEW] [Rotation.lua](file:///C:/Users/thoma/StudioProjects/Dragonskill/addon/Modules/Rotation/Rotation.lua)
+- Anzeige der Fähigkeiten-Priorität mit Icons.
+
+#### [NEW] [Crafting.lua](file:///C:/Users/thoma/StudioProjects/Dragonskill/addon/Modules/Crafting/Crafting.lua)
+- Tipps für hergestellte Gegenstände und Verzierungen.
+
+#### [NEW] [Tooltips.lua](file:///C:/Users/thoma/StudioProjects/Dragonskill/addon/Modules/Tooltips/Tooltips.lua)
+- Integration in `TooltipDataProcessor`, um BiS-Status auf Items anzuzeigen.
 
 ## Verification Plan
 
 ### Automated Tests
-- `cd scraper && node scrape-all.js` (Testlauf für einige Specs).
-- `node build-data.js` -> Validierung der `GuideData.lua`.
+- `cd scraper && node scrape-all.js` zur Validierung der neuen Felder.
+- `node build-data.js` zur Syntax-Prüfung der Lua-Daten.
 
 ### Manual Verification
-- In-Game: `/ds` -> Prüfen der Tabs.
-- Talent-Vergleich: Eine abweichende Skillung wählen und prüfen, ob die konkreten Talente aufgelistet werden.
-- Stat-Vergleich: Prüfen, ob die eigenen %-Werte (Haste/Crit/etc.) korrekt neben den Guide-Werten erscheinen.
+- **Fehlerprüfung**: Nach dem Login prüfen, ob das Hauptfenster ohne Fehler erscheint.
+- **Tooltip Check**: Über ein bekanntes BiS-Item (z.B. aus der Vault) fahren und den Hinweis prüfen.
+- **Tab-Navigation**: Alle 8 Tabs auf Vollständigkeit und Icons prüfen.

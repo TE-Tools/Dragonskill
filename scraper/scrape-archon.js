@@ -124,6 +124,32 @@ function extractStatAverages(page) {
   return Object.keys(averages).length > 0 ? averages : null;
 }
 
+/**
+ * Extrahiert Trinket-Tier-Listen aus Archon.
+ */
+function extractTrinkets(page) {
+  const trinkets = [];
+  const sections = (page && page.sections) || [];
+  for (const section of sections) {
+    if (section.component !== "BuildsTrinketSection" && section.component !== "BuildsItemSection") continue;
+
+    // In BuildsItemSection filtern wir nach itemType "Trinket"
+    if (section.component === "BuildsItemSection" && section.props && section.props.itemType !== "Trinket") continue;
+
+    const items = (section.props && section.props.items) || [];
+    for (const item of items) {
+      trinkets.push({
+        name: item.name,
+        rank: item.rank || "Unknown",
+        score: item.score || null,
+        icon: item.icon || null,
+        itemId: item.id || null
+      });
+    }
+  }
+  return trinkets;
+}
+
 async function main() {
   const { url, out } = parseArgs();
   if (!url || !out) {
@@ -153,6 +179,7 @@ async function main() {
 
   const statPrio = extractStatPriority(page);
   const statAverages = extractStatAverages(page);
+  const trinkets = extractTrinkets(page);
 
   if (builds.length === 0) {
     console.warn(
@@ -161,10 +188,9 @@ async function main() {
   } else {
     console.log(`✅ ${builds.length} Talent-Build(s) von Archon gefunden.`);
   }
-  if (!statPrio) {
-    console.warn(
-      "⚠️  Keine Stat-Priorität gefunden. Archon-Seitenstruktur hat sich evtl. geändert - Parser prüfen (BuildsStatPrioritySection)."
-    );
+
+  if (trinkets.length > 0) {
+    console.log(`✅ ${trinkets.length} Trinkets von Archon gefunden.`);
   }
 
   const outPath = path.resolve(out);
@@ -183,6 +209,10 @@ async function main() {
     statAverages: {
       ...(existing.statAverages || {}),
       archon: statAverages || (existing.statAverages && existing.statAverages.archon) || null
+    },
+    trinkets: {
+      ...(existing.trinkets || {}),
+      archon: trinkets.length > 0 ? trinkets : (existing.trinkets && existing.trinkets.archon) || []
     },
     talentBuilds: [...keptBuilds, ...builds]
   };
