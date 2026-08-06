@@ -97,9 +97,7 @@ function extractTalentBuilds(markup) {
  * Formatierungs-Details variieren leicht je Spec (mit/ohne [hr]-Trenner,
  * [li]Stat[/li] vs. [li][b]Stat[/b][/li]) - Regex ist entsprechend tolerant.
  */
-function extractStatPriority(markup) {
-  // Überschrift ist meist "... Stat Priority", bei Tank-Specs teils getrennt
-  // in "... Defensive Priority" / "... Offensive Priority".
+function extractStatPriority(markup)
   const blockRe =
     /\[color=[^\]]+\]([^\[]+)\[\/color\] (?:Stat |Defensive |Offensive )?Priority\[\/b\]\[\/center\][\s\S]{0,300}?\[(?:ol|ul)\]([\s\S]{0,800}?)\[\/(?:ol|ul)\]/g;
   const sections = [];
@@ -115,6 +113,52 @@ function extractStatPriority(markup) {
     }
   }
   return sections.length > 0 ? sections.join(" | ") : null;
+}
+
+/**
+ * Extrahiert Best-in-Slot Gear aus Tabellen.
+ */
+function extractBiSGear(markup) {
+  const gear = [];
+  // Wowhead nutzt oft [table] für BiS Listen.
+  const tableRe = /\[table\]([\s\S]*?)\[\/table\]/g;
+  let m;
+  while ((m = tableRe.exec(markup))) {
+    const content = m[1];
+    if (content.toLowerCase().includes("slot") || content.toLowerCase().includes("item")) {
+      const rows = content.split("[tr]").filter(r => r.includes("[td]"));
+      rows.forEach(row => {
+        const cols = row.split("[td]").map(c => c.replace(/\[\/td\]|\[\/tr\]|\[b\]|\[\/b\]|\[url=[^\]]+\]|\[\/url\]/g, "").trim()).filter(Boolean);
+        if (cols.length >= 2) {
+          gear.push({ slot: cols[0], item: cols[1], source: cols[2] || "Unknown" });
+        }
+      });
+    }
+  }
+  return gear;
+}
+
+/**
+ * Extrahiert Enchants, Gems und Consumables.
+ */
+function extractConsumables(markup) {
+  const data = { enchants: [], gems: [], consumables: [] };
+
+  // Suche nach Abschnitten wie "Best Enchants", "Best Gems", "Best Consumables"
+  const sectionRe = /\[b\]([^\]]+(?:Enchants|Gems|Consumables|Potions|Flasks|Food))\[\/b\][\s\S]{0,500}?\[(?:ol|ul)\]([\s\S]{0,1000}?)\[\/(?:ol|ul)\]/gi;
+  let m;
+  while ((m = sectionRe.exec(markup))) {
+    const title = m[1].toLowerCase();
+    const body = m[2];
+    const items = (body.match(/\[li\][\s\S]*?\[\/li\]/g) || [])
+      .map(li => li.replace(/\[li\]|\[\/li\]|\[b\]|\[\/b\]|\[url=[^\]]+\]|\[\/url\]/g, "").trim())
+      .filter(Boolean);
+
+    if (title.includes("enchant")) data.enchants.push(...items);
+    else if (title.includes("gem")) data.gems.push(...items);
+    else data.consumables.push(...items);
+  }
+  return data;
 }
 
 async function main() {
@@ -141,10 +185,15 @@ async function main() {
   }
 
   let newStatPrio = null;
+  let bisGear = [];
+  let consumables = { enchants: [], gems: [], consumables: [] };
+
   if (statsUrl) {
     console.log(`Lade ${statsUrl} ...`);
     const markup = unescapeWowheadMarkup(await fetchPage(statsUrl));
     newStatPrio = extractStatPriority(markup);
+    bisGear = extractBiSGear(markup);
+    consumables = extractConsumables(markup);
   }
 
   const outPath = path.resolve(out);
@@ -165,6 +214,22 @@ async function main() {
         newStatPrio ||
         (existing.statPriority && existing.statPriority.wowhead) ||
         null
+    },
+    bisGear: {
+      ...(existing.bisGear || {}),
+      wowhead: bisGear.length > 0 ? bisGear : (existing.bisGear && existing.bisGear.wowhead) || []
+    },
+    enchants: {
+      ...(existing.enchants || {}),
+      wowhead: consumables.enchants.length > 0 ? consumables.enchants : (existing.enchants && existing.enchants.wowhead) || []
+    },
+    gems: {
+      ...(existing.gems || {}),
+      wowhead: consumables.gems.length > 0 ? consumables.gems : (existing.gems && existing.gems.wowhead) || []
+    },
+    consumables: {
+      ...(existing.consumables || {}),
+      wowhead: consumables.consumables.length > 0 ? consumables.consumables : (existing.consumables && existing.consumables.wowhead) || []
     },
     talentBuilds: talentsUrl ? [...keptBuilds, ...newTalents] : keptBuilds
   };

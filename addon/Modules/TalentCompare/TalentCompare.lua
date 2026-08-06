@@ -93,4 +93,45 @@ function TalentCompare:CompareWithGuide(class, spec, buildLabel)
     return result
 end
 
+--- Nutzt die Blizzard-API um detaillierte Unterschiede zu finden.
+function TalentCompare:GetDetailedDiff(importString)
+    if not C_ClassTalents.GetImportConfigSlotMap then return nil end
+    local importSlotMap = C_ClassTalents.GetImportConfigSlotMap(importString)
+    if not importSlotMap then return nil end
+
+    local configID = C_ClassTalents.GetActiveConfigID()
+    if not configID then return nil end
+
+    local configInfo = C_Traits.GetConfigInfo(configID)
+    local treeID = configInfo.treeIDs[1]
+    local nodes = C_Traits.GetTreeNodes(treeID)
+
+    local diffs = {}
+    for _, nodeID in ipairs(nodes) do
+        local nodeInfo = C_Traits.GetNodeInfo(configID, nodeID)
+        local importedEntry = importSlotMap[nodeID]
+
+        local currentRank = nodeInfo.currentRank or 0
+        local currentEntryID = nodeInfo.activeEntry and nodeInfo.activeEntry.entryID or 0
+
+        local importedRank = importedEntry and importedEntry.rank or 0
+        local importedEntryID = importedEntry and importedEntry.entryID or 0
+
+        if currentEntryID ~= importedEntryID or currentRank ~= importedRank then
+            local entryID = (importedEntryID > 0) and importedEntryID or currentEntryID
+            local entryInfo = C_Traits.GetEntryInfo(configID, entryID)
+            local definitionInfo = entryInfo and C_Traits.GetDefinitionInfo(entryInfo.definitionID)
+            local talentName = definitionInfo and (definitionInfo.overrideName or GetSpellInfo(definitionInfo.spellID)) or "Unbekanntes Talent"
+
+            table.insert(diffs, {
+                name = talentName,
+                currentRank = currentRank,
+                importedRank = importedRank,
+                maxRank = nodeInfo.maxRanks
+            })
+        end
+    end
+    return diffs
+end
+
 DragonSkill:RegisterModule("TalentCompare", TalentCompare)

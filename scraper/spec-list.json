@@ -36,9 +36,7 @@
   },
   {
     "classToken": "DEMONHUNTER",
-    "specID": 9999,
-    "specIDVerified": false,
-    "specIDNote": "Devourer ist eine neue Demon-Hunter-Spec (nach Evoker/1473 eingeführt) - Blizzard-Spec-ID unbekannt/nicht auffindbar über Wowhead/Archon-Seiten. 9999 ist ein Platzhalter, bitte in-game per /run print(select(2, GetSpecializationInfo(GetSpecialization()))) auf einem Devourer-DH verifizieren und hier + im Dateinamen data-raw/DEMONHUNTER_9999.json korrigieren.",
+    "specID": 1480,
     "wowheadTalentsUrl": "https://www.wowhead.com/guide/classes/demon-hunter/devourer/talent-builds-pve-dps",
     "wowheadStatsUrl": "https://www.wowhead.com/guide/classes/demon-hunter/devourer/stat-priority-pve-dps",
     "archonUrl": "https://www.archon.gg/wow/builds/devourer/demon-hunter/mythic-plus/overview/10/all-dungeons/this-week"

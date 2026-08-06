@@ -104,6 +104,26 @@ function extractStatPriority(page) {
   return null;
 }
 
+/**
+ * Extrahiert durchschnittliche Stat-Prozentwerte aus Archon.
+ * Archon zeigt oft "Haste 32%", "Crit 18%" etc.
+ */
+function extractStatAverages(page) {
+  const averages = {};
+  const sections = (page && page.sections) || [];
+  for (const section of sections) {
+    if (section.component !== "BuildsStatPrioritySection") continue;
+    const stats = (section.props && section.props.stats) || [];
+    for (const stat of stats) {
+      if (stat.name && stat.averageValue) {
+        // averageValue ist oft ein Dezimalwert oder String
+        averages[stat.name] = stat.averageValue;
+      }
+    }
+  }
+  return Object.keys(averages).length > 0 ? averages : null;
+}
+
 async function main() {
   const { url, out } = parseArgs();
   if (!url || !out) {
@@ -132,6 +152,7 @@ async function main() {
     .map((b) => ({ ...b, provider: "archon" }));
 
   const statPrio = extractStatPriority(page);
+  const statAverages = extractStatAverages(page);
 
   if (builds.length === 0) {
     console.warn(
@@ -158,6 +179,10 @@ async function main() {
     statPriority: {
       ...(existing.statPriority || {}),
       archon: statPrio || (existing.statPriority && existing.statPriority.archon) || null
+    },
+    statAverages: {
+      ...(existing.statAverages || {}),
+      archon: statAverages || (existing.statAverages && existing.statAverages.archon) || null
     },
     talentBuilds: [...keptBuilds, ...builds]
   };

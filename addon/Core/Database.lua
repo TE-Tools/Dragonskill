@@ -46,17 +46,12 @@ function Database:CreateSkilling(name, data)
     return finalName
 end
 
--- Generiert einen autonamen im Format: <Char>-<Spec>-Auto-YYYYMMDD_HHMM
-function Database:GenerateAutoSkillingName()
-    local charName = UnitName("player") or "Unknown"
-    local specIndex = GetSpecialization()
-    local specName = "NoSpec"
-    if specIndex then
-        local _, name = GetSpecializationInfo(specIndex)
-        if name then specName = name end
-    end
-    local ts = date("%Y%m%d_%H%M")
-    return string.format("%s-%s-Auto-%s", charName, specName, ts)
+-- Generiert einen autonamen im Format: <Provider>_<Label>_<YYYY-MM-DD>_<HH:MM>
+function Database:GenerateAutoSkillingName(data)
+    local provider = data and data.provider or "Manual"
+    local label = data and data.label or "Build"
+    local ts = date("%Y-%m-%d %H:%M")
+    return string.format("%s: %s (%s)", provider, label, ts)
 end
 
 DragonSkill = DragonSkill or {}

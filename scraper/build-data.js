@@ -1,14 +1,8 @@
 /**
  * Dragon Skill - JSON zu Lua Konverter
  * ------------------------------------
- * Wandelt einen oder mehrere Scraper-JSON-Outputs in eine einzige Lua-Datei um,
- * die das Addon per TOC lädt (DragonSkillData Tabelle).
- *
- * Benutzung:
- *   node build-data.js --dataDir ../addon/Data/json --out ../addon/Data/GuideData.lua
- *
- * Erwartet JSON-Dateinamen im Format: <CLASS>_<SPECID>.json
- * z.B. WARRIOR_73.json  (73 = Protection Warrior spec ID)
+ * Wandelt einen oder mehrere Scraper-JSON-Outputs in eine einzige Lua-Datei um.
+ * Erweitert um Gear, Enchants, Gems, Consumables und Stat-Durchschnitte.
  */
 
 const fs = require("fs");
@@ -30,7 +24,7 @@ function luaEscape(str) {
 
 function buildLuaTable(entries) {
   let lua = "-- AUTO-GENERATED von build-data.js - nicht manuell bearbeiten\n";
-  lua += "-- Quelle: Wowhead / Archon (siehe sourceUrl je Eintrag)\n\n";
+  lua += "-- Quelle: Wowhead / Archon\n\n";
   lua += "DragonSkillData = DragonSkillData or {}\n\n";
 
   for (const [classToken, specs] of Object.entries(entries)) {
@@ -38,12 +32,72 @@ function buildLuaTable(entries) {
     for (const [specID, data] of Object.entries(specs)) {
       lua += `DragonSkillData["${classToken}"][${specID}] = {\n`;
       lua += `    scrapedAt = ${luaEscape(data.scrapedAt)},\n`;
+
+      // Stat Priority
       lua += `    statPriority = {\n`;
-      const statPrio = data.statPriority || {};
-      for (const [provider, text] of Object.entries(statPrio)) {
+      for (const [provider, text] of Object.entries(data.statPriority || {})) {
         lua += `        ${provider} = ${luaEscape(text)},\n`;
       }
       lua += `    },\n`;
+
+      // Stat Averages
+      lua += `    statAverages = {\n`;
+      for (const [provider, stats] of Object.entries(data.statAverages || {})) {
+        lua += `        ${provider} = {\n`;
+        if (stats) {
+          for (const [sName, sVal] of Object.entries(stats)) {
+            lua += `            [${luaEscape(sName)}] = ${luaEscape(sVal)},\n`;
+          }
+        }
+        lua += `        },\n`;
+      }
+      lua += `    },\n`;
+
+      // BiS Gear
+      lua += `    bisGear = {\n`;
+      for (const [provider, items] of Object.entries(data.bisGear || {})) {
+        lua += `        ${provider} = {\n`;
+        for (const item of items || []) {
+          lua += `            { slot = ${luaEscape(item.slot)}, item = ${luaEscape(item.item)}, source = ${luaEscape(item.source)} },\n`;
+        }
+        lua += `        },\n`;
+      }
+      lua += `    },\n`;
+
+      // Enchants
+      lua += `    enchants = {\n`;
+      for (const [provider, list] of Object.entries(data.enchants || {})) {
+        lua += `        ${provider} = {\n`;
+        for (const val of list || []) {
+          lua += `            ${luaEscape(val)},\n`;
+        }
+        lua += `        },\n`;
+      }
+      lua += `    },\n`;
+
+      // Gems
+      lua += `    gems = {\n`;
+      for (const [provider, list] of Object.entries(data.gems || {})) {
+        lua += `        ${provider} = {\n`;
+        for (const val of list || []) {
+          lua += `            ${luaEscape(val)},\n`;
+        }
+        lua += `        },\n`;
+      }
+      lua += `    },\n`;
+
+      // Consumables
+      lua += `    consumables = {\n`;
+      for (const [provider, list] of Object.entries(data.consumables || {})) {
+        lua += `        ${provider} = {\n`;
+        for (const val of list || []) {
+          lua += `            ${luaEscape(val)},\n`;
+        }
+        lua += `        },\n`;
+      }
+      lua += `    },\n`;
+
+      // Talent Builds
       lua += `    talentBuilds = {\n`;
       for (const build of data.talentBuilds || []) {
         lua += `        {\n`;
@@ -54,6 +108,7 @@ function buildLuaTable(entries) {
         lua += `        },\n`;
       }
       lua += `    },\n`;
+
       lua += `}\n\n`;
     }
   }
@@ -63,38 +118,26 @@ function buildLuaTable(entries) {
 function main() {
   const { dataDir, out } = parseArgs();
   if (!dataDir || !out) {
-    console.error(
-      'Benutzung: node build-data.js --dataDir "<json-ordner>" --out "<GuideData.lua>"'
-    );
+    console.error('Benutzung: node build-data.js --dataDir "<json-ordner>" --out "<GuideData.lua>"');
     process.exit(1);
   }
 
   const files = fs.readdirSync(dataDir).filter((f) => f.endsWith(".json"));
-  if (files.length === 0) {
-    console.error("Keine JSON-Dateien in " + dataDir + " gefunden.");
-    process.exit(1);
-  }
-
   const entries = {};
   for (const file of files) {
     const match = file.match(/^([A-Z]+)_(\d+)\.json$/);
-    if (!match) {
-      console.warn(`⚠️  Überspringe ${file} - erwarte Format CLASS_SPECID.json`);
-      continue;
-    }
+    if (!match) continue;
     const [, classToken, specID] = match;
     const data = JSON.parse(fs.readFileSync(path.join(dataDir, file), "utf-8"));
     entries[classToken] = entries[classToken] || {};
     entries[classToken][specID] = data;
-    console.log(`✓ ${classToken} / Spec ${specID} (${data.talentBuilds?.length || 0} Builds)`);
   }
 
   const lua = buildLuaTable(entries);
   const outPath = path.resolve(out);
   fs.mkdirSync(path.dirname(outPath), { recursive: true });
   fs.writeFileSync(outPath, lua, "utf-8");
-  console.log(`\n✅ Lua-Datei geschrieben: ${outPath}`);
-  console.log(`   Vergiss nicht "Data\\GuideData.lua" in die .toc einzutragen!`);
+  console.log(`✅ Lua-Datei geschrieben: ${outPath}`);
 }
 
 main();
