@@ -1,4 +1,4 @@
--- normalize.lua
+-- normalize.lua (expanded)
 -- Utility to normalize stat names extracted from guide text to canonical keys used in the addon.
 -- Exports: DragonSkill.Utils.NormalizeStatName(str) -> canonical string or nil
 
@@ -8,25 +8,36 @@ local mapping = {
     ["critical strike"] = "CriticalStrike",
     ["critical strike chance"] = "CriticalStrike",
     ["crit chance"] = "CriticalStrike",
+    ["crit%"] = "CriticalStrike",
+    ["crit percent"] = "CriticalStrike",
+    ["crit rating"] = "CriticalStrike",
+
     ["haste"] = "Haste",
+    ["haste%"] = "Haste",
+    ["haste rating"] = "Haste",
+
     ["mastery"] = "Mastery",
+    ["mastery%"] = "Mastery",
+
     ["versatility"] = "Versatility",
     ["vers"] = "Versatility",
     ["versatility damage done"] = "Versatility",
+
     ["leech"] = "Leech",
     ["stamina"] = "Stamina",
     ["intellect"] = "Intellect",
     ["agility"] = "Agility",
     ["strength"] = "Strength",
-    ["critical strike"] = "CriticalStrike",
+
     ["critstr"] = "CriticalStrike",
+    ["critstrike"] = "CriticalStrike",
 }
 
 local function normalizeText(s)
     if not s then return nil end
     local t = s:lower()
-    -- remove punctuation
-    t = t:gsub("[^%w%s]", "")
+    -- remove punctuation except %
+    t = t:gsub("[^%w%s%%]", "")
     -- trim
     t = t:match("^%s*(.-)%s*$") or t
     return t
