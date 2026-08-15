@@ -57,6 +57,7 @@ function unescapeWowheadMarkup(html) {
   return html
     .replace(/\\r\\n/g, "\n")
     .replace(/\\n/g, "\n")
+    .replace(/\\t/g, "\t")
     .replace(/\\\//g, "/")
     .replace(/\\"/g, '"');
 }
@@ -121,17 +122,27 @@ function extractStatPriority(markup) {
  */
 function extractBiSGear(markup) {
   const gear = [];
-  // Wowhead nutzt oft [table] für BiS Listen.
-  const tableRe = /\[table\]([\s\S]*?)\[\/table\]/g;
+  const tableRe = /\[table[^\]]*\]([\s\S]*?)\[\/table\]/g;
   let m;
   while ((m = tableRe.exec(markup))) {
     const content = m[1];
     if (content.toLowerCase().includes("slot") || content.toLowerCase().includes("item")) {
-      const rows = content.split("[tr]").filter(r => r.includes("[td]"));
+      const rows = content.split(/\[tr\]/i).filter(r => r.includes("[td"));
       rows.forEach(row => {
-        const cols = row.split("[td]").map(c => c.replace(/\[\/td\]|\[\/tr\]|\[b\]|\[\/b\]|\[url=[^\]]+\]|\[\/url\]/g, "").trim()).filter(Boolean);
+        const cols = row.split(/\[td[^\]]*\]/i)
+          .map(c => c.replace(/\[\/td\]|\[\/tr\]|\[b\]|\[\/b\]|\[url=[^\]]+\]|\[\/url\]|\[item=\d+\]|\[symbol=[^\]]+\]|\[span[^\]]*\]|\[\/span\]/gi, "").trim())
+          .filter(Boolean);
+
+        // Versuche Item-ID zu finden
+        const itemMatch = row.match(/\[item=(\d+)\]/i);
+
         if (cols.length >= 2) {
-          gear.push({ slot: cols[0], item: cols[1], source: cols[2] || "Unknown" });
+          gear.push({
+            slot: cols[0],
+            item: cols[1],
+            source: cols[2] || "Unknown",
+            itemId: itemMatch ? parseInt(itemMatch[1]) : null
+          });
         }
       });
     }
@@ -257,20 +268,26 @@ async function main() {
 
     if (html) {
       const markup = unescapeWowheadMarkup(html);
-      // Lockerer Regex für Rotation
-      const rotRe = /\[b\](?:PvE |Single Target )?Rotation (?:Priority)?\[\/b\][\s\S]{0,500}?\[ol\]([\s\S]{0,3000}?)\[\/ol\]/gi;
-      let m = rotRe.exec(markup);
-      if (m) {
-        rotation = (m[1].match(/\[li\][\s\S]*?\[\/li\]/g) || [])
+      // Lockerer Regex für Rotation: Sucht nach [h3] oder [b] mit "Priority" oder "Rotation"
+      const rotRe = /\[(?:h\d|b)[^\]]*\](?:PvE |Single Target |AoE )?(?:Rotation )?Priority\[\/(?:h\d|b)\][\s\S]{0,800}?\[ol\]([\s\S]{0,3500}?)\[\/ol\]/gi;
+      let m;
+      while ((m = rotRe.exec(markup))) {
+        const body = m[1];
+        const items = (body.match(/\[li\][\s\S]*?\[\/li\]/g) || [])
           .map(li => {
-            const text = li.replace(/\[li\]|\[\/li\]|\[b\]|\[\/b\]/g, "").trim();
+            const text = li.replace(/\[li\]|\[\/li\]|\[b\]|\[\/b\]|\[i\]|\[\/i\]/g, "").trim();
             const spellMatch = li.match(/\[spell=(\d+)\]/);
             return {
               text: text.replace(/\[spell=\d+\]|\[url=[^\]]+\]|\[\/url\]/g, "").trim(),
               spellId: spellMatch ? spellMatch[1] : null
             };
           })
-          .filter(r => r.text.length > 0);
+          .filter(r => r.text.length > 2);
+
+        if (items.length > 0) {
+            rotation.push(...items);
+            break; // Erste gefundene Liste reicht meist
+        }
       }
     } else {
       console.warn(`⚠️  Rotation-Seite nicht gefunden: ${rotationUrl}`);
@@ -326,6 +343,10 @@ async function main() {
   } else if (talentsUrl) {
     console.log(`✅ ${newTalents.length} Talent-Build(s) gefunden.`);
   }
+
+  if (bisGear.length > 0) console.log(`✅ ${bisGear.length} Gear-Items gefunden.`);
+  if (rotation.length > 0) console.log(`✅ ${rotation.length} Rotations-Schritte gefunden.`);
+
   if (statsUrl && !newStatPrio) {
     console.warn(
       "⚠️  Keine Stat-Priorität gefunden. Wowhead-Seitenstruktur hat sich evtl. geändert - Parser prüfen."

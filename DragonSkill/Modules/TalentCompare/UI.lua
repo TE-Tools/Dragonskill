@@ -69,7 +69,6 @@ function UI:Init()
         local scrollFrame = CreateFrame("ScrollFrame", "DragonSkillScrollFrame", inset, "UIPanelScrollFrameTemplate")
         scrollFrame:SetPoint("TOPLEFT", 8, -8)
         scrollFrame:SetPoint("BOTTOMRIGHT", -25, 8)
-        scrollFrame:SetFrameLevel(f:GetFrameLevel() + 5) -- Erhöhter FrameLevel
 
         local content = CreateFrame("Frame", "DragonSkillContentFrame", scrollFrame)
         content:SetSize(350, 1000)
@@ -88,11 +87,7 @@ function UI:Init()
     SlashCmdList["DRAGONSKILL"] = function(msg)
         if msg == "testboss" then
             local BM = DragonSkill:GetModule("BossMechanics")
-            if BM then
-                BM:SimulateEntombedSentinels()
-            else
-                print("|cffff0000Dragon Skill:|r Fehler - BossMechanics Modul nicht gefunden.")
-            end
+            if BM then BM:SimulateEntombedSentinels() end
         elseif f:IsShown() then
             f:Hide()
         else

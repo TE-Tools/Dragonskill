@@ -5,7 +5,7 @@ DragonSkillData = DragonSkillData or {}
 
 DragonSkillData["DEATHKNIGHT"] = DragonSkillData["DEATHKNIGHT"] or {}
 DragonSkillData["DEATHKNIGHT"][250] = {
-    scrapedAt = "2026-08-15T12:26:59.044Z",
+    scrapedAt = "2026-08-06T14:51:55.717Z",
     statPriority = {
         wowhead = "San'layn: Strength > Haste > Mastery / Critical Strike / Versatility | Deathbringer: Strength > Critical Strike > Mastery / Versatility > Haste",
         archon = "Strength > Mastery > Crit > Haste > Vers",
@@ -35,13 +35,13 @@ DragonSkillData["DEATHKNIGHT"][250] = {
             provider = "wowhead",
             context = "deathbringer",
             label = "Raid",
-            importString = "CoPAAAAAAAAAAAAAAAAAAAAAAwYWGzMmxMjhZZmZmmZxYmxMmBAAAAmZmZmZmZYGjZAYMzMzAAAMmtBGwSw2wEYYBwMMAAMzAYYA",
+            importString = "CoPAAAAAAAAAAAAAAAAAAAAAAwYWGzMmxMjhZZmZmmZxYmxMmBAAAAzMzMzMzMDzYMAgZmZGAAgxsNwAWCWGmADLAmhZAAMzAYYA",
         },
         {
             provider = "wowhead",
             context = "deathbringer",
             label = "Mythic+",
-            importString = "CoPAAAAAAAAAAAAAAAAAAAAAAwMzyMzMmxMzMMLzMz0MLGjxMGAAAAwMmZmZmZYGDAYmZmZGAAgxsNwAWC2GmADLAmxMAAMzAYYA",
+            importString = "CoPAAAAAAAAAAAAAAAAAAAAAAwMzyMzMmxMzMMLzMz0MLGjxMGAAAAwMmZmZmZYGjBAjZmZGAAgxsNwAWC2GmADLAmhZAAMzAYYA",
         },
         {
             provider = "wowhead",
@@ -53,7 +53,7 @@ DragonSkillData["DEATHKNIGHT"][250] = {
             provider = "wowhead",
             context = "sanlayn",
             label = "Raid",
-            importString = "CoPAAAAAAAAAAAAAAAAAAAAAAwYWmZmxMmZmhZZmZmmZxYMmxAAAAAmZmZmZmZYGjZAYMzMzAAAYgBmxiGLLgsMgNAzwAAAmZghB",
+            importString = "CoPAAAAAAAAAAAAAAAAAAAAAAwYWmZmxMmZmhZZmZmmZxYMmxAAAAAzMzMzMzMDzYMAgZmZGAAADMwMW0YZDklBsBYGmBAAmZghB",
         },
         {
             provider = "wowhead",
@@ -95,7 +95,7 @@ DragonSkillData["DEATHKNIGHT"][250] = {
 }
 
 DragonSkillData["DEATHKNIGHT"][251] = {
-    scrapedAt = "2026-08-15T12:26:59.811Z",
+    scrapedAt = "2026-08-06T14:51:57.193Z",
     statPriority = {
         wowhead = "Deathbringer: Strength > Critical Strike > Mastery > Haste > Versatility | Rider of the Apocalypse: Strength > Critical Strike > Mastery > Haste > Versatility",
         archon = "Strength > Mastery > Crit > Haste > Vers",
@@ -125,25 +125,25 @@ DragonSkillData["DEATHKNIGHT"][251] = {
             provider = "wowhead",
             context = "deathbringer",
             label = "Raid",
-            importString = "CsPAAAAAAAAAAAAAAAAAAAAAAMAmZMjZAz2MzMzMLzMjMjxYYmxgZmZmZmZmZAAAAAAAAAYMbDMgFwywEyYBzMmZGYAYYmBYmBD",
+            importString = "CsPAAAAAAAAAAAAAAAAAAAAAAMDwMjZMDY2mZmZmZZmZkZMmZYGGPgZGMzMzMDAAAAAAAAAjZbgBsAWGmQGLYmxMzAzAYYmBYmBD",
         },
         {
             provider = "wowhead",
             context = "deathbringer",
             label = "Mythic+",
-            importString = "CsPAAAAAAAAAAAAAAAAAAAAAAMAzMMjZAz2MzMzMLzMjMjxYYmxgZmZmZmZmZAAAAAAAAAYMbDMgFwywEyYBzMmZGYAYYmBYmBD",
+            importString = "CsPAAAAAAAAAAAAAAAAAAAAAAMAzMjZmZAz2MzMzMLmZkZMmZmZGYMzwMzMjZAAAAAAAAAYMbDMgFwywEyYBzMMzAzAYYmBYGYA",
         },
         {
             provider = "wowhead",
             context = "deathbringer",
             label = "Delves",
-            importString = "CsPAAAAAAAAAAAAAAAAAAAAAAMDYmhZmZAzmZmZmZZmZkZMGDzAMzMzMzMzMDAAAAAAAAAjZbgBsAWGmQGLYmZmZGYAYYmBYmBD",
+            importString = "CsPAAAAAAAAAAAAAAAAAAAAAAMDYmZMzMDY2mZmZmZxMjMjxYYGgZmZmZmZmZAAAAAAAAAYMbDMgFwywEyYBzMzMzADADzMAzAD",
         },
         {
             provider = "wowhead",
             context = "rider",
             label = "Raid",
-            importString = "CsPAAAAAAAAAAAAAAAAAAAAAAMDwMjZMDY2mZmZmZZmZkZMGDzMGMjZmZmZmZAAAAAAAAAAsZWMMwAzmGaYDzMmZGYAYAYmZmBD",
+            importString = "CsPAAAAAAAAAAAAAAAAAAAAAAMDYmZMzMDY2mZmZmZxMjMjxMDzw4BMzgZmZmZAAAAAAAAAAsZ2MMwAzmGaYDzMmZGYGADAzMzAD",
         },
         {
             provider = "wowhead",
@@ -185,7 +185,7 @@ DragonSkillData["DEATHKNIGHT"][251] = {
 }
 
 DragonSkillData["DEATHKNIGHT"][252] = {
-    scrapedAt = "2026-08-15T12:27:00.379Z",
+    scrapedAt = "2026-08-06T14:51:58.321Z",
     statPriority = {
         wowhead = "San'layn: Strength > Mastery > Crit > Haste > Versatility | Rider of the Apocalypse: Strength > Mastery > Crit > Haste > Versatility",
         archon = "Strength > Mastery > Crit > Haste > Vers",
@@ -215,7 +215,7 @@ DragonSkillData["DEATHKNIGHT"][252] = {
             provider = "wowhead",
             context = "rider",
             label = "Rider ST",
-            importString = "CwPAAAAAAAAAAAAAAAAAAAAAAAwMjZMDDz2MzMTzmZmZMjBAAAAAAAgZGmZAwyMmZ2mZGzMDYzsYYIDMbM0YBAzAAzMjZAmZmxYA",
+            importString = "CwPAAAAAAAAAAAAAAAAAAAAAAAwMjZMDDz2MzMTzmZmZMjBAAAAAAAgZGmZAw2MmZ2mZGjZAbmFDDZgZjhGLAYGAGzMjZAmZmxYA",
         },
         {
             provider = "wowhead",
@@ -233,13 +233,13 @@ DragonSkillData["DEATHKNIGHT"][252] = {
             provider = "wowhead",
             context = "sanlayn",
             label = "San ST",
-            importString = "CwPAAAAAAAAAAAAAAAAAAAAAAAwMjZMDDz2MzMTjZmxYGDAAAAAAAAzDMMGAsMDzsZmxMzYgBmxiGLbA2mYDAzAYmZmZMDmZwMzYA",
+            importString = "CwPAAAAAAAAAAAAAAAAAAAAAAAwMjZMDDz2MzMTzmZmZMjBAAAAAAAgZGmZAw2MmZ2mZGjZMwAzYRjlFAbTsBgZAYMzMmBzMYGjB",
         },
         {
             provider = "wowhead",
             context = "sanlayn",
             label = "San AoE",
-            importString = "CwPAAAAAAAAAAAAAAAAAAAAAAAwMjZMDDz2MzMTzmZmZMjBAAAAAAAg5BGDDAWmhZ2MzYMjBGYGbassAYZiNMgZAMzMzMmBzMYGjB",
+            importString = "CwPAAAAAAAAAAAAAAAAAAAAAAAwMjZMDDz2MzMTzmZmZMjBAAAAAAAgZGzYAwyMmZ2MzYMjBGYGbassAYZiNMgZAYMzMmBzMYGjB",
         },
         {
             provider = "archon",
@@ -270,7 +270,7 @@ DragonSkillData["DEATHKNIGHT"][252] = {
 
 DragonSkillData["DEMONHUNTER"] = DragonSkillData["DEMONHUNTER"] or {}
 DragonSkillData["DEMONHUNTER"][577] = {
-    scrapedAt = "2026-08-15T12:27:01.292Z",
+    scrapedAt = "2026-08-06T14:51:59.080Z",
     statPriority = {
         wowhead = "Fel-Scarred: Agility > Critical Strike > Mastery > Haste > Versatility | Aldrachi Reaver: Agility > Critical Strike > Mastery > Haste > Versatility",
         archon = "Agility > Crit > Mastery > Haste > Vers",
@@ -300,37 +300,37 @@ DragonSkillData["DEMONHUNTER"][577] = {
             provider = "wowhead",
             context = "fel",
             label = "Raid",
-            importString = "CEkAAAAAAAAAAAAAAAAAAAAAAYmZGzMzmxMzMmZmMmZAAAAAAAzyDMmtZYmBzMWmZMDzMGzyALzmZMMbaaMzMG2AAAAAAAAYmBDAAAAD",
+            importString = "CEkAAAAAAAAAAAAAAAAAAAAAAYmZGzMzmxMzMmZmwMDAAAAAAwyMzYGmZwMjtZbegZGjxwyALziZMMbaaMzMzwGAAAAAAAAzMYAAAAYA",
         },
         {
             provider = "wowhead",
             context = "fel",
             label = "Mythic+",
-            importString = "CEkAAAAAAAAAAAAAAAAAAAAAAYmZGzMz2MmZmxYmMmZAAAAAAAzixsNDzMwMWmZmZYmBzyALzmZMMLaaMzMmxGAAAwAAAAYmBDAAAAD",
+            importString = "CEkAAAAAAAAAAAAAAAAAAAAAAYmZmZmZ2mxMzMGzkxMDAAAAAAYWMmtZYmBmx2sNzMjxALDsMbmxwsopxMzYGbAAAADAAAgZGMAAAAM",
         },
         {
             provider = "wowhead",
             context = "fel",
             label = "Delves",
-            importString = "CEkAAAAAAAAAAAAAAAAAAAAAAYmZGzMz2MmZmxYmMmZAAAAAAAzixsNDzMwMWmZmZYmBzyALzmZMMLaaMzMmxGAAAwAAAAYmBDAAAAD",
+            importString = "CEkAAAAAAAAAAAAAAAAAAAAAAYmZmZmZ2mxMzMGzkxMDAAAAAAYWMmtZYmh5BmBbzMzYMwyAbzmZMMLaaMzMmxGAAAwAAAAYmBDAAAAD",
         },
         {
             provider = "wowhead",
             context = "aldrachi",
             label = "Raid",
-            importString = "CEkAAAAAAAAAAAAAAAAAAAAAAYgZmZ2MmZmxMzkxMDAAAAAAYWegxsNDzMz2MzYZmxMWmZYmlZ2mBDjlNmkxMjhFAAAAAAAwMDwAAAAwA",
+            importString = "CEkAAAAAAAAAAAAAAAAAAAAAAYGMzMzmxMzMmZmMmZAAAAAAAzyDMmtZYmZ2mZGLz2YGLjZMWmZbGMMW2YSGzMGWAAAAAAAAzMADAAAAD",
         },
         {
             provider = "wowhead",
             context = "aldrachi",
             label = "Mythic+",
-            importString = "CEkAAAAAAAAAAAAAAAAAAAAAAYGMzMz2MmZmxYmMmZAAAAAAAzixsNDzMz2MzYZmxMMzwMLzsNDGGbbMJjZGzYBAAAAAAAMzAMAAAAM",
+            importString = "CEkAAAAAAAAAAAAAAAAAAAAAAYmZmZmZ2mxMzMGzkxMDAAAAAAYWMmtZYmZ2GzgtZmhxwYZmtZwwYbjJZmZGzYBAAAAAAAMzAMAAAAM",
         },
         {
             provider = "wowhead",
             context = "aldrachi",
             label = "Delves",
-            importString = "CEkAAAAAAAAAAAAAAAAAAAAAAYGMzMz2MmZmxYmMmZAAAAAAAzixsNDzMz2MzYZmxMMzwMLzsNDGGbbMJjZGzYBAAAAAAAMzAMAAAAM",
+            importString = "CEkAAAAAAAAAAAAAAAAAAAAAAYmZmZmZ2mxMzMGzkxMDAAAAAAYWMmtZYmZ2GzgtZmhxwYZmtZwwYbjJZmZGzYBAAAAAAAMzAMAAAAM",
         },
         {
             provider = "archon",
@@ -360,7 +360,7 @@ DragonSkillData["DEMONHUNTER"][577] = {
 }
 
 DragonSkillData["DEMONHUNTER"][581] = {
-    scrapedAt = "2026-08-15T12:27:02.088Z",
+    scrapedAt = "2026-08-06T14:52:00.020Z",
     statPriority = {
         wowhead = "Aldrachi Reaver: Item Level (Agility+Stamina) > Haste > Crit > Versatility > Mastery | Annihilator: Item Level (Agility+Stamina) > Haste > Crit > Versatility > Mastery",
         archon = "Agility > Haste > Crit > Mastery > Vers",
@@ -390,13 +390,13 @@ DragonSkillData["DEMONHUNTER"][581] = {
             provider = "wowhead",
             context = "aldrachi",
             label = "Raid",
-            importString = "CUkAAAAAAAAAAAAAAAAAAAAAAAAYMzMjZmZkZmZY2MzMjhZMzYGzYmZYGmx2MzYMAAAAgZbGMMW2YCDzMjFAAAAMYAIAzMADAAAgB",
+            importString = "CUkAAAAAAAAAAAAAAAAAAAAAAAAYMzMjZmZkZmZYYmZGDzYmxMmxMzwMmZsNzMGDAAAAY2mBDjlNmwwMzYBAAAADGACwMDwAAAAYA",
         },
         {
             provider = "wowhead",
             context = "aldrachi",
             label = "Mythic+",
-            importString = "CUkAAAAAAAAAAAAAAAAAAAAAAAAYMzMjhZkZmBWMjZwMjZGz8AzMzYYmZmx2YGjxMAAAAMbzghxyGTYYmZsAAAAgBGABYmBMDAAAgB",
+            importString = "CUkAAAAAAAAAAAAAAAAAAAAAAAAYMzMjhZkZmBWMjZwMjZGz8AzMzYYmtZGbjZMGzAAAAwsNDGGLbMhhZmxCAAAAGYAEgZGwMAAAAG",
         },
         {
             provider = "wowhead",
@@ -414,37 +414,37 @@ DragonSkillData["DEMONHUNTER"][581] = {
             provider = "wowhead",
             context = "aldrachi",
             label = "Delves",
-            importString = "CUkAAAAAAAAAAAAAAAAAAAAAAAAYMzMjxMjMzMwmZMDmZMzYmHYGzYMzMzM2GzgxMAAAAMbzghxyGTYYmZsAAAAgBzAIAzMADAAAgB",
+            importString = "CUkAAAAAAAAAAAAAAAAAAAAAAAAYMzMjxMjMzMwiZMDmZMzYmHYGzYMzsNzYbMDGzAAAAwsNDGGLbMhhZmxCAAAAGMDgAMzAMAAAAG",
         },
         {
             provider = "wowhead",
             context = "annihilator",
             label = "Raid",
-            importString = "CUkAAAAAAAAAAAAAAAAAAAAAAAAYMzMjZmZkZmZY2MzMjhZMzYGzYmZYGmx2MzYMAAAAAAAQAzMjNAAAAMYMzMzs02MzMAwAAAAYA",
+            importString = "CUkAAAAAAAAAAAAAAAAAAAAAAAAYMzMjZmZkZmZYWMzMjhZMzYGzYmZYGmx2MzYMAAAAAAAQAzMjNAAAAMYMzMzs02MzMAwAAAAYA",
         },
         {
             provider = "wowhead",
             context = "annihilator",
             label = "Mythic+",
-            importString = "CUkAAAAAAAAAAAAAAAAAAAAAAAAYMzMjhZkZmBWMjZwMjZGz8AzMzYYmZmx2YGjxMAAAAAAACYmZsBAAAgBmZmZml2mZmBAzAAAAYA",
+            importString = "CUkAAAAAAAAAAAAAAAAAAAAAAAAYMzMjhZkZmBWMjZwMjZGz8AzMzYYmtZGbjZMGzAAAAAAAIgZmxGAAAAGYmZmZWabmZGAMDAAAgB",
         },
         {
             provider = "wowhead",
             context = "annihilator",
             label = "Cleave",
-            importString = "CUkAAAAAAAAAAAAAAAAAAAAAAAAYMzMjZmZkZmZYWMzMzMMjZGzYGzYYGmx2MzYMAAAAAAAQAzMjNAAAAMYMzMzs02MzMAwAAAAYA",
+            importString = "CUkAAAAAAAAAAAAAAAAAAAAAAAAYMzMjZmZkZmZYYmZGDzYmxMmxMmxMmZsNzMGDAAAAAAAEwMzYDAAAADGzMzMLtNzMDAMAAAAG",
         },
         {
             provider = "wowhead",
             context = "annihilator",
             label = "Council",
-            importString = "CUkAAAAAAAAAAAAAAAAAAAAAAAAYMzMjZmZkZmZYWMzMzMMjZGzYGzYYGmx2MzYMAAAAAAAQAzMjNAAAAMYMzMzs02MzMAwAAAAYA",
+            importString = "CUkAAAAAAAAAAAAAAAAAAAAAAAAYMzMjZmZkZmZYYmZGDzYmxMmxMmxMmZsNzMGDAAAAAAAEwMzYDAAAADGzMzMLtNzMDAMAAAAG",
         },
         {
             provider = "wowhead",
             context = "annihilator",
             label = "Delves",
-            importString = "CUkAAAAAAAAAAAAAAAAAAAAAAAAYMzMjxMjMzMwmZMDmZMzYmHYGzYMzMzM2GzgxMAAAAAAACYmZsBAAAgBzMzMzs02MzMAwAAAAYA",
+            importString = "CUkAAAAAAAAAAAAAAAAAAAAAAAAYMzMjxMjMzMwiZMDmZMzYmHYGzYMzsNzYbMDGzAAAAAAAIgZmxGAAAAGMzMzMzSbzMzAADAAAgB",
         },
         {
             provider = "archon",
@@ -474,9 +474,9 @@ DragonSkillData["DEMONHUNTER"][581] = {
 }
 
 DragonSkillData["DEMONHUNTER"][1480] = {
-    scrapedAt = "2026-08-15T12:27:02.899Z",
+    scrapedAt = "2026-08-06T14:52:01.100Z",
     statPriority = {
-        wowhead = "Annihilator: Intellect > Haste > Mastery > Critical Strike > Versatility | Void-Scarred: Intellect > Haste (until 800/18%-20%) > Critical Strike > Mastery > Versatility > Haste (above 800/18%-20%).",
+        wowhead = "Annihilator: Intellect > Haste > Mastery > Critical Strike > Versatility | Void-Scarred: Intellect > Mastery > Haste > Critical Strike > Versatility",
         archon = "Intellect > Mastery > Haste > Crit > Vers",
     },
     statAverages = {
@@ -503,50 +503,38 @@ DragonSkillData["DEMONHUNTER"][1480] = {
         {
             provider = "wowhead",
             context = "void",
-            label = "Raid ST",
-            importString = "CgcBAAAAAAAAAAAAAAAAAAAAAAA2MmZmZmZmxwMAAAAAAAegxsNYGAAAAAAAAmxMMmZmZMzMzYmtZGjNttAgAGgZMzMbzMTz2MLzMjZMA",
-        },
-        {
-            provider = "wowhead",
-            context = "void",
-            label = "Raid Cleave",
-            importString = "CgcBAAAAAAAAAAAAAAAAAAAAAAAWMzMzMzMzMwMAAAAAAAegxsNYGAAAAAAAAmxMMPwMzMzMzMzYmtZGjNttAgAGAjZmZbmZa2mZZmZMmBA",
+            label = "Raid",
+            importString = "CgcBAAAAAAAAAAAAAAAAAAAAAAAWmxMzMzMzMGmBAAAAAAgxsNYGAAAAAAAAmxMMzMzMzMzMDzsNzYsJLAIgBYYmZWmZmmlZ2mZGjZA",
         },
         {
             provider = "wowhead",
             context = "void",
             label = "Mythic+",
-            importString = "CgcBAAAAAAAAAAAAAAAAAAAAAAAWmZmZmZGjxwMAAAAAAALGz2gZAAAAAAAAYGzw8AzMzMzMzMMz2MjxmsAgAGgZMzMbzMTzyMLzMDzMA",
+            importString = "CgcBAAAAAAAAAAAAAAAAAAAAAAAWmxMzMzMzMGmBAAAAAAgxsNYGAAAAAAAAmxMMzMzMzMzMDzsNzYsJLAIgBYYmZWmZmmlZ2mZGjZA",
         },
         {
             provider = "wowhead",
             context = "void",
             label = "Delves",
-            importString = "CgcBAAAAAAAAAAAAAAAAAAAAAAA2MzMzMzMjxwMAAAAAAAmxAmBAAAAAAAgZMDzDMzMzMzMzMmZbmxYTbbAIgBwMzMz2Mz0sNz2MzwMDA",
+            importString = "CgcBAAAAAAAAAAAAAAAAAAAAAAA2MmZmZmZmxwMAAAAAAAmxAmBAAAAAAAgZMDzMzMzMzMzwMbzMGbyGACYAGzMzsMzMNbzsNzMGzA",
         },
         {
             provider = "wowhead",
             context = "annihilator",
-            label = "Raid ST",
-            importString = "CgcBAAAAAAAAAAAAAAAAAAAAAAA2MmZmZmZmxwMAAAAAAAegxsNYGAAAAAAAAmxMMzMzMjZmZmZmFzYsolFmZmZ2abmZGAzYAIgxghB",
-        },
-        {
-            provider = "wowhead",
-            context = "annihilator",
-            label = "Raid Cleave",
-            importString = "CgcBAAAAAAAAAAAAAAAAAAAAAAA2MmZmZmZmxwMAAAAAAAegxsNYGAAAAAAAAmxMMzMzMzMzMjZmFzYsolFmZmZ2abmZGAzYAIgxghB",
+            label = "Raid",
+            importString = "CgcBAAAAAAAAAAAAAAAAAAAAAAA2MmZmZmZmxwMAAAAAAAegxsNYGAAAAAAAAmxMMzMzMzMzMDzsYGjFZhZmZmt2mZmBwwAQgZMYMD",
         },
         {
             provider = "wowhead",
             context = "annihilator",
             label = "Mythic+",
-            importString = "CgcBAAAAAAAAAAAAAAAAAAAAAAA2mxMzMzMzMGmBAAAAAAYxY2GMDAAAAAAAAzYwMzMzMzMzMMziZMW0yCzMzMbtNzMDgZMAEwYwYGA",
+            importString = "CgcBAAAAAAAAAAAAAAAAAAAAAAA2mxMzMzMzMGmBAAAAAAgxsNYGAAAAAAAAmxMMzMzMzMzMDzsYGjFZhZmZmt2mZmBwwAQgZMYMD",
         },
         {
             provider = "wowhead",
             context = "annihilator",
             label = "Delves",
-            importString = "CgcBAAAAAAAAAAAAAAAAAAAAAAA2MmZmZmZmxwMAAAAAAAmxAmBAAAAAAAgZMDzDMzMzMzMzwMbmxYR2YmZmZrlZmZAMzMAEYGDGzA",
+            importString = "CgcBAAAAAAAAAAAAAAAAAAAAAAA2MmZmZmZmxwMAAAAAAAmxAmBAAAAAAAgZMDzMzMzMzMzwMbmxYR2YmZmZrlZmZAMmBgAzYwYGA",
         },
         {
             provider = "archon",
@@ -577,7 +565,7 @@ DragonSkillData["DEMONHUNTER"][1480] = {
 
 DragonSkillData["DRUID"] = DragonSkillData["DRUID"] or {}
 DragonSkillData["DRUID"][102] = {
-    scrapedAt = "2026-08-15T12:27:03.481Z",
+    scrapedAt = "2026-08-06T14:52:01.914Z",
     statPriority = {
         wowhead = "Keeper of the Grove: Intellect > Mastery > Haste = Critical Strike > Versatility | Elune's Chosen: Intellect > Mastery > Haste > Critical Strike > Versatility",
         archon = "Intellect > Mastery > Haste > Crit > Vers",
@@ -607,37 +595,37 @@ DragonSkillData["DRUID"][102] = {
             provider = "wowhead",
             context = "keeper",
             label = "Raid",
-            importString = "CYGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWoMbNjxMDMmlZmZmBMDWmZbGzYGLsMjZmZMzGGAMALbjFMNzsMCAAAwGzMzMYzAjZAMzAADA",
+            importString = "CYGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWoMbNjxMDMmlZmZmBYYWmZZsNjZsxyMGzMzYBDAGgltxGmmZWGBAAAYzMzMzgNjhxMAmZAgB",
         },
         {
             provider = "wowhead",
             context = "keeper",
             label = "Mythic+",
-            importString = "CYGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWoMbNMmZgxsMzMzMLMwDMbzsMWmxMWYZGjxMjFMAYAW2GLYamZZEAAAgNzMPwMD2MmxYGAzMAwA",
+            importString = "CYGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWoMbNMmZgxsMzMzMLMgZbmlZWmxM2YZGjZmZsgBADwy2YDTzMLjAAAAsZm5BmZwmxMGDAzMAwA",
         },
         {
             provider = "wowhead",
             context = "keeper",
             label = "Delves",
-            importString = "CYGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWoMbNMmZgxsMzMzMLMgZZmlx2MmxGLzYmZGmFMAYAW2GLYamZbEAAAgNmZmZwmxMGzAYmBAGA",
+            importString = "CYGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWoMbNMmZgxsMzMzMLMgZZmlx2MmxGLzYmZGmFMAYAW2GbYamZbEAAAgNmZmZwmxMGzAYmBAGA",
         },
         {
             provider = "wowhead",
             context = "elunes",
             label = "Raid",
-            importString = "CYGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWoMbNjxMDwsMzMzMYYGjZWmhxMWYZmlZGjZ2wAgx2yMDGz2IwEAAAgFzMzMD2MMGzAAYmBLDA",
+            importString = "CYGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWoMbNjxMDwsMzMzMYYGjZ2mhxMWYZmlZGjZ2wAgx22MDGz2IwEAAAgFzMzMD2MMGzAAYmBLDA",
         },
         {
             provider = "wowhead",
             context = "elunes",
             label = "Mythic+",
-            importString = "CYGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWoMbNMmZgxsMzMzMLMgxMLzsYmZswyMLjxMjNMAYstNzgxsNCMBAAAYhZmZGsZMjxAAwMDWGA",
+            importString = "CYGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWoMbNMmZgxsMzMzMLMgZZmlZWMzMWYZmlxMjxGGAMW2mZwY2GBmAAAAswMzMD2MmxYAAYmBGA",
         },
         {
             provider = "wowhead",
             context = "elunes",
             label = "Delves",
-            importString = "CYGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWoMbNMmZgxsMzMzMLMgxMLzsYMzswyMLjxMjNMAYstNzgxsNCMBAAAYhZmZGsZMjxAAwMDWGA",
+            importString = "CYGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWoMbNMmZgxsMzMzMLMgZZmlZWMzMWYZmlxMjxGGAMW2mZwY2GBmAAAAswMzMD2MmxYAAYmBGA",
         },
         {
             provider = "archon",
@@ -667,7 +655,7 @@ DragonSkillData["DRUID"][102] = {
 }
 
 DragonSkillData["DRUID"][103] = {
-    scrapedAt = "2026-08-15T12:27:04.854Z",
+    scrapedAt = "2026-08-06T14:52:03.080Z",
     statPriority = {
         wowhead = "Druid of the Claw: Agility > Mastery > Haste > Critical Strike > Versatility | Wildstalker: Agility > Mastery > Critical Strike > Haste > Versatility",
         archon = "Agility > Mastery > Haste > Crit > Vers",
@@ -697,37 +685,37 @@ DragonSkillData["DRUID"][103] = {
             provider = "wowhead",
             context = "druid",
             label = "Raid",
-            importString = "CcGAAAAAAAAAAAAAAAAAAAAAAAAAAAAwghxYmZmxsxDsMz2MzMmZGAAAAWCmNYMzomxswMzMGzMDAAAAAAgBAAAQzsMLzMzACsAmZAWMzwAAAYmNMA",
+            importString = "CcGAAAAAAAAAAAAAAAAAAAAAAAAAAAAghZ2YmZmZGzmx2MbzMzMmZAAAAYJYWMGmZUzYWMzMzsMmZAAAAAAwADAAAgmZZ2mZmBEYBMzAswgBAAwMbYA",
         },
         {
             provider = "wowhead",
             context = "druid",
             label = "Mythic+",
-            importString = "CcGAAAAAAAAAAAAAAAAAAAAAAAAAAAAgZmZ2YmZmxY2MPw2YbGzMmZAAAAYLY2MwMzUzYWMzMzsMmxAAAAAAwADAAAgmZZWmZmBEYBmZGgFGMAAAmZDD",
+            importString = "CcGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAmZYmZmZMzsZsNz2MzMzDMzAAAAwSwsYMMzomxsYmZmZZMzAAAAAAgBAAAAoZWmtZmZABWAzMALMYAAAMzGG",
         },
         {
             provider = "wowhead",
             context = "druid",
             label = "Delves",
-            importString = "CcGAAAAAAAAAAAAAAAAAAAAAAAAAAAAgZmZ2YmZmxY2MPw2YbGzMmZAAAAYLY2MwMzUzYWMzMzsMmxAAAAAAwADAAAgmZZWmZmBEYBmZGgFGMAAAmZDD",
+            importString = "CcGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAmZYmZmZMzsZsNz2MzMzDMzAAAAwSwsYMMzomxsYmZmZZMzAAAAAAgBAAAAoZWmtZmZABWAzMALMYAAAMzGG",
         },
         {
             provider = "wowhead",
             context = "wildstalker",
             label = "Raid",
-            importString = "CcGAAAAAAAAAAAAAAAAAAAAAAAAAAAAwYMjxYmZMmtFWGbzMzYmZAAAAYJY2gxMjaGzCzMzYMzMAAAAAAAGAAAABAz2MLNLzssBmZAWMzwAAYmBAD",
+            importString = "CcGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAjZwMzMzMmtlxyMbzYGzMDAAAALBzihxMjaGziZmZGjZYAAAAAAMwAAAAIAY2mZpZbmlNwMDwiZwAAYmBAD",
         },
         {
             provider = "wowhead",
             context = "wildstalker",
             label = "Mythic+",
-            importString = "CcGAAAAAAAAAAAAAAAAAAAAAAAAAAAAgZmZ2YmZmxY2MPw2YbGzMmZAAAAYJY2gxMjaGzCzMzsMmZGAAAAAAADAAAgAgZbmlmlZW2AzMALMDDAgZGAMA",
+            importString = "CcGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAjZYmZmZMmNjtZ2mZmZegZGAAAAWCmFjhZG1MmFzMzMGzMGAAAAAADMAAAACAmlZ2aWmZZDMzAswgBAwMDAG",
         },
         {
             provider = "wowhead",
             context = "wildstalker",
             label = "Delves",
-            importString = "CcGAAAAAAAAAAAAAAAAAAAAAAAAAAAAgZmZ2YmZmxY2MPw2YbGzMmZAAAAYJY2gxMjaGzCzMzsMmZGAAAAAAADAAAgAgZbmlmlZW2AzMALMDDAgZGAMA",
+            importString = "CcGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAjZYmZmZMmNjtZ2mZmZegZGAAAAWCmFjhZG1MmFzMzMGzMGAAAAAADMAAAACAmlZ2aWmZZDMzAswgBAwMDAG",
         },
         {
             provider = "archon",
@@ -757,7 +745,7 @@ DragonSkillData["DRUID"][103] = {
 }
 
 DragonSkillData["DRUID"][104] = {
-    scrapedAt = "2026-08-15T12:27:05.754Z",
+    scrapedAt = "2026-08-06T14:52:03.843Z",
     statPriority = {
         wowhead = "Survivability: Agility > Haste > Versatility > Critical Strike > Mastery | DPS: Agility > Haste > Versatility > Critical Strike > Mastery",
         archon = "Agility > Haste > Mastery > Vers > Crit",
@@ -787,37 +775,37 @@ DragonSkillData["DRUID"][104] = {
             provider = "wowhead",
             context = "druid",
             label = "Raid",
-            importString = "CgGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgZmxsMPwYMzmZZGMWGY2gRT0MzsMzMzMGzYGAAAAAwMWmBAAAgamlZZmZGAALYmBYxMYAbW2GAMzGMA",
+            importString = "CgGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgZmxsMmZMzmZZm5BMWGY2gRT0MzsMzMzMGzYGAAAAAwMWmBAAAgamlZZmZGAALYmBYxMYALYAwMbwA",
         },
         {
             provider = "wowhead",
             context = "druid",
             label = "Mythic+",
-            importString = "CgGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgZmxsMmZMziZZGmZZZgZzwoJamZWmZmZmlxMMAAAAAgZsMDAAAA1MLzyMzMAAWwMPAwiZwA2sAAmZDG",
+            importString = "CgGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgZmxsMmZMWMLzDMPwMLLDMbGGNRzMzyMzMzsMmhBAAAAAMsMDAAAA1MLzyMzMAAWwMPAwiZwgBLbDAmZDG",
         },
         {
             provider = "wowhead",
             context = "druid",
             label = "Delves",
-            importString = "CgGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgZmxsMmZMziZZGmZZZgZzwoJamZWmZmZmlxMMAAAAAgZsMDAAAA1MLzyMzMAAWwMPAwiZwA2sAAmZDG",
+            importString = "CgGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgZmxsMmZMWMLzDMPwMLLDMbGGNRzMzyMzMzsMmhBAAAAAMsMDAAAA1MLzyMzMAAWwMPAwiZwgBLbDAmZDG",
         },
         {
             provider = "wowhead",
             context = "elunes",
             label = "Raid",
-            importString = "CgGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgZmxs4BGjZ2MLzgZZZgZDGNRzMzyMzMzYMjZAAAAAAzYZGwy2MDGz2AYKAAAwGmZAWMDGwmltBYmBwA",
+            importString = "CgGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgZmxs4BGjZ2MLzMMLLDMbwoJamZWmZmZGjZMDAAAAAYGLzAW2mZwY2GATBAAA2wMDwiZwAWsYAmZAM",
         },
         {
             provider = "wowhead",
             context = "elunes",
             label = "Mythic+",
-            importString = "CgGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgZmxsMPwMjZWMLGmZZZgZzwoJamZWmZmZmlxMAAAAAAMjlZALbzMYMLDgpAAAAbYmBYxMYAbWAYmBwA",
+            importString = "CgGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgZmZmFzMjZWMLm5BmZZZgZzMGNRmZWmZmZmlxMAAAAAAYsYGYbbmBjZZAMFAAAYDz8ADYxMYgZxyGgZGAA",
         },
         {
             provider = "wowhead",
             context = "elunes",
             label = "Delves",
-            importString = "CgGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgZmxsMzMjZWMLGMWGY2MjRT0MzsYmZmxYGGAAAAAwwyMgltZGMmlBwUAAAgNMzDMgFzgBjNLbAmZAMA",
+            importString = "CgGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgZmxsMmZMWMLzMPgZZZgZzMGNRzMziZmZmlxMAAAAAAMsMDYZbmBjZZAMFAAAYDz8ADYxMYwgltBYmBwA",
         },
         {
             provider = "archon",
@@ -847,7 +835,7 @@ DragonSkillData["DRUID"][104] = {
 }
 
 DragonSkillData["DRUID"][105] = {
-    scrapedAt = "2026-08-15T12:27:06.483Z",
+    scrapedAt = "2026-08-06T14:52:04.770Z",
     statPriority = {
         wowhead = "Keeper of the Grove: Intellect > Haste > Mastery > Versatility > Critical Strike | Wildstalker: Intellect > Haste > Mastery > Versatility > Critical Strike",
         archon = "Intellect > Haste > Mastery > Crit > Vers",
@@ -877,37 +865,37 @@ DragonSkillData["DRUID"][105] = {
             provider = "wowhead",
             context = "keeper",
             label = "Raid",
-            importString = "CkGAAAAAAAAAAAAAAAAAAAAAAMjxMLzMjZmxsNMYmFjNmBAAAAAAAAAAbDa2YMNzY4BMLzMzMDDzAAAAAAAAAbbjFMNzsMAAABswYmZYmBGNDAmZAADA",
+            importString = "CkGAAAAAAAAAAAAAAAAAAAAAAMjxMbz2MmZGzywDYmZYswMAAAAAAAAAAYbQzGjpZYMjZZmZmZYYmBAAAAAAAAbbjFMNzsMAAABswYmBzMANDAmZAAD",
         },
         {
             provider = "wowhead",
             context = "keeper",
             label = "Mythic+",
-            importString = "CkGAAAAAAAAAAAAAAAAAAAAAAMMmZZMjZmxsN8AMzsMjNbzAAAAAAAAAAglBNbGmmZMDmFzMzMLzwYAAAAAAAwA2WGLYamZZAAACYhxMDMzGoZAwMDAYA",
+            importString = "CkGAAAAAAAAAAAAAAAAAAAAAAMMmZZMjZmxsN8AMzsNjFbzAAAAAAAAAAgFDNbzw0MAmFzMzMLGGAAAAAMAAzA22GLYamZZAAACYhZmZGMzGoZAwMDAYA",
         },
         {
             provider = "wowhead",
             context = "keeper",
             label = "Mythic+",
-            importString = "CkGAAAAAAAAAAAAAAAAAAAAAAMMmZZMjZmxsNzMgFzsZbGAAAAAAAAAAsNoZzw0MmZMmFzMzMLzwYAAAAAAAwAAQAAAzyMbNLzsYDm5BwMWANDAwMDADA",
+            importString = "CkGAAAAAAAAAAAAAAAAAAAAAAMMmxYGzMjZbmZYYhZx2MAAAAAAAAAAYbQzmhpZMzYMLmZmZWmhxAAAAAAAYMAAEAAwsMzWzyML2gZeAMjFQzAAMzAwA",
         },
         {
             provider = "wowhead",
             context = "wildstalker",
             label = "Raid",
-            importString = "CkGAAAAAAAAAAAAAAAAAAAAAAMjxMLzMjZmxsNMYmNjNmBAAAAAAAAAAbDa2YMNzY4BMLzMzMDDzAAAAAAAAAAIAAgZbmlmtZ2sxYmZYmBGNDAwMDADA",
+            importString = "CkGAAAAAAAAAAAAAAAAAAAAAAMjxMbz2MmZGz2wDwMzmxCzAAAAAAAAAAgtBNbMmmZM8AmlZmZmhhZAAAAAAAAAAEAAwsNzSz2Mb2YMzMMzAjmBAYmBgB",
         },
         {
             provider = "wowhead",
             context = "wildstalker",
             label = "Mythic+",
-            importString = "CkGAAAAAAAAAAAAAAAAAAAAAAMMmZZMjZmxsN8AMzsMjNbzAAAAAAAAAAglBNbGmmZMDmFzMzMLzwDMDAAAAAAAGAACAAY2mZrZbmFbMmZgZWANDAwMDADA",
+            importString = "CkGAAAAAAAAAAAAAAAAAAAAAAMMmZZMjZmxsN8AMzsNjFbzAAAAAAAAAAgFDNbzw0MAmFzMzMLGGAAAAAMAAzAAQAAAz2MbNbzsYjZmZGMzGoZAAmZAYA",
         },
         {
             provider = "wowhead",
             context = "wildstalker",
             label = "Delves",
-            importString = "CkGAAAAAAAAAAAAAAAAAAAAAAMMmZZMjZmxsNzMgFzsZbGAAAAAAAAAAsNoZzw0MmZMmFzMzMLzwYAAAAAAAwAAQAAAzyMbNLzsYDm5BwMWANDAwMDADA",
+            importString = "CkGAAAAAAAAAAAAAAAAAAAAAAMMmxYGzMjZbmZYYhZx2MAAAAAAAAAAYbQzmhpZMzYMLmZmZWmhxAAAAAAAYMAAEAAwsMzWzyML2gZeAMjFQzAAMzAwA",
         },
         {
             provider = "archon",
@@ -938,9 +926,9 @@ DragonSkillData["DRUID"][105] = {
 
 DragonSkillData["EVOKER"] = DragonSkillData["EVOKER"] or {}
 DragonSkillData["EVOKER"][1467] = {
-    scrapedAt = "2026-08-15T12:27:07.309Z",
+    scrapedAt = "2026-08-06T14:52:06.467Z",
     statPriority = {
-        wowhead = "Flameshaper: Intellect > Critical Strike > Mastery > Haste > Versatility | Scalecommander: Intellect > Critical Strike > Mastery > Haste > Versatility",
+        wowhead = "Flameshaper: Intellect > Critical Strike > Haste > Mastery > Versatility | Scalecommander: Intellect > Critical Strike > Haste > Mastery > Versatility",
         archon = "Intellect > Crit > Haste > Mastery > Vers",
     },
     statAverages = {
@@ -968,19 +956,19 @@ DragonSkillData["EVOKER"][1467] = {
             provider = "wowhead",
             context = "scalecommander",
             label = "Raid",
-            importString = "CsbBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAjZgZYGzMgBjZamZmpZM2mxMzMzMzMzAmxMGzMLzMDMwYwGsMGN2GQmBBbYgZGMMA",
+            importString = "CsbBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAzMDMDzYmBMYMTzMzMNjx2MmZmZmHYmZGwMmxYmZZmZgBGDWglxox2AyMIYDDMzghB",
         },
         {
             provider = "wowhead",
             context = "scalecommander",
             label = "Mythic+",
-            importString = "CsbBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAjZAPgZGmBGGjZaMzMNjx2MmZmZmZmZGwMzMGzMbzMDMwYwGsMGN2GQmBBbYGMzghB",
+            importString = "CsbBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAzMDgZGmBGGjZaMzMNDz2MmZmZmZmZGwMzMGzMLzMDMwYwCsMGN2GQmBBbYGMzghB",
         },
         {
             provider = "wowhead",
             context = "scalecommander",
             label = "Delves",
-            importString = "CsbBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwMjZgZYmhBGGjZaMzMNjxyMmZmZmZmZGwMzYYmZZmZgBYwGsMGN2GQmBBbYgZGMjB",
+            importString = "CsbBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwMzMDMDzMMwwYMTjZmpZMzyMmZmZGzMzAmZGDzMLzMDMADWglxox2AyMIYDDMzgZMA",
         },
         {
             provider = "wowhead",
@@ -992,13 +980,13 @@ DragonSkillData["EVOKER"][1467] = {
             provider = "wowhead",
             context = "flameshaper",
             label = "Mythic+",
-            importString = "CsbBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAjZwMjZGzMwMGDTDzMZM2mZmZGGzMzAmZmxYmZbmZwMwMmBWAbgZYCsFsMMDwMzwA",
+            importString = "CsbBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgZGjZmZmZGzMwMGDTDzMZMWGmZGGzMzAmZmxYmxMzgZgZMDsA2AzwEYLYZYGgZmhB",
         },
         {
             provider = "wowhead",
             context = "flameshaper",
             label = "Delves",
-            importString = "CsbBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgZMDmZMzYmBmxYYaYmJjx2MzMzwYmZGwMzMGzMmZGMDMjZgFwGYGmAbBLDzAMzMMA",
+            importString = "CsbBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgZmZwMDmhBmBjZamZmJjxyMzMzwMzMzAmZGDzMbzMDmBMmB2ALgZYCsFsMMAmZGG",
         },
         {
             provider = "archon",
@@ -1028,9 +1016,9 @@ DragonSkillData["EVOKER"][1467] = {
 }
 
 DragonSkillData["EVOKER"][1468] = {
-    scrapedAt = "2026-08-15T12:27:07.883Z",
+    scrapedAt = "2026-08-06T14:52:07.975Z",
     statPriority = {
-        wowhead = "Raid: Intellect > Mastery > Crit > Haste > Versatility | Mythic+: Intellect > Crit [i][/i] > Haste > Mastery > Versatility",
+        wowhead = "Flameshaper: Intellect > Mastery > Crit > Haste > Versatility | Chronowarden: Intellect > Mastery > Crit [i](Haste better in Mythic+)[/i] > Haste > Versatility",
         archon = "Intellect > Mastery > Haste > Crit > Vers",
     },
     statAverages = {
@@ -1057,14 +1045,14 @@ DragonSkillData["EVOKER"][1468] = {
         {
             provider = "wowhead",
             context = "flameshaper",
-            label = "Mythic+",
-            importString = "CwbBAAAAAAAAAAAAAAAAAAAAAAAAAAAmZmZ2WmZGDjxsZGw2wAAAzYmZmZMMTMmBAAAMzMTGzMzMGzAAjZgFwGYGmQ2YsZYGgZGGA",
+            label = "Raid",
+            importString = "CwbBAAAAAAAAAAAAAAAAAAAAAAAAAAAYmZ2MzMGmZMMmZmZxAAAMjZMYGzIzMDAAAwMzMZmZmxsNzMAYGzALgFwMMhsBbGGAzMjB",
         },
         {
             provider = "wowhead",
             context = "flameshaper",
-            label = "Delves",
-            importString = "CwbBAAAAAAAAAAAAAAAAAAAAAAAAAAAmZmZ2MwYmZGMzMDbAAAYYMDzYGZmZAAAALzMz0MGzMjZmBAGzAbgNwMMhsxYzwAYmZmB",
+            label = "Mythic+",
+            importString = "CwbBAAAAAAAAAAAAAAAAAAAAAAAAAAAmZmZ2WGYYmxsZGjx2wAAAzYmZmZMMTMmBAAA2mZmJjZmZGjZAgxMwCYDMDTIbwmhZAmZYA",
         },
         {
             provider = "wowhead",
@@ -1112,9 +1100,9 @@ DragonSkillData["EVOKER"][1468] = {
 }
 
 DragonSkillData["EVOKER"][1473] = {
-    scrapedAt = "2026-08-15T12:27:09.256Z",
+    scrapedAt = "2026-08-06T14:52:09.372Z",
     statPriority = {
-        wowhead = "Chronowarden: Intellect > Mastery > Critical Strike > Haste > Versatility | Scalecommander: Intellect > Mastery > Critical Strike > Haste > Versatility",
+        wowhead = "Chronowarden: Intellect > Critical Strike > Haste > Mastery > Versatility | Scalecommander: Intellect > Critical Strike > Haste > Mastery > Versatility",
         archon = "Intellect > Crit > Haste > Mastery > Vers",
     },
     statAverages = {
@@ -1142,37 +1130,37 @@ DragonSkillData["EVOKER"][1473] = {
             provider = "wowhead",
             context = "chronowarden",
             label = "Raid",
-            importString = "CEcBAAAAAAAAAAAAAAAAAAAAAMMzMbzMzgZYmZZGzMjZ2AAAAAAAAYmhxMYM1YmZGAAAAMjZMmZWGzMwMMwYGLsADMDDNiFMGzMAwA",
+            importString = "CEcBAAAAAAAAAAAAAAAAAAAAAMmZmZbmZmxyAzsMjxwMAAAAAgBAAzMDMYM1YmZGAAAAMjZmxMzyYmBmZzAjZswCMwMM0IWwMjZGAYA",
         },
         {
             provider = "wowhead",
             context = "chronowarden",
             label = "Mythic+",
-            importString = "CEcBAAAAAAAAAAAAAAAAAAAAAMMzMbzMzgZYmZZGzMjZ2AAAAAAAAwMMzAjpGzMzAAAAgZmZMmZ2GzMwMMwYGLsADMDDNiFMmZmBAG",
+            importString = "CEcBAAAAAAAAAAAAAAAAAAAAAMmZmZbmZmxyAzsMjxwMAAAAAAAAYmBmBjHoGzMzAAAAgZmZmxMz2YmBmZzAjZswCMwMM0IWwMzMzAAD",
         },
         {
             provider = "wowhead",
             context = "chronowarden",
             label = "Delves",
-            importString = "CEcBAAAAAAAAAAAAAAAAAAAAAMMzMbjZmxyMYmlZMzMmBAAAAAAAAmhZGYM1YmZGAAAAMzMjxMzyYmBmZzAjZswCMwMM0IWwYmZGAYA",
+            importString = "CEcBAAAAAAAAAAAAAAAAAAAAAMmZmZbmZmxyAzsMjxwMAAAAAAAAYmBmBjHoGzMzAAAAgZmZmxMz2YmBmZzAjZswCMwMM0IWwMzMzAAD",
         },
         {
             provider = "wowhead",
             context = "scalecommander",
             label = "Raid",
-            importString = "CEcBAAAAAAAAAAAAAAAAAAAAAMMzMbzMzgZYmZZGzMjZ2AAAAAAAAYmhxMYM1YmZGAAAAMjZMmZWGzMwMMGsALjhx2AYmI2wYgZGAD",
+            importString = "CEcBAAAAAAAAAAAAAAAAAAAAAMmZmZbmZmxyAzsMjxwMAAAAAgBAAzMDMYM1YmZGAAAAMjZmxMzyYmBmZzYwCsMGGbDgZiYDzMwMDgB",
         },
         {
             provider = "wowhead",
             context = "scalecommander",
             label = "Mythic+",
-            importString = "CEcBAAAAAAAAAAAAAAAAAAAAAMMzMbjZGMDzMLzYmZMzGAAAAAAAAmhZGYM1YmZGAAAAMzMjxMz2YmBmZzYwCsMGGbDgZiYDjZwMDgB",
+            importString = "CEcBAAAAAAAAAAAAAAAAAAAAAMmZmZbmZmxyAzsMjxwMAAAAAAAAYmBmBjHoGzMzAAAAgZmZmxMz2YmBmZzYwCsMGGbDgZiYDzMDmZAM",
         },
         {
             provider = "wowhead",
             context = "scalecommander",
             label = "Delves",
-            importString = "CEcBAAAAAAAAAAAAAAAAAAAAAMMzMbjZmxyMYmlZMzMmBAAAAAAAAmhZGYM1YmZGAAAAMzMjxMzyYmBmZzYwCsMGGbDgZiYDjZwMDgB",
+            importString = "CEcBAAAAAAAAAAAAAAAAAAAAAMmZmZbmZmxyAzsMjxwMAAAAAAAAYmBmBjHoGzMzAAAAgZmZmxMzyYmBmZzYwCsMGGbDgZiYDzMDmZAM",
         },
         {
             provider = "archon",
@@ -1203,9 +1191,9 @@ DragonSkillData["EVOKER"][1473] = {
 
 DragonSkillData["HUNTER"] = DragonSkillData["HUNTER"] or {}
 DragonSkillData["HUNTER"][253] = {
-    scrapedAt = "2026-08-15T12:27:09.778Z",
+    scrapedAt = "2026-08-06T14:52:10.217Z",
     statPriority = {
-        wowhead = "Pack Leader: Weapon Damage > Agility > Mastery > Critical Strike > Haste > Versatility | Dark Ranger: Weapon Damage > Agility > Critical Strike > Mastery > Haste > Versatility",
+        wowhead = "Pack Leader: Weapon Damage > Agility > Mastery > Critical Strike > Haste > Versatility | Dark Ranger: Weapon Damage > Agility > Mastery > Haste > Critical Strike > Versatility",
         archon = "Agility > Crit > Mastery > Haste > Vers",
     },
     statAverages = {
@@ -1233,37 +1221,37 @@ DragonSkillData["HUNTER"][253] = {
             provider = "wowhead",
             context = "pack",
             label = "Raid",
-            importString = "C0PAAAAAAAAAAAAAAAAAAAAAAAMmxwCsAzwQDbAAYGGzsMzwMmZMDzMGzMMzYGzwMzYGzghmBAAAAMDAAAzMzMAzsRYYWAbDAD",
+            importString = "C0PAAAAAAAAAAAAAAAAAAAAAAAMmxwCsAzwQDbAAYG2GzsNzwMmZYYmxYmxMzYGzwMzYGzghmBAAAAwMAAAMzMzAMzGCDzCYbAA",
         },
         {
             provider = "wowhead",
             context = "pack",
             label = "Mythic+",
-            importString = "C0PAAAAAAAAAAAAAAAAAAAAAAAMmxwCsBzwQDbAAYGzMzsYGzMzMjZGMzYmhZGzMzYbmZYMDLDNDAAAAAAAAmHYMzAmZjAmFw2AwA",
+            importString = "C0PAAAAAAAAAAAAAAAAAAAAAAAMmxwCsBzwQDbAAYGPwyMzsYGmZmZGzMMzMmhZGzMzYbmZYMDLDNDAAAAAAAAYegxMDYmNEwsA2GA",
         },
         {
             provider = "wowhead",
             context = "pack",
             label = "Delves",
-            importString = "C0PAAAAAAAAAAAAAAAAAAAAAAAMmxwCsAzwQDbAAYGzMzsYGzMzMjZGMzYmhZmZGzwMzwYmhx0MAAAAAAAAYMmBYmNCWmZBsNAM",
+            importString = "C0PAAAAAAAAAAAAAAAAAAAAAAAMmxwGsAzwQDbAAYGzyMzsYGmZmZGzMMmxMMzMzYGmZGGzMMmmBAAAAAAAAMGzAMzCCWmZBsNA",
         },
         {
             provider = "wowhead",
             context = "dark",
             label = "Raid",
-            importString = "C0PAAAAAAAAAAAAAAAAAAAAAAYzsNwAGwMsBZsAAgZMjZWMDzYmxMMzYYGzMjZMDzMjZMDGaGAAAAwMAAAMzMzgZGQYYWAbDAD",
+            importString = "C0PAAAAAAAAAAAAAAAAAAAAAAYzsNwAGwMsBZsAAgZYZmZMzwMmBzYmZGmxMzMzYGmZGGzMMmmBAAAAwMAAAMGzgZGgglZWAbDA",
         },
         {
             provider = "wowhead",
             context = "dark",
             label = "Mythic+",
-            importString = "C0PAAAAAAAAAAAAAAAAAAAAAAYzsNwAGwMsBZsAAgZGzMziZYGmxMjZmZYGzMjZmZsNzMMmhlhmBAAAAMDAAAzDMmZYmBEwsA2GAA",
+            importString = "C0PAAAAAAAAAAAAAAAAAAAAAAYzsNwAGwMsBZsAAgZGLzMDzwMzMYGzMzwMmZGzMzYbmZYMDLDNDAAAAgZAAAYegxMDzMABMLgtBA",
         },
         {
             provider = "wowhead",
             context = "dark",
             label = "Delves",
-            importString = "C0PAAAAAAAAAAAAAAAAAAAAAAYzsNwAGwMsBZsAAgZGzMziZYGmxMjZmZYGzMzMjZYmZYMzwYaGAAAAwMAAAMGzgZGQwyMLgtBA",
+            importString = "C0PAAAAAAAAAAAAAAAAAAAAAAYzsNwAGwMsBZsAAgZGLzMDzwMzMYGzMzwMmZmZGzwMzwYmhx0MAAAAAmBAAgxYGMzAEsMzCYbAA",
         },
         {
             provider = "archon",
@@ -1293,7 +1281,7 @@ DragonSkillData["HUNTER"][253] = {
 }
 
 DragonSkillData["HUNTER"][254] = {
-    scrapedAt = "2026-08-15T12:27:10.969Z",
+    scrapedAt = "2026-08-06T14:52:11.004Z",
     statPriority = {
         wowhead = "Sentinel: Agility > Critical Strike > Mastery > Versatility > Haste | Dark Ranger: Agility > Critical Strike > Mastery > Versatility > Haste",
         archon = "Agility > Crit > Mastery > Haste > Vers",
@@ -1322,44 +1310,50 @@ DragonSkillData["HUNTER"][254] = {
         {
             provider = "wowhead",
             context = "sentinel",
-            label = "Single Target",
-            importString = "C4PAAAAAAAAAAAAAAAAAAAAAAwCMwMGzYZAMD2AAAAAAAAAzYGzssNjZmxM4BMNjBjtlZmZmZmZmZhZWGMDAAYMzMGAz0GDDwGzsNjB",
+            label = "Raid",
+            importString = "C4PAAAAAAAAAAAAAAAAAAAAAAwCMwMGNWGAzgNAAAAAAAAgZMjZYGzMjZwYaGDzstxMzsMzMmZmFMLDmBAAMmZmZAMz0GziBYjZGD",
         },
         {
             provider = "wowhead",
             context = "sentinel",
             label = "Raid AoE/Cleave",
-            importString = "C4PAAAAAAAAAAAAAAAAAAAAAAwCMwMGzYZAMD2AAAAAAAAAzYGzssNjZmxM4BMNjBz2mZmZmZmZmZhZWGmBAAYMzMGAz0GDDwGzsNjB",
+            importString = "C4PAAAAAAAAAAAAAAAAAAAAAAwCMwMGNWGAzgNAAAAAAAAgZMjZYGzMjZwYaGDmtttZmhZmZmZmFMLDzMAAgxMzMAMz0GziBYjZGD",
         },
         {
             provider = "wowhead",
             context = "sentinel",
             label = "Mythic+",
-            importString = "C4PAAAAAAAAAAAAAAAAAAAAAAwGMwMGzYZAMD2AAAAAAAAAzYmZGbzYmZMDLjpZMYW2WmZmZmZmZmFmZZYGAAAPwYMAMTbgBYjZ2mxA",
+            importString = "C4PAAAAAAAAAAAAAAAAAAAAAAwCMwMGNWGAzgNAAAAAAAAgZMzMjtZMzMmhlx0MGMLbbzMDzMzMzMLMzywMDAAgZGDAzMtBGgNmZM",
         },
         {
             provider = "wowhead",
             context = "sentinel",
             label = "Delves",
-            importString = "C4PAAAAAAAAAAAAAAAAAAAAAAwGMwMGzYZAMD2AAAAAAAAAzYmZGMmZGzMMmGGMLbLzMzMzMzMzCmthZAAAmZMGAmpNsMDwGzsNjB",
+            importString = "C4PAAAAAAAAAAAAAAAAAAAAAAwCMwMGNWGAzgNAAAAAAAAgZMzMjNjHYmxMsMmmxgZbbbmZYmZmZmZjZ2GmZAAAmxYAYmpNYGgNmZM",
         },
         {
             provider = "wowhead",
             context = "dark",
-            label = "Single Target",
-            importString = "C4PAAAAAAAAAAAAAAAAAAAAAAYzsMwAmgZYbAzCAAAAAAAAYGzYmltZMzMmBPgpZMYstMzMzMzMzMLMzygBAAYMzMmZmBEGGgNmZbGD",
+            label = "Raid",
+            importString = "C4PAAAAAAAAAAAAAAAAAAAAAAYzsMwAmgZYLwsAAAAAAAAAMjZMDzYmZMDGTzYmZstxYmlZmZmZmlhZZwAAAMmZmZmZGgwsYA2YGA",
         },
         {
             provider = "wowhead",
             context = "dark",
             label = "Mythic+",
-            importString = "C4PAAAAAAAAAAAAAAAAAAAAAAYzsMwAmgZYbAzCAAAAAAAAYGzMzYbGzMjZYZMNjBzymZMzMzMzMLMzywMAAAegxYmZmBEwAsxMbzYA",
+            importString = "C4PAAAAAAAAAAAAAAAAAAAAAAYzsMwAmgZYJwsAAAAAAAAAMjZmZsZMzMmhlx0MGMLbmZGmZGzMzCzsMMzAAAMjxMzMDYCYA2YmxA",
+        },
+        {
+            provider = "wowhead",
+            context = "dark",
+            label = "Raid AoE/Cleave",
+            importString = "C4PAAAAAAAAAAAAAAAAAAAAAAYzsMwAmgZYLwsAAAAAAAAAMjZMDzYmZMDGTzYwstxMzsMzMzMzsgZZYmBAAMmZmZmZGwEmFDwGzA",
         },
         {
             provider = "wowhead",
             context = "dark",
             label = "Delves",
-            importString = "C4PAAAAAAAAAAAAAAAAAAAAAAYzsMwAmgZYbAzCAAAAAAAAYGzMzgxMzYmhx0wgZZzMmZmZmZmFMbDzAAAMzYMzMzACWmBYjZ2mxA",
+            importString = "C4PAAAAAAAAAAAAAAAAAAAAAAYxsMwAmgZYLwsAAAAAAAAAMjZmZsZMzMmhlx0MGMLbMzMLzMzMzMLMzywMDAAwMGzMzMgJgBYjZA",
         },
         {
             provider = "archon",
@@ -1389,7 +1383,7 @@ DragonSkillData["HUNTER"][254] = {
 }
 
 DragonSkillData["HUNTER"][255] = {
-    scrapedAt = "2026-08-15T12:27:12.213Z",
+    scrapedAt = "2026-08-06T14:52:12.222Z",
     statPriority = {
         wowhead = "Pack Leader: Agility > Mastery > Critical Strike and Haste > Versatility | Sentinel: Agility > Mastery > Critical Strike > Haste > Versatility",
         archon = "Agility > Mastery > Crit > Haste > Vers",
@@ -1418,56 +1412,38 @@ DragonSkillData["HUNTER"][255] = {
         {
             provider = "wowhead",
             context = "pack",
-            label = "Pre-tier set",
-            importString = "C8PAAAAAAAAAAAAAAAAAAAAAAMgxMGWIbwMM0gFjZmxMWGAAAAAAmZmZmhZMmxMYMNDAAAwAgZssMzMLMzMzYmxAmZDAjxMWMAA",
-        },
-        {
-            provider = "wowhead",
-            context = "pack",
             label = "Raid",
-            importString = "C8PAAAAAAAAAAAAAAAAAAAAAAMgxMGWIbwMM0gFjZmxMWGAAAAAAmZmZmhZMmxMYMNDAAAwAgZssMzMLMzMzYmxAmZDAjxMWMAA",
+            importString = "C8PAAAAAAAAAAAAAAAAAAAAAAMgxMGWIbwMM0gFjZmZmxyAAAAAAgZMzMDz4BMjZwYaGAAAAAAjllZmZxMzMzYmxAmZDwsMjxM2MA",
         },
         {
             provider = "wowhead",
             context = "pack",
             label = "Mythic+",
-            importString = "C8PAAAAAAAAAAAAAAAAAAAAAAMgxMG2ILwMM0gFzMzMzMWGAAAAAAmZmZmhZMmxMYMNDAAAwAgHYssMzYhZmZGzMGwMbAYMmZWMAA",
+            importString = "C8PAAAAAAAAAAAAAAAAAAAAAAMgxMG2ILwMM0gFzMzMzwyAAAAAAgZMzMjlZMmxMYMNDAAAADAMWWmZmFzMzYMmZAzsBAjxMzmBA",
         },
         {
             provider = "wowhead",
             context = "pack",
             label = "Delves",
-            importString = "C8PAAAAAAAAAAAAAAAAAAAAAAMgxMG2ILwMM0gFzMzMzMWGAAAAAAmZmZmhZMMmZYMNDAAAwAgHYssMzYhZmZGjxAmZDgZMmZWMAA",
+            importString = "C8PAAAAAAAAAAAAAAAAAAAAAAMgxMG2ILwMM0gFzMzMzwyAAAAAAgZmZmZYGDjZGGTzAAAAwAAjllZmZxMzM8AjxAmZDAzYMzsZA",
         },
         {
             provider = "wowhead",
             context = "sentinel",
             label = "Raid",
-            importString = "C8PAAAAAAAAAAAAAAAAAAAAAAMWgBmxoxyAYmgNjZmxMWGAAAAAAmZmZmhZMmxMYMNDAAAwAgZssNzMLMzMzYmxAwM2AjxMWMAA",
-        },
-        {
-            provider = "wowhead",
-            context = "sentinel",
-            label = "Raid",
-            importString = "C8PAAAAAAAAAAAAAAAAAAAAAAMWgBmxoxyAYmgtZMzMGzyAAAAAAwMzMmhZMmxMYMNDAAAwAgZmllZmZBzMzYmxAwMWwixwYxAA",
+            importString = "C8PAAAAAAAAAAAAAAAAAAAAAAMWgBmxoxyAYmgNjZmxMPwyAAAAAAgZMzMDz4BMjZwYaGAAAAAAjltZmZxMzMzYmxAwMsxsMjxM2MA",
         },
         {
             provider = "wowhead",
             context = "sentinel",
             label = "Mythic+",
-            importString = "C8PAAAAAAAAAAAAAAAAAAAAAAMWgBmxoxyAYmgtZmZmxMz2MAAAAAAmxMzMMjxMmBjpZAAAAGAgltZGLzYmxYMzAwM2wixwMLGAA",
-        },
-        {
-            provider = "wowhead",
-            context = "sentinel",
-            label = "Mythic+",
-            importString = "C8PAAAAAAAAAAAAAAAAAAAAAAMWgBmxoxyAYmgtZmZmxMz2MAAAAAAmxMzMMjxMmBjpZAAAAGAgltZGbzYmxYMzAwM2wixwMLGAA",
+            importString = "C8PAAAAAAAAAAAAAAAAAAAAAAMWgBmxoxyAYmgNzMzMm5BWGAAAAAAMjZmZsMjxMmBjpZAAAAYAgxy2MzDsYmZGjxMDAzwGYMmZ2MA",
         },
         {
             provider = "wowhead",
             context = "sentinel",
             label = "Delves",
-            importString = "C8PAAAAAAAAAAAAAAAAAAAAAAMWgBmxoxyAYmgtZmZmZmZ2mBAAAAAwMzMzMMjhxMDjpZAAAAGAgltZGLDzMGjxAwM2gZMMziBA",
+            importString = "C8PAAAAAAAAAAAAAAAAAAAAAAMWgBmxoxyAYmgNzMzMzwyAAAAAAgZmZmZYGDjZGGTzAAAAwAAjllZmZxMzM8AjxAwMsBzYMzsZA",
         },
         {
             provider = "archon",
@@ -1498,9 +1474,9 @@ DragonSkillData["HUNTER"][255] = {
 
 DragonSkillData["MAGE"] = DragonSkillData["MAGE"] or {}
 DragonSkillData["MAGE"][62] = {
-    scrapedAt = "2026-08-15T12:27:12.719Z",
+    scrapedAt = "2026-08-06T14:52:13.001Z",
     statPriority = {
-        wowhead = "Spellslinger: Intellect > Haste > Mastery > Critical Strike > Versatility | Sunfury: Intellect > Haste > Versatility > Critical Strike > Mastery",
+        wowhead = "Spellslinger: Intellect > Mastery > Haste > Critical Strike > Versatility | Sunfury: Intellect > Mastery > Haste > Critical Strike > Versatility",
         archon = "Intellect > Mastery > Haste > Crit > Vers",
     },
     statAverages = {
@@ -1528,37 +1504,37 @@ DragonSkillData["MAGE"][62] = {
             provider = "wowhead",
             context = "spellslinger",
             label = "Raid",
-            importString = "C4DAAAAAAAAAAAAAAAAAAAAAAYGGLzMzswMDamZGAAAGAAEwMzMLLzMxCAAwMzMjNLzMzsMjxYmZwCzYmZGAgBAAYmZBAMDAGmZG",
+            importString = "C4DAAAAAAAAAAAAAAAAAAAAAAYGGLzMzswMzQzMzAAAwAAgAmZmZZZmZYBAgtxMzMmtFLzMzYmxYMzMGLMzMjZAAGAAAzsAAmBADD",
         },
         {
             provider = "wowhead",
             context = "spellslinger",
             label = "Mythic+",
-            importString = "C4DAAAAAAAAAAAAAAAAAAAAAAMzwYZmZmFMzQzMGAAAGAAEwMzMLLzMxCAAbDmZG2sMjZMjxMzMzwCzMzMzAAMAAAzMbAADAGmZG",
+            importString = "C4DAAAAAAAAAAAAAAAAAAAAAAMzwYZmZmFmZGamxAAAwAAgAmZmZZZmJWAAYbGzMjZzsMzMjZGjhZmZswMzMmBAYAAAMzCAYGAMM",
         },
         {
             provider = "wowhead",
             context = "spellslinger",
             label = "Delves",
-            importString = "C4DAAAAAAAAAAAAAAAAAAAAAAMzwYZmZmFMzQzMGAAAGAAEwMzMLLzMxCAAbDmZG2sMjZMjxMzMzwCzMzMzAAMAAAzMbAADAGmZG",
+            importString = "C4DAAAAAAAAAAAAAAAAAAAAAAMzwYZmZmFmZGamxAAAwAAgAmZmZZZmJWAAYbGzMjZzsMzMjZGjhZmZswMzMmBAYAAAMzCAYGAMM",
         },
         {
             provider = "wowhead",
             context = "sunfury",
             label = "Raid",
-            importString = "C4DAAAAAAAAAAAAAAAAAAAAAAYGGLzMzswMDamZGAAAGAwMz0sssMDAEbAAAmZG2sMjZWmxYmZmZYhZMzMDAwAAAMAzMgZAwwMzA",
+            importString = "C4DAAAAAAAAAAAAAAAAAAAAAAYGGLzMzswMzQzMzAAAwAAmZmmlltZAgYDAgNmZmxYzyMzMLzMGjZmxYhZmZMDAwAAAMAzMgZAwwA",
         },
         {
             provider = "wowhead",
             context = "sunfury",
             label = "Mythic+",
-            importString = "C4DAAAAAAAAAAAAAAAAAAAAAAMzwYZmZmFMzQzMGAAAGAwMz0sssMDAEbAAsBzMDbWmxMLzYMzMzMswMzMzMAADAAwAMzAMAYYmZA",
+            importString = "C4DAAAAAAAAAAAAAAAAAAAAAAMzwMLzMzsgZGamxAAAwAAmZmmlttZAgYDAgNDzMDbzyMzMLzwYGzMDLMzMzDMDAwAAAMAzMgZAwwA",
         },
         {
             provider = "wowhead",
             context = "sunfury",
             label = "Delves",
-            importString = "C4DAAAAAAAAAAAAAAAAAAAAAAMzwYZmZmFMzQzMGAAAGAwMz0sssMDAEbAAsBzMDbWmxMLzYMzMzMswMzMzMAADAAwAMzAMAYYmZA",
+            importString = "C4DAAAAAAAAAAAAAAAAAAAAAAMzwMLzMzsgZGamxAAAwAAmZmmlttZAgYDAgNDzMDbzyMzMLzwYGzMDLMzMzDMDAwAAAMAzMgZAwwA",
         },
         {
             provider = "archon",
@@ -1588,7 +1564,7 @@ DragonSkillData["MAGE"][62] = {
 }
 
 DragonSkillData["MAGE"][63] = {
-    scrapedAt = "2026-08-15T12:27:13.471Z",
+    scrapedAt = "2026-08-06T14:52:14.578Z",
     statPriority = {
         wowhead = "Sunfury: Intellect > Haste > Mastery > Versatility > Critical Strike | Frostfire: Intellect > Haste > Mastery > Versatility > Critical Strike",
         archon = "Intellect > Haste > Mastery > Crit > Vers",
@@ -1618,13 +1594,13 @@ DragonSkillData["MAGE"][63] = {
             provider = "wowhead",
             context = "sunfury",
             label = "Raid",
-            importString = "C8DAAAAAAAAAAAAAAAAAAAAAAYGGLzMzswMzIzMzAAAwAAmZmmlttZAA2MzM2mZmZGLAAAAAYxMjZAAgZMmZmZMzsMAMzQGjBMDjB",
+            importString = "C8DAAAAAAAAAAAAAAAAAAAAAAYGGLzMzswMDZmZGAAAGAwMz0sssMDAwmZmx2YmZGAAAAAgFzMzMDAAGzYGzMzMzGAmZIjxYwMMA",
         },
         {
             provider = "wowhead",
             context = "sunfury",
             label = "Mythic+",
-            importString = "C8DAAAAAAAAAAAAAAAAAAAAAAMzwYZmZmFMzIzMzMAAAGAwMz0sstNDAwmZmx2MzMzYDAAAAALmZmZAAgZMmZmZMzsMAMzQYMgZYMA",
+            importString = "C8DAAAAAAAAAAAAAAAAAAAAAAMzwMLzMzsgZGZmxAAAwAAmZmmlltZAA2MzM2GzMzYDAAAAAWMzMzMAAYMDjZmZmZbAYmhwYMYGG",
         },
         {
             provider = "wowhead",
@@ -1636,19 +1612,19 @@ DragonSkillData["MAGE"][63] = {
             provider = "wowhead",
             context = "frostfire",
             label = "Raid",
-            importString = "C8DAAAAAAAAAAAAAAAAAAAAAAYGGLzMzswMzIzMzAAAwMLzYmZZWgAAAWMzw2MzMzYBAAAAALmZMDAAMzwMzMzMzsAMzAyYMGMYMA",
+            importString = "C8DAAAAAAAAAAAAAAAAAAAAAAYGGLzMzswMDZmZGAAAmZZGzMLzCEAAwiZmx2YmZGAAAAAgFzMzMDAAGzYmZmZmZ2AmZADzYMYwA",
         },
         {
             provider = "wowhead",
             context = "frostfire",
             label = "Mythic+",
-            importString = "C8DAAAAAAAAAAAAAAAAAAAAAAMzwYZmZmFMzIzMzMAAAmZZGzMLzCEAAwiZG2mZmZGbAAAAAYxMzMDAAMzwMzMzMzsAMzACjxgBjB",
+            importString = "C8DAAAAAAAAAAAAAAAAAAAAAAMzwMLzMzsgZGZmxAAAwMLzYmZZWgAAAWMzM2GzMzYBAAAAAWMzMzMAAYMjZmZmZmZDYmBMYMGMYA",
         },
         {
             provider = "wowhead",
             context = "frostfire",
             label = "Delves",
-            importString = "C8DAAAAAAAAAAAAAAAAAAAAAAMzwYZmZmFMzIzMzAAAwMLzYmZZWgAAAWMzM2mZmZmZDAAAAALmZmZAAgZMmZmZMzsAMzAyYMgBjB",
+            importString = "C8DAAAAAAAAAAAAAAAAAAAAAAMzwMLzMzsgZGZmxAAAwMLzYmZZWgAAAWMzM2GzMzYBAAAAA2MzMzMAAYMjZmZmZmZDYmBMYMGMYA",
         },
         {
             provider = "archon",
@@ -1678,7 +1654,7 @@ DragonSkillData["MAGE"][63] = {
 }
 
 DragonSkillData["MAGE"][64] = {
-    scrapedAt = "2026-08-15T12:27:13.996Z",
+    scrapedAt = "2026-08-06T14:52:15.008Z",
     statPriority = {
         wowhead = "Frostfire: Intellect > Mastery > Critical Strike > Haste > Versatility | Spellslinger: Intellect > Mastery > Critical Strike > Haste > Versatility",
         archon = "Intellect > Crit > Mastery > Haste > Vers",
@@ -1708,37 +1684,37 @@ DragonSkillData["MAGE"][64] = {
             provider = "wowhead",
             context = "spellslinger",
             label = "Raid",
-            importString = "CAEAAAAAAAAAAAAAAAAAAAAAAYGGLzMzsMmZmYmZGzMzMziZmZMjZAAAgZmZWWmZaDAAAAAA2AYbZMzMDmthxMsAAAwMbAzEGwMYYA",
+            importString = "CAEAAAAAAAAAAAAAAAAAAAAAAYGGLzMzswMzEzMzMzMzMziZmZMjZAAAgZmZWWmZaDAAAAAAsBw22YmZGMbDjZYDAAgZ2AmJjBMDGA",
         },
         {
             provider = "wowhead",
             context = "spellslinger",
             label = "Mythic+",
-            importString = "CAEAAAAAAAAAAAAAAAAAAAAAAMzwYZmZmFMzEzMmZmZmZWMzMjZMDAAAMzMzyyMTbAAwCAAAYBgtlxMzMY2GGzwCAAAzsBMTGDYGMMA",
+            importString = "CAEAAAAAAAAAAAAAAAAAAAAAAMzwYZmZmFmZmYGmZmZmZWMzMMjZAAAgZmZWWmZaDAAWAAAAWAYbbMzMDmthxMjNAAAmZDYmMGwMYA",
         },
         {
             provider = "wowhead",
             context = "spellslinger",
             label = "Delves",
-            importString = "CAEAAAAAAAAAAAAAAAAAAAAAAMzwYZmZmFMzEzMmZmZmZWMzMjZMDAAAMzMzyyMTbAAwCAAAYBgtlxMzMY2GGzwCAAAzsBMTGDYGMMA",
+            importString = "CAEAAAAAAAAAAAAAAAAAAAAAAYGGLzMzswMzEzMzMzMzMziZmhZMDAAAMzMzyyMTbAAAAAAgFA22GzMzgZbYMzYDAAgZ2AmJjBMDGA",
         },
         {
             provider = "wowhead",
             context = "frostfire",
             label = "Raid",
-            importString = "CAEAAAAAAAAAAAAAAAAAAAAAAYGGLzMzsMmZmYmxYmZmZWMzMzMzMzsMTzMbzCAAAaBAAAAAAAw2yYmZGMbzYmZstAAAAmZwMZMgBwA",
+            importString = "CAEAAAAAAAAAAAAAAAAAAAAAAYGGLzMzsMmZmYmxMjZMziZmZmxMzsMTzMLzCAAAaBAAAAAAsBw22YmZGYZGjZstAAAAmZwMZMgBGA",
         },
         {
             provider = "wowhead",
             context = "frostfire",
             label = "Mythic+",
-            importString = "CAEAAAAAAAAAAAAAAAAAAAAAAMzwYZmZmFMzEzMmZmZmZWMzMzMzMzsMTzMbzCAAAaBAAWAAAAAYbZMzMDmtZMzM2WAAAAzMYmMGwAYA",
+            importString = "CAEAAAAAAAAAAAAAAAAAAAAAAMzwYZmZmFmZmYGmZmZmZWMzMzMGzsMTzMLzCAAAaBAAWAAAAWAYbbMzMDGGzMzYDAAAMzgZyYAgB",
         },
         {
             provider = "wowhead",
             context = "frostfire",
             label = "Delves",
-            importString = "CAEAAAAAAAAAAAAAAAAAAAAAAMzwYZmZmFMzEzMmZmZmZWMzMzMzMzsMTzMbzCAAAaBAAWAAAAAYbZMzMDmtZMzM2WAAAAzMYmMGwAYA",
+            importString = "CAEAAAAAAAAAAAAAAAAAAAAAAYGGLzMzswMzEzMzMzMzMziZmZmxYmlZamZZWAAAQLAAAAAAgFA22GzMzghxMzM2AAAAzMYmMGAYA",
         },
         {
             provider = "archon",
@@ -1769,9 +1745,9 @@ DragonSkillData["MAGE"][64] = {
 
 DragonSkillData["MONK"] = DragonSkillData["MONK"] or {}
 DragonSkillData["MONK"][268] = {
-    scrapedAt = "2026-08-15T12:27:14.931Z",
+    scrapedAt = "2026-08-06T14:52:15.793Z",
     statPriority = {
-        wowhead = "Shado-Pan: Item Level / Agility / Armor / Stamina > Versatility = Critical Strike = Mastery > Haste | Master of Harmony: Item Level / Agility / Armor / Stamina > Versatility = Critical Strike = Mastery > Haste | Shado-Pan: Item Level / Agility > Critical Strike > Versatility = Mastery > Haste | Master of Harmony: Item Level / Agility > Critical Strike > Versatility = Mastery > Haste",
+        wowhead = "Shado-Pan: Item Level / Agility / Armor / Stamina > Versatility = Critical Strike = Mastery > Haste | Master of Harmony: Item Level / Agility / Armor / Stamina > Versatility = Critical Strike = Mastery > Haste | Shado-Pan: Item Level / Agility > Critical Strike > Mastery > Versatility > Haste | Master of Harmony: Item Level / Agility > Critical Strike > Mastery > Versatility > Haste",
         archon = "Agility > Crit > Vers > Mastery > Haste",
     },
     statAverages = {
@@ -1799,13 +1775,13 @@ DragonSkillData["MONK"][268] = {
             provider = "wowhead",
             context = "shado",
             label = "Standard Raid",
-            importString = "CwQAAAAAAAAAAAAAAAAAAAAAAAAAAgZbzYGPwYWM2mxMDAAAAAAALLYEmBmhxmZMmZmZMzywMmZZYZzy2sNMLAAwGCAAwsNLNzMziZYDgZGmGDAAYA",
+            importString = "CwQAAAAAAAAAAAAAAAAAAAAAAAAAAgZbzYGPwYWM2mxMDAAAAAAALLYEmBmhxmZMmZmZMzywMmZZYZzy2sMMLAAwGCAAwsNLNzMziZYDgZGmGDAAYA",
         },
         {
             provider = "wowhead",
             context = "shado",
             label = "Mythic+",
-            importString = "CwQAAAAAAAAAAAAAAAAAAAAAAAAAAwMLbGDzwyM2MmZMAAAAAAALLgYmBmhBzgZmZGzsNMjZWGW2stNbzYWAAgNEAAgZbWamZmNG2AYmhpxAGAwA",
+            importString = "CwQAAAAAAAAAAAAAAAAAAAAAAAAAAwMLbGDzwyM2MmZAAAAAAAYZBmYmBmhBzgZmZGzsNMjZWGW2ssNbzYWAAgNEAAgZbWamZmNG2AYmhpxAGAwA",
         },
         {
             provider = "wowhead",
@@ -1817,13 +1793,13 @@ DragonSkillData["MONK"][268] = {
             provider = "wowhead",
             context = "master",
             label = "Standard Raid",
-            importString = "CwQAAAAAAAAAAAAAAAAAAAAAAAAAAgZbzYGPwYWM2mxMDAAAAAAALLYEmBmhxmZMmZmZMzywMmZZYZzy2sNMLAAwysMtMbzsMAAQAmhNwMDYaMAAgB",
+            importString = "CwQAAAAAAAAAAAAAAAAAAAAAAAAAAgZbzYGPwYWM2mxMDAAAAAAALLYEmBmhxmZMmZmZMzywMmZZYZzy2sMMLAAwysMtMbzsMAAQAmhNwMDYaMAAgB",
         },
         {
             provider = "wowhead",
             context = "master",
             label = "Mythic+",
-            importString = "CwQAAAAAAAAAAAAAAAAAAAAAAAAAAgZZzYGzwyM2MmZMAAAAAAALLgYmBmhBzgZmZGzsNMjZWGW2stNbzYWAAglZZaZ2mZZAAgAYYDMzAmGDYAAD",
+            importString = "CwQAAAAAAAAAAAAAAAAAAAAAAAAAAgZZzYGzwyM2MmZAAAAAAAYZBmYmBmhBzgZmZGzsNMjZWGW2ssNbzYWAAglZZaZ2mZZAAgAYYDMzAmGDYAAD",
         },
         {
             provider = "wowhead",
@@ -1859,7 +1835,7 @@ DragonSkillData["MONK"][268] = {
 }
 
 DragonSkillData["MONK"][269] = {
-    scrapedAt = "2026-08-15T12:27:15.901Z",
+    scrapedAt = "2026-08-06T14:52:16.491Z",
     statPriority = {
         wowhead = "Shado-pan: Agility > Haste > Critical Strike > Mastery > Versatility | Conduit of the Celestials: Agility > Haste > Mastery > Critical Strike > Versatility",
         archon = "Agility > Haste > Crit > Mastery > Vers",
@@ -1889,49 +1865,49 @@ DragonSkillData["MONK"][269] = {
             provider = "wowhead",
             context = "shado",
             label = "Raid - Single Target",
-            importString = "C0QAAAAAAAAAAAAAAAAAAAAAAMzYM2GmhlZGbzAAAAAAAAAAAAsMMaGzAGwMGmZmZY2GmhZZmAAWMz2MjZmZmBAwGAMLzSzMzsAgBmZAYsMQMgLA",
+            importString = "C0QAAAAAAAAAAAAAAAAAAAAAAMzYw2MGsNzMbzAAAAAAAAAAAAsMMCzYbYAzYYmZmhZZYGmlZCAYzMbjhZmZGAAbAwsMLNzMzCAGYmBAWGDxAG",
         },
         {
             provider = "wowhead",
             context = "shado",
             label = "Raid - Cleave",
-            importString = "C0QAAAAAAAAAAAAAAAAAAAAAAMzYMYMYbmZ2mxAAAAAAAAAAAALDjwMMMgZMMzMzwsNMDzyMBAsYmtxwYmZAAsBAzys0MzMLADDMzAwYZMEDYA",
+            importString = "C0QAAAAAAAAAAAAAAAAAAAAAAMzYMYMYbmZ2mxAAAAAAAAAAAALDjwMMMgZMMzMzwsMMDzyMBAsYmtxwYmZAAsBAzys0MzMLADDMzAwYZMEDYA",
         },
         {
             provider = "wowhead",
             context = "shado",
             label = "Mythic+",
-            importString = "C0QAAAAAAAAAAAAAAAAAAAAAAMzYAMGbzMz2MAAAAAAAAAAAALDzEmxywAmxwMzMDzGmhZZmAAWMz2MzYmZmBAwGAMLzSzMzsAwMwMDAswQMgB",
+            importString = "C0QAAAAAAAAAAAAAAAAAAAAAAMzYMYMYbmZ2mxAAAAAAAAAAAALDzEmhhBMjhZmZGmthZYWmJAgFzsNGGzMDAgNAYWmlmZmZBYYgZGAYZMEDYA",
         },
         {
             provider = "wowhead",
             context = "shado",
             label = "Delves",
-            importString = "C0QAAAAAAAAAAAAAAAAAAAAAAMzYAMGbzMz2MAAAAAAAAAAAALDzEmxywAmxwMzMDzGmhZZmAAWMz2MzYmZmBAwGAMLzSzMzsAwMwMDAswQMgB",
+            importString = "C0QAAAAAAAAAAAAAAAAAAAAAAMzYMYMYbmZ2mxAAAAAAAAAAAALDzEmhhBMjhZmZGmthZYWmJAgFzsNGGzMDAgNAYWmlmZmZBYYgZGAYZMEDYA",
         },
         {
             provider = "wowhead",
             context = "conduit",
             label = "Raid - Single Target",
-            importString = "C0QAAAAAAAAAAAAAAAAAAAAAAMzYM2GmhlZmZbGAAAAAAAAAAAglhRzYGwAmxwMzMDz2wMMLzEAwiZ2mZMjZmBAwiZWmlxEEAAGAzAMWGImZmFXA",
+            importString = "C0QAAAAAAAAAAAAAAAAAAAAAAMzYM2GGsNzMbzAAAAAAAAAAAAsMMCzYbYAzYYmZmhZZYGmlZCAYzMbjhZmZGAALmZZ2GTQAAYAMDALjhYmZWM",
         },
         {
             provider = "wowhead",
             context = "conduit",
             label = "Raid - Cleave",
-            importString = "C0QAAAAAAAAAAAAAAAAAAAAAAMzYMgxYZmx2MDAAAAAAAAAAAYZY0MmBMgZMMzMzwsNMDzyMBAsYmtxMGzMDAgFzsMLjJIAghBwMAjlBiZmZzA",
+            importString = "C0QAAAAAAAAAAAAAAAAAAAAAAMzYMYMYbmZ2mxAAAAAAAAAAAALDjwM2GGwMGmZmZYWGmhZZmAAWMz2YYMzMAAWMzysMmgAAGGAzAwyYImZmFD",
         },
         {
             provider = "wowhead",
             context = "conduit",
             label = "Mythic+",
-            importString = "C0QAAAAAAAAAAAAAAAAAAAAAAMzYMgxYZmZ2mBAAAAAAAAAAAYZY0MmBMgZMMzMzwshZYWmJAgFmNmxMzMDAgFzsMLjJIAgZmBwMAjlBiZmZzA",
+            importString = "C0QAAAAAAAAAAAAAAAAAAAAAAMzYMYMYbmZ2mxAAAAAAAAAAAALDzEmx2wAGGmZmZY2GmhZZmAAWMz2YYMzMAAWMzysNmgAAGGAzAM2GImZmND",
         },
         {
             provider = "wowhead",
             context = "conduit",
             label = "Delves",
-            importString = "C0QAAAAAAAAAAAAAAAAAAAAAAMzYMgxYZmZ2mBAAAAAAAAAAAYZY0MmBMgZMMzMzwshZYWmJAgFmNmxMzMDAgFzsMLjJIAgZmBwMAjlBiZmZzA",
+            importString = "C0QAAAAAAAAAAAAAAAAAAAAAAMzYMYMYbmZ2mxAAAAAAAAAAAALDzEmx2wAGGmZmZY2GmhZZmAAWMz2YYMzMAAWMzysNmgAAGGAzAM2GImZmND",
         },
         {
             provider = "archon",
@@ -1961,9 +1937,9 @@ DragonSkillData["MONK"][269] = {
 }
 
 DragonSkillData["MONK"][270] = {
-    scrapedAt = "2026-08-15T12:27:16.724Z",
+    scrapedAt = "2026-08-06T14:52:17.671Z",
     statPriority = {
-        wowhead = "Raid: Intellect > Haste > Critical Strike > Versatility > Mastery | Mythic+: Intellect > Haste > Mastery > Critical Strike > Versatility",
+        wowhead = "Raid: Intellect > Haste > Critical Strike > Versatility > Mastery | Mythic+: Intellect > Haste > Critical Strike > Versatility > Mastery",
         archon = "Intellect > Haste > Crit > Vers > Mastery",
     },
     statAverages = {
@@ -1991,13 +1967,13 @@ DragonSkillData["MONK"][270] = {
             provider = "wowhead",
             context = "conduit",
             label = "Raid",
-            importString = "C4QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAghx2YZYzixMzyyM2wYGmZZZbmxCzoZMDYwgxYmZmhZbMGsYCAAAAgAsYZmlZbmBAAGwAMDYMMWkxMA",
+            importString = "C4QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAghx2MwmFzYmZZGbYmZYmlttZGLMjmxMgBDGzyMzMDz2gBLmAAAAAIALWmZZ2mZAAgBMAzAGDjFZMDA",
         },
         {
             provider = "wowhead",
             context = "conduit",
             label = "Mythic+",
-            importString = "C4QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAghxyMLjZx2MmZsZsZZGzs9AzstsMzYhhmxMgBDYWmZmZY2wMMLzEAAAAABYx2Mbz2MDAAMAAzAGDsIjZA",
+            importString = "C4QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMWmZZML2mxMjNjtllZMzmZ2WWmZswQzYGwgBjZZmZmhZDzwsMTAAAAAEgFbzsMbzMAAwAAMDYMwiMmBA",
         },
         {
             provider = "wowhead",
@@ -2009,13 +1985,13 @@ DragonSkillData["MONK"][270] = {
             provider = "wowhead",
             context = "master",
             label = "Raid",
-            importString = "C4QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAghx2YZYzixMzyyM2wYGmZZZbmxCzoZMDYwgxYmZmhZbMGsYCAAAAMLTLz2MLzGAAAADYmZAgxwYRGA",
+            importString = "C4QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAghx2MwmFzYmZZGbYmZYmlttZGLMjmxMgBDGzyMzMDz2gBLmAAAAAzy0ysNzysBAAAwAmZGAYMMWkBA",
         },
         {
             provider = "wowhead",
             context = "master",
             label = "Mythic+",
-            importString = "C4QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAghxyMLjZx2MmZsZsZZGzs9AzstsMzYhhmxMgBDYWmZmZY2wMMLzEAAAAYWm2mtZWmNAAAAGgZGAYMwiMAA",
+            importString = "C4QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAghxyMLjZx2MmZsZstsMjZ2Mz2yyMjFGaGzAGMYMLzMzMMbYGmlHYCAAAAMLTbz2MLzGAAAADwMDAMGYRGA",
         },
         {
             provider = "wowhead",
@@ -2052,7 +2028,7 @@ DragonSkillData["MONK"][270] = {
 
 DragonSkillData["PALADIN"] = DragonSkillData["PALADIN"] or {}
 DragonSkillData["PALADIN"][65] = {
-    scrapedAt = "2026-08-15T12:27:17.242Z",
+    scrapedAt = "2026-08-06T14:52:18.106Z",
     statPriority = {
         wowhead = "Herald of the Sun: Intellect > Mastery > Haste = Crit > Versatility | Lightsmith: Intellect > Mastery > Haste = Crit > Versatility",
         archon = "Intellect > Haste > Mastery > Crit > Vers",
@@ -2082,61 +2058,49 @@ DragonSkillData["PALADIN"][65] = {
             provider = "wowhead",
             context = "herald",
             label = "Raid",
-            importString = "CEEAAAAAAAAAAAAAAAAAAAAAAAAAALAwMAAw2MzMjZMzYxYmZYZwMLmpJGGzMDjZLDADYYDsxyMmZZ2mZmtGAAAgFAYzwYGzwMAAmZYGjRDA",
+            importString = "CEEAAAAAAAAAAAAAAAAAAAAAAAAAAYBAMAAglZmZGzYmZ2YwYWGbzMLzoJGzYmZYY2yAwAG2AbsMjZWmtZmZrBAAAYBA2MMmxMAAgZGmxY0A",
         },
         {
             provider = "wowhead",
             context = "herald",
             label = "Raid",
-            importString = "CEEAAAAAAAAAAAAAAAAAAAAAAAAAALAwMAAwyMzMjZ2mZmNYMsM2MziZaihxMzwY2yAwAG2AbsMjZWmtZmZrBAAAYBA2MMmxMMDAgZGmxY0A",
+            importString = "CEEAAAAAAAAAAAAAAAAAAAAAAAAAAYBAMDAAsMmZGzYmZ2YMGzyYzMLGNxwYmZYY2yAwAG2AbsMjZWmtZmZrBAAAYBDwmhxMmhBAgZGmxY0A",
         },
         {
             provider = "wowhead",
             context = "herald",
             label = "Mythic+",
-            importString = "CEEAAAAAAAAAAAAAAAAAAAAAAAAAALAwMAAD2GzMzMjZmZBmZYZsZmFjmYYMzMMmtMAMAsB2YZmZmlZbmZ2aAAAAWAmhNDMjZYGAAzMMjxoB",
-        },
-        {
-            provider = "wowhead",
-            context = "herald",
-            label = "Mythic+",
-            importString = "CEEAAAAAAAAAAAAAAAAAAAAAAAAAALAwMAADWGzMzMjZmZBGDLzsZmFjmYYMzMMmtMAMAsB2YZmZmlZbmZ2aAAAAWAmhNDMjZwAAYmhZMGNA",
+            importString = "CEEAAAAAAAAAAAAAAAAAAAAAAAAAAYBAMDAwglxMzMzYmZWgxwyYbmZxMNxwYmZYY2yAwAwGYjlZmZWmtZmZrBAAAYhNMDbGYGzAAAmZYGjRD",
         },
         {
             provider = "wowhead",
             context = "herald",
             label = "Delves",
-            importString = "CEEAAAAAAAAAAAAAAAAAAAAAAAAAALAwMAADMmZmZGzMzixMmxyYzMLGNxYGjZYMbZAYAYDsxyMzMLz2Mzs1AAAAsAMDbGYGzwAAwMDzYMaA",
+            importString = "CEEAAAAAAAAAAAAAAAAAAAAAAAAAAYBAMDAwglxMzMzYmZWgxwyYbmZxoJGGmZYY2yAwAwGYjlZmZWmtZmZrBAAAYhNGYzAzYGGAAmZYGjRD",
         },
         {
             provider = "wowhead",
             context = "lightsmith",
             label = "Raid",
-            importString = "CEEAAAAAAAAAAAAAAAAAAAAAAAAAAbAwMAAw2MzMjZMzYxYmZYZwMLmpJGGzMDjZLDADYYDsxyMGAEAwMzyyitZG2AgNDjZMDzAYmBgZMGNA",
+            importString = "CEEAAAAAAAAAAAAAAAAAAAAAAAAAAYBAMAAglZmZGzYmZ2YMGzyYbmZxoJGzYmZYY2yAwAG2AbsMjBABAMzsttYbmhNAYzwYGzAAmZAYGjRD",
         },
         {
             provider = "wowhead",
             context = "lightsmith",
             label = "Raid",
-            importString = "CEEAAAAAAAAAAAAAAAAAAAAAAAAAALAwMAAwyMzMjZMzMbGzYYZsZmFz0EDjZmhxslBgBMsB2YZGDACAYmZZZx2MDbAwmhxMmhBgZGAmxY0A",
+            importString = "CEEAAAAAAAAAAAAAAAAAAAAAAAAAAYBAMDAAsMmZGzYmZ2YMGzyYzMLGNxwYmZYY2yAwAG2AbsMjBABAMzsttYbmhNMAbGGzYGGAmZAYGjRD",
         },
         {
             provider = "wowhead",
             context = "lightsmith",
             label = "Mythic+",
-            importString = "CEEAAAAAAAAAAAAAAAAAAAAAAAAAAbAwMAAD2GzMzMjZmZBmZYZsZmFjmYYMzMMmtMAMAsB2YZmZAQAAzMLLL2mZYDYG2MwMmhZAMzAwMGjGA",
-        },
-        {
-            provider = "wowhead",
-            context = "lightsmith",
-            label = "Mythic+",
-            importString = "CEEAAAAAAAAAAAAAAAAAAAAAAAAAALAwMAADWGzMzMjZmZZwYYZsZmFz0EDjZmhxslBgBgNwGLzMDACAYmZZZx2MDbAzwmBmxMMAMzAwMGjGA",
+            importString = "CEEAAAAAAAAAAAAAAAAAAAAAAAAAAYBAMDAwglxMzMzYmZWGMGWGbzMLGNxwYmZYY2yAwAwGYjlZmBABAMzstsYbmhN2wMsZgZMDAYmBgZMGNA",
         },
         {
             provider = "wowhead",
             context = "lightsmith",
             label = "Delves",
-            importString = "CEEAAAAAAAAAAAAAAAAAAAAAAAAAALAwMAADMmZmZGzMzixMmxyYzMLGNxwYMDjZLDADAbgNWmZGAEAwMz22ilZG2AzMsZgZYYAYmBgZMGNA",
+            importString = "CEEAAAAAAAAAAAAAAAAAAAAAAAAAAYBAMDAwglxMzMzYmZWgxwyYbmZxoJGGmZYY2yAwAwGYjlZmBABAMzsttYbmhN2YgNDMjZYAYmBgZMGNA",
         },
         {
             provider = "archon",
@@ -2166,9 +2130,9 @@ DragonSkillData["PALADIN"][65] = {
 }
 
 DragonSkillData["PALADIN"][66] = {
-    scrapedAt = "2026-08-15T12:27:17.780Z",
+    scrapedAt = "2026-08-06T14:52:18.885Z",
     statPriority = {
-        wowhead = "Survivability: Strength > Haste > Mastery > Critical Strike > Versatility | DPS: Strength > Haste > Critical Strike > Mastery > Versatility",
+        wowhead = "Survivability: Strength > Haste > Versatility > Mastery > Critical Strike | DPS: Strength > Haste > Versatility > Critical Strike > Mastery",
         archon = "Strength > Haste > Crit > Mastery > Vers",
     },
     statAverages = {
@@ -2196,37 +2160,37 @@ DragonSkillData["PALADIN"][66] = {
             provider = "wowhead",
             context = "templar",
             label = "Raid",
-            importString = "CIEAAAAAAAAAAAAAAAAAAAAAAsNzYWmZYGzM2WGDLzithBAYAAAAAAQamZxMmZGjZrNAMgBMYbAAgZm2mZWmBAYzyGzYAMmhxAAsNDwMDyYD",
+            importString = "CIEAAAAAAAAAAAAAAAAAAAAAAsZmZYWGLzMjZGbLjxYmFbzYAAGAAAAAAkmZWMjZmxws1GAGwAGsBAAmZabmZZGAgNwMGAjZYMAALzAMzgMA",
         },
         {
             provider = "wowhead",
             context = "templar",
             label = "Mythic+",
-            importString = "CIEAAAAAAAAAAAAAAAAAAAAAAsZeAzyYGzYmZWWGjZZWmlZMAADAAAAAAaamhZMzwY2aDADMgZw2AAAzMtNzsMDAwmlFMAgZYMAALzAmZGkxC",
+            importString = "CIEAAAAAAAAAAAAAAAAAAAAAAsNjBzyYZMjZmZZbMzwsMLzYAAGAAAAAA00MziZMzwws1GAGYAzgNAAwMTbzMLzAAsZGMAYMDjBAYZGgZGkB",
         },
         {
             provider = "wowhead",
             context = "templar",
             label = "Delves",
-            importString = "CIEAAAAAAAAAAAAAAAAAAAAAAsZeAzyYGzYmZWWGjZZWmlZMAADAAAAAAaamhZMzwY2aDADMgZw2AAAzMtNzsMDAwmlFMAgZYMAALzAmZGkxC",
+            importString = "CIEAAAAAAAAAAAAAAAAAAAAAAsNjBzyYZMjZmZZbMzwsMLzYAAGAAAAAA00MziZMzwws1GAGYAzgNAAwMTbzMLzAAsZGMAYMDjBAYZGgZGkB",
         },
         {
             provider = "wowhead",
             context = "lightsmith",
             label = "Raid",
-            importString = "CIEAAAAAAAAAAAAAAAAAAAAAAsNzYWmZYGzM2WGDLzithBAYAAAAAAQamZxMmZGjZrNAMgBMYbAAAEgZmttlWmZsYZjZMAGzwYAwMDAmZQGb",
+            importString = "CIEAAAAAAAAAAAAAAAAAAAAAAsNzMYWGLjZMzMLLjZGmFbzYAAGAAAAAAkmZWMjZGmZmt2AwAzAgNAAACwMz22SbzMWMYGDgxMMGAMzAgZGkB",
         },
         {
             provider = "wowhead",
             context = "lightsmith",
             label = "Mythic+",
-            importString = "CIEAAAAAAAAAAAAAAAAAAAAAAsZeAzyYGzYmZWWGjZZWmlZMAADAAAAAAaamhZMzwY2aDADMgZw2AAAIAzMbbLtMzYxyCGAwMMGAMzAwMzgMWA",
+            importString = "CIEAAAAAAAAAAAAAAAAAAAAAAsNjBzyYZMjZmZZbMzwsMLzYAAGAAAAAA00MDzYmhhZrNAMwAmBbAAAEgZmltlWmZsYGMAYMDjBAzMAMzMID",
         },
         {
             provider = "wowhead",
             context = "lightsmith",
             label = "Delves",
-            importString = "CIEAAAAAAAAAAAAAAAAAAAAAAsZeAzyYGzYmZWWGjZZWmlZMAADAAAAAAaamhZMzwY2aDADMgZw2AAAIAzMbbLtMzYxyCGAwMMGAMzAwMzgMWA",
+            importString = "CIEAAAAAAAAAAAAAAAAAAAAAAsNjBzyYZMjZmZZbMzwsMLzYAAGAAAAAA00MDzYmhhZrNAMwAmBbAAAEgZmltlWmZsYGMAYMDjBAzMAMzMID",
         },
         {
             provider = "archon",
@@ -2256,9 +2220,9 @@ DragonSkillData["PALADIN"][66] = {
 }
 
 DragonSkillData["PALADIN"][70] = {
-    scrapedAt = "2026-08-15T12:27:18.266Z",
+    scrapedAt = "2026-08-06T14:52:19.716Z",
     statPriority = {
-        wowhead = "Templar: Strength > Mastery > Haste > Critical Strike > Versatility | Herald of the Sun: Strength > Mastery > Haste > Critical Strike > Versatility",
+        wowhead = "Templar: Strength > Mastery > Critical Strike > Haste > Versatility | Herald of the Sun: Strength > Mastery > Critical Strike > Haste > Versatility",
         archon = "Strength > Mastery > Crit > Haste > Vers",
     },
     statAverages = {
@@ -2286,37 +2250,37 @@ DragonSkillData["PALADIN"][70] = {
             provider = "wowhead",
             context = "templar",
             label = "Raid",
-            importString = "CYEAAAAAAAAAAAAAAAAAAAAAAAAAAAANbbzMzywMDAAAAAAzUGzwMjtxsNMz2MGjZGmxCbDAAIzMtNzsNDAYDwAgxMMDmxY2w2MYYMjBD",
+            importString = "CYEAAAAAAAAAAAAAAAAAAAAAAAAAAAAQz22MzsMMzAAAAAAwoMmhZGbDz2wMbzYMmZYGbsNMAAkZm2mZ2mBAsBYAwYGmBzYMbYZGMMmxgB",
         },
         {
             provider = "wowhead",
             context = "templar",
             label = "Mythic+",
-            importString = "CYEAAAAAAAAAAAAAAAAAAAAAAAAAAAwoZbbmZWGzMzAAAAAAYmyYGmZsNmthZ2mxYMGmxGbAAAZmptZmtZAAbAGAMmhBmxMzGWmBDjZMYA",
+            importString = "CYEAAAAAAAAAAAAAAAAAAAAAAAAAAAAMa22mZmlxMzMDAAAAAwMlhhZGbDz2wMbzYMGDzYjNMAAkZm2mZ2mBAsBYAwYGGYmZYDLzghxMGM",
         },
         {
             provider = "wowhead",
             context = "templar",
             label = "Delves",
-            importString = "CYEAAAAAAAAAAAAAAAAAAAAAAAAAAAwoZbbmZWGjZmBAAAAAYmyYGMjtZmthZ2mxYMzwM2YDAAIzMtNzsNDAYDwAAmhBmxM2wyMYMjZMYA",
+            importString = "CYEAAAAAAAAAAAAAAAAAAAAAAAAAAAAQzyyMzsMzMzMDAAAAAwMlxMYGbzY2GmZbGMegZwYjtBAAkZm2mZ2mBAsBYAAzwMYYmZBLzgxMmxgB",
         },
         {
             provider = "wowhead",
             context = "herald",
             label = "Raid",
-            importString = "CYEAAAAAAAAAAAAAAAAAAAAAAAAAAAANbbzMzywMDAAAAAAzUGzwMjtxsNMz2MGjxwMWYbAYWmtZmZrBBAAsAYAwYGmBzYmZDYmZYMjBD",
+            importString = "CYEAAAAAAAAAAAAAAAAAAAAAAAAAAAAQzy2MzsMMzAAAAAAwoMmhZGbDz2wMbzYMmZYGLsNMgZZ2mZmtGEAAwCgBAjZYGMjxsAMzMMmxgB",
         },
         {
             provider = "wowhead",
             context = "herald",
             label = "Mythic+",
-            importString = "CYEAAAAAAAAAAAAAAAAAAAAAAAAAAAwoZbbmZWGzMzAAAAAAYmyYGmZsNmthZ2mxYMGmxCbAYWmtZmZrBBAAsAYAwYGGYGzMbAzMDjZMYA",
+            importString = "CYEAAAAAAAAAAAAAAAAAAAAAAAAAAAAMa22mZmlxMzMAAAAAAmpMMMzYbY2GmZbGjxYYGLshBMLz2Mzs1gAAAWAMAYMDDMjZmNgZmhxMGM",
         },
         {
             provider = "wowhead",
             context = "herald",
             label = "Delves",
-            importString = "CYEAAAAAAAAAAAAAAAAAAAAAAAAAAAwoZbbmZWGjZmBAAAAAYmyYGMjtZmthZ2mxYMzwMWYDAzysNzMbNIAAgFADAYGGYGzYDYmZMjZMYA",
+            importString = "CYEAAAAAAAAAAAAAAAAAAAAAAAAAAAAQzyyMzsMzMzMDAAAAAwMlxMYGbzY2GmZbGMegZwYhtBgZZ2mZmtGEAAwCgBAMDzghZmFgZmxMmxgB",
         },
         {
             provider = "archon",
@@ -2347,9 +2311,9 @@ DragonSkillData["PALADIN"][70] = {
 
 DragonSkillData["PRIEST"] = DragonSkillData["PRIEST"] or {}
 DragonSkillData["PRIEST"][256] = {
-    scrapedAt = "2026-08-15T12:27:19.060Z",
+    scrapedAt = "2026-08-06T14:52:21.087Z",
     statPriority = {
-        wowhead = "Oracle: Intellect > Haste > Mastery > Critical Strike > Versatility | Voidweaver: Haste > Intellect > Mastery > Critical Strike > Versatility | Oracle: Intellect > Haste > Mastery > Critical Strike > Versatility | Voidweaver: Intellect > Haste > Mastery > Critical Strike > Versatility",
+        wowhead = "Oracle: Intellect > Haste > Critical Strike > Mastery > Versatility | Voidweaver: Intellect > Haste > Critical Strike > Mastery > Versatility | Oracle: Intellect > Haste > Critical Strike > Versatility > Mastery | Voidweaver: Intellect > Haste > Critical Strike > Versatility > Mastery",
         archon = "Intellect > Haste > Crit > Mastery > Vers",
     },
     statAverages = {
@@ -2377,31 +2341,31 @@ DragonSkillData["PRIEST"][256] = {
             provider = "wowhead",
             context = "oracle",
             label = "Raid",
-            importString = "CAQAAAAAAAAAAAAAAAAAAAAAAADsMGWmZmBDmZbmtZmZmxMDAAAAAAAAAgZYZGMzMDmxMgpZamBYmNMEGzyAMGsAAAjxMjBzAMzMTwA",
+            importString = "CAQAAAAAAAAAAAAAAAAAAAAAAADsAz2MzMYmhZbmtZmZmhZAAAAAAAAAAMDLzgZmZwMmBMNTzMAzshhwYWGgxgFAAYMmZMYGgZmZaGG",
         },
         {
             provider = "wowhead",
             context = "oracle",
             label = "Mythic+",
-            importString = "CAQAAAAAAAAAAAAAAAAAAAAAAADsMDWmZMmBmZbmtZmZmxMDAAAAAAAAAgxYZGMzMjNjZGsZamYAmZDDhxsMAjBLAAwYmZGDmBYmZEMD",
+            importString = "CAQAAAAAAAAAAAAAAAAAAAAAAADsYwyMjZmZGMbzYmZmZMzAAAAAAAAAAYMWmBzMzYzYmBbmmJGgZ2wQYMLDwYwCAAMmZmxgZAmZGBD",
         },
         {
             provider = "wowhead",
             context = "voidweaver",
             label = "Raid",
-            importString = "CAQAAAAAAAAAAAAAAAAAAAAAAADsMmxyYmBzgZbmtZmZmZmBAAAAAAAAAgZYZGMzMDzwMgpZamBzMAIAmtZbBM2MAAMGzMGmZwMDGBD",
+            importString = "CAQAAAAAAAAAAAAAAAAAAAAAAADsgZ2YMPAzMjZbsNzMzMzAAAAAAAAAAgZYZGMzMDzwMwMNTzAzMAIAmtZZBM2MAAMGzMGMDmZwoZYA",
         },
         {
             provider = "wowhead",
             context = "voidweaver",
             label = "Mythic+",
-            importString = "CAQAAAAAAAAAAAAAAAAAAAAAAADsMzMWYMGzgZzsNzMzMzMDAAAAAAAAAgxYZGMzMjNjZGsZamYwMDACgZb2WAjNDAAjZmZMYGMzgRwM",
+            importString = "CAQAAAAAAAAAAAAAAAAAAAAAAADsYMzGjxYmZMbsNzMzMzAAAAAAAAAAgxYZGMzMjNjZGsZamAmZAQAMbzyCYsZAAYMzMjBzgZGMaGG",
         },
         {
             provider = "wowhead",
             context = "voidweaver",
             label = "Delves",
-            importString = "CAQAAAAAAAAAAAAAAAAAAAAAAADsMzMWYMGzgZzsNzMzMzMDAAAAAAAAAgxYZGMzMjNjZGsZamYwMDACgZb2WAjNDAAjZmZMYGMzgRwM",
+            importString = "CAQAAAAAAAAAAAAAAAAAAAAAAADsYMzGjxYmZMbsNzMzMzAAAAAAAAAAgxYZGMzMjNjZGsZamGwMDACgZZWWAjNDAAjZmZMYGMzAaGG",
         },
         {
             provider = "archon",
@@ -2431,7 +2395,7 @@ DragonSkillData["PRIEST"][256] = {
 }
 
 DragonSkillData["PRIEST"][257] = {
-    scrapedAt = "2026-08-15T12:27:19.923Z",
+    scrapedAt = "2026-08-06T14:52:22.255Z",
     statPriority = {
         wowhead = "Archon: Intellect > Crit > Versatility = Mastery > Haste | Oracle: Intellect > Crit > Versatility = Mastery > Haste | Archon: Intellect > Versatility > Critical Strike > Haste > Mastery | Oracle: Intellect > Versatility > Critical Strike > Haste > Mastery",
         archon = "Intellect > Crit > Haste > Mastery > Vers",
@@ -2461,19 +2425,19 @@ DragonSkillData["PRIEST"][257] = {
             provider = "wowhead",
             context = "archon",
             label = "Raid",
-            importString = "CEQAAAAAAAAAAAAAAAAAAAAAAwYAAAAAAAgZmlxMjZmZYmZYZGmBAAAwwsMDzMzMYGzAYmaAgZWMTmFDAMGsZmZ2A0MMjxwMz2yAMDMA",
+            importString = "CEQAAAAAAAAAAAAAAAAAAAAAAwYAAAAAAAgZmlxYMzMDzMzYZGmBAAAwwsMDzMzMYGzAYmaAgZWMTmFDAMGsZmZWA0MMjxwMz2yAMDMA",
         },
         {
             provider = "wowhead",
             context = "archon",
             label = "Mythic+",
-            importString = "CEQAAAAAAAAAAAAAAAAAAAAAAwYAAAAAAAMmxsMYMzMDzMDLzMzMAAAAGzsMDmZmBjZGDYmCAMzmZysZAgxgNzM2A0MmZMGmZ2WGgBMA",
+            importString = "CEQAAAAAAAAAAAAAAAAAAAAAAwYAAAAAAgZzwYWGMmZmZMzMjlZmZAAAAYMWmBzMzYzYmxAmpAAzsZmMbGAYMYzYsBoZMzYMMzstMADYA",
         },
         {
             provider = "wowhead",
             context = "archon",
             label = "Delves",
-            importString = "CEQAAAAAAAAAAAAAAAAAAAAAAwYAAAAAAAMmxsMmxMzYYmBLzMzMAAAAGmlZGzMzM2MmZMbLYmCAMziZysZAgxgNzM2A0wMMGMz2yAMgB",
+            importString = "CEQAAAAAAAAAAAAAAAAAAAAAAwYAAAAAAAbGGzyYGzMjxMDjlZmZGAAAADzyMjZmZGbGzMmtNMTBAmZxMZ2MAwYwmxYBQDzwYwMLLDwAG",
         },
         {
             provider = "wowhead",
@@ -2485,7 +2449,7 @@ DragonSkillData["PRIEST"][257] = {
             provider = "wowhead",
             context = "oracle",
             label = "Mythic+",
-            importString = "CEQAAAAAAAAAAAAAAAAAAAAAAwYAAAAAAAbGzYWGzMmZMMDsMzMzAAAAYMzyMMzMzYbGzMAmpAYmFMEGz2AMGYxMzAQzYmHwYwMAzMDYA",
+            importString = "CEQAAAAAAAAAAAAAAAAAAAAAAwYAAAAAAAmZMzsMzMjZGDzwYZmZmBAAAwYmlZGzMzMMjZGDYmCgZWwQYMbDwYgFGWA0MmhxgZAmZGwA",
         },
         {
             provider = "archon",
@@ -2515,7 +2479,7 @@ DragonSkillData["PRIEST"][257] = {
 }
 
 DragonSkillData["PRIEST"][258] = {
-    scrapedAt = "2026-08-15T12:27:20.508Z",
+    scrapedAt = "2026-08-06T14:52:23.228Z",
     statPriority = {
         wowhead = "Archon: Intellect > Haste > Mastery > Critical Strike > Versatility | Voidweaver: Intellect > Haste > Mastery > Critical Strike > Versatility",
         archon = "Intellect > Haste > Mastery > Crit > Vers",
@@ -2545,49 +2509,49 @@ DragonSkillData["PRIEST"][258] = {
             provider = "wowhead",
             context = "archon",
             label = "Single Target",
-            importString = "CIQAAAAAAAAAAAAAAAAAAAAAAMMDzAAAAAAAAAAAAwMLmxMbzMGz2MGzw2MzYmZGbIzYxMNAzAMzmZY2MAkxYBAzMIjZmZMbMz2yAMTMA",
+            importString = "CIQAAAAAAAAAAAAAAAAAAAAAAMMjZGAAAAAAAAAAAgxMMjxyMDmtZmxMsNzMmZmxGyMWMTDwMAzsZGmNDAZMWAwMQGzMzY2GzstMAzED",
         },
         {
             provider = "wowhead",
             context = "archon",
             label = "Raid Cleave",
-            importString = "CIQAAAAAAAAAAAAAAAAAAAAAAMMDDAAAAAAAAAAAAmZxMmZbmxMz2MGzw2MzYmZGbIzYxMNAzAMzmZY2MAkxYBAzMIjZmZMbMz2yAMTMA",
+            importString = "CIQAAAAAAAAAAAAAAAAAAAAAAMMjZGAAAAAAAAAAAgxMMjxyMDzsNzwMsNzMmZmxGyMWMTDwMAzsZGmNDAZMWAwMQGzMzY2GzstMAzED",
         },
         {
             provider = "wowhead",
             context = "archon",
             label = "Mythic+",
-            importString = "CIQAAAAAAAAAAAAAAAAAAAAAAMMDDAAAAAAAAAAAAmZxMmZbmxMzyMGzw2MzYmZGbIzYxMNAzAMzmZY2MAkxYBAzMIjZmZMbMz2yAMTMA",
+            importString = "CIQAAAAAAAAAAAAAAAAAAAAAAMMjZGAAAAAAAAAAAghZxMGLzMmZWmZYmx2MGzMzYDZGLmpBYGgZ2MDzmBgMGLAYGIjZmZMbjZ2WGgZiB",
         },
         {
             provider = "wowhead",
             context = "archon",
             label = "Delves",
-            importString = "CIQAAAAAAAAAAAAAAAAAAAAAAMMDDAAAAAAAAAAAAmZxMmZbmxMzyMGzw2MzYmZGbIzYxMNAzAMzmZY2MAkxYBAzMIjZmZMbMz2yAMTMA",
+            importString = "CIQAAAAAAAAAAAAAAAAAAAAAAMMjZGAAAAAAAAAAAghZxMGLzMmZWmZYmx2MGzMzYDZGLmpBYGgZ2MDzmBgMGLAYGIjZmZMbjZ2WGgZiB",
         },
         {
             provider = "wowhead",
             context = "voidweaver",
             label = "Single Target",
-            importString = "CIQAAAAAAAAAAAAAAAAAAAAAAMMjZGAAAAAAAAAAAAegZxMmZbmBz2MzYG2mZGzMzYDZGLmpBYmZGAIAz2stAmNGAYkxMzMmtxMYmBzEDA",
+            importString = "CIQAAAAAAAAAAAAAAAAAAAAAAMMjZGAAAAAAAAAAAgxYxMGLzMY2mZGzw2MzYmZGbIzYxMNAzMzAABY2mtFwsxAMDkxMzMmtxMYmBzED",
         },
         {
             provider = "wowhead",
             context = "voidweaver",
             label = "Raid Cleave",
-            importString = "CIQAAAAAAAAAAAAAAAAAAAAAAMMjZGAAAAAAAAAAAAMLmxMbzMMz2MzYG2mZGzMzYDZGLmpBYmZGAIAz2stAmNGAYkxMzMmtxMYmBzEDA",
+            importString = "CIQAAAAAAAAAAAAAAAAAAAAAAMMjZGAAAAAAAAAAAgxYxMGLzMMz2MDzw2MzYmZGbIzYxMNAzMzAABY2mtFwsxAMDkxMzMmtxMYmBzED",
         },
         {
             provider = "wowhead",
             context = "voidweaver",
             label = "Mythic+",
-            importString = "CIQAAAAAAAAAAAAAAAAAAAAAAMMDDAAAAAAAAAAAAmZxMmZbmxMzyMzYG2mZGzMzYDZGLmpBYmZGAIAz2stAmNGAYkxMzMmNmBzMYmYA",
+            importString = "CIQAAAAAAAAAAAAAAAAAAAAAAMMjZGAAAAAAAAAAAghZxMGLzMmZWmZYG2mZGzMzYDZGLmpBYmZGAIAz2stAmNGAYkxMzMmtxMYmBzED",
         },
         {
             provider = "wowhead",
             context = "voidweaver",
             label = "Delves",
-            importString = "CIQAAAAAAAAAAAAAAAAAAAAAAMMDDAAAAAAAAAAAAmZxMmZbmxMzyMzYG2mZGzMzYDZGLmpBYmZGAIAz2stAmNGAYkxMzMmNmBzMYmYA",
+            importString = "CIQAAAAAAAAAAAAAAAAAAAAAAMMjZGAAAAAAAAAAAghZxMGLzMmZWmZYG2mZGzMzYDZGLmpBYmZGAIAz2stAmNGAYkxMzMmtxMYmBzED",
         },
         {
             provider = "archon",
@@ -2618,7 +2582,7 @@ DragonSkillData["PRIEST"][258] = {
 
 DragonSkillData["ROGUE"] = DragonSkillData["ROGUE"] or {}
 DragonSkillData["ROGUE"][259] = {
-    scrapedAt = "2026-08-15T12:27:21.334Z",
+    scrapedAt = "2026-08-06T14:52:24.625Z",
     statPriority = {
         wowhead = "Fatebound: Agility > Critical Strike > Haste > Mastery > Versatility | Deathstalker: Agility > Critical Strike > Haste > Mastery > Versatility",
         archon = "Agility > Crit > Haste > Mastery > Vers",
@@ -2648,49 +2612,49 @@ DragonSkillData["ROGUE"][259] = {
             provider = "wowhead",
             context = "deathstalker",
             label = "Raid Single Target",
-            importString = "CMQAAAAAAAAAAAAAAAAAAAAAAYmlxsNDGAAAAAYWGsNDAAAAAIbzMzMzMjxyMzMbzsMzMzYGzYMmZMMAbmlBGwSwywEYYxgZGgxYA",
+            importString = "CMQAAAAAAAAAAAAAAAAAAAAAAYmZMbzgBAAAAAmlBLzAAAAAAabbmZmZmZMmZmZ2mZZmZGMmZmZMzYYA2MLDMglglhJwwiBzMADG",
         },
         {
             provider = "wowhead",
             context = "deathstalker",
             label = "Raid",
-            importString = "CMQAAAAAAAAAAAAAAAAAAAAAAYmlZmFDGAAAAAYWGsNDAAAAAIbzMzMzMjxyMzMbzsMzMPgZMzYMMzYMAbmlBGwSwywEYYxgZGgxYA",
+            importString = "CMQAAAAAAAAAAAAAAAAAAAAAAYmZMbGMAAAAAwsMYZGAAAAAQbbzMzMzMjxMzMz2MLzMzgZmZmZMzwYA2MLDMglglhJwwiBzMADG",
         },
         {
             provider = "wowhead",
             context = "deathstalker",
             label = "Mythic+",
-            importString = "CMQAAAAAAAAAAAAAAAAAAAAAAYmlZmFDGAAAAAYWGsNDAAAAAIbzMzMzMjxyMzMbzsMzMPgZMzYMMzYMAbmlBGwSwywEYYxgZGgxYA",
+            importString = "CMQAAAAAAAAAAAAAAAAAAAAAAYmlZmNDGAAAAAYWGsNDAAAAAottZmZmZmxYmZmZbmlZG8AzMzMjhZGjBYzsMwAWCWGmADLGLmZAYMA",
         },
         {
             provider = "wowhead",
             context = "deathstalker",
             label = "Delves",
-            importString = "CMQAAAAAAAAAAAAAAAAAAAAAAYmlZmFDGAAAAAYWGsNDAAAAAIbzMzMzMjxyMzMbzsMzMPgZMzYMMzYMAbmlBGwSwywEYYxgZGgxYA",
+            importString = "CMQAAAAAAAAAAAAAAAAAAAAAAYmlZmNDGAAAAAYWGsNDAAAAAottZmZmZmxYmZmZbmlZG8AzMzMjhZGjBYzsMwAWCWGmADLGLmZAYMA",
         },
         {
             provider = "wowhead",
             context = "fatebound",
             label = "Raid Single Target",
-            importString = "CMQAAAAAAAAAAAAAAAAAAAAAAYmlxsNDGAAAAAYWGsNDAAAAAIbzMzMzMjxyMzMbzsMzMzYGzYMmZMMAGYBmxoxsBy2A2MAYmZMGA",
+            importString = "CMQAAAAAAAAAAAAAAAAAAAAAAYmlxsNDGAAAAAYWGsMDAAAAAottZmZmZmxYmZmZbmlZmZwYmZmxMjhBwALwMGNmFQ2GwmBAzMDGA",
         },
         {
             provider = "wowhead",
             context = "fatebound",
             label = "Raid",
-            importString = "CMQAAAAAAAAAAAAAAAAAAAAAAYmlZmFDGAAAAAYWGsNDAAAAAIbzMzMzMjxyMzMbzsMzMPgZMzYMMzYMAGYBmxoxsBy2A2MAYmZMGA",
+            importString = "CMQAAAAAAAAAAAAAAAAAAAAAAYmlxsZwAAAAAAzyglZAAAAAAttNzMzMzMGzMzMbzsMzMDzMzMzMMDzMAGYBmxoxsAy2A2MAYmBGA",
         },
         {
             provider = "wowhead",
             context = "fatebound",
             label = "Mythic+",
-            importString = "CMQAAAAAAAAAAAAAAAAAAAAAAYmlZmFDGAAAAAYWGsNDAAAAAIbzMzMzMjxyMzMbzsMzMPgZMzYMMzYMAGYBmxoxsBy2A2MAYmZMGA",
+            importString = "CMQAAAAAAAAAAAAAAAAAAAAAAYmlZmNDGAAAAAYWGsNDAAAAAottZmZmZmxYmZmZbmlZG8AzMzMjhZGjBwALwMGNmNQ2GwmxGgZGGD",
         },
         {
             provider = "wowhead",
             context = "fatebound",
             label = "Delves",
-            importString = "CMQAAAAAAAAAAAAAAAAAAAAAAYmlZmFDGAAAAAYWGsNDAAAAAIbzMzMzMjxyMzMbzsMzMPgZMzYMMzYMAGYBmxoxsBy2A2MAYmZMGA",
+            importString = "CMQAAAAAAAAAAAAAAAAAAAAAAYmlZmNDGAAAAAYWGsNDAAAAAottZmZmZmxYmZmZbmlZG8AzMzMjhZGjBwALwMGNmNQ2GwmxGgZGGD",
         },
         {
             provider = "archon",
@@ -2720,7 +2684,7 @@ DragonSkillData["ROGUE"][259] = {
 }
 
 DragonSkillData["ROGUE"][260] = {
-    scrapedAt = "2026-08-15T12:27:21.826Z",
+    scrapedAt = "2026-08-06T14:52:25.629Z",
     statPriority = {
         wowhead = "Trickster: Agility > Haste > Critical Strike > Versatility > Mastery | Fatebound: Agility > Haste > Critical Strike > Versatility > Mastery",
         archon = "Agility > Crit > Haste > Mastery > Vers",
@@ -2750,37 +2714,37 @@ DragonSkillData["ROGUE"][260] = {
             provider = "wowhead",
             context = "trickster",
             label = "Raid",
-            importString = "CQQAAAAAAAAAAAAAAAAAAAAAAAgx2MMzMmZmtZmZmZMmF4BmZbaZw2MAAAAAAbbzMzwMzMziZmZbAAAAYmBAjZxwQGYWYhWYjBYmBDMA",
+            importString = "CQQAAAAAAAAAAAAAAAAAAAAAAAgx2MYmZmZmtZmZmZMmNeAmZbaZw2MAAAAAgZbbmZGmZmZGzMz2AAAAwYAwYWMMkBmFWoF2YAmZwAD",
         },
         {
             provider = "wowhead",
             context = "trickster",
             label = "Mythic+",
-            importString = "CQQAAAAAAAAAAAAAAAAAAAAAAAgx2MMzMjZmtZmZMzMzsAmZbaZw2MAAAAAAbbzMzwMzMziZmZbAAAAYmBAjZxwQGYWYhWYjBYmBDMA",
+            importString = "CQQAAAAAAAAAAAAAAAAAAAAAAAgx2MYmZmZmtZmZMzMzsBmZbaZw2MAAAAAgZbbmZGmZmZGzMz2AAAAwYAwYWMMkBmFWoF2YAmZwAD",
         },
         {
             provider = "wowhead",
             context = "trickster",
             label = "Delves",
-            importString = "CQQAAAAAAAAAAAAAAAAAAAAAAAgx2MMzMjZmtZmZMzMzsAmZbaZw2MAAAAAA2mZmhZmZmFzMz2AAAAwYAwYWMMkBmFWoF2YAmZwMYG",
+            importString = "CQQAAAAAAAAAAAAAAAAAAAAAAAgx2MYmZmZmtZmZMzMzsBmZbaZw2MAAAAAgZbbmZGmZmZGzMz2AAAAwYAwYWMMkBmFWoF2YAmZwAD",
         },
         {
             provider = "wowhead",
             context = "fatebound",
             label = "Raid",
-            importString = "CQQAAAAAAAAAAAAAAAAAAAAAAAgx2MMzMmZmtZmZmZMmF4BmZbaZw2MAAAAAAbbzMzwMzMziZmZbAAAAYmBMwGMjRjZDw2EWYAwMzAD",
+            importString = "CQQAAAAAAAAAAAAAAAAAAAAAAAgx2MYmZmZmtZmZmZMmNGmZbaZw2MAAAAAgZbbmZGmZmZGzMz2AAAAwAYgNYGjGzGgtJswAgZmBG",
         },
         {
             provider = "wowhead",
             context = "fatebound",
             label = "Mythic+",
-            importString = "CQQAAAAAAAAAAAAAAAAAAAAAAAgx2MMzMjZmtZmZMzMzsAmZbaZw2MAAAAAAbbzMzwMzMziZmZbAAAAYmBMwGMjRjZDw2EWYAgZGYA",
+            importString = "CQQAAAAAAAAAAAAAAAAAAAAAAAgx2MYmZMzsNzMzMzMzsxDwMbTLD2mBAAAAAMbbzMzwMzMzYmZ2GAAAAGADsBzY0Y2AsNhFGAMzMwA",
         },
         {
             provider = "wowhead",
             context = "fatebound",
             label = "Delves",
-            importString = "CQQAAAAAAAAAAAAAAAAAAAAAAAgx2MMzMjZmtZmZMzMzsAmZbaZw2MAAAAAA2mZmhZmZmFzMz2AAAAwYADsBzY0Y2AsNhFGAMzMDmB",
+            importString = "CQQAAAAAAAAAAAAAAAAAAAAAAAgx2MYmZMzsNzMzMzMzsxDwMbTLD2mBAAAAAMbbzMzwMzMzYmZ2GAAAAGADsBzY0Y2AsNhFGAMzMwA",
         },
         {
             provider = "archon",
@@ -2810,9 +2774,9 @@ DragonSkillData["ROGUE"][260] = {
 }
 
 DragonSkillData["ROGUE"][261] = {
-    scrapedAt = "2026-08-15T12:27:22.323Z",
+    scrapedAt = "2026-08-06T14:52:26.531Z",
     statPriority = {
-        wowhead = "Deathstalker: Agility > Mastery > Haste (~1100 Haste) > Critical Strike > Versatility | Trickster: Agility > Mastery > Haste (~1100 Haste) > Critical Strike > Versatility | Deathstalker: Agility > Mastery > Haste (~700 Haste) > Critical Strike > Versatility | Trickster: Agility > Mastery > Haste (~700 Haste) > Critical Strike > Versatility",
+        wowhead = "Deathstalker: Agility > Mastery > Haste (~1100 Haste) > Critical Strike > Versatility | Trickster: Agility > Mastery > Haste (~700 Haste) > Critical Strike > Versatility | Deathstalker: Agility > Mastery > Haste (~700 Haste) > Critical Strike > Versatility | Trickster: Agility > Mastery > Haste (~700 Haste) > Critical Strike > Versatility",
         archon = "Agility > Mastery > Crit > Haste > Vers",
     },
     statAverages = {
@@ -2840,37 +2804,37 @@ DragonSkillData["ROGUE"][261] = {
             provider = "wowhead",
             context = "deathstalker",
             label = "Raid",
-            importString = "CUQAAAAAAAAAAAAAAAAAAAAAAAgx2MAAAAAwsMGLTMbbjxMDDzMzMzw8AbzYGbbzMzMzMjBjZ2GAAAAGMmFzyADYBsMMhMLYGmZAmxA",
+            importString = "CUQAAAAAAAAAAAAAAAAAAAAAAAgx2MAAAAAwsMGLTMbbjxMjZwMzMzYMbDzYbbmZmZmZMYMz2AAAAwgxsYWGYALglhJkZBzwMDwMGA",
         },
         {
             provider = "wowhead",
             context = "deathstalker",
             label = "Mythic+",
-            importString = "CUQAAAAAAAAAAAAAAAAAAAAAAAgx2MAAAAAwsMGLTMbbjxMDjZmZmZGGbzYGbbzMzMzMjBjZ2GAAAAGMmFzyADYBsMMhMLYGmZAmxA",
+            importString = "CUQAAAAAAAAAAAAAAAAAAAAAAAgx2MAAAAAwsMGLTMbbjxMMjxDMzMzYMbzYGbbzMzMzMjBjZ2GAAAAGMmNzyADYBsMMhMLYGmZAmxA",
         },
         {
             provider = "wowhead",
             context = "deathstalker",
             label = "Delves",
-            importString = "CUQAAAAAAAAAAAAAAAAAAAAAAAgx2MAAAAAwsMGLTMbbjxMDjZmZmZGGbzYGbbzMzMzMjBjZ2GAAAAGMmFzyADYBsMMhMLYGmZAmxA",
+            importString = "CUQAAAAAAAAAAAAAAAAAAAAAAAgx2MAAAAAwsMGLTMbbjxMMDegZmZGjZbmZGbbzMzMzMjBjZ2GAAAAGMmNzyADYDsMMhMLYGmZAmxA",
         },
         {
             provider = "wowhead",
             context = "trickster",
             label = "Raid",
-            importString = "CUQAAAAAAAAAAAAAAAAAAAAAAAgx2MAAAAAwsMGLTMbbjxMDDzMzMzw8AbzYGbbzMzMzMjBjZ2GAAAAGMGwY2MMwAziWoFbYGwMDmxA",
+            importString = "CUQAAAAAAAAAAAAAAAAAAAAAAAgx2MAAAAAwsMGLTMbbjxMjZwMzMzYMbDzYbbmZmZmZMYMz2AAAAwgxAGzmhBGYW0CtYDzAmZwMGA",
         },
         {
             provider = "wowhead",
             context = "trickster",
             label = "Mythic+",
-            importString = "CUQAAAAAAAAAAAAAAAAAAAAAAAgx2MAAAAAwsMGLTMbLjxMDDzMzMzw8AbzYGbbzMzMzMjBjZ2GAAAAGMGwY2MMwAziWoFbYGwMDmxA",
+            importString = "CUQAAAAAAAAAAAAAAAAAAAAAAAgx2MAAAAAwsMGLTMbbjxMjZMegZmZGjZbYGbbzMzMzMjBjZWGAAAAGMGwY2MMwAziWoFbYGwMDmxA",
         },
         {
             provider = "wowhead",
             context = "trickster",
             label = "Delves",
-            importString = "CUQAAAAAAAAAAAAAAAAAAAAAAAgx2MAAAAAwsMGLTMbLjxMDDzMzMzw8AbzYGbbzMzMzMjBjZ2GAAAAGMGwY2MMwAziWoFbYGwMDmxA",
+            importString = "CUQAAAAAAAAAAAAAAAAAAAAAAAgx2MAAAAAwsMGLTMbbjxMjZMMzMzYMbzYGbbzMzMzMjBjZ2GAAAAGMGwY2MMwAziWoFbYGwMDmxA",
         },
         {
             provider = "archon",
@@ -2901,7 +2865,7 @@ DragonSkillData["ROGUE"][261] = {
 
 DragonSkillData["SHAMAN"] = DragonSkillData["SHAMAN"] or {}
 DragonSkillData["SHAMAN"][262] = {
-    scrapedAt = "2026-08-15T12:27:23.232Z",
+    scrapedAt = "2026-08-06T14:52:26.984Z",
     statPriority = {
         wowhead = "Farseer: Mastery to 1200 rating > Haste/Crit > Versatility > Intellect | Stormbringer: Mastery to 1200 rating > Haste/Crit > Versatility > Intellect",
         archon = "Intellect > Mastery > Crit > Haste > Vers",
@@ -2931,37 +2895,37 @@ DragonSkillData["SHAMAN"][262] = {
             provider = "wowhead",
             context = "farseer",
             label = "Raid",
-            importString = "CYQAAAAAAAAAAAAAAAAAAAAAAAAAAAzMbLzMmZmZZbZMMjBAAAAsYmNYADY2YCZWAgZZmZGjtFTYmZZsMzMzYYZWmxiZGmZZAADAMzYYYA",
+            importString = "CYQAAAAAAAAAAAAAAAAAAAAAAAAAAAmZZZmxMzMbbbjxMmZAAAAAbmZDGwAmNmQmFAYWmZmxYbxEmZWGLzMzMGWsMjFMzMzCAwMAYmxwwA",
         },
         {
             provider = "wowhead",
             context = "farseer",
             label = "Mythic+",
-            importString = "CYQAAAAAAAAAAAAAAAAAAAAAAAAAAAzMbLzMGjZZZZMmhBAAAAsYmNYADY2YCZWAgZZmZGjtFTbMzYsMzMzYYZWMWmZGzMLAAzAgZGDDD",
+            importString = "CYQAAAAAAAAAAAAAAAAAAAAAAAAAAAzMLLzMmZmZZbbMmxMAAAAALmZDGwAmNmQmFAYWmZmxYbxEmZMWmZmZmhlZxYBzMzsAAMAwMjhhB",
         },
         {
             provider = "wowhead",
             context = "farseer",
             label = "Delves",
-            importString = "CYQAAAAAAAAAAAAAAAAAAAAAAAAAAAzMLLzMmZmZbZZMmxMDAAAAsZmNYADY2YCZWAgZZmZGjtFTYmxYZmZmZmxiFjFMmZWAAGAYmxwwA",
+            importString = "CYQAAAAAAAAAAAAAAAAAAAAAAAAAAAzMLLzMmZmZbZZMmxMDAAAAYzMbwAGwsxEysAAzyMzMGbLmwMjxyMzMzMjFLGLYMzsAAMAwMjhhB",
         },
         {
             provider = "wowhead",
             context = "stormbringer",
             label = "Raid",
-            importString = "CYQAAAAAAAAAAAAAAAAAAAAAAAAAAAzMbLzMmZmZZbZMMjBAAAAsYmNYADY2YCZWAgZZmZGjtFTYmZZsMzMzYYZWmxiZGmZZAADAMzYYYA",
+            importString = "CYQAAAAAAAAAAAAAAAAAAAAAAAAAAAzMbLzMmZmZZbbgxMDAAAAAsYGDbwCMjGasBAzyMzMGbLmwMzyYZmZmxwysMjFzMjZWAAGAzMwwwA",
         },
         {
             provider = "wowhead",
             context = "stormbringer",
             label = "Mythic+",
-            importString = "CYQAAAAAAAAAAAAAAAAAAAAAAAAAAAzMbLzMGjZZZZMmhBAAAAsYmNYADY2YCZWAgZZmZGjtFTbMzYsMzMzYYZWMWmZGzMLAAzAgZGDDD",
+            importString = "CYQAAAAAAAAAAAAAAAAAAAAAAAAAAAzMbLzMzYML2mhZMzAAAAAALmxwGsAzohGbAwsMzMjx2ipNmZMWmZmZMsMLGLmZGzsAAMDwMDMMMA",
         },
         {
             provider = "wowhead",
             context = "stormbringer",
             label = "Delves",
-            importString = "CYQAAAAAAAAAAAAAAAAAAAAAAAAAAAzMLLzMzMzMbbLDmxMDAAAAA2MjhNYBmRDN2AgZZmZGjtFTYmxYZmZmZmxiFjFjhZWAAGAzMwwwA",
+            importString = "CYQAAAAAAAAAAAAAAAAAAAAAAAAAAAmZZZmxMzMbLLjxMmZAAAAAgFzYYDWgZ0QjNAYWmZmxMbLmwMjxyMzMjhlZxYBzMzsAAMDwMDMMMA",
         },
         {
             provider = "archon",
@@ -2991,9 +2955,9 @@ DragonSkillData["SHAMAN"][262] = {
 }
 
 DragonSkillData["SHAMAN"][263] = {
-    scrapedAt = "2026-08-15T12:27:24.029Z",
+    scrapedAt = "2026-08-06T14:52:28.307Z",
     statPriority = {
-        wowhead = "Stormbringer: Agility > Mastery = Haste > Critical Strike > Versatility | Totemic: Agility > Mastery = Haste > Critical Strike > Versatility",
+        wowhead = "Stormbringer: Agility > Haste > Mastery = Critical Strike > Versatility | Totemic: Agility > Mastery > Haste > Critical Strike > Versatility",
         archon = "Agility > Mastery > Haste > Crit > Vers",
     },
     statAverages = {
@@ -3021,37 +2985,37 @@ DragonSkillData["SHAMAN"][263] = {
             provider = "wowhead",
             context = "stormbringer",
             label = "Raid",
-            importString = "CcQAAAAAAAAAAAAAAAAAAAAAAMzMzgZmZmZmhZmZAAAAAAAAA2AsZGDLkFYGGawCAzyMmZGLLzAzMbsMzMzwwYGAgZYMzYmJwMDGMGA",
+            importString = "CcQAAAAAAAAAAAAAAAAAAAAAAMzMzYmZmZmZmZmZmZGAAAAAAAAgNAbmxwGZBmhhGsAwsMjZmxyyMwMzGLzMzMMMmBAYGGGmZCMzAYcBA",
         },
         {
             provider = "wowhead",
             context = "stormbringer",
             label = "Mythic+",
-            importString = "CcQAAAAAAAAAAAAAAAAAAAAAAMzMzgZmZmZmhZmZAAAAAAAAA2AsZGDbkFYGGawCAzyMmxYZxYjZmtxyMzMzgFmBAYGGzMMTgZGMYMA",
+            importString = "CcQAAAAAAAAAAAAAAAAAAAAAAMzMzYMzMzMzMzMzMzAAAAAAAAAsBYzMG2ILwMM0gFAmlZMjxyiBmZ2GLzMzMDWGzAAYYMDmJwMDGMuAA",
         },
         {
             provider = "wowhead",
             context = "stormbringer",
             label = "Delves",
-            importString = "CcQAAAAAAAAAAAAAAAAAAAAAAMzMzgZmZmZmhZmZAAAAAAAAA2AsZGDbkNYGGawCAzyMmxYZZGYmxYxMzMjxCzAAMDjZGzMBmZwgxA",
+            importString = "CcQAAAAAAAAAAAAAAAAAAAAAAMzMzYMzMzMzMzMzMzAAAAAAAAAsBYzMG2IbwMM0gFAmlZMjxyyMwMz2YxMzMjxCzAAYYMDmJwMDGMuAA",
         },
         {
             provider = "wowhead",
             context = "totemic",
             label = "Raid",
-            importString = "CcQAAAAAAAAAAAAAAAAAAAAAAMzMzMzMzMzMzMzMzYGAAAAAAAAAsAbwMW0YbAMTwGAzyMmZGLLzAzMbsMzMzwwYGAADwYmJmZAgxA",
+            importString = "CcQAAAAAAAAAAAAAAAAAAAAAAMzMjZmZmZmZmZmZGzAAAAAAAAAALwGMjFN2GAzEsBwsMjZmxyyMwMzGLzMzMMMmBAYGgxMTMzAAjB",
         },
         {
             provider = "wowhead",
             context = "totemic",
             label = "Mythic+",
-            importString = "CcQAAAAAAAAAAAAAAAAAAAAAAMzMzMjZmZmZmZmZGzAAAAAAAAAgFYDmxiGbDgZC2AYWmxMGLLGbMzsNWm5BmZGsMmBAAYMmRMzAMYMA",
+            importString = "CcQAAAAAAAAAAAAAAAAAAAAAAMzMjZmZmZmZmZmZGzAAAAAAAAAALwGMjFN2GAzEsBwsMjZMWWMwMz2YZmZmZwyYGAAgxYGxMDwgxA",
         },
         {
             provider = "wowhead",
             context = "totemic",
             label = "Delves",
-            importString = "CcQAAAAAAAAAAAAAAAAAAAAAAMzMjZmZmZmZmZmZGzAAAAAAAAAgFYDmxiGbDgZC2AYWmxMGLLzAzMGLmZmZMWYGAAgxYmJmZAGMGA",
+            importString = "CcQAAAAAAAAAAAAAAAAAAAAAAMzMjZmZmZmZmZmZmZGAAAAAAAAAYB2gZsox2AYmgNAmlZMjxyyMwMjxiZmZGjFmBAAYMmZiZGAYMA",
         },
         {
             provider = "archon",
@@ -3081,9 +3045,9 @@ DragonSkillData["SHAMAN"][263] = {
 }
 
 DragonSkillData["SHAMAN"][264] = {
-    scrapedAt = "2026-08-15T12:27:24.556Z",
+    scrapedAt = "2026-08-06T14:52:29.538Z",
     statPriority = {
-        wowhead = "Farseer: Intellect > Critical Strike > Haste > Versatility > Mastery | Totemic: Intellect > Critical Strike > Haste > Versatility > Mastery",
+        wowhead = "Farseer: Intellect > Critical Strike > Haste > Versatility = Mastery | Totemic: Intellect > Critical Strike > Haste > Versatility = Mastery",
         archon = "Intellect > Crit > Haste > Vers > Mastery",
     },
     statAverages = {
@@ -3111,37 +3075,37 @@ DragonSkillData["SHAMAN"][264] = {
             provider = "wowhead",
             context = "farseer",
             label = "Raid",
-            importString = "CgQAAAAAAAAAAAAAAAAAAAAAAAAAAgBAAAAzMzsssNjZGjZGzMMWMzGMgJY2YCMWMDzgtxYmmtlZmNzYWYxMzMmhZZAAAgZmBAzMwgZA",
+            importString = "CgQAAAAAAAAAAAAAAAAAAAAAAAAAAgBAAAAzMzMLLbDzMGzMmZGzsYmNYATwsxEYsYGmBbjxMNbLzMMjZhFzMzYGmlBAAAmZGAMzADG",
         },
         {
             provider = "wowhead",
             context = "farseer",
             label = "Mythic+",
-            importString = "CgQAAAAAAAAAAAAAAAAAAAAAAAAAAgBAAAAzMzsssNzMzMjZGjZMWMzCMgJYWYCMWwMDmtZGjmtlZmNzYWYxYmxwysMAAAwMzAgZGYwM",
+            importString = "CgQAAAAAAAAAAAAAAAAAAAAAAAAAAgBAAAAjZmZbZbYmZGzMGzYmFzsADYCmFmAjFmZGMbzMGNbLzMMjZhFjZGzYZWGAAMAzMDAmZgBD",
         },
         {
             provider = "wowhead",
             context = "farseer",
             label = "Delves",
-            importString = "CgQAAAAAAAAAAAAAAAAAAAAAAAAAAgBAAAAzMzsssNzMzMjZGjZMWMzCMgJYWYCMWwMDmtZGjmtlZmNzYWYxYmxwysMAAAwMzAgZGYwM",
+            importString = "CgQAAAAAAAAAAAAAAAAAAAAAAAAAAgBAAAAjZmxy2MMzMzMzMmxYxMLwAmgZhJwYBzMY2mZmRz2yMDmZwyMmZMjlZBAAGgZmBAzMMGM",
         },
         {
             provider = "wowhead",
             context = "totemic",
             label = "Raid",
-            importString = "CgQAAAAAAAAAAAAAAAAAAAAAAAAAAgBAAAAzMzsssNjZGjZGzMDjFYDmxiGbDIzAbmhZw2YMTz2yMzmZMLsYegZGzwsMAAAwMzgZGAYwM",
+            importString = "CgQAAAAAAAAAAAAAAAAAAAAAAAAAAgBAAAAzMzMLLbDzwYmZmZGzYB2gZsox2AyMwGjhZsNGz0stMzwMmFWMzMjZYWGAAYAzMDmZAgBD",
         },
         {
             provider = "wowhead",
             context = "totemic",
             label = "Mythic+",
-            importString = "CgQAAAAAAAAAAAAAAAAAAAAAAAAAAgBAAAAzMzsstMzMzMjZGjZgFYDmxiGbDIzAbMzMY2mZMa2WmZ2MjZhFjZGDLzyAAAAzMDmZAgBzA",
+            importString = "CgQAAAAAAAAAAAAAAAAAAAAAAAAAAgBAAAAjZmZZbZMzMzYmZGzYYB2gZsox2AyMwGzMDmtZGjmtlZGmxswixMjZsMLDAAGAzMYmBAGM",
         },
         {
             provider = "wowhead",
             context = "totemic",
             label = "Delves",
-            importString = "CgQAAAAAAAAAAAAAAAAAAAAAAAAAAgBAAAAzMzsstMzMzMjZGjZgFYDmxiGbDIzAbMzMY2mZMa2WmZ2MjZhFjZGDLzyAAAAzMDmZAgBzA",
+            importString = "CgQAAAAAAAAAAAAAAAAAAAAAAAAAAgBAAAAjZMW2GzMzMzMzMmxMWgNYGLasNgMDsZGzgZbmZGNbLzMYmBLzMzMmhZBAAAMzMYmBAgB",
         },
         {
             provider = "archon",
@@ -3172,7 +3136,7 @@ DragonSkillData["SHAMAN"][264] = {
 
 DragonSkillData["WARLOCK"] = DragonSkillData["WARLOCK"] or {}
 DragonSkillData["WARLOCK"][265] = {
-    scrapedAt = "2026-08-15T12:27:26.180Z",
+    scrapedAt = "2026-08-06T14:52:30.497Z",
     statPriority = {
         wowhead = "Hellcaller: Intellect > Haste > Critical Strike > Versatility > Mastery | Soul Harvester: Intellect > Haste > Critical Strike > Versatility > Mastery",
         archon = "Intellect > Crit > Haste > Mastery > Vers",
@@ -3202,49 +3166,49 @@ DragonSkillData["WARLOCK"][265] = {
             provider = "wowhead",
             context = "hellcaller",
             label = "Raid",
-            importString = "CkQAAAAAAAAAAAAAAAAAAAAAAwMzMzoZhhZmZmlBAAYmZZWmZmlxAAWgBmFjGzAysAWGAAAmBAAmZAzMjhZGmZMzMGMzMzAAmBG",
+            importString = "CkQAAAAAAAAAAAAAAAAAAAAAAwMzMzoZjhZmZmlBAAYmZZ2mZmlxAAWgBmFjGzAysBWGAAAmBAAmZgZGjxwwMjZmZGMzMzAAmBG",
         },
         {
             provider = "wowhead",
             context = "hellcaller",
             label = "Raid Cleave",
-            importString = "CkQAAAAAAAAAAAAAAAAAAAAAAwMmZGNbM2mZGzyAAAmZmlZxMzyYAALwAziRjZAZ2ALDAAAzAAAzMYMjZmtxwYmZmZYYmZGAgZgB",
+            importString = "CkQAAAAAAAAAAAAAAAAAAAAAAwMzMzoZjhZmZmlBAAYmZZ2mZmlxAAWgBmFjGzAysBWGAAAmBAAmZgZGjxwwMjZmZGMzMzAAmBG",
         },
         {
             provider = "wowhead",
             context = "hellcaller",
             label = "Mythic+",
-            importString = "CkQAAAAAAAAAAAAAAAAAAAAAAwMegZGNbzM2mZGz2AAAmZmlZxMzyYAALwAziRjZAZ2ALDAAAzAAAzMYMjxsNGzYmZmZYYmZGAgBMA",
+            importString = "CkQAAAAAAAAAAAAAAAAAAAAAAwMMzoZzMz2MzYWGAAwMzsMbzMzyYAALwAziRjZAZ2ALDAAAGAAYmBjZMzsNzYGMzMzYYmZGAgBMA",
         },
         {
             provider = "wowhead",
             context = "hellcaller",
             label = "Delves",
-            importString = "CkQAAAAAAAAAAAAAAAAAAAAAAwMegZGNbzM2mZGz2AAAmZmlZxMzyYAALwAziRjZAZ2ALDAAAzAAAzMYMjxsNGzYmZmZYYmZGAgBMA",
+            importString = "CkQAAAAAAAAAAAAAAAAAAAAAAwMMzoZzMz2MzYWGAAwMzsMbzMzyYAALwAziRjZAZ2ALDAAAGAAYmBjZMzsNzYGMzMzYYmZGAgBMA",
         },
         {
             provider = "wowhead",
             context = "soul",
             label = "Raid",
-            importString = "CkQAAAAAAAAAAAAAAAAAAAAAAwMzMzoZhhZmZmlBAAYmZZ2mZmlxAAjllBGwEMDbBG2GAAAmBAAwMDzMjBzwMzMzMGMzMzAAmBG",
+            importString = "CkQAAAAAAAAAAAAAAAAAAAAAAwMzMzoZjhZmZmlBAAYmZxyMzsMzAAjllBGwEMDbBG2GAAAmBAAwMDzMjBGmZmZGzgZmZGAwMwA",
         },
         {
             provider = "wowhead",
             context = "soul",
             label = "Raid Cleave",
-            importString = "CkQAAAAAAAAAAAAAAAAAAAAAAwMmZGNbM2mZGzyAAAmZmlZxMzyYAgx2yADYCmhtADbDAAAzAAAYmZMjZmtxwYmZmZYYmZGAgZgB",
+            importString = "CkQAAAAAAAAAAAAAAAAAAAAAAwMzMzoZjhZmZmlBAAYmZxyMzsMzAAjllBGwEMDbBG2GAAAmBAAwMDzMjBGmZmZGzgZmZGAwMwA",
         },
         {
             provider = "wowhead",
             context = "soul",
             label = "Mythic+",
-            importString = "CkQAAAAAAAAAAAAAAAAAAAAAAwMjZGNbmx2MzYWGAAwMzsMLmZ2GDAM2WGYATwMsFYYbAAAYGAAAzMjZMzsNGzYMzMzYYmZGAgBMA",
+            importString = "CkQAAAAAAAAAAAAAAAAAAAAAAwMjZGNbmx2MzYWGAAwMzsMbmZWGDAM22GYATwMsFYYbAAAYGAAAzMjZMzsNGzYMzMzYYmZGAgBMA",
         },
         {
             provider = "wowhead",
             context = "soul",
             label = "Delves",
-            importString = "CkQAAAAAAAAAAAAAAAAAAAAAAwMjZGNbmx2MzYWGAAwMzsMLmZ2GDAM2WGYATwMsFYYbAAAYGAAAzMjZMzsNGzYMzMzYYmZGAgBMA",
+            importString = "CkQAAAAAAAAAAAAAAAAAAAAAAwMjZGNbmx2MzYWGAAwMzsMbmZWGDAM22GYATwMsFYYbAAAYGAAAzMjZMzsNGzYMzMzYYmZGAgBMA",
         },
         {
             provider = "archon",
@@ -3274,7 +3238,7 @@ DragonSkillData["WARLOCK"][265] = {
 }
 
 DragonSkillData["WARLOCK"][266] = {
-    scrapedAt = "2026-08-15T12:27:26.989Z",
+    scrapedAt = "2026-08-06T14:52:30.942Z",
     statPriority = {
         wowhead = "Diabolist: Intellect > Haste=Critical Strike > Mastery > Versatility | Soul Harvester: Intellect > Haste=Critical Strike > Mastery > Versatility",
         archon = "Intellect > Crit > Haste > Mastery > Vers",
@@ -3304,7 +3268,7 @@ DragonSkillData["WARLOCK"][266] = {
             provider = "wowhead",
             context = "diabolist",
             label = "Raid",
-            importString = "CoQAAAAAAAAAAAAAAAAAAAAAAYmZMzoZjhZmxsMAAAAAAAgxMGWgB2GtQDLGjxysMzMjZAgZGzMzMzAMzMmZAAAGzMzMDDLzYAD",
+            importString = "CoQAAAAAAAAAAAAAAAAAAAAAAYmZMzoZjhZmxsMAAAAAAAgxMGWgB2GtRDLGjZ2mlZmZYAgZYmZmZGgZmxMDAAwYmZmZYGLzYAD",
         },
         {
             provider = "wowhead",
@@ -3316,7 +3280,7 @@ DragonSkillData["WARLOCK"][266] = {
             provider = "wowhead",
             context = "diabolist",
             label = "Mythic+",
-            importString = "CoQAAAAAAAAAAAAAAAAAAAAAAYmhZGNbmx2MzYWGAAAAAAAwYGDLwAbj2ohFjZGLz2MzMmBAmZMmZmZAmZGmZDAAMmZmxwwyMGwA",
+            importString = "CoQAAAAAAAAAAAAAAAAAAAAAAwMjZGNbmx2MzYWGAAAAAAAwYGDLwAbj2ohFDGLjZmZmZAgZMzYmZGgxMMzGAAYmZmZmZGsNzAMA",
         },
         {
             provider = "wowhead",
@@ -3328,7 +3292,7 @@ DragonSkillData["WARLOCK"][266] = {
             provider = "wowhead",
             context = "soul",
             label = "Raid",
-            importString = "CoQAAAAAAAAAAAAAAAAAAAAAAYmZMzoZjhZmxsMAAAAAAAjllBGwAmhlQGbmhZ2mlZmZMDAYMzMzAMzMzMmZAAAmZmZmZMDLDAD",
+            importString = "CoQAAAAAAAAAAAAAAAAAAAAAAYmZMzoZjhZmxsMAAAAAAAjllBGwAmhlQGbGjZ2mlZmZYAgZYmZGgZmZmxMDAAwYmZmZYGLzYAD",
         },
         {
             provider = "wowhead",
@@ -3376,7 +3340,7 @@ DragonSkillData["WARLOCK"][266] = {
 }
 
 DragonSkillData["WARLOCK"][267] = {
-    scrapedAt = "2026-08-15T12:27:27.792Z",
+    scrapedAt = "2026-08-06T14:52:31.627Z",
     statPriority = {
         wowhead = "Diabolist: Intellect > Haste > Mastery>=Critical Strike > Versatility | Hellcaller: Intellect > Haste > Mastery>=Critical Strike > Versatility",
         archon = "Intellect > Haste > Crit > Mastery > Vers",
@@ -3412,7 +3376,7 @@ DragonSkillData["WARLOCK"][267] = {
             provider = "wowhead",
             context = "diabolist",
             label = "Mythic+",
-            importString = "CsQAAAAAAAAAAAAAAAAAAAAAAwMjZGNbmZ2mZGzysZmZmFzMLLzDMAAYGjZmZBMmxwCZgthFaswAAAjZYAAmZAGzYMbAAAmZmBAAGG",
+            importString = "CsQAAAAAAAAAAAAAAAAAAAAAAwMzDMzoZzM2MzYWmtZmZmFzYZhBAAzMjZmZBMmxwCZgthFaswAAAjBDLAYmBYMjZmNAAAzMzAAwYYA",
         },
         {
             provider = "wowhead",
@@ -3424,7 +3388,7 @@ DragonSkillData["WARLOCK"][267] = {
             provider = "wowhead",
             context = "diabolist",
             label = "Council",
-            importString = "CsQAAAAAAAAAAAAAAAAAAAAAAwMjZGNbmZ2mZGzysZmZmFzMLLzDMAAYGjZmZBMmxwCZgthFaswAAAjZYAAmZAGzYMbAAAmZmBAAGG",
+            importString = "CsQAAAAAAAAAAAAAAAAAAAAAAwMzDMzoZzM2MzYWmtZmZmFzYZhBAAzMjZmZBMmxwCZgthFaswAAAjBDLAYmBYMjZmNAAAzMzAAwYYA",
         },
         {
             provider = "wowhead",
@@ -3436,7 +3400,7 @@ DragonSkillData["WARLOCK"][267] = {
             provider = "wowhead",
             context = "hellcaller",
             label = "Raid",
-            importString = "CsQAAAAAAAAAAAAAAAAAAAAAAwMmZGNLMzmZmZWmFzMzsYMWMDAAmZGzMziNYgZxoxMAmtYjBAAGDM2AAmZwYGzYDAAwMzMAAMGG",
+            importString = "CsQAAAAAAAAAAAAAAAAAAAAAAwMzMzoZjhZmZmlZzMzMLGjFzAAgZmxMzsYBGYWMaMDgZL2YAAgxAjNAgZGYmxYAAAYmZmBAwYYA",
         },
         {
             provider = "wowhead",
@@ -3448,7 +3412,7 @@ DragonSkillData["WARLOCK"][267] = {
             provider = "wowhead",
             context = "hellcaller",
             label = "Cleave",
-            importString = "CsQAAAAAAAAAAAAAAAAAAAAAAwMmZGNLMzmZmZWmlZmZmFjZbxDMAAYGjZmZxGMwsY0YGAzWsxAAAjBGbAAzMYMjZsBAAYmZGAAGDD",
+            importString = "CsQAAAAAAAAAAAAAAAAAAAAAAwMzMzoZjhZmxsMLzMzMLGz2iZAAwMGzMziNYgZzoxMAmtYjBAAGDwCAwMDmZGjZDAAwMzMAAMGG",
         },
         {
             provider = "wowhead",
@@ -3491,7 +3455,7 @@ DragonSkillData["WARLOCK"][267] = {
 
 DragonSkillData["WARRIOR"] = DragonSkillData["WARRIOR"] or {}
 DragonSkillData["WARRIOR"][71] = {
-    scrapedAt = "2026-08-15T12:27:28.281Z",
+    scrapedAt = "2026-08-06T14:52:32.466Z",
     statPriority = {
         wowhead = "Colossus: Strength > Critical Strike > Haste > Mastery > Versatility | Slayer: Strength > Critical Strike > Haste > Mastery > Versatility",
         archon = "Strength > Crit > Haste > Mastery > Vers",
@@ -3521,49 +3485,49 @@ DragonSkillData["WARRIOR"][71] = {
             provider = "wowhead",
             context = "slayer",
             label = "Raid ST",
-            importString = "CcEAAAAAAAAAAAAAAAAAAAAAAAzMzsMzMmZGAAAghphxYmxyMzMzgxMDAAAAgZWmZAhxyyAbgBMDTIzgNwMjtx2ALzsMAzMAYGGA",
+            importString = "CcEAAAAAAAAAAAAAAAAAAAAAAAzMzsMzMzMDAAAghphxYGWmZmZGMmZAAAAAMzyMDIjxyyALgBMDTIzgNwMjNz2YwMGgZGAmxwA",
         },
         {
             provider = "wowhead",
             context = nil,
             label = "Raid MT",
-            importString = "CcEAAAAAAAAAAAAAAAAAAAAAAAzMzsMzYmZGAAAghphxYmxyMzMzgxMDAAAAgxyMDMhxy2AbgBMDTIzgNwMjtx2gZZmtBYmBAzwA",
+            importString = "CcEAAAAAAAAAAAAAAAAAAAAAAAzMzsMzYmZAAAAMMNMGzwyMzMzgxMDAAAAgZWmZgtMGLLDsAGwMMhMD2AzM2MbjBzsNAzMAMjhB",
         },
         {
             provider = "wowhead",
             context = nil,
             label = "Mythic+",
-            importString = "CcEAAAAAAAAAAAAAAAAAAAAAAgZmZmFzYmZGAAAghphxYmZzMzMzYmxMDAAAAgxyMDMhxy2AbgBMDTIzgNwMDDDmlZ2GgZGAMDDA",
+            importString = "CcEAAAAAAAAAAAAAAAAAAAAAAgZmZmFzYmZGAAAghphxYmZzMzMzYmxMDAAAAgxyMDsFGLbDsAGwMMhMD2AzMMMY2mZbAmZAwYYA",
         },
         {
             provider = "wowhead",
             context = nil,
             label = "Delving",
-            importString = "CcEAAAAAAAAAAAAAAAAAAAAAAgZmZmFzYmZGAAAghphxYmZzMzMzYmxMDAAAAgxyMDMhxy2AbgBMDTIzgNwMDDDmlZ2GgZGAMDDA",
+            importString = "CcEAAAAAAAAAAAAAAAAAAAAAAgZmZmFzYmZGAAAghphxYmZzMzMzYmxMDAAAAgxyMDsFGLbDsAGwMMhMD2AzMMMY2mZbAmZAwYYA",
         },
         {
             provider = "wowhead",
             context = "colossus",
             label = "ST Raid",
-            importString = "CcEAAAAAAAAAAAAAAAAAAAAAAAzMzsMzwMDAAAghphxYmxyMzMzgxMDAAAAgZ2mZABwmZMsBDMj2oxgFwMjtx2MzmlZWGMzAAMDDA",
+            importString = "CcEAAAAAAAAAAAAAAAAAAAAAAAzMzsMzMzMDAAAghphZYmxyMzMzgxMDAAAAgZMzAyMgNzYYDGYGtRjBLAzYzsNGMjBzMAgZMMA",
         },
         {
             provider = "wowhead",
             context = nil,
             label = "MT Raid",
-            importString = "CcEAAAAAAAAAAAAAAAAAAAAAAgZmxsMzMzYGAAAghphxYmxyMzMzgxMDAAAAgxmZgJLAbmxwCMwMajGDWAzM2GbjxsZ2GMzAAMDDA",
+            importString = "CcEAAAAAAAAAAAAAAAAAAAAAAgZmxsMzMzYGAAAghphZYmxyMzMzgxMDAAAAgxmZgtYAbmxwGMwMajGDWAmxmZbwsZ2GMzAAmZGGA",
         },
         {
             provider = "wowhead",
             context = nil,
             label = "Mythic+",
-            importString = "CcEAAAAAAAAAAAAAAAAAAAAAAgZmxsMzMzYGAAAghphxYmZzMzMzYmxMDAAAAgxmZgJLAbmxwCMwMajGDWAzMMMGzmZbwMDAwMMA",
+            importString = "CcEAAAAAAAAAAAAAAAAAAAAAAgZmxsMzMzYGAAAghphxwMbLzMzMjZGzMAAAAAGbmB2iBsZGDLwAzoNaMYBYGMGMbmtBzMAgZmhB",
         },
         {
             provider = "wowhead",
             context = nil,
             label = "Delving",
-            importString = "CcEAAAAAAAAAAAAAAAAAAAAAAgZmxsMzMzYGAAAghphxYmZzMzMzYmxMDAAAAgxmZgJLAbmxwCMwMajGDWAzMMMGzmZbwMDAwMMA",
+            importString = "CcEAAAAAAAAAAAAAAAAAAAAAAgZmxsMzMzYGAAAghphxwMbLzMzMjZGzMAAAAAGbmB2iBsZGDLwAzoNaMYBYGMGMbmtBzMAgZmhB",
         },
         {
             provider = "archon",
@@ -3593,7 +3557,7 @@ DragonSkillData["WARRIOR"][71] = {
 }
 
 DragonSkillData["WARRIOR"][72] = {
-    scrapedAt = "2026-08-15T12:27:29.343Z",
+    scrapedAt = "2026-08-06T14:52:33.219Z",
     statPriority = {
         wowhead = "Mountain Thane: Strength > Haste > Mastery > Critical Strike > Versatility | Slayer: Strength > Haste > Mastery > Critical Strike > Versatility",
         archon = "Strength > Haste > Mastery > Crit > Vers",
@@ -3623,49 +3587,49 @@ DragonSkillData["WARRIOR"][72] = {
             provider = "wowhead",
             context = "slayer",
             label = "Raid ST",
-            importString = "CgEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgGDzMmZ2MzMzMDjZmZGzMzsMzMmZmZzYmBAAixy2ALgJYGmAzwGwMDjNAAYmhxYYMYM",
+            importString = "CgEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgGDjxMsMzMzMDjZmZGzMzsMzMGzMbDzMAAQMWWGYBMBzwEYG2AmZ2Y2GAAMzYYMzMMYA",
         },
         {
             provider = "wowhead",
             context = nil,
             label = "Raid MT",
-            importString = "CgEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgGDjxMzmZmZmZYMzMzMzYmlZMmZMbmZmBAAixy2ALgJYGmAzwGwMzmxGAAMzwYWGGDGD",
+            importString = "CgEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgGDjxMsMzMzMDjZmZGzYmlZmxYmZbMzMAAQMWWGYBMBzwEYG2AmZ2Y2GAAMzYYMzMMYA",
         },
         {
             provider = "wowhead",
             context = nil,
             label = "Mythic+",
-            importString = "CgEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgGDjxMzmZmZmZmZMzMzMzYmlZMmZMbmZmBAAixy2ALgJYGmAzwGwMzmBAAYmhxsMwgxA",
+            importString = "CgEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgGDjhZ2WmZmZmZmxMjZMjZWmZGjZmtxMzAAAxYZZgFwEMDTgZYDwMYMAAYmxwMzMDDG",
         },
         {
             provider = "wowhead",
             context = nil,
             label = "Delving",
-            importString = "CgEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgGDjxMzmZmZmZmZMzMzMzYmlZMmZMbmZmBAAixy2ALgJYGmAzwGwMzmBAAYmhxsMwgxA",
+            importString = "CgEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgGDjhZ2WmZmZmZmxMjZMjZWmZGjZmtxMzAAAxYZZgFwEMDTgZYDwMYMAAYmxwMzMDDG",
         },
         {
             provider = "wowhead",
             context = "mountain",
             label = "ST Raid",
-            importString = "CgEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgGDjZmZ2MzMzMDjZmZGzMzsMzMzMjZ5BGzMAAQYgNYZxoxMgMLYYBwMMzGAMzAMGYMgxA",
+            importString = "CgEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgGDDzMjlZmZmZYMzMzYmZmlZmxYmZZYmBAACDsBLLGNmBkZBzYBwMY2GAMzAYYMzMMYA",
         },
         {
             provider = "wowhead",
             context = nil,
             label = "MT Raid",
-            importString = "CgEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgGDjZmZ2WmZmZMMmZmZmZMzyMzMzMmFzMzAAAhB2glFjGzAysgZsAYmNGAwMDADLmBYM",
+            importString = "CgEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgGDDzMjlZmZmZYMzYGzYmlZmxYmZZMzMAAQYgNYZxoxMgMLYGLAmZjZbAwMDghZmZwgB",
         },
         {
             provider = "wowhead",
             context = nil,
             label = "Mythic+",
-            importString = "CgEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgGDjZMz2yMzMjZmxMzMzMjZWmZmZmxsYmZGAAIMwGssY0YGQmFMjFAzgBAMzAwwiZAGD",
+            importString = "CgEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgGDjZMz2yMzMjZmxMjZMjZWmZGjZmlxMzAAAhB2glFjGzAysgZsAYGMGAMzAYYmZGMYA",
         },
         {
             provider = "wowhead",
             context = nil,
             label = "Delving",
-            importString = "CgEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgGDjZMz2yMzMjZmxMzMzMjZWmZmZmxsYmZGAAIMwGssY0YGQmFMjFAzgBAMzAwwiZAGD",
+            importString = "CgEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgGDjZMz2yMzMjZmxMjZMjZWmZGjZmlxMzAAAhB2glFjGzAysgZsAYGMGAMzAYYmZGMYA",
         },
         {
             provider = "archon",
@@ -3695,7 +3659,7 @@ DragonSkillData["WARRIOR"][72] = {
 }
 
 DragonSkillData["WARRIOR"][73] = {
-    scrapedAt = "2026-08-15T12:27:29.856Z",
+    scrapedAt = "2026-08-06T14:52:34.555Z",
     statPriority = {
         wowhead = "Survivability: Strength > Haste > Critical Strike > Versatility > Mastery | DPS: Strength > Haste > Critical Strike > Versatility > Mastery",
         archon = "Strength > Haste > Crit > Mastery > Vers",
@@ -3725,37 +3689,37 @@ DragonSkillData["WARRIOR"][73] = {
             provider = "wowhead",
             context = "colossus",
             label = "Raid",
-            importString = "CkEAAAAAAAAAAAAAAAAAAAAAA0yAAAzMDzMzMzMzmxsMjxYmGmZGLjZmZYGzMAAAAYZAYGDAsZGDbkBmhFaMzCMDzgZDAwMDAYAjB",
+            importString = "CkEAAAAAAAAAAAAAAAAAAAAAA0yAAAzMDzMzMzMzmxsMjxYmGmZYZMzMDzYmBAAAALDAzYAgNzYYjMwMsQjZWgZMzgZbAAmZAADwA",
         },
         {
             provider = "wowhead",
             context = "colossus",
             label = "Mythic+",
-            importString = "CkEAAAAAAAAAAAAAAAAAAAAAA0yAAAjZYmZmZGzmZmlZMGz0YGzYZMzMDzYmBAAAALDAzYAgNzYYjMwMsQjZWgZGzgZDAwMDAYAjB",
+            importString = "CkEAAAAAAAAAAAAAAAAAAAAAAkBAAGzYmZmZmxsZmZZGjxMNmxwyYmZGmxMDAAAAWGAmxAAbmxwGZgZYhGzsAzMzMY2GAgZGAwAMA",
         },
         {
             provider = "wowhead",
             context = "colossus",
             label = "Delves",
-            importString = "CkEAAAAAAAAAAAAAAAAAAAAAA0yAAAjZYmZmZGzmZmlZMGz0YGzYZMzMDzYmBAAAALDAzYAgNzYYjMwMsQjZWgZGzgZDAwMDAYAjB",
+            importString = "CkEAAAAAAAAAAAAAAAAAAAAAAkBAAGzYmZmZmxsZmZZGjxMNmxwyYmZGmxMDAAAAWGAmxAAbmxwGZgZYhGzsAzMzMY2GAgZGAwAMA",
         },
         {
             provider = "wowhead",
             context = "mountain",
             label = "Raid",
-            importString = "CkEAAAAAAAAAAAAAAAAAAAAAA0yAAAzMzYmZGzY2MzsMjxYmGmZYZMzMDzYmBAAAAbDAzYAGYD2WMaMDgZLmZDmxMDmNAYmBAgBMG",
+            importString = "CkEAAAAAAAAAAAAAAAAAAAAAA0yAAAzMzYmZGzY2MzsMjxYmGmZYZMzMDzYmBAAAALDAzYAGYDWWMaMDgZLmZDmxMDmtBAzMAAMAD",
         },
         {
             provider = "wowhead",
             context = "mountain",
             label = "Mythic+",
-            importString = "CkEAAAAAAAAAAAAAAAAAAAAAA0yAAAjZGzMzYGzmZmlZMGjGzYGLzMzMDzYmBAAAALDAzYAGYD2WMaMDgZJmZDmZMDmFAYmBAgBMG",
+            importString = "CkEAAAAAAAAAAAAAAAAAAAAAAkBAAGzMzMzMmxsZmZZGjxMNmxwyYmZYmxMDAAAAWGAmxAMwGssY0YGAzWMzGMzMzgZZAwMDAADwA",
         },
         {
             provider = "wowhead",
             context = "mountain",
             label = "Delves",
-            importString = "CkEAAAAAAAAAAAAAAAAAAAAAA0yAAAjZGzMzYGzmZmlZMGjGzYGLzMzMDzYmBAAAALDAzYAGYD2WMaMDgZJmZDmZMDmFAYmBAgBMG",
+            importString = "CkEAAAAAAAAAAAAAAAAAAAAAAkBAAGzMzMzMmxsZmZZGjxMNmxwyYmZYmxMDAAAAWGAmxAMwGssY0YGAzWMzGMzMzgZZAwMDAADwA",
         },
         {
             provider = "archon",
