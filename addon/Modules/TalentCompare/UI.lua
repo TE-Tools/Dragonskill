@@ -88,11 +88,10 @@ function UI:Init()
     SlashCmdList["DRAGONSKILL"] = function(msg)
         if msg == "testboss" then
             local BM = DragonSkill:GetModule("BossMechanics")
-            if BM then
-                BM:SimulateEntombedSentinels()
-            else
-                print("|cffff0000Dragon Skill:|r Fehler - BossMechanics Modul nicht gefunden.")
-            end
+            if BM then BM:SimulateEntombedSentinels() end
+        elseif msg == "testnekzali" then
+            local BM = DragonSkill:GetModule("BossMechanics")
+            if BM then BM:SimulateNekzali() end
         elseif f:IsShown() then
             f:Hide()
         else
@@ -161,15 +160,27 @@ function UI:Helper_DrawListWithIcons(content, items, title)
 
         row:SetPoint("TOPLEFT", 10, yOffset)
         local texture = "Interface\\Icons\\Inv_misc_questionmark"
-        if item.icon then
-            texture = item.icon
-        elseif item.itemId then
+        local itemName = item.text or item.name or "Unbekannt"
+        local colorPrefix = ""
+
+        if item.itemId then
             texture = C_Item.GetItemIconByID(item.itemId) or texture
+            local name, _, quality = GetItemInfo(item.itemId)
+            if name then
+                itemName = name
+                local _, _, _, argbHex = GetItemQualityColor(quality or 1)
+                colorPrefix = "|c" .. argbHex
+            end
         elseif item.spellId then
             texture = C_Spell.GetSpellTexture(item.spellId) or texture
+            local spellInfo = C_Spell.GetSpellInfo(item.spellId)
+            if spellInfo then itemName = spellInfo.name end
+        elseif item.icon then
+            texture = item.icon
         end
+
         row.icon:SetTexture(texture)
-        row.text:SetText(item.text or item.name or "Unbekannt")
+        row.text:SetText(colorPrefix .. itemName .. "|r")
 
         row:SetScript("OnEnter", nil)
         row:SetScript("OnLeave", nil)
@@ -185,7 +196,7 @@ function UI:Helper_DrawListWithIcons(content, items, title)
             row:SetScript("OnClick", function()
                 if IsShiftKeyDown() then
                     local _, link = GetItemInfo(item.itemId)
-                    if not link then link = string.format("|Hitem:%d:::::::::|h[%s]|h", item.itemId, item.name or "Item") end
+                    if not link then link = string.format("|Hitem:%d:::::::::|h[%s]|h", item.itemId, itemName) end
                     if link then HandleModifiedItemClick(link) end
                 end
             end)

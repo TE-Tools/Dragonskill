@@ -21,3 +21,4 @@ Modules\TalentCompare\UI.lua
 Modules\BossMechanics\Core.lua
 Modules\BossMechanics\UI.lua
 Modules\BossMechanics\Bosses\EntombedSentinels.lua
+Modules\BossMechanics\Bosses\Nekzali.lua

@@ -38,13 +38,40 @@ end
 
 function BossMechanics:SimulateEntombedSentinels()
     print("|cff00ff00Dragon Skill:|r Starte Test für Entombed Sentinels...")
-    local boss = self.Bosses[3010] -- Placeholder ID
+    local boss = self.Bosses[3010]
     if boss then
+        self:PlaySound("INTERMISSION")
         self.CurrentBoss = boss
         if DragonSkill.BossMechanicsUI then DragonSkill.BossMechanicsUI:OnBossStart(boss) end
         if boss.SimulateIntermission then boss:SimulateIntermission() end
     else
         print("|cffff0000Fehler:|r Boss 'Entombed Sentinels' nicht registriert.")
+    end
+end
+
+function BossMechanics:SimulateNekzali()
+    print("|cff00ff00Dragon Skill:|r Starte Test für Nek'zali...")
+    local boss = self.Bosses[3011]
+    if boss then
+        self:PlaySound("START")
+        self.CurrentBoss = boss
+        if DragonSkill.BossMechanicsUI then DragonSkill.BossMechanicsUI:OnBossStart(boss) end
+        if boss.SimulateStart then boss:SimulateStart() end
+    else
+        print("|cffff0000Fehler:|r Boss 'Nek'zali' nicht registriert.")
+    end
+end
+
+function BossMechanics:PlaySound(type)
+    local sounds = {
+        START = 567478, -- Ready Check
+        INTERMISSION = 8959, -- Raid Warning
+        WARNING = 876098, -- Boss Whisper
+        DONE = 567499, -- Progress
+    }
+    local id = sounds[type]
+    if id then
+        PlaySound(id, "Master")
     end
 end
 

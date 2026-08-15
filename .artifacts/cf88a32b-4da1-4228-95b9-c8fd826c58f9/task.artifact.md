@@ -1,13 +1,19 @@
-# Task: Dragon Skill Final Sync (v0.6.1)
+# Task: Dragon Skill v0.7 - Icons, Sounds & Nek'zali
 
-## Fixes
-- [/] Correct Slash Commands registration in `UI.lua`
-- [ ] Fix Talent button click reaction
-- [ ] Improve Scraper robustness for Wowhead (Fallback URLs)
-- [ ] Update `GuideData.lua` with full data
-- [ ] Fix Boss Test mode visibility
+## UI & Icons
+- [ ] Improve `Helper_DrawListWithIcons` in `UI.lua` (Colors, Caching)
+- [ ] Add Item Quality Color to Gear tab names
 
-## Git Sync
-- [ ] Git Add & Commit
-- [ ] Git Push to Branch
-- [ ] Summary of open items
+## Boss Mechanics Core
+- [ ] Add `PlaySound` helper to `Core.lua`
+- [ ] Integrate sounds into `EntombedSentinels.lua`
+
+## Nek'zali the Soulcoiler
+- [ ] Create `Modules/BossMechanics/Bosses/Nekzali.lua`
+- [ ] Implement Energy tracking (Soulcoil Well)
+- [ ] Implement Add tracking (Raised Amani)
+- [ ] Add `/ds testnekzali` simulation command
+
+## Finalization
+- [ ] Update `DragonSkill.toc`
+- [ ] Git Push
