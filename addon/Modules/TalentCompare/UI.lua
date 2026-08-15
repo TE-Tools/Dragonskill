@@ -1,5 +1,5 @@
--- Dragon Skill - Haupt UI (v0.5.0) - Optimized for Retail 12.x
--- Baut das Hauptfenster mit Tabs auf und integriert Talente, Stats, Trinkets, Crafting, Rotation, Gear und Enchants.
+-- Dragon Skill - Haupt UI (v0.6.6) - Robust Reconstruction
+-- Baut ein stabiles Fenster OHNE ButtonFrameTemplate, um Layout-Fehler zu vermeiden.
 
 local UI = {}
 local currentTab = 1
@@ -8,80 +8,91 @@ local tabs = {"Talente", "Stats", "Trinkets", "Crafting", "Rotation", "Gear", "E
 function UI:Init()
     if DragonSkillMainFrame then return end
 
-    -- Hauptfenster erstellen (Modernes Template)
-    local f = CreateFrame("Frame", "DragonSkillMainFrame", UIParent, "ButtonFrameTemplate")
-    if not f then return end
-
-    self.frame = f
+    -- Hauptfenster (Eigenes Design für maximale Stabilität)
+    local f = CreateFrame("Frame", "DragonSkillMainFrame", UIParent, "BackdropTemplate")
     f:SetSize(450, 550)
     f:SetPoint("CENTER")
+    f:SetFrameStrata("DIALOG") -- Sehr hohe Ebene
     f:SetMovable(true)
     f:EnableMouse(true)
     f:RegisterForDrag("LeftButton")
-    f:SetScript("OnDragStart", function(self) self:StartMoving() end)
-    f:SetScript("OnDragStop", function(self) self:StopMovingOrSizing() end)
+    f:SetScript("OnDragStart", f.StartMoving)
+    f:SetScript("OnDragStop", f.StopMovingOrSizing)
     f:SetClampedToScreen(true)
 
-    -- Titel setzen (Sicherer Weg für 12.x)
-    if f.SetTitle then
-        f:SetTitle("Dragon Skill v0.5")
-    end
+    -- Hintergrund & Rand
+    f:SetBackdrop({
+        bgFile = "Interface\\ChatFrame\\ChatFrameBackground",
+        edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Border",
+        tile = true, tileSize = 32, edgeSize = 32,
+        insets = { left = 8, right = 8, top = 8, bottom = 8 }
+    })
+    f:SetBackdropColor(0, 0, 0, 0.95)
 
-    -- Fallback für den Titel-Text
-    local titleText = _G[f:GetName() .. "TitleText"] or (f.TitleContainer and f.TitleContainer.TitleText)
-    if titleText and titleText.SetText then
-        titleText:SetText("Dragon Skill v0.5")
-    end
+    -- Titelzeile
+    f.Header = f:CreateTexture(nil, "ARTWORK")
+    f.Header:SetTexture("Interface\\DialogFrame\\UI-DialogBox-Header")
+    f.Header:SetSize(256, 64)
+    f.Header:SetPoint("TOP", 0, 12)
 
-    -- Icon
-    if f.portrait then
-        f.portrait:SetTexture("Interface\\Icons\\Inv_misc_head_dragon_01")
-    elseif f.PortraitContainer and f.PortraitContainer.portrait then
-        f.PortraitContainer.portrait:SetTexture("Interface\\Icons\\Inv_misc_head_dragon_01")
-    end
+    f.Title = f:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    f.Title:SetPoint("TOP", f.Header, "TOP", 0, -14)
+    f.Title:SetText("Dragon Skill v0.6.6")
 
-    -- Initial verstecken
-    f:Hide()
+    -- Schließen-Button
+    f.Close = CreateFrame("Button", nil, f, "UIPanelCloseButton")
+    f.Close:SetPoint("TOPRIGHT", -5, -5)
+    f.Close:SetScript("OnClick", function() f:Hide() end)
 
-    -- Tab-System (Fest am unteren Rand verankert)
+    -- Portrait (Oben links)
+    f.Portrait = f:CreateTexture(nil, "OVERLAY")
+    f.Portrait:SetSize(60, 60)
+    f.Portrait:SetPoint("TOPLEFT", -10, 10)
+    f.Portrait:SetTexture("Interface\\Icons\\Inv_misc_head_dragon_01")
+
+    -- Content Bereich (Inset-Ersatz)
+    local contentBg = CreateFrame("Frame", nil, f, "BackdropTemplate")
+    contentBg:SetPoint("TOPLEFT", 15, -40)
+    contentBg:SetPoint("BOTTOMRIGHT", -15, 60) -- Platz für Tabs unten
+    contentBg:SetBackdrop({
+        bgFile = "Interface\\Tooltips\\UI-Tooltip-Background",
+        edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
+        tile = true, tileSize = 16, edgeSize = 16,
+        insets = { left = 4, right = 4, top = 4, bottom = 4 }
+    })
+    contentBg:SetBackdropColor(0.1, 0.1, 0.1, 0.8)
+    f.ContentBg = contentBg
+
+    -- ScrollFrame für den Inhalt
+    local scrollFrame = CreateFrame("ScrollFrame", "DragonSkillScrollFrame", contentBg, "UIPanelScrollFrameTemplate")
+    scrollFrame:SetPoint("TOPLEFT", 8, -8)
+    scrollFrame:SetPoint("BOTTOMRIGHT", -25, 8)
+    scrollFrame:SetFrameLevel(f:GetFrameLevel() + 5)
+
+    local content = CreateFrame("Frame", "DragonSkillContentFrame", scrollFrame)
+    content:SetSize(380, 1000)
+    scrollFrame:SetScrollChild(content)
+    f.Content = content
+
+    -- Tab-System (Sauber unter dem Content-Bereich)
     f.Tabs = {}
     for i, name in ipairs(tabs) do
-        local tab = CreateFrame("Button", "$parentTab"..i, f, "PanelTabButtonTemplate")
+        local tab = CreateFrame("Button", "$parentTab"..i, f, "CharacterFrameTabButtonTemplate")
         tab:SetID(i)
         tab:SetText(name)
-        tab:SetScript("OnClick", function(tabBtn) UI:SelectTab(tabBtn:GetID()) end)
+        tab:SetScript("OnClick", function(self) UI:SelectTab(self:GetID()) end)
         f.Tabs[i] = tab
         if i == 1 then
-            tab:SetPoint("BOTTOMLEFT", f, "BOTTOMLEFT", 15, -30) -- Fest am Rand
+            tab:SetPoint("TOPLEFT", contentBg, "BOTTOMLEFT", 0, -2)
         else
-            tab:SetPoint("LEFT", f.Tabs[i-1], "RIGHT", -15, 0)
+            tab:SetPoint("LEFT", f.Tabs[i-1], "RIGHT", -16, 0)
         end
     end
     PanelTemplates_SetNumTabs(f, #tabs)
     PanelTemplates_SetTab(f, 1)
 
-    -- Content Area (Inset endet oberhalb der Tabs)
-    local inset = f.Inset or _G[f:GetName() .. "Inset"]
-    if inset then
-        inset:SetPoint("TOPLEFT", 4, -60)
-        inset:SetPoint("BOTTOMRIGHT", -6, 2) -- Endet über den Tabs
-
-        local scrollFrame = CreateFrame("ScrollFrame", "DragonSkillScrollFrame", inset, "UIPanelScrollFrameTemplate")
-        scrollFrame:SetPoint("TOPLEFT", 8, -8)
-        scrollFrame:SetPoint("BOTTOMRIGHT", -25, 8)
-        scrollFrame:SetFrameStrata("HIGH") -- Höhere Ebene für Klickbarkeit
-        scrollFrame:SetFrameLevel(inset:GetFrameLevel() + 10)
-
-        local content = CreateFrame("Frame", "DragonSkillContentFrame", scrollFrame)
-        content:SetSize(350, 1000)
-        scrollFrame:SetScrollChild(content)
-        f.Content = content
-    else
-        local content = CreateFrame("Frame", "DragonSkillContentFrame", f)
-        content:SetPoint("TOPLEFT", 15, -60)
-        content:SetPoint("BOTTOMRIGHT", -15, 30)
-        f.Content = content
-    end
+    f:Hide()
+    self.frame = f
 
     -- Slash Commands
     SLASH_DRAGONSKILL1 = "/ds"
@@ -119,7 +130,7 @@ function UI:Update()
     if not content.text then
         content.text = content:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
         content.text:SetPoint("TOPLEFT", 10, -10)
-        content.text:SetWidth(330)
+        content.text:SetWidth(360)
         content.text:SetJustifyH("LEFT")
     end
     content.text:SetText("")
@@ -150,7 +161,9 @@ function UI:Helper_DrawListWithIcons(content, items, title)
         local row = self.listRows[i]
         if not row then
             row = CreateFrame("Button", nil, content)
-            row:SetSize(330, 24)
+            row:SetSize(360, 24)
+            row:SetFrameLevel(content:GetFrameLevel() + 2)
+            row:EnableMouse(true)
             row.icon = row:CreateTexture(nil, "ARTWORK")
             row.icon:SetSize(20, 20)
             row.icon:SetPoint("LEFT", 0, 0)
@@ -176,39 +189,24 @@ function UI:Helper_DrawListWithIcons(content, items, title)
             texture = C_Spell.GetSpellTexture(item.spellId) or texture
             local spellInfo = C_Spell.GetSpellInfo(item.spellId)
             if spellInfo then itemName = spellInfo.name end
-        elseif item.icon then
-            texture = item.icon
         end
 
         row.icon:SetTexture(texture)
         row.text:SetText(colorPrefix .. itemName .. "|r")
 
-        row:SetScript("OnEnter", nil)
-        row:SetScript("OnLeave", nil)
-        row:SetScript("OnClick", nil)
-
-        if item.itemId then
-            row:SetScript("OnEnter", function(self)
-                GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-                GameTooltip:SetItemByID(item.itemId)
-                GameTooltip:Show()
-            end)
-            row:SetScript("OnLeave", function() GameTooltip:Hide() end)
-            row:SetScript("OnClick", function()
-                if IsShiftKeyDown() then
-                    local _, link = GetItemInfo(item.itemId)
-                    if not link then link = string.format("|Hitem:%d:::::::::|h[%s]|h", item.itemId, itemName) end
-                    if link then HandleModifiedItemClick(link) end
-                end
-            end)
-        elseif item.spellId then
-            row:SetScript("OnEnter", function(self)
-                GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-                GameTooltip:SetSpellByID(item.spellId)
-                GameTooltip:Show()
-            end)
-            row:SetScript("OnLeave", function() GameTooltip:Hide() end)
-        end
+        row:SetScript("OnEnter", function(self)
+            GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+            if item.itemId then GameTooltip:SetItemByID(item.itemId)
+            elseif item.spellId then GameTooltip:SetSpellByID(item.spellId) end
+            GameTooltip:Show()
+        end)
+        row:SetScript("OnLeave", function() GameTooltip:Hide() end)
+        row:SetScript("OnClick", function()
+            if IsShiftKeyDown() and item.itemId then
+                local _, link = GetItemInfo(item.itemId)
+                if link then HandleModifiedItemClick(link) end
+            end
+        end)
 
         row:Show()
         yOffset = yOffset - 26
@@ -236,33 +234,27 @@ function UI:DrawTalents(content)
         local btn = self.talentBtns[i]
         if not btn then
             btn = CreateFrame("Button", "DragonSkillBuildBtn"..i, content, "UIPanelButtonTemplate")
-            btn:SetSize(330, 25)
+            btn:SetSize(360, 30)
+            btn:SetFrameLevel(content:GetFrameLevel() + 5)
+            btn:EnableMouse(true)
             self.talentBtns[i] = btn
         end
         btn:SetPoint("TOPLEFT", 10, yOffset)
         btn:SetText(string.format("[%s] %s", build.provider, build.label))
         btn:SetScript("OnClick", function()
+            print("|cff00ff00Dragon Skill:|r Klick auf " .. build.label) -- Debug
             local current = TC:GetCurrentBuildString()
-            if not current then
-                print("|cffff0000Dragon Skill:|r Fehler - Kein aktiver Charakter-Build gefunden.")
-                return
-            end
+            if not current then return end
             local result = TC:Compare(build.importString, current)
-            if result then
-                UI:ShowTalentDiff(build, result)
-            else
-                print("|cffff0000Dragon Skill:|r Fehler beim Build-Vergleich.")
-            end
+            if result then UI:ShowTalentDiff(build, result) end
         end)
         btn:Show()
-        yOffset = yOffset - 30
+        yOffset = yOffset - 35
     end
 end
 
 function UI:ShowTalentDiff(build, result)
     local TC = DragonSkill:GetModule("TalentCompare")
-    if not TC then print("|cffff0000Dragon Skill:|r Fehler - TalentCompare Modul nicht gefunden.") return end
-
     local detailed = TC:GetDetailedDiff(build.importString)
 
     local diffText = ""
@@ -297,16 +289,11 @@ end
 function UI:DrawStats(content)
     local _, class = UnitClass("player")
     local specIndex = GetSpecialization()
-    if not specIndex then
-        content.text:SetText("Bitte wähle eine Spezialisierung.")
-        return
-    end
+    if not specIndex then return end
     local spec = GetSpecializationInfo(specIndex)
     local guideData = DragonSkill.Database:GetGuideData(class, spec)
 
     local txt = "|cffffff00Stat-Vergleich:|r\n"
-
-    -- Eigene Werte
     local crit = GetCritChance()
     local haste = GetHaste()
     local mastery = GetMasteryEffect()
@@ -322,16 +309,14 @@ function UI:DrawStats(content)
         if guideData.statPriority then
             txt = txt .. "\n|cffffd100Wowhead Empfehlung:|r\n"
             txt = txt .. "|cffffffff" .. (guideData.statPriority.wowhead or "Keine Daten") .. "|r\n"
-
             if guideData.statPriority.archon then
                 txt = txt .. "\n|cffffd100Archon Empfehlung:|r\n"
                 txt = txt .. "|cffffffff" .. guideData.statPriority.archon .. "|r\n"
             end
         end
-
         local averages = guideData.statAverages and guideData.statAverages.archon
         if averages and next(averages) then
-            txt = txt .. "\n|cffffd100Archon Durchschnittswert (Vergleich):|r\n"
+            txt = txt .. "\n|cffffd100Archon Durchschnittswert:|r\n"
             for sName, sVal in pairs(averages) do
                 txt = txt .. string.format("- %s: |cff00ff00%s|r\n", sName, sVal)
             end
@@ -339,7 +324,6 @@ function UI:DrawStats(content)
     else
         txt = txt .. "\n|cffff0000Keine Guide-Daten geladen.|r"
     end
-
     content.text:SetText(txt)
 end
 
@@ -357,11 +341,7 @@ function UI:DrawTrinkets(content)
 
     local items = {}
     for _, t in ipairs(guideData.trinkets.archon) do
-        table.insert(items, {
-            name = string.format("[%s] %s", t.rank, t.name),
-            itemId = t.itemId,
-            icon = t.icon
-        })
+        table.insert(items, { name = string.format("[%s] %s", t.rank, t.name), itemId = t.itemId, icon = t.icon })
     end
     self:Helper_DrawListWithIcons(content, items, "|cffffff00Archon Trinket Tier List:|r")
 end
@@ -378,10 +358,8 @@ function UI:DrawCrafting(content)
         return
     end
 
-    local txt = "|cffffff00Empfohlene Embellishments (Wowhead):|r\n"
-    for _, emb in ipairs(guideData.crafting.wowhead.embellishments) do
-        txt = txt .. "- " .. emb .. "\n"
-    end
+    local txt = "|cffffff00Empfohlene Embellishments:|r\n"
+    for _, emb in ipairs(guideData.crafting.wowhead.embellishments) do txt = txt .. "- " .. emb .. "\n" end
     content.text:SetText(txt)
 end
 
@@ -396,7 +374,6 @@ function UI:DrawRotation(content)
         content.text:SetText("Keine Rotations-Daten gefunden.")
         return
     end
-
     self:Helper_DrawListWithIcons(content, guideData.rotation.wowhead, "|cffffff00Rotations-Priorität:|r")
 end
 
@@ -428,14 +405,6 @@ function UI:DrawEnchants(content)
 
     local txt = "|cffffff00Empfohlene Verzauberungen:|r\n"
     local list = guideData and guideData.enchants and guideData.enchants.wowhead
-    if list and #list > 0 then
-        for _, v in ipairs(list) do txt = txt .. "- " .. v .. "\n" end
-    else
-        txt = txt .. "Keine Daten.\n"
-    end
-
-    txt = txt .. "\n|cffffff00Empfohlene Edelsteine:|r\n"
-    list = guideData and guideData.gems and guideData.gems.wowhead
     if list and #list > 0 then
         for _, v in ipairs(list) do txt = txt .. "- " .. v .. "\n" end
     else

@@ -1,16 +1,18 @@
-# Task: Dragon Skill v0.6.4 - UI & Data Emergency Fix
+# Task: Dragon Skill UI Final Reconstruction (v0.6.6)
 
-## UI Repair
-- [ ] Fix Anchoring (Tabs & Inset) in `UI.lua`
-- [ ] Fix Clickability (Frame Strata/Levels)
-- [ ] Fix Portrait & Title positioning
+## UI Overhaul
+- [ ] Rewrite `UI:Init` in `UI.lua` using custom Backdrop frame
+- [ ] Implement robust Tab system at the bottom (outside main content area)
+- [ ] Set `FrameStrata("DIALOG")` for the main window and `FULLSCREEN_DIALOG` for buttons
+- [ ] Ensure `ScrollFrame` correctly passes mouse events to children
 
-## Data Population
-- [ ] Enhance Scraper (Wowhead Regex & Fallbacks)
-- [ ] Run Full Scrape & Update `GuideData.lua`
+## Logic Robustness
+- [ ] Add `pcall` protection to `TalentCompare:Compare` and `TC:GetDetailedDiff`
+- [ ] Add debug print on every button click in `UI.lua`
 
 ## Boss Mechanics
-- [ ] Update Group Member Name resolution in `EntombedSentinels.lua`
+- [ ] Ensure Boss UI is also on a high strata to prevent overlap issues
 
 ## Finalization
-- [ ] Git Push & Instructions
+- [ ] Commit & Push to Git
+- [ ] Provide final copy instructions

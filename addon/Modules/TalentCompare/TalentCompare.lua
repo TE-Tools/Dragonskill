@@ -36,35 +36,43 @@ end
 --- (grober Diff, siehe Kommentar oben - kein Klartext-Talentname, aber zeigt "wie viele
 --- und wo" Unterschiede bestehen, inkl. Ähnlichkeits-Prozentzahl).
 function TalentCompare:Compare(guideString, currentString)
-    if not guideString or not currentString then
-        return { identical = false, error = "Fehlender Build-String" }
-    end
-
-    if guideString == currentString then
-        return { identical = true, similarity = 100, differences = {} }
-    end
-
-    local a = decodeToBytes(guideString)
-    local b = decodeToBytes(currentString)
-    local maxLen = math.max(#a, #b)
-    local diffPositions = {}
-
-    for i = 1, maxLen do
-        if a[i] ~= b[i] then
-            table.insert(diffPositions, i)
+    local ok, result = pcall(function()
+        if not guideString or not currentString then
+            return { identical = false, error = "Fehlender Build-String" }
         end
+
+        if guideString == currentString then
+            return { identical = true, similarity = 100, differences = {} }
+        end
+
+        local a = decodeToBytes(guideString)
+        local b = decodeToBytes(currentString)
+        local maxLen = math.max(#a, #b)
+        local diffPositions = {}
+
+        for i = 1, maxLen do
+            if a[i] ~= b[i] then
+                table.insert(diffPositions, i)
+            end
+        end
+
+        local similarity = maxLen > 0 and math.floor(((maxLen - #diffPositions) / maxLen) * 100) or 0
+
+        return {
+            identical = false,
+            similarity = similarity,
+            diffCount = #diffPositions,
+            differences = diffPositions,
+            guideString = guideString,
+            currentString = currentString
+        }
+    end)
+
+    if not ok then
+        print("|cffff0000Dragon Skill:|r Fehler beim Byte-Vergleich: " .. tostring(result))
+        return { identical = false, error = "Interner Fehler" }
     end
-
-    local similarity = maxLen > 0 and math.floor(((maxLen - #diffPositions) / maxLen) * 100) or 0
-
-    return {
-        identical = false,
-        similarity = similarity,
-        diffCount = #diffPositions,
-        differences = diffPositions,
-        guideString = guideString,
-        currentString = currentString
-    }
+    return result
 end
 
 --- Öffentliche API: Vergleicht Guide-Build (aus DragonSkillData) mit aktuellem Char-Build
@@ -95,52 +103,60 @@ end
 
 --- Nutzt die Blizzard-API um detaillierte Unterschiede zu finden.
 function TalentCompare:GetDetailedDiff(importString)
-    if not C_ClassTalents.GetImportConfigSlotMap then return nil end
-    local importSlotMap = C_ClassTalents.GetImportConfigSlotMap(importString)
-    if not importSlotMap then return nil end
+    local ok, result = pcall(function()
+        if not C_ClassTalents.GetImportConfigSlotMap then return nil end
+        local importSlotMap = C_ClassTalents.GetImportConfigSlotMap(importString)
+        if not importSlotMap then return nil end
 
-    local configID = C_ClassTalents.GetActiveConfigID()
-    if not configID then return nil end
+        local configID = C_ClassTalents.GetActiveConfigID()
+        if not configID then return nil end
 
-    local configInfo = C_Traits.GetConfigInfo(configID)
-    local treeID = configInfo.treeIDs[1]
-    local nodes = C_Traits.GetTreeNodes(treeID)
+        local configInfo = C_Traits.GetConfigInfo(configID)
+        local treeID = configInfo.treeIDs[1]
+        local nodes = C_Traits.GetTreeNodes(treeID)
 
-    local diffs = {}
-    for _, nodeID in ipairs(nodes) do
-        local nodeInfo = C_Traits.GetNodeInfo(configID, nodeID)
-        local importedEntry = importSlotMap[nodeID]
+        local diffs = {}
+        for _, nodeID in ipairs(nodes) do
+            local nodeInfo = C_Traits.GetNodeInfo(configID, nodeID)
+            local importedEntry = importSlotMap[nodeID]
 
-        local currentRank = nodeInfo.currentRank or 0
-        local currentEntryID = nodeInfo.activeEntry and nodeInfo.activeEntry.entryID or 0
+            local currentRank = nodeInfo.currentRank or 0
+            local currentEntryID = nodeInfo.activeEntry and nodeInfo.activeEntry.entryID or 0
 
-        local importedRank = importedEntry and importedEntry.rank or 0
-        local importedEntryID = importedEntry and importedEntry.entryID or 0
+            local importedRank = importedEntry and importedEntry.rank or 0
+            local importedEntryID = importedEntry and importedEntry.entryID or 0
 
-        if currentEntryID ~= importedEntryID or currentRank ~= importedRank then
-            local entryID = (importedEntryID > 0) and importedEntryID or currentEntryID
-            local entryInfo = C_Traits.GetEntryInfo(configID, entryID)
-            local definitionInfo = entryInfo and C_Traits.GetDefinitionInfo(entryInfo.definitionID)
+            if currentEntryID ~= importedEntryID or currentRank ~= importedRank then
+                local entryID = (importedEntryID > 0) and importedEntryID or currentEntryID
+                local entryInfo = C_Traits.GetEntryInfo(configID, entryID)
+                local definitionInfo = entryInfo and C_Traits.GetDefinitionInfo(entryInfo.definitionID)
 
-            local talentName = "Unbekanntes Talent"
-            if definitionInfo then
-                if definitionInfo.overrideName then
-                    talentName = definitionInfo.overrideName
-                elseif definitionInfo.spellID then
-                    local spellInfo = C_Spell.GetSpellInfo(definitionInfo.spellID)
-                    talentName = spellInfo and spellInfo.name or "Spell " .. definitionInfo.spellID
+                local talentName = "Unbekanntes Talent"
+                if definitionInfo then
+                    if definitionInfo.overrideName then
+                        talentName = definitionInfo.overrideName
+                    elseif definitionInfo.spellID then
+                        local spellInfo = C_Spell.GetSpellInfo(definitionInfo.spellID)
+                        talentName = spellInfo and spellInfo.name or "Spell " .. definitionInfo.spellID
+                    end
                 end
-            end
 
-            table.insert(diffs, {
-                name = talentName,
-                currentRank = currentRank,
-                importedRank = importedRank,
-                maxRank = nodeInfo.maxRanks
-            })
+                table.insert(diffs, {
+                    name = talentName,
+                    currentRank = currentRank,
+                    importedRank = importedRank,
+                    maxRank = nodeInfo.maxRanks
+                })
+            end
         end
+        return diffs
+    end)
+
+    if not ok then
+        print("|cffff0000Dragon Skill:|r Fehler beim detaillierten Diff: " .. tostring(result))
+        return nil
     end
-    return diffs
+    return result
 end
 
 DragonSkill:RegisterModule("TalentCompare", TalentCompare)

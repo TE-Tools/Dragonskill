@@ -18,6 +18,7 @@ function UI:Init()
     local f = CreateFrame("Frame", "DragonSkillBossMechanicsFrame", UIParent, "BackdropTemplate")
     f:SetSize(400, 300)
     f:SetPoint("CENTER", 300, 0)
+    f:SetFrameStrata("FULLSCREEN_DIALOG") -- Höchste Ebene
     f:SetBackdrop({
         bgFile = "Interface\\ChatFrame\\ChatFrameBackground",
         edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
