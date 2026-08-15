@@ -1,19 +1,16 @@
-# Task: Dragon Skill v0.7 - Icons, Sounds & Nek'zali
+# Task: Dragon Skill v0.6.4 - UI & Data Emergency Fix
 
-## UI & Icons
-- [ ] Improve `Helper_DrawListWithIcons` in `UI.lua` (Colors, Caching)
-- [ ] Add Item Quality Color to Gear tab names
+## UI Repair
+- [ ] Fix Anchoring (Tabs & Inset) in `UI.lua`
+- [ ] Fix Clickability (Frame Strata/Levels)
+- [ ] Fix Portrait & Title positioning
 
-## Boss Mechanics Core
-- [ ] Add `PlaySound` helper to `Core.lua`
-- [ ] Integrate sounds into `EntombedSentinels.lua`
+## Data Population
+- [ ] Enhance Scraper (Wowhead Regex & Fallbacks)
+- [ ] Run Full Scrape & Update `GuideData.lua`
 
-## Nek'zali the Soulcoiler
-- [ ] Create `Modules/BossMechanics/Bosses/Nekzali.lua`
-- [ ] Implement Energy tracking (Soulcoil Well)
-- [ ] Implement Add tracking (Raised Amani)
-- [ ] Add `/ds testnekzali` simulation command
+## Boss Mechanics
+- [ ] Update Group Member Name resolution in `EntombedSentinels.lua`
 
 ## Finalization
-- [ ] Update `DragonSkill.toc`
-- [ ] Git Push
+- [ ] Git Push & Instructions

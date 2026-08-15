@@ -43,7 +43,7 @@ function UI:Init()
     -- Initial verstecken
     f:Hide()
 
-    -- Tab-System
+    -- Tab-System (Fest am unteren Rand verankert)
     f.Tabs = {}
     for i, name in ipairs(tabs) do
         local tab = CreateFrame("Button", "$parentTab"..i, f, "PanelTabButtonTemplate")
@@ -52,7 +52,7 @@ function UI:Init()
         tab:SetScript("OnClick", function(tabBtn) UI:SelectTab(tabBtn:GetID()) end)
         f.Tabs[i] = tab
         if i == 1 then
-            tab:SetPoint("TOPLEFT", f, "BOTTOMLEFT", 15, 2)
+            tab:SetPoint("BOTTOMLEFT", f, "BOTTOMLEFT", 15, -30) -- Fest am Rand
         else
             tab:SetPoint("LEFT", f.Tabs[i-1], "RIGHT", -15, 0)
         end
@@ -60,16 +60,17 @@ function UI:Init()
     PanelTemplates_SetNumTabs(f, #tabs)
     PanelTemplates_SetTab(f, 1)
 
-    -- Content Area
+    -- Content Area (Inset endet oberhalb der Tabs)
     local inset = f.Inset or _G[f:GetName() .. "Inset"]
     if inset then
         inset:SetPoint("TOPLEFT", 4, -60)
-        inset:SetPoint("BOTTOMRIGHT", -6, 26)
+        inset:SetPoint("BOTTOMRIGHT", -6, 2) -- Endet über den Tabs
 
         local scrollFrame = CreateFrame("ScrollFrame", "DragonSkillScrollFrame", inset, "UIPanelScrollFrameTemplate")
         scrollFrame:SetPoint("TOPLEFT", 8, -8)
         scrollFrame:SetPoint("BOTTOMRIGHT", -25, 8)
-        scrollFrame:SetFrameLevel(f:GetFrameLevel() + 5) -- Erhöhter FrameLevel
+        scrollFrame:SetFrameStrata("HIGH") -- Höhere Ebene für Klickbarkeit
+        scrollFrame:SetFrameLevel(inset:GetFrameLevel() + 10)
 
         local content = CreateFrame("Frame", "DragonSkillContentFrame", scrollFrame)
         content:SetSize(350, 1000)

@@ -122,7 +122,8 @@ function extractStatPriority(markup) {
  */
 function extractBiSGear(markup) {
   const gear = [];
-  const tableRe = /\[table[^\]]*\]([\s\S]*?)\[\/table\]/g;
+  // Wowhead nutzt oft [table] oder [box] für BiS Listen.
+  const tableRe = /\[(?:table|box)[^\]]*\]([\s\S]*?)\[\/(?:table|box)\]/g;
   let m;
   while ((m = tableRe.exec(markup))) {
     const content = m[1];
@@ -133,7 +134,7 @@ function extractBiSGear(markup) {
           .map(c => c.replace(/\[\/td\]|\[\/tr\]|\[b\]|\[\/b\]|\[url=[^\]]+\]|\[\/url\]|\[item=\d+\]|\[symbol=[^\]]+\]|\[span[^\]]*\]|\[\/span\]/gi, "").trim())
           .filter(Boolean);
 
-        // Versuche Item-ID zu finden
+        // Versuche Item-ID zu finden (item=XXXX)
         const itemMatch = row.match(/\[item=(\d+)\]/i);
 
         if (cols.length >= 2) {
