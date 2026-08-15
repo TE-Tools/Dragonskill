@@ -123,25 +123,33 @@ function extractStatPriority(markup) {
 function extractBiSGear(markup) {
   const gear = [];
   // Wowhead nutzt oft [table] oder [box] für BiS Listen.
-  const tableRe = /\[(?:table|box)[^\]]*\]([\s\S]*?)\[\/(?:table|box)\]/g;
+  // Wir suchen nach Tabellen, die "Slot" oder "Item" enthalten.
+  const tableRe = /\[table[^\]]*\]([\s\S]*?)\[\/table\]/gi;
   let m;
   while ((m = tableRe.exec(markup))) {
     const content = m[1];
     if (content.toLowerCase().includes("slot") || content.toLowerCase().includes("item")) {
+      // Zeilen trennen (bei [tr])
       const rows = content.split(/\[tr\]/i).filter(r => r.includes("[td"));
       rows.forEach(row => {
+        // Spalten trennen (bei [td]) und BBCode entfernen
         const cols = row.split(/\[td[^\]]*\]/i)
-          .map(c => c.replace(/\[\/td\]|\[\/tr\]|\[b\]|\[\/b\]|\[url=[^\]]+\]|\[\/url\]|\[item=\d+\]|\[symbol=[^\]]+\]|\[span[^\]]*\]|\[\/span\]/gi, "").trim())
+          .map(c => c.replace(/\[\/td\]|\[\/tr\]|\[b\]|\[\/b\]|\[url=[^\]]+\]|\[\/url\]|\[symbol=[^\]]+\]|\[span[^\]]*\]|\[\/span\]/gi, "").trim())
           .filter(Boolean);
 
-        // Versuche Item-ID zu finden (item=XXXX)
+        // Versuche Item-ID zu finden (z.B. [item=268209])
         const itemMatch = row.match(/\[item=(\d+)\]/i);
 
         if (cols.length >= 2) {
+          // Falls wir eine Item-ID haben, nehmen wir sie. Ansonsten den Text.
+          const slot = cols[0];
+          const itemText = cols[1].replace(/\[item=\d+\]/gi, "").trim();
+          const source = cols[2] || "Unknown";
+
           gear.push({
-            slot: cols[0],
-            item: cols[1],
-            source: cols[2] || "Unknown",
+            slot: slot,
+            item: itemText || `Item ${itemMatch ? itemMatch[1] : "???"}`,
+            source: source.replace(/\[url=[^\]]+\]|\[\/url\]/gi, "").trim(),
             itemId: itemMatch ? parseInt(itemMatch[1]) : null
           });
         }
