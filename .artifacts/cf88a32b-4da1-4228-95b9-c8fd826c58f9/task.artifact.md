@@ -1,18 +1,24 @@
-# Task: Dragon Skill v0.9.0 - Patch 12.1 Readiness
+# Task: Dragon Skill v1.0.0 - Coordination Update
 
-## Core & Metadata
-- [ ] Update `DragonSkill.toc` (Interface 120100, Version 0.9.0)
+## Metadata & Core
+- [ ] Update `DragonSkill.toc` to v1.0.0 and add new files
+- [ ] Update `Modules/BossMechanics/Core.lua` with new simulation commands and sound triggers
 
-## Talent Logic (12.1 API Fixes)
-- [ ] Implement `GetClassTraitSystemID` in `TalentCompare.lua`
-- [ ] Update `GetDetailedDiff` to use explicit `systemID`
-- [ ] Add check for Serialization Version 2
+## Sszorak Module
+- [ ] Create `Modules/BossMechanics/Bosses/Sszorak.lua`
+- [ ] Implement Wind Tunnel orb tracking logic
+- [ ] Implement Cyst placement assignment
 
-## Boss Mechanics
-- [ ] Refine `LostExplorers.lua` (12.1 Encounter IDs)
-- [ ] Create `Modules/BossMechanics/Bosses/Vashnik.lua`
-- [ ] Add `/ds testvashnik` command to `UI.lua`
+## Twin Fangs Module
+- [ ] Create `Modules/BossMechanics/Bosses/TwinFangs.lua`
+- [ ] Implement Eternal Venom stack monitoring (UnitAura scanner)
+- [ ] Implement priority list for Ravenous Feast
 
-## Finalization
-- [ ] Git Push
-- [ ] Verification instructions
+## UI & Visuals
+- [ ] Update `Modules/BossMechanics/UI.lua` with Glow support and stack indicators
+- [ ] Add sound files or Blizzard sound triggers for critical events
+
+## Final Verification
+- [ ] Test `/ds testsszorak`
+- [ ] Test `/ds testfangs`
+- [ ] Verify stack-based color coding in UI

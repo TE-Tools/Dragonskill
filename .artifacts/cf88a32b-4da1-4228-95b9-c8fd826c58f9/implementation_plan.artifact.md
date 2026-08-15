@@ -1,49 +1,56 @@
-# Implementation Plan - Patch 12.1 Update (Curse of Ula’tek)
+# Implementation Plan - Boss Assistant v1.0.0 (The Coordination Update)
 
-Dieses Update bereitet Dragon Skill auf den **Patch 12.1** vor, indem die Interface-Version aktualisiert und die Talent-API an die neuen "Multi-System" Anforderungen von Blizzard angepasst wird.
+Dieses Update erweitert den Dragon Skill Raid Assistant um zwei weitere Bosse des Venomous Abyss Raids und implementiert fortgeschrittene Tracking-Systeme für Spieler-Stacks und Positionierung.
 
 ## User Review Required
 
 > [!IMPORTANT]
-> **API-Änderung (C_Traits)**: Mit Patch 12.1 verlangt Blizzard für viele Talent-Abfragen explizite `systemID`s (da es nun Hausbau-Talente, Zonen-Talente etc. gibt). Ich passe die `TalentCompare.lua` an, um dynamisch das richtige System (Class Talents) zu identifizieren.
+> **Stack-Monitoring (Twin Fangs)**: Wir fügen eine Echtzeit-Überwachung der "Eternal Venom" Stacks hinzu. Spieler, die 8 oder 9 Stacks erreichen, werden im Raidlead-Fenster rot markiert und erhalten eine Warnung, um sofort die "Ravenous Feast" Mechanik zu nutzen.
 
 > [!IMPORTANT]
-> **Talent-Strings (V2)**: Blizzard hat das Format der Import-Strings auf Version 2 aktualisiert. Die `GetImportConfigSlotMap` API sollte dies intern handhaben, aber unser Byte-Level-Diff könnte bei alten Strings (v0.6.2 Daten) ungenauer werden, bis der Scraper neue 12.1-Daten liefert.
+> **Positions-Assistent (Sszorak)**: Das Addon trackt die Windtunnel-Orbs und zeigt dem Raidlead an, an welcher Position die "Viscous Cysts" abgelegt werden müssen.
+
+> [!NOTE]
+> **Sound & Glow**: Wir führen visuelle "Glow"-Effekte für Frames und akustische Countdowns für kritische Phasen ein.
 
 ## Proposed Changes
 
-### 1. Core & Metadata
+### 1. Boss Mechanics Module
+
+#### [NEW] [Sszorak.lua](file:///C:/Users/thoma/StudioProjects/Dragonskill/addon/Modules/BossMechanics/Bosses/Sszorak.lua)
+- Implementierung der **Wind Tunnel** Logik:
+    - Tracking der Orbs (1, 2, 3) in den Tunneln.
+    - Zuweisung von Cysten-Ablegeplätzen an Spieler mit dem Debuff.
+    - Partner-Zuweisung für **Raging Crosswinds**.
+
+#### [NEW] [TwinFangs.lua](file:///C:/Users/thoma/StudioProjects/Dragonskill/addon/Modules/BossMechanics/Bosses/TwinFangs.lua)
+- Überwachung der **Eternal Venom** Stacks im gesamten Raid.
+- Liste der Spieler mit den höchsten Stacks im Raidlead-Fenster.
+- Koordinations-Hilfe für den **Ravenous Feast** (wer darf soaken).
+
+#### [MODIFY] [Core.lua](file:///C:/Users/thoma/StudioProjects/Dragonskill/addon/Modules/BossMechanics/Core.lua)
+- Neue Simulationen: `/ds testsszorak` und `/ds testfangs`.
+- Hinzufügen von akustischen Signalen ("Achtung!", "Laufen!", "Soaken!") via `BossMechanics:PlaySound`.
+
+---
+
+### 2. UI & Interaction Polish
+
+#### [MODIFY] [UI.lua](file:///C:/Users/thoma/StudioProjects/Dragonskill/addon/Modules/BossMechanics/UI.lua)
+- **Glow-System**: Integration von `LibCustomGlow` (oder manuellem Frame-Glow) für kritische Warnungen.
+- **Side-List Erweiterung**: Unterstützung für Stack-Anzeigen (z.B. "Thomas (9)").
+
+---
+
+### 3. Metadata
 
 #### [MODIFY] [DragonSkill.toc](file:///C:/Users/thoma/StudioProjects/Dragonskill/addon/DragonSkill.toc)
-- Update Interface: `120100` (Curse of Ula’tek).
-- Update Version: `0.9.0`.
-
----
-
-### 2. Talent Logic (Patch 12.1 Compatibility)
-
-#### [MODIFY] [TalentCompare.lua](file:///C:/Users/thoma/StudioProjects/Dragonskill/addon/Modules/TalentCompare/TalentCompare.lua)
-- **Multi-System Support**:
-    - Implementierung einer Suche nach der `systemID` für Klassentalente (Standard ID 1).
-    - Anpassung von `C_Traits.GetNodeInfo` und `C_Traits.GetConfigInfo` Aufrufen.
-- **Serialization Check**: Hinzufügen einer Prüfung, ob der Import-String Version 2 nutzt.
-
----
-
-### 3. Boss Mechanics (Venomous Abyss)
-
-#### [MODIFY] [LostExplorers.lua](file:///C:/Users/thoma/StudioProjects/Dragonskill/addon/Modules/BossMechanics/Bosses/LostExplorers.lua)
-- Aktualisierung der Encounter-ID für Patch 12.1 (The Lost Explorers).
-- Verfeinerung des Energie-Trackings für "Mor’zahi".
-
-#### [NEW] [Vashnik.lua](file:///C:/Users/thoma/StudioProjects/Dragonskill/addon/Modules/BossMechanics/Bosses/Vashnik.lua)
-- Neues Modul für den 4. Boss (**Vashnik the Malignant**).
-- Tracking der Gift-Quadranten (**Toxic Distillation**).
+- Version auf `1.0.0` anheben.
+- Registrierung der neuen Boss-Module.
 
 ## Verification Plan
 
 ### Manual Verification
-1. **/ds** -> Prüfen, ob das Fenster ohne API-Fehler (LUA Errors) aufgeht.
-2. **Talent Tab** -> Klick auf einen Build. Prüfen, ob `GetImportConfigSlotMap` in 12.1 weiterhin die korrekte Map liefert.
-3. **/ds testexplorers** -> Test der 12.1 Boss-Logik.
-4. **Tooltips** -> Prüfen, ob `TooltipDataProcessor` in 12.1 weiterhin BiS-Infos anzeigt (Housing Items könnten nun ebenfalls Tooltips haben).
+1. **/ds testsszorak** -> Prüfen, ob die Cysten-Zuweisung und die Wind-Reihenfolge angezeigt wird.
+2. **/ds testfangs** -> Prüfen, ob Spieler mit hohen Stacks (z.B. 9) rot blinken oder speziell hervorgehoben werden.
+3. **Sound Check** -> Verifizieren der neuen Sprach-Warnungen/Sounds.

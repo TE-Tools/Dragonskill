@@ -88,6 +88,32 @@ function BossMechanics:SimulateVashnik()
     end
 end
 
+function BossMechanics:SimulateSszorak()
+    print("|cff00ff00Dragon Skill:|r Starte Test für Sszorak...")
+    local boss = self.Bosses[3014]
+    if boss then
+        self:PlaySound("START")
+        self.CurrentBoss = boss
+        if DragonSkill.BossMechanicsUI then DragonSkill.BossMechanicsUI:OnBossStart(boss) end
+        if boss.SimulateStart then boss:SimulateStart() end
+    else
+        print("|cffff0000Fehler:|r Boss 'Sszorak' nicht registriert.")
+    end
+end
+
+function BossMechanics:SimulateTwinFangs()
+    print("|cff00ff00Dragon Skill:|r Starte Test für Twin Fangs...")
+    local boss = self.Bosses[3015]
+    if boss then
+        self:PlaySound("START")
+        self.CurrentBoss = boss
+        if DragonSkill.BossMechanicsUI then DragonSkill.BossMechanicsUI:OnBossStart(boss) end
+        if boss.SimulateStart then boss:SimulateStart() end
+    else
+        print("|cffff0000Fehler:|r Boss 'Twin Fangs' nicht registriert.")
+    end
+end
+
 function BossMechanics:PlaySound(type)
     local sounds = {
         START = 567478, -- Ready Check
@@ -95,6 +121,7 @@ function BossMechanics:PlaySound(type)
         WARNING = 876098, -- Boss Whisper
         ALERT = 567482, -- Quest Progress
         DONE = 567499, -- Progress
+        CRITICAL = 1489541, -- High resonance
     }
     local id = sounds[type]
     if id then

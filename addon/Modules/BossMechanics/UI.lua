@@ -115,7 +115,11 @@ function UI:UpdatePairs(pairs, openPlayers)
         row.p1Text:SetText(pair.p1.name .. " (" .. pair.p1.stacks .. ")")
         row.p2Text:SetText(pair.p2.name .. " (" .. pair.p2.stacks .. ")")
 
-        if pair.done then
+        -- Glow-Effekt bei kritischen Stacks
+        if pair.p1.stacks >= 9 or pair.p2.stacks >= 9 then
+            row.p1Text:SetTextColor(1, 0, 0)
+            row.p2Text:SetTextColor(1, 0, 0)
+        elseif pair.done then
             row.p1Text:SetTextColor(0.5, 0.5, 0.5)
             row.p2Text:SetTextColor(0.5, 0.5, 0.5)
             row.symbol:SetAlpha(0.3)
@@ -139,9 +143,21 @@ function UI:UpdatePairs(pairs, openPlayers)
             self.openFrames[i] = pText
         end
         pText:SetPoint("TOPLEFT", 0, yOffset)
-        pText:SetText(player.name .. " (" .. player.stacks .. ")")
+
+        -- Farbcodierung für Stacks in der Liste
+        local color = "|cffffffff"
+        if player.stacks >= 9 then color = "|cffff0000"
+        elseif player.stacks >= 7 then color = "|cffffa500" end
+
+        pText:SetText(player.name .. " (" .. color .. player.stacks .. "|r)")
         pText:Show()
         yOffset = yOffset - 15
+    end
+end
+
+function UI:UpdateStatus(text)
+    if self.frame and self.frame.Title then
+        self.frame.Title:SetText(text)
     end
 end
 

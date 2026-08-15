@@ -155,8 +155,17 @@ function UI:DrawTalents(content)
         btn:SetScript("OnClick", function()
             print("|cff00ff00Dragon Skill:|r Klick auf Build " .. build.label)
             local current = TC:GetCurrentBuildString()
-            local result = TC:Compare(build.importString, current)
-            UI:ShowImportDialog(build, result)
+            if not current then
+                print("|cffff0000Dragon Skill:|r Fehler - Kein Charakter-Build gefunden.")
+                return
+            end
+
+            local success, result = pcall(TC.Compare, TC, build.importString, current)
+            if success and result then
+                UI:ShowImportDialog(build, result)
+            else
+                print("|cffff0000Dragon Skill:|r Fehler beim Build-Vergleich: " .. tostring(result))
+            end
         end)
         btn:Show()
         yOffset = yOffset - 38
