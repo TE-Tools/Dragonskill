@@ -1,18 +1,19 @@
-# Task: Dragon Skill UI Final Reconstruction (v0.6.6)
+# Task: Dragon Skill v0.8 - Icons, Sounds & The Lost Explorers
 
-## UI Overhaul
-- [ ] Rewrite `UI:Init` in `UI.lua` using custom Backdrop frame
-- [ ] Implement robust Tab system at the bottom (outside main content area)
-- [ ] Set `FrameStrata("DIALOG")` for the main window and `FULLSCREEN_DIALOG` for buttons
-- [ ] Ensure `ScrollFrame` correctly passes mouse events to children
+## UI & Visuals
+- [ ] Refine icon loading in `UI.lua` (Name-based fallback)
+- [ ] Implement visual "Glow" for critical boss alerts
 
-## Logic Robustness
-- [ ] Add `pcall` protection to `TalentCompare:Compare` and `TC:GetDetailedDiff`
-- [ ] Add debug print on every button click in `UI.lua`
+## Boss Mechanics Core
+- [ ] Add Sound support to `Modules/BossMechanics/Core.lua`
+- [ ] Implement synchronization for group warnings
 
-## Boss Mechanics
-- [ ] Ensure Boss UI is also on a high strata to prevent overlap issues
+## The Lost Explorers Module
+- [ ] Create `Modules/BossMechanics/Bosses/LostExplorers.lua`
+- [ ] Implement Mor’zahi Energy tracking
+- [ ] Implement Ultimate ability alerts
+- [ ] Add `/ds testexplorers` command
 
 ## Finalization
-- [ ] Commit & Push to Git
-- [ ] Provide final copy instructions
+- [ ] Update `DragonSkill.toc`
+- [ ] Git Commit & Push

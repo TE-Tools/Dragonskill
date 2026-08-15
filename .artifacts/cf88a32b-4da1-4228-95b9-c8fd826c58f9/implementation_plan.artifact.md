@@ -1,40 +1,51 @@
-# Implementation Plan - Dragon Skill UI Final Reconstruction (v0.6.6)
+# Implementation Plan - Dragon Skill Expansion (v0.8)
 
-Dieses Update strukturiert das UI-System grundlegend um, um die Klickbarkeit unter allen Umständen zu garantieren und das fehlerhafte Layout am unteren Rand (Tabs) zu fixen.
+Dieses Update erweitert das Addon um ein neues Bossmodul für "The Lost Explorers", fügt akustische Warnungen hinzu und verfeinert die Item-Icons sowie die allgemeine Stabilität.
 
 ## User Review Required
 
 > [!IMPORTANT]
-> **Radikaler Klick-Fix**: Wir setzen das gesamte Fenster auf `FrameStrata("DIALOG")` und die Buttons auf eine noch höhere Ebene. Dies erzwingt, dass das Addon Vorrang vor allen anderen UI-Elementen hat.
+> **Neuer Boss: The Lost Explorers**:
+> - Dieses Modul unterstützt den Raid-Rat (Nama, Eku, Gabbo).
+> - **Mechanik-Tracking**: Überwachung der Boss-Energie (Mor’zahi) und Anzeige, wann ein Fisch gefüttert werden muss.
+> - **Ultimate-Warnungen**: Spezielle Anzeigen für "Mighty Tad" (Soak), "Frostfire Wally" (Element-Clearing) und "Mushroom Bounce".
+
 > [!IMPORTANT]
-> **Layout Redesign**: Wir entfernen das problematische `ButtonFrameTemplate` und bauen ein eigenes, stabiles Fenster mit klaren Grenzen. Die Tabs werden sauber getrennt vom Inhaltsbereich platziert.
-> [!NOTE]
-> **Debug-Output**: Beim Klicken auf einen Talent-Button wird nun eine Chat-Nachricht ausgegeben, damit wir sofort sehen, ob der Klick überhaupt registriert wurde.
+> **Sound-Integration**:
+> - Ich füge eine zentrale Sound-Bibliothek hinzu, damit Bosse akustische Signale geben können (z.B. "Soaken!" oder "Energie kritisch!").
 
 ## Proposed Changes
 
-### 1. UI-Neubau (UI.lua)
+### 1. Boss Mechanics Module
 
-#### [MODIFY] [UI.lua](file:///C:/Users/thoma/StudioProjects/Dragonskill/addon/Modules/TalentCompare/UI.lua)
-- **Eigenes Template**: Wechsel von `ButtonFrameTemplate` zu einem einfachen `Backdrop`-Frame. Dies gibt uns volle Kontrolle über die Schichtung.
-- **Klick-Priorität**:
-    - Der `ScrollFrame` und alle Buttons bekommen explizit `SetFrameStrata("FULLSCREEN_DIALOG")`.
-    - Alle Buttons erhalten ein `OnMouseDown` und `OnMouseUp` Feedback (visuell), um die Interaktion zu bestätigen.
-- **Layout**:
-    - Das Inset (schwarzer Hintergrund) wird massiv verkleinert, damit die Tabs unten **außerhalb** des Hintergrunds liegen.
-    - Die Tabs werden mit einem größeren Abstand zueinander und zum Rand platziert.
+#### [NEW] [LostExplorers.lua](file:///C:/Users/thoma/StudioProjects/Dragonskill/addon/Modules/BossMechanics/Bosses/LostExplorers.lua)
+- Implementierung der Council-Logik:
+    - Tracking der Energie von Mor’zahi (UnitPower boss4).
+    - Warnungen für Boss-spezifische Ultimates.
+    - Status-Anzeige der Interrupt-Rotation für Scroll Sage Eku.
+
+#### [MODIFY] [Core.lua](file:///C:/Users/thoma/StudioProjects/Dragonskill/addon/Modules/BossMechanics/Core.lua)
+- Erweiterung der Simulationen um `/ds testexplorers`.
+- Implementierung der Inter-Addon-Kommunikation für synchronisierte Warnungen in der Gruppe.
 
 ---
 
-### 2. Talent-Logik Robustness
+### 2. UI & Quality of Life
 
-#### [MODIFY] [TalentCompare.lua](file:///C:/Users/thoma/StudioProjects/Dragonskill/addon/Modules/TalentCompare/TalentCompare.lua)
-- Hinzufügen von `pcall` (Protected Call) beim Talent-Vergleich, um zu verhindern, dass ein Fehler in der Blizzard-API den gesamten Klick-Prozess lautlos abbricht.
+#### [MODIFY] [UI.lua](file:///C:/Users/thoma/StudioProjects/Dragonskill/addon/Modules/TalentCompare/UI.lua)
+- **Item Icons**: Automatisches Auflösen von Icons via `GetItemIcon` für alle Listen.
+- **Visuals**: Einbau eines kleinen "Glow"-Effekts für kritische Boss-Warnungen.
+
+---
+
+### 3. Scraper Fixes
+
+#### [MODIFY] [scrape-wowhead.js](file:///C:/Users/thoma/StudioProjects/Dragonskill/scraper/scrape-wowhead.js)
+- Optimierung der Extraktion von "Rotation Priority" (Icons werden nun als Text-Präfix gespeichert).
 
 ## Verification Plan
 
 ### Manual Verification
-1. **/ds** -> Fenster erscheint.
-2. **Klick auf Talente** -> Prüfen, ob "Klick registriert" im Chat erscheint und ob der Dialog aufgeht.
-3. **Tab-Wechsel** -> Prüfen, ob die unteren Buttons nun sauber anklickbar sind.
-4. **Layout** -> Verifizieren, dass nichts mehr überlappt oder abgeschnitten ist.
+1. **/ds testexplorers** -> Prüfen, ob das Raidlead-Fenster die Energie der drei Schildkröten anzeigt.
+2. **Icons Check** -> Gear-Tab öffnen und prüfen, ob Icons nun zuverlässiger geladen werden.
+3. **Sound Check** -> Verifizieren, dass akustische Signale bei den Simulationen abgespielt werden.
