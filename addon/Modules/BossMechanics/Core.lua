@@ -64,7 +64,7 @@ end
 
 function BossMechanics:SimulateLostExplorers()
     print("|cff00ff00Dragon Skill:|r Starte Test für The Lost Explorers...")
-    local boss = self.Bosses[3012] -- Placeholder ID for Explorers
+    local boss = self.Bosses[3012]
     if boss then
         self:PlaySound("START")
         self.CurrentBoss = boss
@@ -72,6 +72,19 @@ function BossMechanics:SimulateLostExplorers()
         if boss.SimulateStart then boss:SimulateStart() end
     else
         print("|cffff0000Fehler:|r Boss 'The Lost Explorers' nicht registriert.")
+    end
+end
+
+function BossMechanics:SimulateVashnik()
+    print("|cff00ff00Dragon Skill:|r Starte Test für Vashnik...")
+    local boss = self.Bosses[3013]
+    if boss then
+        self:PlaySound("START")
+        self.CurrentBoss = boss
+        if DragonSkill.BossMechanicsUI then DragonSkill.BossMechanicsUI:OnBossStart(boss) end
+        if boss.SimulateStart then boss:SimulateStart() end
+    else
+        print("|cffff0000Fehler:|r Boss 'Vashnik' nicht registriert.")
     end
 end
 

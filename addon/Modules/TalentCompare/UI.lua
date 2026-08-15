@@ -77,6 +77,9 @@ function UI:Init()
         elseif msg == "testexplorers" then
             local BM = DragonSkill:GetModule("BossMechanics")
             if BM then BM:SimulateLostExplorers() end
+        elseif msg == "testvashnik" then
+            local BM = DragonSkill:GetModule("BossMechanics")
+            if BM then BM:SimulateVashnik() end
         elseif f:IsShown() then
             f:Hide()
         else

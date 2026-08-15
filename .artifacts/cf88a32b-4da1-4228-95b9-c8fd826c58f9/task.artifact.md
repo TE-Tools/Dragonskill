@@ -1,19 +1,18 @@
-# Task: Dragon Skill v0.8 - Icons, Sounds & The Lost Explorers
+# Task: Dragon Skill v0.9.0 - Patch 12.1 Readiness
 
-## UI & Visuals
-- [ ] Refine icon loading in `UI.lua` (Name-based fallback)
-- [ ] Implement visual "Glow" for critical boss alerts
+## Core & Metadata
+- [ ] Update `DragonSkill.toc` (Interface 120100, Version 0.9.0)
 
-## Boss Mechanics Core
-- [ ] Add Sound support to `Modules/BossMechanics/Core.lua`
-- [ ] Implement synchronization for group warnings
+## Talent Logic (12.1 API Fixes)
+- [ ] Implement `GetClassTraitSystemID` in `TalentCompare.lua`
+- [ ] Update `GetDetailedDiff` to use explicit `systemID`
+- [ ] Add check for Serialization Version 2
 
-## The Lost Explorers Module
-- [ ] Create `Modules/BossMechanics/Bosses/LostExplorers.lua`
-- [ ] Implement Mor’zahi Energy tracking
-- [ ] Implement Ultimate ability alerts
-- [ ] Add `/ds testexplorers` command
+## Boss Mechanics
+- [ ] Refine `LostExplorers.lua` (12.1 Encounter IDs)
+- [ ] Create `Modules/BossMechanics/Bosses/Vashnik.lua`
+- [ ] Add `/ds testvashnik` command to `UI.lua`
 
 ## Finalization
-- [ ] Update `DragonSkill.toc`
-- [ ] Git Commit & Push
+- [ ] Git Push
+- [ ] Verification instructions

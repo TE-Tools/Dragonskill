@@ -13,6 +13,20 @@ function TalentCompare:GetCurrentBuildString()
     return exportString
 end
 
+--- Hilfsfunktion für Patch 12.1+: Findet die SystemID für Klassentalente
+function TalentCompare:GetClassTraitSystemID()
+    if not C_Traits.GetTraitSystemIDs then return 1 end -- Fallback für < 12.1
+    local systems = C_Traits.GetTraitSystemIDs()
+    for _, id in ipairs(systems) do
+        local info = C_Traits.GetTraitSystemInfo(id)
+        -- SystemID 1 ist traditionell Class Talents
+        if info and (id == 1 or info.name == "Class Talents") then
+            return id
+        end
+    end
+    return 1
+end
+
 -- Blizzard Talent-Import-Strings sind Custom-Base64 (Alphabet inkl. + / = -) über einem
 -- Bitstream aus: Header (Spec, Version) + pro Trait-Node ein "selected"-Bit + ggf. Rang/Choice-Bits.
 -- Ein vollständiger Bit-Decoder (inkl. Node-ID-Reihenfolge exakt wie der Client sie erwartet)
@@ -111,8 +125,16 @@ function TalentCompare:GetDetailedDiff(importString)
         local configID = C_ClassTalents.GetActiveConfigID()
         if not configID then return nil end
 
+        local systemID = self:GetClassTraitSystemID()
         local configInfo = C_Traits.GetConfigInfo(configID)
-        local treeID = configInfo.treeIDs[1]
+
+        -- In 12.1+ müssen wir oft den Baum des spezifischen Systems finden
+        local treeID
+        if configInfo and configInfo.treeIDs then
+            treeID = configInfo.treeIDs[1]
+        end
+
+        if not treeID then return nil end
         local nodes = C_Traits.GetTreeNodes(treeID)
 
         local diffs = {}

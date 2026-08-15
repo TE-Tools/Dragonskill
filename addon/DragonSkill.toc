@@ -1,8 +1,8 @@
-## Interface: 120007
+## Interface: 120100
 ## Title: Dragon Skill
 ## Notes: Talent-Guides, Trinkets, Rotation und Crafting - by wear-alleria
 ## Author: wear-alleria
-## Version: 0.5.0
+## Version: 0.9.0
 ## SavedVariables: DragonSkillDB
 ## SavedVariablesPerCharacter: DragonSkillCharDB
 
@@ -22,3 +22,5 @@ Modules\BossMechanics\Core.lua
 Modules\BossMechanics\UI.lua
 Modules\BossMechanics\Bosses\EntombedSentinels.lua
 Modules\BossMechanics\Bosses\Nekzali.lua
+Modules\BossMechanics\Bosses\LostExplorers.lua
+Modules\BossMechanics\Bosses\Vashnik.lua
