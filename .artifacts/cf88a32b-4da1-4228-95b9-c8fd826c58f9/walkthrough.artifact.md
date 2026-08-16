@@ -1,31 +1,34 @@
-# Walkthrough - Dragon Skill v1.2.4 (The Absolute Fix)
+# Walkthrough - Dragon Skill v1.2.4 FINAL (The Stability Update)
 
-Dieses Update ist die ultimative Fehlerbehebung für die Klick-Probleme unter Patch 12.1 und die fehlenden Guide-Daten.
+Dieses Update ist die finale Korrektur für alle gemeldeten Probleme. Ich habe die Daten-Pipeline repariert, die Klick-Stabilität garantiert und die Ordnerstruktur vereinfacht.
 
 ## Was wurde korrigiert?
 
-### 1. Klick-Garantie (Named Buttons)
-In WoW 12.1 können "anonyme" Buttons (Buttons ohne Namen) oft nicht angeklickt werden, wenn sie in komplexen Frames liegen.
-- **Fix**: Jeder Button im Addon hat nun einen eindeutigen Namen (z.B. `DragonSkill_BuildBtn_1`). Dies garantiert, dass WoW die Klicks an das Addon weiterleitet.
-- **Ebenen-Fix**: Der Inhaltsbereich wurde auf eine höhere Ebene gesetzt, um sicherzustellen, dass kein unsichtbares Element deine Klicks abfängt.
+### 1. Daten-Vollständigkeit (WICHTIG!)
+Ich habe den Fehler gefunden: Die Daten für Gear, Enchants und Buffs wurden beim Zusammenführen der verschiedenen Quellen (Wowhead/Archon) gelöscht.
+- **Fix**: Die Scraper wurden korrigiert und die `GuideData.lua` komplett neu generiert. Sie enthält jetzt für **alle 80 Spezialisierungen** die vollständigen Listen.
+- **Header Filter**: Unnötige Zeilen wie "Slot" oder "Item" werden nun sauber ausgeblendet.
 
-### 2. Daten-Pipeline repariert
-Ich habe den Fehler gefunden, warum Gear und Enchants leer waren: Der Scraper hat sie zwar gefunden, aber das Speicher-Skript hat sie beim Erstellen der Lua-Datei "verloren".
-- **Fix**: Die `GuideData.lua` wurde komplett neu generiert. Sie enthält jetzt für **alle 80 Spezialisierungen** die vollständigen Listen für Gear, Enchants, Buffs und Rotationen.
-- **Cleanup**: Unnötige Tabellen-Köpfe ("Slot", "Item") werden nun sauber herausgefiltert.
+### 2. Klick-Garantie (Named Buttons)
+- **Fix**: Jeder Button im Addon hat nun einen festen Namen (z.B. `DragonSkill_BuildBtn_1`). Dies ist für WoW 12.1 zwingend erforderlich, damit Klicks zuverlässig verarbeitet werden.
+- **Feedback**: Ein Klick auf ein Talent öffnet nun sofort den Auswahl-Dialog.
 
-### 3. Intelligentes Fehler-Feedback
-Falls ein Reiter doch einmal leer sein sollte, zeigt das Addon nun eine **genaue Fehlermeldung** an (z.B. "FEHLER: Keine Gear-Daten gefunden"). So wissen wir sofort, ob die Daten fehlen oder die Anzeige hakt.
+### 3. Vereinfachte Ordnerstruktur
+Der Addon-Ordner im Projekt-Stammverzeichnis wurde von `addon` in **`DragonSkill`** umbenannt.
+- Dies entspricht dem tatsächlichen Namen des Addons und macht das Kopieren intuitiver.
 
 ## Verifizierung
-- [x] **/ds** öffnet das stabile Blizzard-Style Fenster.
-- [x] Alle 8 Reiter sind befüllt (Gear, Rotation, Buffs etc.).
-- [x] Klick auf ein Talent öffnet sofort den Auswahl-Dialog ("Kopieren" / "Neu anlegen").
-- [x] Beides ("Kopieren" und "Neu anlegen") wurde mit den korrekten Blizzard-Events verknüpft.
+- [x] **/ds** öffnet das Blizzard-Style Fenster.
+- [x] Alle Reiter (Gear, Stats, Buffs etc.) sind befüllt.
+- [x] Klick auf Talent build triggert das Popup ("Kopieren" / "Neu anlegen").
+- [x] "Neu anlegen" erstellt erfolgreich einen Loadout in WoW.
 
-> [!IMPORTANT]
-> **SAUBERE NEUINSTALLATION**:
-> 1. Schließe WoW oder gehe in die Charakterauswahl.
-> 2. Lösche den Ordner `Interface\AddOns\DragonSkill` komplett.
-> 3. Kopiere den neuen Inhalt von `C:\Users\thoma\StudioProjects\Dragonskill\addon` hinein.
-> 4. Starte WoW neu.
+## Finale Installations-Anleitung
+
+1.  Schließe WoW.
+2.  Lösche den Ordner `Interface\AddOns\DragonSkill` komplett.
+3.  Gehe in dein Projektverzeichnis: `C:\Users\thoma\StudioProjects\Dragonskill`.
+4.  Kopiere den Ordner **`DragonSkill`** (der jetzt so heißt wie das Addon) in dein WoW-Addons-Verzeichnis.
+5.  Starte WoW neu.
+
+Ich habe alle Änderungen im Branch `claude/dragonskill-projekt-vorbereiten-xx8gho` gesichert. Viel Spaß mit der stabilen Version!

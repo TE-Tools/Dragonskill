@@ -1,47 +1,49 @@
-# Implementation Plan - Dragon Skill Absolute Stability & Data Fix (v1.2.4)
+# Implementation Plan - Reliability & Feature Update (v1.2.5)
 
-Dieses Update ist eine radikale Fehlerbehebung, um die Klickbarkeit der Buttons und die Vollständigkeit der Guide-Daten unter WoW 12.1 zu garantieren.
+Dieses Update behebt die verbleibenden Datenlücken, repariert die Talent-Klick-Interaktion und fügt Item-Vorschauen (Tooltips) für alle Listen hinzu.
 
 ## User Review Required
 
 > [!IMPORTANT]
-> **Klick-Garantie**: Ich verwende nun benannte Buttons und ein vereinfachtes Ereignis-System. Dies verhindert, dass Blizzard-Sicherheitsmechanismen (Tainting) die Buttons blockieren.
+> **Tooltips (Vorschau)**: Wenn du nun im Gear-, Trinket- oder Buff-Reiter mit der Maus über einen Eintrag fährst, erscheint automatisch der WoW-Standard-Tooltip des Gegenstands (die "Vorschau").
 > [!IMPORTANT]
-> **Daten-Audit**: Ich habe festgestellt, dass der Scraper in bestimmten Fällen die Daten zwar findet, aber nicht korrekt in die finale Lua-Datei schreibt. Ich korrigiere den `build-data.js` Prozess.
+> **Talent-Fix**: Ich stelle die Talent-Abfrage auf ein robusteres System um, das nicht mehr auf dynamischen Popups basiert, sondern eine feste Struktur nutzt. Dies sollte die Blockaden in WoW 12.1 umgehen.
 > [!NOTE]
-> **Debug-Modus**: Wenn Daten fehlen, zeigt das Addon nun im Fenster exakt an, welche Tabelle (bisGear, rotation, enchants) leer ist.
+> **Daten-Pipeline**: Ich erweitere den Scraper, um auch modernere Wowhead-Layouts (z.B. mit [h3] Überschriften für Enchants) zu unterstützen.
 
 ## Proposed Changes
 
-### 1. UI Robustness (UI.lua)
-
-#### [MODIFY] [UI.lua](file:///C:/Users/thoma/StudioProjects/Dragonskill/addon/Modules/TalentCompare/UI.lua)
-- **Buttons**: Alle Buttons bekommen nun einen eindeutigen Namen (erforderlich für manche Templates in 12.1).
-- **Layering**: Explizite Erhöhung des `FrameLevel` für den Scroll-Inhalt.
-- **Error Handling**: Umwickeln des gesamten `Update`-Prozesses mit `pcall`, um lautlose Abstürze zu verhindern.
-
----
-
-### 2. Scraper & Data Pipeline Fix
+### 1. Scraper & Data Pipeline
 
 #### [MODIFY] [scrape-wowhead.js](file:///C:/Users/thoma/StudioProjects/Dragonskill/scraper/scrape-wowhead.js)
-- Optimierung der BiS-Gear Extraktion (Wowhead hat das Markup leicht geändert).
-- Hinzufügen von Fallbacks für Rotationen.
+- Erweitertes Matching für Enchants/Gems/Consumables: Unterstützung für `[h2]`, `[h3]` und `[color]` basierte Überschriften.
+- Fallback für BiS-Listen, falls diese in `[box]` statt `[table]` stehen.
 
-#### [MODIFY] [build-data.js](file:///C:/Users/thoma/StudioProjects/Dragonskill/scraper/build-data.js)
-- Fix der Logik beim Zusammenführen von Provider-Daten (Wowhead/Archon).
+#### [MODIFY] [scrape-archon.js](file:///C:/Users/thoma/StudioProjects/Dragonskill/scraper/scrape-archon.js)
+- Optimierung der Trinket-Extraktion: Unterstützung für `BuildsTrinketAnalysisSection`.
 
 ---
 
-### 3. Talent Logic Stability
+### 2. Addon UI & Tooltips
 
-#### [MODIFY] [TalentCompare.lua](file:///C:/Users/thoma/StudioProjects/Dragonskill/addon/Modules/TalentCompare/TalentCompare.lua)
-- Sicherstellung, dass `C_ClassTalents` APIs nur aufgerufen werden, wenn das entsprechende System bereit ist.
+#### [MODIFY] [UI.lua](file:///C:/Users/thoma/StudioProjects/Dragonskill/DragonSkill/Modules/TalentCompare/UI.lua)
+- **Tooltips**: Hinzufügen von `OnEnter` und `OnLeave` Handlern für alle List-Buttons in `Helper_DrawListWithIcons`.
+- **Talent Click**:
+    - Umstellung der `StaticPopup` Registrierung (einmalige statische Definition statt Neuregistrierung pro Klick).
+    - Hinzufügen von Debug-Chat-Ausgaben für jeden Schritt des Prozesses.
+- **Layout**: Fix der Fenster-Ebenen, um sicherzustellen, dass Tooltips nicht hinter dem Fenster erscheinen.
+
+---
+
+### 3. Core Logic
+
+#### [MODIFY] [TalentCompare.lua](file:///C:/Users/thoma/StudioProjects/Dragonskill/DragonSkill/Modules/TalentCompare/TalentCompare.lua)
+- Sicherstellung, dass der Import-Dialog auch bei minimalen Abweichungen (similarity > 99%) erscheint.
 
 ## Verification Plan
 
 ### Manual Verification
-1. **/ds** -> Das Fenster **muss** erscheinen.
-2. **Klick-Test** -> Auf ein Talent klicken. Falls nichts passiert, schau in den Chat (Debug-Meldungen).
-3. **Tab-Test** -> Alle Reiter prüfen. Wenn ein Reiter leer ist, muss nun eine spezifische Meldung erscheinen (z.B. "Keine Gear-Daten in GuideData.lua").
-4. **Data-Check** -> Ich werde den Scraper für eine Spec (z.B. DEATKNIGHT 250) manuell prüfen.
+1. **/ds** -> Reiter "Gear" öffnen.
+2. **Hover-Test**: Mit der Maus über ein Item fahren -> Tooltip muss erscheinen.
+3. **Talent-Test**: Build anklicken -> Das Auswahlfenster **muss** erscheinen.
+4. **Daten-Check**: Prüfen, ob "Enchants" und "Buffs" nun befüllt sind (nach Neukopieren der Daten).

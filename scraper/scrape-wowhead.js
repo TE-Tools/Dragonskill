@@ -155,7 +155,8 @@ function extractBiSGear(markup) {
 
 function extractConsumables(markup) {
   const data = { enchants: [], gems: [], consumables: [] };
-  const sectionRe = /\[b\]([^\]]+(?:Enchants|Gems|Consumables|Potions|Flasks|Food|Oil|Phials|Rune))\[\/b\][\s\S]{0,600}?\[(?:ol|ul)\]([\s\S]{0,1500}?)\[\/(?:ol|ul)\]/gi;
+  // Erweitertes Suchmuster für Überschriften (b, h2, h3, color)
+  const sectionRe = /\[(?:b|h\d|color=[^\]]+)\]([^\]]+(?:Enchants|Gems|Consumables|Potions|Flasks|Food|Oil|Phials|Rune))\[\/(?:b|h\d|color)\][\s\S]{0,600}?\[(?:ol|ul)\]([\s\S]{0,1500}?)\[\/(?:ol|ul)\]/gi;
   let m;
   while ((m = sectionRe.exec(markup))) {
     const title = m[1].toLowerCase();

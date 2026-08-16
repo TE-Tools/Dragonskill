@@ -131,9 +131,17 @@ function extractTrinkets(page) {
   const trinkets = [];
   const sections = (page && page.sections) || [];
   for (const section of sections) {
-    // Debug: console.log(`Section: ${section.component}`);
-    if (section.component === "BuildsTrinketSection" || section.component === "BuildsItemSection" || section.component === "BuildsTrinketAnalysisSection") {
-      const items = (section.props && section.props.items) || (section.props && section.props.individualTrinkets) || [];
+    if (
+      section.component === "BuildsTrinketSection" ||
+      section.component === "BuildsItemSection" ||
+      section.component === "BuildsTrinketAnalysisSection" ||
+      section.component === "BuildsRecommendationSection"
+    ) {
+      const items =
+        (section.props && section.props.items) ||
+        (section.props && section.props.individualTrinkets) ||
+        (section.props && section.props.trinkets) ||
+        [];
       for (const item of items) {
         trinkets.push({
           name: item.name,
