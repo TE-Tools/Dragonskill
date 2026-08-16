@@ -1,16 +1,13 @@
-# Task: Dragon Skill v1.3.3 - Final Interaction & Data Fix
+# Task: Dragon Skill v1.3.4 - Complete Paladin Support
 
-## UI & Dialogs
-- [ ] Implement `activeBuild` persistent storage in `UI.lua`
-- [ ] Fix `StaticPopup_Show` data passing in `UI.lua`
-- [ ] Add item tooltip safety in `UI.lua`
+## Data Expansion
+- [ ] Add Holy Paladin (65) data to `GuideData.lua`
+- [ ] Add Retribution Paladin (70) data to `GuideData.lua`
+- [ ] Verify data consistency (itemId, slot, etc.)
 
-## Talent Logic
-- [ ] Refine `ImportToWoW` in `TalentCompare.lua` for 12.1
-
-## Data Recovery
-- [ ] Manually populate `GuideData.lua` with Blood DK and Warrior data
-- [ ] Ensure all tabs show "No Data" instead of remaining empty if missing
+## UI & Verification
+- [ ] Verify tab population for all Paladin specs in `UI.lua`
+- [ ] Check talent string copy/import for new builds
 
 ## Finalization
 - [ ] Git Push
