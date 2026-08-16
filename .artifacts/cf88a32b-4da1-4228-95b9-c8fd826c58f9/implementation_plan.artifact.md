@@ -1,45 +1,45 @@
-# Implementation Plan - Slash Command & Data Access Rescue (v1.2.8)
+# Implementation Plan - Emergency Slash Command & Data Fix (v1.3.1)
 
-Dieses Update behebt das Problem, dass `/ds` nicht mehr reagiert, und stellt sicher, dass die Daten für alle Spezialisierungen korrekt geladen werden. Zudem fügen wir eine "Anti-Konflikt" Schicht ein, falls Reste alter Versionen vorhanden sind.
+Dieses Update behebt das Problem, dass `/ds` ein Emote auslöst statt das Addon zu öffnen, und stellt sicher, dass die Daten für Gear, Enchants und Buffs endlich im Spiel ankommen.
 
 ## User Review Required
 
 > [!IMPORTANT]
-> **Ordner-Bereinigung**: Da wir den Addon-Ordner von `addon` zu `DragonSkill` umbenannt haben, **muss** der alte Ordner `addon` im WoW-Verzeichnis gelöscht werden, sonst kommt es zu Fehlern.
+> **Slash-Command Priorität**: Ich verschiebe die Registrierung des Befehls `/ds` an den Anfang des Addons. Das verhindert, dass WoW den Befehl mit `/danke` verwechselt oder ignoriert.
 > [!IMPORTANT]
-> **Slash-Command Fix**: Ich registriere den Befehl `/ds` nun direkt beim Laden des Addons (nicht erst beim Login), um sicherzustellen, dass er immer verfügbar ist.
-> [!NOTE]
-> **Debug-Ausgabe**: Das Addon schreibt jetzt beim Start "Dragon Skill geladen!" in den Chat, damit wir sehen, ob es überhaupt aktiv ist.
+> **Daten-Reparatur**: Ich habe festgestellt, dass die `GuideData.lua` tatsächlich leere Listen enthält. Ich befeuere den Scraper neu und erzwinge das Schreiben der Daten für alle Sektionen.
+> [!CAUTION]
+> **Ordner-Pflicht**: Bitte lösche vor der Installation UNBEDINGT alle alten `DragonSkill` und `addon` Ordner in deinem WoW-Verzeichnis.
 
 ## Proposed Changes
 
-### 1. UI & Slash Command (UI.lua)
+### 1. Slash Command Fix (UI.lua)
 
 #### [MODIFY] [UI.lua](file:///C:/Users/thoma/StudioProjects/Dragonskill/DragonSkill/Modules/TalentCompare/UI.lua)
-- **Registrierung**: Slash-Commands werden an den Anfang der Datei verschoben.
-- **Robustheit**:
-    - Absicherung von `GetSpecializationInfo`, um Fehler bei Charakteren ohne Spec zu verhindern.
-    - Hinzufügen von Chat-Feedback, wenn `/ds` eingegeben wird.
-- **Data Lookup**: Verbesserung der Fehlermeldungen, wenn `GuideData` nicht gefunden wird (zeigt nun auch den erwarteten Pfad an).
+- **Registrierung**: Slash-Befehle werden an den Zeilenanfang (Zeile 1) verschoben.
+- **Eindeutigkeit**: Umbenennung des internen Befehlshandlers von `DRAGONSKILL` zu `DS_MAIN`, um Konflikte zu vermeiden.
+- **Addon-Signal**: Das Addon schreibt nun eine fette, farbige Nachricht in den Chat, sobald es geladen ist.
 
 ---
 
-### 2. Talent Logic (TalentCompare.lua)
+### 2. Daten-Pipeline Reparatur
 
-#### [MODIFY] [TalentCompare.lua](file:///C:/Users/thoma/StudioProjects/Dragonskill/DragonSkill/Modules/TalentCompare/TalentCompare.lua)
-- **Import-Fix**: Zusätzliche Prüfung, ob `C_ClassTalents` Funktionen existieren (für den Fall, dass Blizzard sie in einem Mini-Patch verschiebt).
+#### [MODIFY] [scrape-wowhead.js](file:///C:/Users/thoma/StudioProjects/Dragonskill/scraper/scrape-wowhead.js)
+- Optimierung der `extractConsumables` Funktion, um auch Listen zu finden, die nicht direkt unter einer fettgedruckten Überschrift stehen.
+
+#### [MODIFY] [build-data.js](file:///C:/Users/thoma/StudioProjects/Dragonskill/scraper/build-data.js)
+- Sicherstellung, dass Listen (Gear, Enchants etc.) beim Mergen von Wowhead- und Archon-Daten nicht überschrieben werden.
 
 ---
 
-### 3. Data Pipeline (GuideData.lua)
+### 3. Tooltip-Vorschau (UI.lua)
 
-#### [MODIFY] [GuideData.lua](file:///C:/Users/thoma/StudioProjects/Dragonskill/DragonSkill/Data/GuideData.lua)
-- Überprüfung der globalen Tabelle `DragonSkillData`.
+- Implementierung von `GameTooltip:SetHyperlink` als Fallback, falls `SetItemByID` bei manchen Items in 12.1 Probleme macht.
 
 ## Verification Plan
 
 ### Manual Verification
-1. **Startup**: Prüfen, ob nach dem Einloggen "Dragon Skill geladen!" im Chat steht.
-2. **/ds**: Prüfen, ob das Fenster erscheint.
-3. **Daten-Check**: Tab "Talente" und "Gear" prüfen. Falls leer, die neue (detaillierte) Fehlermeldung lesen und mir mitteilen.
-4. **Talent-Klick**: Prüfen, ob der Dialog nun zuverlässig erscheint.
+1. **Startup**: Steht beim Einloggen "Dragon Skill v1.3.1 - AKTIV!" im Chat?
+2. **/ds**: Öffnet sich das Fenster? (Erscheint kein Emote mehr?)
+3. **Daten-Check**: Sind die Tabs (Gear, Enchants) nun befüllt?
+4. **Talent-Klick**: Öffnet sich der Dialog zum Kopieren/Importieren?

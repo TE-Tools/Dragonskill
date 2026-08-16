@@ -1,5 +1,5 @@
 /**
- * Dragon Skill - Wowhead Talent Scraper (v1.2.9 - Safety Merge)
+ * Dragon Skill - Wowhead Talent Scraper (v1.3.1)
  */
 
 const fs = require("fs");
@@ -45,17 +45,21 @@ function extractTalents(markup) {
 
 function extractListByKeywords(markup, keywords) {
   const results = [];
+  // Suche alle Listen [ul]...[/ul] oder [ol]...[/ol]
   const listRe = /\[(?:ol|ul)\]([\s\S]*?)\[\/(?:ol|ul)\]/gi;
   let m;
   while ((m = listRe.exec(markup))) {
     const body = m[1];
-    const preText = markup.slice(Math.max(0, m.index - 200), m.index).toLowerCase();
+    const preText = markup.slice(Math.max(0, m.index - 500), m.index).toLowerCase();
+
     if (keywords.some(k => preText.includes(k))) {
       const lis = body.match(/\[li\]([\s\S]*?)\[\/li\]/gi) || [];
       lis.forEach(li => {
         const itemID = (li.match(/\[item=(\d+)\]/i) || [])[1];
         const text = li.replace(/\[[^\]]+\]/g, "").trim();
-        if (text.length > 2) results.push({ text, itemId: itemID ? parseInt(itemID) : null });
+        if (text.length > 2) {
+          results.push({ text, itemId: itemID ? parseInt(itemID) : null });
+        }
       });
     }
   }
@@ -66,7 +70,7 @@ async function main() {
   const { talentsUrl, statsUrl, gearUrl, out } = parseArgs();
   if (!out) process.exit(1);
 
-  const urls = [talentsUrl, statsUrl, gearUrl, gearUrl ? gearUrl + "-pve-dps" : null].filter(Boolean);
+  const urls = [talentsUrl, statsUrl, gearUrl].filter(Boolean);
   let allMarkup = "";
   for (const url of urls) {
     const html = await fetchPage(url);
@@ -77,24 +81,25 @@ async function main() {
   const gear = extractListByKeywords(allMarkup, ["best gear", "bis gear", "equipment"]);
   const enchants = extractListByKeywords(allMarkup, ["enchant", "weapon -", "mana oil"]);
   const gems = extractListByKeywords(allMarkup, ["gem", "diamond", "emerald", "ruby"]);
-  const buffs = extractListByKeywords(allMarkup, ["food", "flask", "potion", "phial", "rune"]);
+  const buffs = extractListByKeywords(allMarkup, ["food", "flask", "potion", "phial", "rune", "consumable"]);
 
   const outPath = path.resolve(out);
   const existing = fs.existsSync(outPath) ? JSON.parse(fs.readFileSync(outPath, "utf-8")) : { talentBuilds: [] };
 
-  // MERGE LOGIC: Nur überschreiben wenn wir neue Daten haben
+  // Merge Logic
   const data = {
     ...existing,
     scrapedAt: new Date().toISOString(),
-    bisGear: { ...existing.bisGear, wowhead: gear.length > 0 ? gear : (existing.bisGear && existing.bisGear.wowhead) || [] },
-    enchants: { ...existing.enchants, wowhead: enchants.length > 0 ? enchants : (existing.enchants && existing.enchants.wowhead) || [] },
-    gems: { ...existing.gems, wowhead: gems.length > 0 ? gems : (existing.gems && existing.gems.wowhead) || [] },
-    consumables: { ...existing.consumables, wowhead: buffs.length > 0 ? buffs : (existing.consumables && existing.consumables.wowhead) || [] },
-    talentBuilds: talents.length > 0 ? [...(existing.talentBuilds || []).filter(b => b.provider !== "wowhead"), ...talents] : existing.talentBuilds
+    bisGear: { wowhead: gear.length > 0 ? gear : (existing.bisGear && existing.bisGear.wowhead) || [] },
+    enchants: { wowhead: enchants.length > 0 ? enchants : (existing.enchants && existing.enchants.wowhead) || [] },
+    gems: { wowhead: gems.length > 0 ? gems : (existing.gems && existing.gems.wowhead) || [] },
+    consumables: { wowhead: buffs.length > 0 ? buffs : (existing.consumables && existing.consumables.wowhead) || [] },
+    talentBuilds: talents.length > 0 ? talents : existing.talentBuilds
   };
 
   fs.mkdirSync(path.dirname(outPath), { recursive: true });
   fs.writeFileSync(outPath, JSON.stringify(data, null, 2), "utf-8");
+  console.log(`✅ ${outPath} aktualisiert.`);
 }
 
 main().catch(console.error);

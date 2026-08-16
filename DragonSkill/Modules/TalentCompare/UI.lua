@@ -1,27 +1,37 @@
--- Dragon Skill - Haupt UI (v1.2.9)
--- Ultimative Reparatur für Klicks und Datenanzeige.
+-- Dragon Skill - Haupt UI (v1.3.1)
+-- Reparatur für Slash-Commands und Daten-Vollständigkeit.
+
+-- Slash Commands (MÜSSEN ganz oben stehen!)
+SLASH_DS_MAIN1 = "/ds"
+SLASH_DS_MAIN2 = "/dragonskill"
+SlashCmdList["DS_MAIN"] = function(msg)
+    if not DragonSkill.UI.frame then DragonSkill.UI:Init() end
+    if DragonSkill.UI.frame:IsShown() then
+        DragonSkill.UI.frame:Hide()
+    else
+        DragonSkill.UI.frame:Show()
+        DragonSkill.UI:Update()
+    end
+end
 
 local UI = {}
 local currentTab = 1
 local tabs = {"Talente", "Stats", "Trinkets", "Crafting", "Rotation", "Gear", "Enchants", "Buffs"}
+local activeBuild = nil
 
--- Hilfe: Sicherer Daten-Speicher für Dialoge
-local popupData = nil
-
+-- Statische Popups
 StaticPopupDialogs["DRAGONSKILL_ACTION"] = {
     text = "Build: %s\nMatch: %d%%\n\nWas möchtest du tun?",
     button1 = "Kopieren",
     button2 = "Neu anlegen",
     button3 = "Abbrechen",
     OnAccept = function(self)
-        -- Button 1: Kopieren
-        StaticPopup_Show("DRAGONSKILL_COPY", nil, nil, popupData)
+        StaticPopup_Show("DRAGONSKILL_COPY", nil, nil, activeBuild)
     end,
     OnCancel = function(self, data, reason)
-        -- Button 2: Neu anlegen
-        if reason == "clicked" and popupData then
+        if reason == "clicked" and activeBuild then
             local TC = DragonSkill:GetModule("TalentCompare")
-            if TC then TC:ImportToWoW(popupData.importString, popupData.label) end
+            if TC then TC:ImportToWoW(activeBuild.importString, activeBuild.label) end
         end
     end,
     timeout = 0, whileDead = true, hideOnEscape = true,
@@ -32,10 +42,8 @@ StaticPopupDialogs["DRAGONSKILL_COPY"] = {
     button1 = "Fertig",
     hasEditBox = 1,
     OnShow = function(self, data)
-        local code = ""
-        if type(data) == "table" then code = data.importString or ""
-        else code = tostring(data) end
-        self.editBox:SetText(code)
+        local str = (type(data) == "table") and data.importString or tostring(data)
+        self.editBox:SetText(str or "")
         self.editBox:SetFocus()
         self.editBox:HighlightText()
     end,
@@ -67,9 +75,11 @@ function UI:Init()
     local scrollFrame = CreateFrame("ScrollFrame", "DragonSkillScrollFrame", f.Inset, "UIPanelScrollFrameTemplate")
     scrollFrame:SetPoint("TOPLEFT", 8, -8)
     scrollFrame:SetPoint("BOTTOMRIGHT", -25, 8)
+    scrollFrame:EnableMouse(true)
 
     local content = CreateFrame("Frame", "DragonSkillContentFrame", scrollFrame)
     content:SetSize(380, 1500)
+    content:EnableMouse(true)
     scrollFrame:SetScrollChild(content)
     f.Content = content
 
@@ -85,11 +95,6 @@ function UI:Init()
     end
     PanelTemplates_SetNumTabs(f, #tabs)
     PanelTemplates_SetTab(f, 1)
-
-    SLASH_DRAGONSKILL1 = "/ds"
-    SlashCmdList["DRAGONSKILL"] = function()
-        if f:IsShown() then f:Hide() else f:Show(); UI:Update() end
-    end
 
     f:Hide()
     self.frame = f
@@ -112,8 +117,10 @@ function UI:Update()
         content.text:SetPoint("TOPLEFT", 10, -10)
         content.text:SetWidth(360)
         content.text:SetJustifyH("LEFT")
+        content.text:SetSpacing(3)
     end
     content.text:SetText("")
+    content.text:Show()
 
     local _, class = UnitClass("player")
     local specIndex = GetSpecialization()
@@ -147,14 +154,15 @@ function UI:DrawTalents(content, guideData)
     for i, build in ipairs(guideData.talentBuilds) do
         local btn = self.talentBtns[i]
         if not btn then
-            btn = CreateFrame("Button", "DragonSkill_TalentBtn_"..i, content, "UIPanelButtonTemplate")
+            btn = CreateFrame("Button", "DragonSkillTalentButton_"..i, content, "UIPanelButtonTemplate")
             btn:SetSize(360, 32)
+            btn:SetFrameLevel(content:GetFrameLevel() + 5)
             self.talentBtns[i] = btn
         end
         btn:SetPoint("TOPLEFT", 10, yOffset)
         btn:SetText(string.format("[%s] %s", build.provider:upper(), build.label))
         btn:SetScript("OnClick", function()
-            popupData = build -- Global speichern für den Dialog
+            activeBuild = build
             local current = TC:GetCurrentBuildString()
             local result = TC:Compare(build.importString, current)
             StaticPopup_Show("DRAGONSKILL_ACTION", build.label, result.similarity or 0)
@@ -166,10 +174,7 @@ end
 
 function UI:Helper_DrawListWithIcons(content, items, title)
     local yOffset = -10
-    if title then
-        content.text:SetText(title)
-        yOffset = -30
-    end
+    if title then content.text:SetText(title); yOffset = -30 end
 
     if not self.listRows then self.listRows = {} end
     for _, row in ipairs(self.listRows) do row:Hide() end
@@ -177,7 +182,7 @@ function UI:Helper_DrawListWithIcons(content, items, title)
     for i, item in ipairs(items) do
         local row = self.listRows[i]
         if not row then
-            row = CreateFrame("Button", "DragonSkill_Row_"..currentTab.."_"..i, content)
+            row = CreateFrame("Button", "DragonSkillRow_"..currentTab.."_"..i, content)
             row:SetSize(360, 26)
             row:SetFrameLevel(content:GetFrameLevel() + 5)
             row:EnableMouse(true)
@@ -255,16 +260,17 @@ end
 
 function UI:DrawEnchants(content, guideData)
     if guideData.enchants and guideData.enchants.wowhead and #guideData.enchants.wowhead > 0 then
-        self:Helper_DrawListWithIcons(content, guideData.enchants.wowhead, "|cffffff00VZ & Steine (Wowhead):|r")
+        self:Helper_DrawListWithIcons(content, guideData.enchants.wowhead, "|cffffff00Verzauberungen (Wowhead):|r")
     else content.text:SetText("Keine Enchants gefunden.") end
 end
 
 function UI:DrawBuffs(content, guideData)
     if guideData.consumables and guideData.consumables.wowhead and #guideData.consumables.wowhead > 0 then
         self:Helper_DrawListWithIcons(content, guideData.consumables.wowhead, "|cffffff00Buffs (Wowhead):|r")
-    else content.text:SetText("Keine Buffs gefunden.") end
+    else content.text:SetText("Keine Buff-Daten gefunden.") end
 end
 
-print("|cff00ff00Dragon Skill v1.2.9 geladen!|r")
-DragonSkill.Events:On("PLAYER_LOGIN", function() UI:Init() end)
+print("|cff00ff00Dragon Skill v1.3.1 geladen!|r Nutze |cffffff00/ds|r")
+
 DragonSkill.UI = UI
+DragonSkill.Events:On("PLAYER_LOGIN", function() UI:Init() end)

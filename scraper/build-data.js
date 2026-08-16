@@ -1,5 +1,5 @@
 /**
- * Dragon Skill - JSON zu Lua Konverter (v1.2.7)
+ * Dragon Skill - JSON zu Lua Konverter (v1.3.1)
  */
 
 const fs = require("fs");
@@ -8,9 +8,7 @@ const path = require("path");
 function parseArgs() {
   const args = process.argv.slice(2);
   const out = {};
-  for (let i = 0; i < args.length; i += 2) {
-    out[args[i].replace(/^--/, "")] = args[i + 1];
-  }
+  for (let i = 0; i < args.length; i += 2) out[args[i].replace(/^--/, "")] = args[i + 1];
   return out;
 }
 
@@ -20,8 +18,7 @@ function luaEscape(str) {
 }
 
 function buildLuaTable(entries) {
-  let lua = "-- AUTO-GENERATED von build-data.js - nicht manuell bearbeiten\n";
-  lua += "-- Quelle: Wowhead / Archon\n\n";
+  let lua = "-- AUTO-GENERATED - nicht manuell bearbeiten\n\n";
   lua += "DragonSkillData = DragonSkillData or {}\n\n";
 
   for (const [classToken, specs] of Object.entries(entries)) {
@@ -30,17 +27,13 @@ function buildLuaTable(entries) {
       lua += `DragonSkillData["${classToken}"][${specID}] = {\n`;
       lua += `    scrapedAt = ${luaEscape(data.scrapedAt)},\n`;
 
-      const writeListWithIcons = (name, list) => {
+      const writeList = (name, providers) => {
         lua += `    ${name} = {\n`;
-        for (const [provider, items] of Object.entries(list || {})) {
+        for (const [provider, items] of Object.entries(providers || {})) {
           lua += `        ${provider} = {\n`;
           if (Array.isArray(items)) {
             for (const item of items) {
-                if (typeof item === "string") {
-                    lua += `            { text = ${luaEscape(item)}, itemId = nil },\n`;
-                } else {
-                    lua += `            { text = ${luaEscape(item.text || item.item || item.name)}, itemId = ${item.itemId || "nil"}, slot = ${luaEscape(item.slot || nil)} },\n`;
-                }
+              lua += `            { text = ${luaEscape(item.text)}, itemId = ${item.itemId || "nil"}, slot = ${luaEscape(item.slot || nil)} },\n`;
             }
           }
           lua += `        },\n`;
@@ -48,62 +41,45 @@ function buildLuaTable(entries) {
         lua += `    },\n`;
       };
 
-      // Stat Priority
       lua += `    statPriority = {\n`;
       for (const [provider, text] of Object.entries(data.statPriority || {})) {
         lua += `        ${provider} = ${luaEscape(text)},\n`;
       }
       lua += `    },\n`;
 
-      writeListWithIcons("bisGear", data.bisGear);
-      writeListWithIcons("enchants", data.enchants);
-      writeListWithIcons("gems", data.gems);
-      writeListWithIcons("consumables", data.consumables);
+      writeList("bisGear", data.bisGear);
+      writeList("enchants", data.enchants);
+      writeList("gems", data.gems);
+      writeList("consumables", data.consumables);
 
-      // Crafting
       lua += `    crafting = {\n`;
-      for (const [provider, cData] of Object.entries(data.crafting || {})) {
-        lua += `        ${provider} = {\n`;
-        lua += `            embellishments = {\n`;
-        for (const val of (cData.embellishments || [])) {
-          lua += `                ${luaEscape(val)},\n`;
-        }
-        lua += `            },\n`;
-        lua += `        },\n`;
+      for (const [provider, c] of Object.entries(data.crafting || {})) {
+        if (!c) continue;
+        lua += `        ${provider} = { embellishments = {\n`;
+        for (const v of (c.embellishments || [])) lua += `            ${luaEscape(v)},\n`;
+        lua += `        }},\n`;
       }
       lua += `    },\n`;
 
-      // Rotation
       lua += `    rotation = {\n`;
       for (const [provider, list] of Object.entries(data.rotation || {})) {
         lua += `        ${provider} = {\n`;
-        for (const entry of list || []) {
-          lua += `            { text = ${luaEscape(entry.text)}, spellId = ${luaEscape(entry.spellId)} },\n`;
-        }
+        for (const e of (list || [])) lua += `            { text = ${luaEscape(e.text)}, spellId = ${luaEscape(e.spellId)} },\n`;
         lua += `        },\n`;
       }
       lua += `    },\n`;
 
-      // Trinkets
       lua += `    trinkets = {\n`;
       for (const [provider, list] of Object.entries(data.trinkets || {})) {
         lua += `        ${provider} = {\n`;
-        for (const t of list || []) {
-          lua += `            { name = ${luaEscape(t.name)}, rank = ${luaEscape(t.rank)}, score = ${luaEscape(t.score)}, itemId = ${luaEscape(t.itemId)} },\n`;
-        }
+        for (const t of (list || [])) lua += `            { name = ${luaEscape(t.name)}, rank = ${luaEscape(t.rank)}, itemId = ${luaEscape(t.itemId)} },\n`;
         lua += `        },\n`;
       }
       lua += `    },\n`;
 
-      // Talent Builds
       lua += `    talentBuilds = {\n`;
-      for (const build of data.talentBuilds || []) {
-        lua += `        {\n`;
-        lua += `            provider = ${luaEscape(build.provider)},\n`;
-        lua += `            context = ${luaEscape(build.context)},\n`;
-        lua += `            label = ${luaEscape(build.label)},\n`;
-        lua += `            importString = ${luaEscape(build.importString)},\n`;
-        lua += `        },\n`;
+      for (const b of (data.talentBuilds || [])) {
+        lua += `        { provider = ${luaEscape(b.provider)}, label = ${luaEscape(b.label)}, importString = ${luaEscape(b.importString)} },\n`;
       }
       lua += `    },\n`;
 
@@ -117,22 +93,17 @@ function main() {
   const { dataDir, out } = parseArgs();
   if (!dataDir || !out) process.exit(1);
 
-  const files = fs.readdirSync(dataDir).filter((f) => f.endsWith(".json"));
   const entries = {};
-  for (const file of files) {
-    const match = file.match(/^([A-Z]+)_(\d+)\.json$/);
-    if (!match) continue;
-    const [, classToken, specID] = match;
-    const data = JSON.parse(fs.readFileSync(path.join(dataDir, file), "utf-8"));
-    entries[classToken] = entries[classToken] || {};
-    entries[classToken][specID] = data;
-  }
+  fs.readdirSync(dataDir).forEach(file => {
+    const m = file.match(/^([A-Z]+)_(\d+)\.json$/);
+    if (m) {
+      const data = JSON.parse(fs.readFileSync(path.join(dataDir, file), "utf-8"));
+      if (!entries[m[1]]) entries[m[1]] = {};
+      entries[m[1]][m[2]] = data;
+    }
+  });
 
-  const lua = buildLuaTable(entries);
-  const outPath = path.resolve(out);
-  fs.mkdirSync(path.dirname(outPath), { recursive: true });
-  fs.writeFileSync(outPath, lua, "utf-8");
-  console.log(`✅ Lua-Datei geschrieben: ${outPath}`);
+  fs.writeFileSync(path.resolve(out), buildLuaTable(entries), "utf-8");
+  console.log(`✅ Lua-Datei geschrieben.`);
 }
-
 main();
