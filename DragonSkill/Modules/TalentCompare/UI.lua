@@ -1,11 +1,10 @@
--- Dragon Skill - Haupt UI (v1.5.2)
--- Fixes: Fensterbreite, Skillungen anlegen/kopieren, Favoriten, Listen, 12.1 Popups
+-- Dragon Skill - Haupt UI (v1.5.3)
+-- Node-Diff, Match-%, Modul-Getter, /ds + /wear
 
 local UI = {}
 local currentTab = 1
 local tabs = {"Talente", "Stats", "Trinkets", "Crafting", "Rotation", "Gear", "Enchants", "Buffs"}
 
--- Persistenter Cache für Popups
 local cachedBuildData = nil
 
 local CONTENT_WIDTH = 560
@@ -18,18 +17,16 @@ local ROW_WIDTH = 540
 ---------------------------------------------------------------------------
 
 StaticPopupDialogs["DRAGONSKILL_ACTION"] = {
-    text = "Build: %s\nMatch: %d%%\n\nWas möchtest du tun?",
+    text = "Build: %s\nMatch: %d%%\n\nLinks: Kopieren / Anlegen\nRechtsklick auf Build: Node-Diff",
     button1 = "Kopieren",
     button2 = "Anlegen + Import",
     button3 = "Abbrechen",
     OnAccept = function(self)
-        -- Button1: Kopieren
         if cachedBuildData then
             StaticPopup_Show("DRAGONSKILL_COPY", nil, nil, cachedBuildData)
         end
     end,
     OnCancel = function(self, data, reason)
-        -- Button2: Anlegen + Import (nur bei Klick, nicht Escape)
         if reason ~= "clicked" or not cachedBuildData then return end
         local build = cachedBuildData
         local _, class = UnitClass("player")
@@ -74,7 +71,6 @@ StaticPopupDialogs["DRAGONSKILL_COPY"] = {
         else
             code = tostring(build or "")
         end
-
         local function apply()
             local eb = self.EditBox or self.editBox
             if not eb then return end
@@ -82,7 +78,6 @@ StaticPopupDialogs["DRAGONSKILL_COPY"] = {
             eb:HighlightText()
             eb:SetFocus()
         end
-
         apply()
         if C_Timer and C_Timer.After then
             C_Timer.After(0, apply)
@@ -124,6 +119,21 @@ StaticPopupDialogs["DRAGONSKILL_DELETE"] = {
     preferredIndex = 3,
 }
 
+StaticPopupDialogs["DRAGONSKILL_DIFF"] = {
+    text = "%s",
+    button1 = "OK",
+    button2 = "Kopieren",
+    OnCancel = function(self, data, reason)
+        if reason == "clicked" and cachedBuildData then
+            StaticPopup_Show("DRAGONSKILL_COPY", nil, nil, cachedBuildData)
+        end
+    end,
+    timeout = 0,
+    whileDead = true,
+    hideOnEscape = true,
+    preferredIndex = 3,
+}
+
 ---------------------------------------------------------------------------
 -- Frame Init
 ---------------------------------------------------------------------------
@@ -141,7 +151,7 @@ function UI:Init()
     f:SetScript("OnDragStart", f.StartMoving)
     f:SetScript("OnDragStop", f.StopMovingOrSizing)
 
-    if f.SetTitle then f:SetTitle("Dragon Skill v1.5.2") end
+    if f.SetTitle then f:SetTitle("Dragon Skill v" .. (DragonSkill.version or "1.5.3")) end
     if f.portrait then f.portrait:SetTexture("Interface\\Icons\\Inv_misc_head_dragon_01") end
 
     if f.Inset then
@@ -264,6 +274,23 @@ function UI:Update()
     end
 end
 
+local function ShowDiffForBuild(build, TC)
+    if not build or not build.importString or not TC then return end
+    cachedBuildData = build
+    local summary = TC:FormatDiffSummary(build.importString, 14)
+    local title = string.format(
+        "|cffffff00Diff: %s|r\n\n%s",
+        tostring(build.label or "Build"),
+        summary
+    )
+    -- StaticPopup text is limited; print long diffs to chat as well
+    print("|cff00ff00Dragon Skill Diff|r — " .. tostring(build.label or "Build"))
+    for line in string.gmatch(summary, "[^\n]+") do
+        print(line)
+    end
+    StaticPopup_Show("DRAGONSKILL_DIFF", title)
+end
+
 ---------------------------------------------------------------------------
 -- Talente + Favoriten
 ---------------------------------------------------------------------------
@@ -271,10 +298,11 @@ end
 function UI:DrawTalents(content, guideData)
     local TC = DragonSkill:GetModule("TalentCompare")
     local yOffset = -10
-
     content.extraFS = content.extraFS or {}
 
-    content.text:SetText("|cffffff00=== Guide-Builds ===|r")
+    local current = TC and TC:GetCurrentBuildString() or nil
+
+    content.text:SetText("|cffffff00=== Guide-Builds ===|r  |cff888888(Links: Aktionen · Rechts: Node-Diff)|r")
     content.text:Show()
     yOffset = -28
 
@@ -290,17 +318,32 @@ function UI:DrawTalents(content, guideData)
             if not btn then
                 btn = CreateFrame("Button", "DragonSkillTalentBtn_" .. i, content, "UIPanelButtonTemplate")
                 btn:SetSize(ROW_WIDTH, 32)
+                btn:RegisterForClicks("LeftButtonUp", "RightButtonUp")
                 self.talentBtns[i] = btn
             end
             btn:SetParent(content)
             btn:ClearAllPoints()
             btn:SetPoint("TOPLEFT", 10, yOffset)
-            btn:SetText(string.format("[%s] %s", string.upper(tostring(build.provider or "Guide")), tostring(build.label or ("Build " .. i))))
-            btn:SetScript("OnClick", function()
+
+            local result = TC and TC:Compare(build.importString, current) or { similarity = 0 }
+            local sim = result.similarity or 0
+            local simColor = sim >= 90 and "00ff00" or (sim >= 70 and "ffff00" or "ff6666")
+            btn:SetText(string.format(
+                "[%s] %s  |cff%s%d%%|r",
+                string.upper(tostring(build.provider or "Guide")),
+                tostring(build.label or ("Build " .. i)),
+                simColor,
+                sim
+            ))
+
+            btn:SetScript("OnClick", function(_, mouseButton)
                 cachedBuildData = build
-                local current = TC and TC:GetCurrentBuildString() or nil
-                local result = TC and TC:Compare(build.importString, current) or { similarity = 0 }
-                StaticPopup_Show("DRAGONSKILL_ACTION", build.label or "Build", result.similarity or 0)
+                if mouseButton == "RightButton" then
+                    ShowDiffForBuild(build, TC)
+                else
+                    local r = TC and TC:Compare(build.importString, current) or { similarity = 0 }
+                    StaticPopup_Show("DRAGONSKILL_ACTION", build.label or "Build", r.similarity or 0)
+                end
             end)
             btn:Show()
             yOffset = yOffset - 36
@@ -333,23 +376,31 @@ function UI:DrawTalents(content, guideData)
             if not btn then
                 btn = CreateFrame("Button", "DragonSkillFavBtn_" .. i, content, "UIPanelButtonTemplate")
                 btn:SetSize(ROW_WIDTH - 70, 28)
+                btn:RegisterForClicks("LeftButtonUp", "RightButtonUp")
                 self.favBtns[i] = btn
             end
             btn:SetParent(content)
             btn:ClearAllPoints()
             btn:SetPoint("TOPLEFT", 10, yOffset)
+
             local label = data.label or name
             local provider = data.provider and ("[" .. string.upper(tostring(data.provider)) .. "] ") or ""
-            btn:SetText(provider .. tostring(label))
-            btn:SetScript("OnClick", function()
-                cachedBuildData = {
+            local r = TC and TC:Compare(data.importString, current) or { similarity = 0 }
+            local sim = r.similarity or 0
+            btn:SetText(string.format("%s%s  (%d%%)", provider, tostring(label), sim))
+
+            btn:SetScript("OnClick", function(_, mouseButton)
+                local build = {
                     importString = data.importString,
                     provider = data.provider or "saved",
                     label = data.label or name,
                 }
-                local current = TC and TC:GetCurrentBuildString() or nil
-                local result = TC and TC:Compare(data.importString, current) or { similarity = 0 }
-                StaticPopup_Show("DRAGONSKILL_ACTION", data.label or name, result.similarity or 0)
+                cachedBuildData = build
+                if mouseButton == "RightButton" then
+                    ShowDiffForBuild(build, TC)
+                else
+                    StaticPopup_Show("DRAGONSKILL_ACTION", build.label, sim)
+                end
             end)
             btn:Show()
 
@@ -373,12 +424,11 @@ function UI:DrawTalents(content, guideData)
         end
     end
 
-    local needed = math.max(2000, math.abs(yOffset) + 80)
-    content:SetHeight(needed)
+    content:SetHeight(math.max(2000, math.abs(yOffset) + 80))
 end
 
 ---------------------------------------------------------------------------
--- Listen mit Icons (pro Tab isoliert)
+-- Listen mit Icons
 ---------------------------------------------------------------------------
 
 function UI:Helper_DrawListWithIcons(content, items, title)
@@ -397,7 +447,6 @@ function UI:Helper_DrawListWithIcons(content, items, title)
         row:SetScript("OnEnter", nil)
         row:SetScript("OnLeave", nil)
     end
-
     for tabId, otherRows in pairs(self.listRowsByTab) do
         if tabId ~= currentTab then
             for _, row in ipairs(otherRows) do row:Hide() end
@@ -455,63 +504,61 @@ function UI:Helper_DrawListWithIcons(content, items, title)
             end
             GameTooltip:Show()
         end)
-        row:SetScript("OnLeave", function()
-            GameTooltip:Hide()
-        end)
+        row:SetScript("OnLeave", function() GameTooltip:Hide() end)
 
         row:Show()
         yOffset = yOffset - 28
     end
 
-    local needed = math.max(400, math.abs(yOffset) + 40)
-    content:SetHeight(needed)
+    content:SetHeight(math.max(400, math.abs(yOffset) + 40))
 end
 
 ---------------------------------------------------------------------------
--- Tab-Inhalte
+-- Tab-Inhalte (Module wo möglich)
 ---------------------------------------------------------------------------
 
 function UI:DrawStats(content, guideData)
+    local SP = DragonSkill:GetModule("StatPriority")
     local txt = "|cffffff00=== Deine Werte ===|r\n"
     txt = txt .. string.format(
         "Tempo: %.1f%%\nKritisch: %.1f%%\nMeisterschaft: %.1f%%\nVielseitigkeit: %.1f%%\n",
-        GetHaste(),
-        GetCritChance(),
-        GetMasteryEffect(),
+        GetHaste(), GetCritChance(), GetMasteryEffect(),
         GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_DONE)
     )
-    if guideData.statPriority then
+    local prio = guideData.statPriority
+    if SP and SP.GetForCurrentSpec then
+        local spData = SP:GetForCurrentSpec()
+        if spData then prio = spData end
+    end
+    if prio then
         txt = txt .. "\n|cffffff00=== Empfehlung ===|r\n"
-        txt = txt .. "|cffffd100Wowhead:|r " .. (guideData.statPriority.wowhead or "N/A") .. "\n"
-        if guideData.statPriority.archon then
-            txt = txt .. "|cffffd100Archon:|r " .. (guideData.statPriority.archon or "N/A") .. "\n"
+        txt = txt .. "|cffffd100Wowhead:|r " .. (prio.wowhead or "N/A") .. "\n"
+        if prio.archon then
+            txt = txt .. "|cffffd100Archon:|r " .. (prio.archon or "N/A") .. "\n"
         end
     end
     content.text:SetText(txt)
 end
 
 function UI:DrawTrinkets(content, guideData)
-    local items = (guideData.trinkets and guideData.trinkets.archon) or {}
+    local mod = DragonSkill:GetModule("Trinkets")
+    local items = (mod and mod.GetList and mod:GetList(guideData)) or {}
     self:Helper_DrawListWithIcons(content, items, "|cffffff00Top Trinkets (Archon):|r")
 end
 
 function UI:DrawCrafting(content, guideData)
-    if guideData.crafting and guideData.crafting.wowhead
-        and guideData.crafting.wowhead.embellishments
-        and #guideData.crafting.wowhead.embellishments > 0 then
-        local txt = "|cffffff00Embellishments (Wowhead):|r\n"
-        for _, emb in ipairs(guideData.crafting.wowhead.embellishments) do
-            txt = txt .. "- " .. emb .. "\n"
-        end
-        content.text:SetText(txt)
+    local mod = DragonSkill:GetModule("Crafting")
+    if mod and mod.FormatText then
+        content.text:SetText(mod:FormatText(guideData))
     else
         content.text:SetText("Keine Crafting-Daten.")
     end
 end
 
 function UI:DrawRotation(content, guideData)
-    local items = (guideData.rotation and guideData.rotation.wowhead) or {}
-    self:Helper_DrawListWithIcons(content, items, "|cffffff00Priorität (Wowhead):|r")
+    local mod = DragonSkill:GetModule("Rotation")
+    local items = (mod and mod.GetList and mod:GetList(guideData)) or {}
+    self:Helper_DrawListWithIcons(content, items, "|cffffff00Priorität (Wowhead):|r\n|cff888888Nur Anzeige – keine Auto-Rotation.|r")
 end
 
 function UI:DrawGear(content, guideData)
@@ -533,15 +580,7 @@ end
 -- Slash + Boot
 ---------------------------------------------------------------------------
 
-SLASH_WEAR1 = "/wear"
-SLASH_WEAR2 = "/dragonskill"
-SlashCmdList["WEAR"] = function(msg)
-    msg = msg and strtrim(msg) or ""
-    if msg == "testulatek" then
-        local BM = DragonSkill:GetModule("BossMechanics")
-        if BM and BM.SimulateUlatek then BM:SimulateUlatek() end
-        return
-    end
+local function ToggleUI()
     if not UI.frame then UI:Init() end
     if UI.frame:IsShown() then
         UI.frame:Hide()
@@ -551,7 +590,20 @@ SlashCmdList["WEAR"] = function(msg)
     end
 end
 
-print("|cff00ff00Dragon Skill v1.5.2 geladen!|r Nutze /wear")
+SLASH_WEAR1 = "/wear"
+SLASH_WEAR2 = "/dragonskill"
+SLASH_WEAR3 = "/ds"
+SlashCmdList["WEAR"] = function(msg)
+    msg = msg and strtrim(msg) or ""
+    if msg == "testulatek" then
+        local BM = DragonSkill:GetModule("BossMechanics")
+        if BM and BM.SimulateUlatek then BM:SimulateUlatek() end
+        return
+    end
+    ToggleUI()
+end
+
+print("|cff00ff00Dragon Skill v" .. (DragonSkill.version or "1.5.3") .. " geladen!|r Nutze /wear, /ds oder /dragonskill")
 DragonSkill.Events:On("PLAYER_LOGIN", function()
     UI:Init()
 end)

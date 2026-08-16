@@ -5,7 +5,7 @@ local ADDON_NAME = ...
 
 DragonSkill = DragonSkill or {}
 DragonSkill.Modules = {}
-DragonSkill.version = "1.5.2"
+DragonSkill.version = "1.5.3"
 DragonSkill.author = "wear-alleria"
 
 -- Interner Namespace für Datei-zu-Datei Kommunikation (nicht global sichtbar)
