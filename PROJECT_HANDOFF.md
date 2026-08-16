@@ -1,4 +1,4 @@
-# Dragon Skill – Projekt-Kontext (Stand v1.5.3)
+# Dragon Skill – Projekt-Kontext (Stand v1.5.5)
 
 Repo: https://github.com/TE-Tools/Dragonskill  
 Entwickler: **wear-alleria** (Gilde: Dragon Lords)
@@ -19,38 +19,23 @@ Vergleich mit dem aktuellen Build und manuellem Import in die Blizzard-Talent-UI
 - Nur offizielle Blizzard-APIs
 - Module unter `DragonSkill/Modules/<Name>/` via `DragonSkill:RegisterModule`
 
-## Aktueller Stand (v1.5.3)
+## Aktueller Stand (v1.5.5)
 
 **Fertig:**
 - Core, EventManager, Database (Favorites/Skillungen CRUD)
-- TalentCompare: Byte-Match-%, Node-Diff (`GetDetailedDiff` / `FormatDiffSummary`), Import-Fallbacks 12.1
-- UI: 640px Breite, 8 Tabs, Favoritenliste, Rechtsklick-Diff, `/wear` `/ds` `/dragonskill`
-- Module mit Gettern: StatPriority, Trinkets, Rotation, Crafting
-- Tooltips BiS-Marker
-- Scraper + `spec-list.json` alle 40 Specs; **Devourer = specID 1480** (kein 9999 mehr)
+- TalentCompare: Match-%, Node-Diff mit robusten Namen (Definition/Spell/SubTree), Import 12.1
+- UI: Spec-Refresh (`PLAYER_SPECIALIZATION_CHANGED`, `TRAIT_CONFIG_UPDATED`, …)
+- Scraper BiS/Enchants/Gems/Consumables/Rotation + Archon
+- CI: `permissions: contents: write` für Push von GuideData
+- PR #2 (post-merge/improvements) **geschlossen** (obsolet vs. main)
 
-**Offen:**
-- [ ] Scraper erweitern: BiS, Enchants, Consumables, Rotation vollständig befüllen
-- [ ] Node-Diff-Namen verbessern, falls API-Felder je nach Patch fehlen
-- [ ] PR #2 "Post merge/improvements" reviewen/mergen falls relevant
-
-## Wichtige Pfade
-
-```
-DragonSkill/
-  DragonSkill.toc
-  Core/{Namespace,EventManager,Database}.lua
-  Data/GuideData.lua          # generiert
-  Modules/TalentCompare/{TalentCompare,UI}.lua
-  Modules/{StatPriority,Trinkets,Rotation,Crafting,Tooltips}/
-  Modules/BossMechanics/
-scraper/
-  scrape-*.js, build-data.js, spec-list.json
-```
+**Offen / Hinweis:**
+- [ ] Erster erfolgreicher CI-Push von `GuideData.lua` nach Permission-Fix (Workflow erneut laufen lassen)
+- [ ] Consumables-URLs oft 404 auf Wowhead – Daten kommen aus Gear-/Guide-Seiten mit Keywords
+- [ ] Manche Node-Namen bleiben Fallback `Node <id>`, wenn Trait-API keine Definition liefert
 
 ## Test im Spiel
 
-1. Addon aktualisieren, `/reload`
-2. `/wear` → Fenster, Tabs prüfen
-3. Talent-Build: Linksklick Aktion, Rechtsklick Diff + Chat-Ausgabe
-4. Anlegen + Import → Favoriten unter "Meine Skillungen"
+1. `/reload` nach Update
+2. `/wear` – Spec wechseln → Inhalt aktualisiert sich
+3. Talent-Build Rechtsklick → Diff mit lesbaren Talentnamen wo möglich

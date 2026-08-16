@@ -1,14 +1,11 @@
 -- Dragon Skill - Core Namespace
--- Stellt einen einzigen globalen Einstiegspunkt bereit, alles andere bleibt lokal/gekapselt.
-
 local ADDON_NAME = ...
 
 DragonSkill = DragonSkill or {}
 DragonSkill.Modules = {}
-DragonSkill.version = "1.5.3"
+DragonSkill.version = "1.5.5"
 DragonSkill.author = "wear-alleria"
 
--- Interner Namespace für Datei-zu-Datei Kommunikation (nicht global sichtbar)
 local ns = select(2, ...) or {}
 _G[ADDON_NAME .. "_NS"] = ns
 

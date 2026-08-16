@@ -1,5 +1,5 @@
--- Dragon Skill - Modul: TalentCompare (v1.5.3)
--- Patch 12.1: Compare, Node-Diff, Import
+-- Dragon Skill - Modul: TalentCompare (v1.5.5)
+-- Node-Diff mit robusteren Talentnamen
 
 local TalentCompare = {}
 
@@ -22,28 +22,78 @@ function TalentCompare:Compare(guideString, currentString)
     return { similarity = math.floor(((maxLen - diffs) / maxLen) * 100) }
 end
 
-local function ResolveNodeName(configID, nodeID, nInfo)
-    local name = nil
-    local entryID = nil
-    if nInfo.activeEntry and nInfo.activeEntry.entryID then
-        entryID = nInfo.activeEntry.entryID
-    elseif nInfo.entryIDs and nInfo.entryIDs[1] then
-        entryID = nInfo.entryIDs[1]
+local function SpellNameFromID(spellID)
+    if not spellID then return nil end
+    if C_Spell and C_Spell.GetSpellInfo then
+        local info = C_Spell.GetSpellInfo(spellID)
+        if type(info) == "table" and info.name then return info.name end
+        if type(info) == "string" then return info end
     end
-    if entryID and C_Traits.GetEntryInfo then
-        local eInfo = C_Traits.GetEntryInfo(configID, entryID)
-        if eInfo and eInfo.definitionID and C_Traits.GetDefinitionInfo then
-            local def = C_Traits.GetDefinitionInfo(eInfo.definitionID)
-            if def then
-                name = def.overrideName or def.name
+    if GetSpellInfo then
+        local n = GetSpellInfo(spellID)
+        if n then return n end
+    end
+    return nil
+end
+
+local function NameFromEntry(configID, entryID)
+    if not entryID or not C_Traits.GetEntryInfo then return nil end
+    local eInfo = C_Traits.GetEntryInfo(configID, entryID)
+    if not eInfo then return nil end
+
+    if eInfo.definitionID and C_Traits.GetDefinitionInfo then
+        local def = C_Traits.GetDefinitionInfo(eInfo.definitionID)
+        if def then
+            local n = def.overrideName or def.name
+            if n and n ~= "" then return n end
+            if def.spellID then
+                local sn = SpellNameFromID(def.spellID)
+                if sn then return sn end
             end
         end
     end
-    return name or ("Node " .. tostring(nodeID))
+
+    -- SubTree / Choice Nodes
+    if eInfo.subTreeID and C_Traits.GetSubTreeInfo then
+        local st = C_Traits.GetSubTreeInfo(configID, eInfo.subTreeID)
+        if st and (st.name or st.atlasElementID) then
+            return st.name or ("SubTree " .. tostring(eInfo.subTreeID))
+        end
+    end
+
+    return nil
 end
 
--- Node-genauer Diff gegen aktiven Char-Build.
--- Returns: { diffs = { {name, nodeID, currentRank, importedRank, maxRank}, ... }, count = N }
+local function ResolveNodeName(configID, nodeID, nInfo, preferredRank)
+    -- 1) Aktiver Entry
+    if nInfo.activeEntry and nInfo.activeEntry.entryID then
+        local n = NameFromEntry(configID, nInfo.activeEntry.entryID)
+        if n then return n end
+    end
+
+    -- 2) Entry anhand Ziel-Rank (Guide-Rank), sonst erster Entry
+    local entryIDs = nInfo.entryIDs
+    if entryIDs and #entryIDs > 0 then
+        local idx = preferredRank and math.max(1, math.min(#entryIDs, preferredRank)) or 1
+        local n = NameFromEntry(configID, entryIDs[idx])
+        if n then return n end
+        for _, eid in ipairs(entryIDs) do
+            n = NameFromEntry(configID, eid)
+            if n then return n end
+        end
+    end
+
+    -- 3) visibleEntryIDs (manche Builds)
+    if nInfo.visibleEntryIDs then
+        for _, eid in ipairs(nInfo.visibleEntryIDs) do
+            local n = NameFromEntry(configID, eid)
+            if n then return n end
+        end
+    end
+
+    return "Node " .. tostring(nodeID)
+end
+
 function TalentCompare:GetDetailedDiff(importString)
     local empty = { diffs = {}, count = 0 }
     if not importString or importString == "" then return empty end
@@ -66,9 +116,10 @@ function TalentCompare:GetDetailedDiff(importString)
                 local importedRank = (imp and (imp.rank or imp.ranksGranted or 0)) or 0
                 local currentRank = nInfo.currentRank or 0
                 if currentRank ~= importedRank then
+                    local nameRank = importedRank > 0 and importedRank or currentRank
                     table.insert(diffs, {
                         nodeID = nodeID,
-                        name = ResolveNodeName(configID, nodeID, nInfo),
+                        name = ResolveNodeName(configID, nodeID, nInfo, nameRank),
                         currentRank = currentRank,
                         importedRank = importedRank,
                         maxRank = nInfo.maxRanks or 0,
@@ -88,7 +139,6 @@ function TalentCompare:GetDetailedDiff(importString)
     return empty
 end
 
--- Lesbare Zusammenfassung für Popup / Chat (maxLines Einträge).
 function TalentCompare:FormatDiffSummary(importString, maxLines)
     maxLines = maxLines or 12
     local detail = self:GetDetailedDiff(importString)

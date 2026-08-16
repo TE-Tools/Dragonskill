@@ -1,5 +1,5 @@
--- Dragon Skill - Haupt UI (v1.5.3)
--- Node-Diff, Match-%, Modul-Getter, /ds + /wear
+-- Dragon Skill - Haupt UI (v1.5.5)
+-- Spec-Refresh, Node-Diff, Match-%, /ds
 
 local UI = {}
 local currentTab = 1
@@ -151,7 +151,7 @@ function UI:Init()
     f:SetScript("OnDragStart", f.StartMoving)
     f:SetScript("OnDragStop", f.StopMovingOrSizing)
 
-    if f.SetTitle then f:SetTitle("Dragon Skill v" .. (DragonSkill.version or "1.5.3")) end
+    if f.SetTitle then f:SetTitle("Dragon Skill v" .. (DragonSkill.version or "1.5.5")) end
     if f.portrait then f.portrait:SetTexture("Interface\\Icons\\Inv_misc_head_dragon_01") end
 
     if f.Inset then
@@ -283,17 +283,12 @@ local function ShowDiffForBuild(build, TC)
         tostring(build.label or "Build"),
         summary
     )
-    -- StaticPopup text is limited; print long diffs to chat as well
     print("|cff00ff00Dragon Skill Diff|r — " .. tostring(build.label or "Build"))
     for line in string.gmatch(summary, "[^\n]+") do
         print(line)
     end
     StaticPopup_Show("DRAGONSKILL_DIFF", title)
 end
-
----------------------------------------------------------------------------
--- Talente + Favoriten
----------------------------------------------------------------------------
 
 function UI:DrawTalents(content, guideData)
     local TC = DragonSkill:GetModule("TalentCompare")
@@ -427,10 +422,6 @@ function UI:DrawTalents(content, guideData)
     content:SetHeight(math.max(2000, math.abs(yOffset) + 80))
 end
 
----------------------------------------------------------------------------
--- Listen mit Icons
----------------------------------------------------------------------------
-
 function UI:Helper_DrawListWithIcons(content, items, title)
     local yOffset = -10
     self:EnsureText(content)
@@ -513,10 +504,6 @@ function UI:Helper_DrawListWithIcons(content, items, title)
     content:SetHeight(math.max(400, math.abs(yOffset) + 40))
 end
 
----------------------------------------------------------------------------
--- Tab-Inhalte (Module wo möglich)
----------------------------------------------------------------------------
-
 function UI:DrawStats(content, guideData)
     local SP = DragonSkill:GetModule("StatPriority")
     local txt = "|cffffff00=== Deine Werte ===|r\n"
@@ -577,7 +564,7 @@ function UI:DrawBuffs(content, guideData)
 end
 
 ---------------------------------------------------------------------------
--- Slash + Boot
+-- Slash + Boot + Spec-Refresh
 ---------------------------------------------------------------------------
 
 local function ToggleUI()
@@ -586,6 +573,12 @@ local function ToggleUI()
         UI.frame:Hide()
     else
         UI.frame:Show()
+        UI:Update()
+    end
+end
+
+local function RefreshIfShown()
+    if UI.frame and UI.frame:IsShown() then
         UI:Update()
     end
 end
@@ -603,8 +596,27 @@ SlashCmdList["WEAR"] = function(msg)
     ToggleUI()
 end
 
-print("|cff00ff00Dragon Skill v" .. (DragonSkill.version or "1.5.3") .. " geladen!|r Nutze /wear, /ds oder /dragonskill")
+print("|cff00ff00Dragon Skill v" .. (DragonSkill.version or "1.5.5") .. " geladen!|r Nutze /wear, /ds oder /dragonskill")
+
 DragonSkill.Events:On("PLAYER_LOGIN", function()
     UI:Init()
 end)
+
+-- Spec / Talente gewechselt → UI neu laden
+DragonSkill.Events:On("PLAYER_SPECIALIZATION_CHANGED", function()
+    if C_Timer and C_Timer.After then
+        C_Timer.After(0.15, RefreshIfShown)
+    else
+        RefreshIfShown()
+    end
+end)
+
+DragonSkill.Events:On("TRAIT_CONFIG_UPDATED", function()
+    RefreshIfShown()
+end)
+
+DragonSkill.Events:On("ACTIVE_TALENT_GROUP_CHANGED", function()
+    RefreshIfShown()
+end)
+
 DragonSkill.UI = UI

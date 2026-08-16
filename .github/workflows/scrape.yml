@@ -5,12 +5,17 @@ on:
     - cron: "0 6 * * 1,4"
   workflow_dispatch: {}
 
+permissions:
+  contents: write
+
 jobs:
   scrape:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Node.js einrichten
         uses: actions/setup-node@v4
@@ -33,10 +38,10 @@ jobs:
         run: |
           git config user.name "dragon-skill-bot"
           git config user.email "actions@github.com"
-          git add DragonSkill/Data/GuideData.lua scraper/data-raw
+          git add DragonSkill/Data/GuideData.lua scraper/data-raw || true
           if git diff --cached --quiet; then
             echo "Keine Änderungen an den Guide-Daten."
           else
             git commit -m "chore: automatischer Guide-Daten Scrape ($(date -u +%Y-%m-%d))"
-            git push
+            git push origin HEAD:main
           fi
