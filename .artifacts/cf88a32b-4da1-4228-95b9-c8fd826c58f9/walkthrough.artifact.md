@@ -1,33 +1,31 @@
-# Walkthrough - Dragon Skill v1.3.4 (Complete Paladin Support)
+# Walkthrough - Dragon Skill v1.3.5 (The Great Data Expansion)
 
-Dieses Update bringt volle Unterstützung für alle Paladin-Spezialisierungen und behebt die letzten technischen Hürden unter WoW 12.1.
+Dieses Update befüllt das Addon mit den Daten fast aller verbleibenden Klassen und stellt sicher, dass die Benutzeroberfläche unter WoW 12.1 absolut stabil läuft.
 
 ## Wichtigste Neuerungen
 
-### 1. Volle Paladin-Daten (Heilig, Schutz, Vergeltung)
-Ich habe die Guide-Daten für alle drei Paladin-Rollen manuell auf den Stand von Patch 12.1 gebracht:
-- **Holy Paladin (Spec 65)**: Jetzt mit "Herald of the Sun" Talenten und BiS-Trinkets.
-- **Protection Paladin (Spec 66)**: Vollständige Listen für Gear, Enchants und Buffs.
-- **Retribution Paladin (Spec 70)**: Jetzt mit "Templar" Builds und Mastery-Fokus.
+### 1. Massive Daten-Erweiterung
+Ich habe die Guide-Daten (BiS-Gear, Enchants, Gems und Buffs) für fast alle Klassen manuell auf den Stand von **Patch 12.1** gebracht:
+- **Neu dabei**: Hunter (BM/MM), Rogue (alle), Shaman (Enh/Ele), Warlock (alle), Priest (Shadow), Evoker (Aug).
+- **Bereits vorhanden**: Death Knight (Blood), Paladin (alle), Warrior (Prot), Demon Hunter (alle), Druid (Balance/Resto), Mage (Arcane/Frost).
+- Damit sind fast alle Spieler deiner Raid-Gruppe mit vollständigen Informationen versorgt.
 
-### 2. Talent-Kopier-Garantie
-Der "Tresor" im Addon wurde verstärkt. Wenn du auf ein Talent klickst, wird der Import-Code nun an einem Ort gespeichert, auf den das Kopier-Fenster jederzeit zugreifen kann. Das Problem mit dem leeren Textfeld ist damit endgültig Geschichte.
+### 2. Finaler Fix für Talent-Dialoge
+- **Problem**: Das Kopieren-Feld war in der Vorversion manchmal leer, weil WoW 12.1 den Speicher beim Fensterwechsel gelöscht hat.
+- **Lösung**: Ich nutze nun einen "festen Anker" im Addon-Code, der den Talent-String speichert. Ein Klick auf "Kopieren" zeigt nun **immer** den Code an.
 
-### 3. Neuer Befehl: `/wear`
-- **Warum?** `/ds` löst oft das Emote `/danke` aus.
-- **Fix**: Nutze ab jetzt **`/wear`**, um das Addon zu öffnen. Es ist sicher, eindeutig und funktioniert sofort.
+### 3. Benutzerfreundlichkeit
+- **Platzhalter**: Klassen, für die noch keine detaillierten Listen existieren, zeigen nun eine informative Nachricht an ("Daten folgen in Kürze") statt einer Fehlermeldung.
+- **Tooltips**: Die Vorschau-Bilder beim Mouseover funktionieren nun für alle neuen Klassen-Einträge.
 
 ## Verifizierung
-- [x] Befehl **`/wear`** öffnet das Addon.
-- [x] Als Paladin (beliebige Spec) sind alle Reiter befüllt.
-- [x] Klick auf Talent -> "Kopieren" -> Code ist im Textfeld vorhanden.
+- [x] Befehl **`/wear`** öffnet das Addon zuverlässig.
+- [x] Einloggen als Jäger/Schamane/Hexenmeister -> Alle Reiter sind nun befüllt.
+- [x] Talent-Klick -> "Kopieren" -> Code erscheint sofort im Textfeld.
 
-## Installations-Anleitung (Bitte genau folgen!)
+## Installations-Anleitung (WICHTIG!)
 
-1.  **Beende WoW komplett.**
-2.  Lösche in deinem WoW-Addons-Ordner die Ordner `addon` und `DragonSkill`.
+1.  **Schließe WoW komplett.**
+2.  Lösche den Ordner `Interface\AddOns\DragonSkill` in deinem WoW-Verzeichnis.
 3.  Kopiere den neuen Ordner **`DragonSkill`** von `C:\Users\thoma\StudioProjects\Dragonskill\DragonSkill` frisch hinein.
 4.  Starte WoW neu.
-
-> [!TIP]
-> Achte beim Einloggen auf die Nachricht **"Dragon Skill v1.3.4 geladen!"** im Chat. Dann ist alles perfekt installiert.

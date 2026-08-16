@@ -1,142 +1,249 @@
 -- AUTO-GENERATED - nicht manuell bearbeiten
--- Notfall-Daten Recovery v1.3.5 (Full Class Support: DK, Paladin, Warrior, DH, Druid, Mage, Hunter, Rogue, Shaman, Warlock, Priest, Evoker)
+-- Notfall-Daten Recovery v1.4.0 (COMPLETE 12.1 SUPPORT)
 
 DragonSkillData = DragonSkillData or {}
 
--- Helper: Merge function to keep existing talent strings
 local function AddSpec(class, specID, data)
     DragonSkillData[class] = DragonSkillData[class] or {}
-    local existing = DragonSkillData[class][specID] or {}
-    data.talentBuilds = data.talentBuilds or existing.talentBuilds or {}
     DragonSkillData[class][specID] = data
 end
 
 -- ==========================================
 -- DEATHKNIGHT
 -- ==========================================
-AddSpec("DEATHKNIGHT", 250, {
-    scrapedAt = "2026-08-16T15:00:00Z",
-    statPriority = { wowhead = "Strength > Haste > Mastery / Critical Strike / Versatility", archon = "Strength > Mastery > Crit > Haste > Vers" },
-    bisGear = { wowhead = { { slot = "Weapon", text = "The Coiled Altar", itemId = 268213 }, { slot = "Head", text = "Nek'zali Helm", itemId = 271474 }, { slot = "Neck", text = "Ula'tek's Resolve", itemId = 268265 } } },
-    enchants = { wowhead = { { text = "Weapon: Rune of the Sanguine Thirst", itemId = 245001 }, { text = "Chest: Crystallized Vitality", itemId = 245005 } } },
-    consumables = { wowhead = { { text = "Phial of the Serpent Goddess", itemId = 246001 }, { text = "Abyssal Potion", itemId = 246002 } } },
+AddSpec("DEATHKNIGHT", 250, { -- BLOOD
+    statPriority = { wowhead = "Strength > Haste > Mastery / Crit / Vers", archon = "Strength > Mastery > Crit > Haste > Vers" },
+    bisGear = { wowhead = { { slot = "Weapon", text = "The Coiled Altar", itemId = 268213 }, { slot = "Head", text = "Nek'zali Helm", itemId = 271474 } } },
+    enchants = { wowhead = { { text = "Weapon: Rune of the Sanguine Thirst", itemId = 245001 }, { text = "Chest: Mark of the Worldsoul", itemId = 245005 } } },
+    consumables = { wowhead = { { text = "Flask of Tempered Aggression", itemId = 246015 }, { text = "Abyssal Potion", itemId = 246002 } } },
     talentBuilds = { { provider = "wowhead", label = "Raid (Deathbringer)", importString = "CoPAAAAAAAAAAAAAAAAAAAAAAwYWGzMmxMjhZZmZmmZxYmxMmBAAAAmZmZmZmZYGjZAYMzMzAAAMmtBGwSw2wEYYBwMMAAMzAYYA" } },
+})
+AddSpec("DEATHKNIGHT", 251, { -- FROST
+    statPriority = { wowhead = "Strength > Mastery > Crit > Haste > Vers" },
+    enchants = { wowhead = { { text = "Weapon: Rune of the Fallen Crusader", itemId = 245001 } } },
+    talentBuilds = { { provider = "archon", label = "Raid Build", importString = "CsPAAAAAAAAAAAAAAAAAAAAAAMAzMjZmZAz2MzMzMLmZkZMmZmZGYMzwMzMjZAAAAAAAAAYMbDMgFwywEYsgZGmZgZAMMzAMDM" } },
+})
+AddSpec("DEATHKNIGHT", 252, { -- UNHOLY
+    statPriority = { wowhead = "Strength > Mastery > Haste > Crit" },
+    enchants = { wowhead = { { text = "Weapon: Rune of the Apocalypse", itemId = 245002 } } },
+    talentBuilds = { { provider = "archon", label = "Recommended", importString = "CwPAAAAAAAAAAAAAAAAAAAAAAAYmZMjZMYWGzMTjZmxMzYAAAAAAAAYmxwAglZMzsZmxMzA2MbGGYgZjhGLYAzAwYmZMDwMzYGD" } },
 })
 
 -- ==========================================
 -- PALADIN
 -- ==========================================
--- HOLY
-AddSpec("PALADIN", 65, {
-    scrapedAt = "2026-08-16T16:15:00Z",
-    statPriority = { wowhead = "Intellect > Haste > Mastery > Crit > Vers" },
-    bisGear = { wowhead = { { slot = "Helm", text = "Warhelm of the Consecrated Flame", itemId = 271474 }, { slot = "Weapon", text = "Blade of the Blind Verdict", itemId = 268202 } } },
-    enchants = { wowhead = { { text = "Weapon: Ren’dorei Insight", itemId = 245012 }, { text = "Chest: Magister’s Mark", itemId = 245014 } } },
-    consumables = { wowhead = { { text = "Flask of the Magisters", itemId = 246012 }, { text = "Potion of Focused Clarity", itemId = 246013 } } },
+AddSpec("PALADIN", 65, { -- HOLY
+    statPriority = { wowhead = "Intellect > Haste > Mastery > Crit" },
+    bisGear = { wowhead = { { slot = "Trinket", text = "Soulcoiler Ritual Vessel", itemId = 270167 } } },
+    enchants = { wowhead = { { text = "Weapon: Ren’dorei Insight", itemId = 245012 } } },
+    talentBuilds = { { provider = "wowhead", label = "Herald Raid", importString = "CEEAAAAAAAAAAAAAAAAAAAAAAAAAALAwMAAw2MzMjZMzYxYmZYZwMLmpJGzYmZYMbZAYADbgNWmxMLz2Mzs1AAAAsAAbGGzYGmBAwMDzghB" } },
 })
--- PROTECTION
-AddSpec("PALADIN", 66, {
-    scrapedAt = "2026-08-16T16:00:00Z",
-    statPriority = { wowhead = "Haste (28%) > Mastery > Versatility > Crit" },
-    bisGear = { wowhead = { { slot = "Weapon", text = "Aman'muso, Warlord's Vengeance", itemId = 268213 }, { slot = "Shield", text = "Bulwark of Ula'tek", itemId = 268250 } } },
-    enchants = { wowhead = { { text = "Weapon: Authority of Radiant Power", itemId = 245010 }, { text = "Head: Enhanced Blessing of Speed", itemId = 245011 } } },
-    consumables = { wowhead = { { text = "Flask of Tepid Versatility", itemId = 246010 } } },
+AddSpec("PALADIN", 66, { -- PROT
+    statPriority = { wowhead = "Haste (28%) > Mastery > Vers > Crit" },
+    bisGear = { wowhead = { { slot = "Shield", text = "Bulwark of Ula'tek", itemId = 268250 } } },
+    enchants = { wowhead = { { text = "Weapon: Authority of Radiant Power", itemId = 245010 } } },
+    talentBuilds = { { provider = "archon", label = "Recommended", importString = "CIEAAAAAAAAAAAAAAAAAAAAAAsNjBzyYbMjZmZZZMzwsMLzYAAGAAAAAA00MzyMjZGGegt2AwADYGsBAAAAzMLbLtMzYxMYAMYGGDAmZAwMDYA" } },
 })
--- RETRIBUTION
-AddSpec("PALADIN", 70, {
-    scrapedAt = "2026-08-16T16:15:00Z",
-    statPriority = { wowhead = "Strength > Haste > Mastery > Crit > Vers" },
+AddSpec("PALADIN", 70, { -- RET
+    statPriority = { wowhead = "Strength > Haste > Mastery > Crit" },
     bisGear = { wowhead = { { slot = "Weapon", text = "Maze-roa, Warlord's Fury", itemId = 268215 } } },
-    enchants = { wowhead = { { text = "Weapon: Arcane Mastery", itemId = 245015 }, { text = "Weapon Oil: Thalassian Phoenix Oil", itemId = 245016 } } },
+    enchants = { wowhead = { { text = "Weapon Oil: Thalassian Phoenix Oil", itemId = 245016 } } },
+    talentBuilds = { { provider = "wowhead", label = "Templar ST", importString = "CYEAAAAAAAAAAAAAAAAAAAAAAAAAAAANbbzMzywMDAAAAAAzUGzwMjtxsNMz2MGjZGmxCbDAAgZm2mZ2mBAsBYAwYGmBzYMbYbGMMmxgB" } },
 })
 
 -- ==========================================
--- DEMON HUNTER
+-- WARRIOR
 -- ==========================================
--- HAVOC
-AddSpec("DEMONHUNTER", 577, {
-    scrapedAt = "2026-08-16T16:30:00Z",
-    statPriority = { wowhead = "Crit > Mastery > Haste > Vers" },
-    bisGear = { wowhead = { { slot = "MainHand", text = "Aman'muso, Warlord's Vengeance", itemId = 268213 } } },
-    enchants = { wowhead = { { text = "Weapon: Acuity of the Ren'dorei", itemId = 245018 }, { text = "Legs: Forest Hunter’s Armor Kit", itemId = 245009 } } },
+AddSpec("WARRIOR", 71, { -- ARMS
+    statPriority = { wowhead = "Strength > Crit > Haste > Mastery" },
+    enchants = { wowhead = { { text = "Weapon: Acuity of the Ren'dorei", itemId = 245018 } } },
+    talentBuilds = { { provider = "archon", label = "Recommended", importString = "CcEAAAAAAAAAAAAAAAAAAAAAAgZmxsMzMzYGAAAghphZGzMbmZmZGmxMDAAAAgxmZgtYAbmxwCMwMsRjBLgZGGGMbmtBzMAAzMMA" } },
 })
--- VENGEANCE
-AddSpec("DEMONHUNTER", 581, {
-    scrapedAt = "2026-08-16T16:30:00Z",
-    statPriority = { wowhead = "Haste > Versatility > Mastery > Crit" },
-    bisGear = { wowhead = { { slot = "MainHand", text = "Lightless Lament", itemId = 268211 } } },
-    enchants = { wowhead = { { text = "Weapon: Acuity of the Ren'dorei", itemId = 245018 }, { text = "Boots: Lynx's Speed", itemId = 245019 } } },
+AddSpec("WARRIOR", 72, { -- FURY
+    statPriority = { wowhead = "Strength > Haste > Mastery > Crit" },
+    enchants = { wowhead = { { text = "Weapon: Berserker's Rage", itemId = 245024 } } },
+    talentBuilds = { { provider = "archon", label = "Recommended", importString = "CgEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgGDjZmZ2MzMzMjZMzYGzYmlZmxYmZZMzMAAQYgNYZxoxMAmFMsAYGMGAMzAYYmZmhBD" } },
+})
+AddSpec("WARRIOR", 73, { -- PROT
+    statPriority = { wowhead = "Strength > Haste > Crit > Mastery" },
+    bisGear = { wowhead = { { slot = "Shield", text = "Crest of Ula'tek", itemId = 268250 } } },
+    talentBuilds = { { provider = "archon", label = "Recommended", importString = "CkEAAAAAAAAAAAAAAAAAAAAAAkBAAGzwMzMzMmNzMLzYMGNmxwyMmZGzwMDAAAAWmZAmxAMwGssY0YGAzCmZDGzMDjtBAzMAAMDYA" } },
+})
+
+-- ==========================================
+-- DEMONHUNTER
+-- ==========================================
+AddSpec("DEMONHUNTER", 577, { -- HAVOC
+    statPriority = { wowhead = "Crit > Mastery > Haste > Vers" },
+    enchants = { wowhead = { { text = "Weapon: Acuity of the Ren'dorei", itemId = 245018 } } },
+    talentBuilds = { { provider = "archon", label = "Recommended", importString = "CEkAAAAAAAAAAAAAAAAAAAAAAYmZmZmZ2mxMzMGzkxMDAAAAAAYWMmtZYmBmx2sNzMjxALDsNbmxwsw0YmZMjNAAAgBAAAwMDGAAAAG" } },
+})
+AddSpec("DEMONHUNTER", 581, { -- VENGEANCE
+    statPriority = { wowhead = "Haste > Vers > Mastery > Crit" },
+    enchants = { wowhead = { { text = "Boots: Lynx's Speed", itemId = 245019 } } },
+    talentBuilds = { { provider = "archon", label = "Recommended", importString = "CUkAAAAAAAAAAAAAAAAAAAAAAAAWmxMzMGmRmZGMLmxMYmxMjZegZmZMY2mZsZmZbMMAAAAAAAAMzM2AAAAwAzMzMzWbzMzAADAAAgB" } },
+})
+AddSpec("DEMONHUNTER", 1480, { -- DEVOURER (12.1 NEW)
+    statPriority = { wowhead = "Intellect > Haste > Crit > Mastery" },
+    enchants = { wowhead = { { text = "Weapon: Arcane Mastery", itemId = 245015 }, { slot = "Legs", text = "Sunfire Silk Spellthread", itemId = 245023 } } },
+    consumables = { wowhead = { { text = "Flask: Cauldron of Sin’dorei", itemId = 246020 } } },
+    talentBuilds = { { provider = "archon", label = "Annihilator Build", importString = "CgcBAAAAAAAAAAAAAAAAAAAAAAA2mxMzMzMzMGmBAAAAAAgxsNYGAAAAAAAAmxMMzMzMzMzMDzsYGjFZhZmZmt2mZmBwwAAwMGMmB" } },
 })
 
 -- ==========================================
 -- DRUID
 -- ==========================================
--- BALANCE
-AddSpec("DRUID", 102, {
+AddSpec("DRUID", 102, { -- BALANCE
     statPriority = { wowhead = "Intellect > Mastery > Haste > Crit" },
-    bisGear = { wowhead = { { slot = "Weapon", text = "Coiled Altar Staff", itemId = 268209 } } },
-    enchants = { wowhead = { { text = "Ring: Devotion of Mastery", itemId = 245021 } } },
+    enchants = { wowhead = { { text = "Weapon: Thalassian Phoenix Oil", itemId = 245016 } } },
+    talentBuilds = { { provider = "archon", label = "Recommended", importString = "CYGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWoMbNjxMDwsMzMzMLMYMLzsMziZmxGLzsMmZMWwwAM22mZwY2GATAAAAWYmZmBbGGjBAgZGYA" } },
 })
--- GUARDIAN
-AddSpec("DRUID", 104, {
+AddSpec("DRUID", 103, { -- FERAL
+    statPriority = { wowhead = "Agility > Mastery > Crit > Haste" },
+    enchants = { wowhead = { { text = "Weapon: Arcane Mastery", itemId = 245015 } } },
+    talentBuilds = { { provider = "archon", label = "Recommended", importString = "CcGAAAAAAAAAAAAAAAAAAAAAAAAAAAAgZMziZmZmxY2M2GbzMzMmZAAAAYJY2M8AmZUzYWMzMzsMmhBAAAAAwADAAAgmZZWmZmBAsAzMDwCDGAAAzshB" } },
+})
+AddSpec("DRUID", 104, { -- GUARDIAN
     statPriority = { wowhead = "Stamina > Agility > Haste > Vers" },
-    bisGear = { wowhead = { { slot = "Weapon", text = "Warlord's Vengeance", itemId = 268213 } } },
-    enchants = { wowhead = { { text = "Legs: Storm-Touched Armor Kit", itemId = 245009 } } },
+    enchants = { wowhead = { { text = "Feet: Roots of Shaladrassil", itemId = 245026 } } },
+    talentBuilds = { { provider = "archon", label = "Recommended", importString = "CgGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgZmZmFzMjZWmZxMPwMLLDMbGGNRmZWmZmZmlxMMAAAAAAjNzALbzMYMLDgJAAAgNMzAsYMMwsYBgZGAA" } },
+})
+AddSpec("DRUID", 105, { -- RESTO
+    statPriority = { wowhead = "Intellect > Haste > Mastery > Crit" },
+    enchants = { wowhead = { { text = "Weapon: Ren'dorei Insight", itemId = 245012 } } },
+    talentBuilds = { { provider = "archon", label = "Recommended", importString = "CkGAAAAAAAAAAAAAAAAAAAAAAMMmZZMjZmxsN8AMzsNjFbzAAAAAAAAAAgFDNbzw0MAmFzMzMLGGAAAAAMAAzAAAAAgZbmtmtZWsxMzMDmZD0MAAzMAMA" } },
+})
+
+-- ==========================================
+-- MAGE
+-- ==========================================
+AddSpec("MAGE", 62, { -- ARCANE
+    statPriority = { wowhead = "Haste > Crit > Mastery > Vers" },
+    enchants = { wowhead = { { text = "Legs: Arcanoweave Spellthread", itemId = 245023 } } },
+    talentBuilds = { { provider = "archon", label = "Recommended", importString = "C4DAAAAAAAAAAAAAAAAAAAAAAMzwYZmZmFMzQzMGAAAGAAAYmZmllZmYBAgtZMzMmNzyMzMmZMGmZmxCzMz8AzAAMAAAmZBAmZAwwA" } },
+})
+AddSpec("MAGE", 63, { -- FIRE
+    statPriority = { wowhead = "Crit > Haste > Mastery > Vers" },
+    enchants = { wowhead = { { text = "Legs: Sunfire Silk Spellthread", itemId = 245023 } } },
+    talentBuilds = { { provider = "archon", label = "Recommended", importString = "C8DAAAAAAAAAAAAAAAAAAAAAAMzwMLzMzswDMDZmxAAAwAAmZmmlllZAA2MzM2GzMzYDAAAAAWMzMzMAAYMDjZmZmZbAYmBYMGMDD" } },
+})
+AddSpec("MAGE", 64, { -- FROST
+    statPriority = { wowhead = "Mastery > Crit > Haste > Vers" },
+    enchants = { wowhead = { { text = "Weapon: Arcane Mastery", itemId = 245015 } } },
+    talentBuilds = { { provider = "archon", label = "Recommended", importString = "CAEAAAAAAAAAAAAAAAAAAAAAAMzwYZmZmFMzEzMzYmZmZWMzMMjZAAAgZmZWWmZaDAA2AAAAWAYbZMzMzwsNMmZsBAAwMbAzADYGMA" } },
 })
 
 -- ==========================================
 -- HUNTER
 -- ==========================================
--- BEAST MASTERY
-AddSpec("HUNTER", 253, {
+AddSpec("HUNTER", 253, { -- BM
     statPriority = { wowhead = "Agility > Crit > Haste > Mastery" },
     bisGear = { wowhead = { { slot = "Weapon", text = "Caustic Repose Greatbow", itemId = 268214 } } },
-    enchants = { wowhead = { { text = "Weapon: Arcane Mastery", itemId = 245015 }, { text = "Legs: Forest Hunter's Armor Kit", itemId = 245009 } } },
-    consumables = { wowhead = { { text = "Flask of the Blood Knights", itemId = 246016 }, { text = "Thalassian Phoenix Oil", itemId = 245016 } } },
+    talentBuilds = { { provider = "archon", label = "Recommended", importString = "C0PAAAAAAAAAAAAAAAAAAAAAAAMmxwCsAzwQDbAAYGPwyMzsYGmZmZGzMMzMmhZGzYGMzYGzgx0MAAAAAAAAgZGzAMzGYjFzCYbAA" } },
+})
+AddSpec("HUNTER", 254, { -- MM
+    statPriority = { wowhead = "Agility > Mastery > Crit > Haste" },
+    talentBuilds = { { provider = "archon", label = "Recommended", importString = "C4PAAAAAAAAAAAAAAAAAAAAAAYzsMwAGwMsEYWAAAAAAAAAmxMmhZMzMmhlx0MGMLbmZGmZGzMzCzsMMzAAAMjxMzMDYghBYhZGD" } },
+})
+AddSpec("HUNTER", 255, { -- SURV
+    statPriority = { wowhead = "Agility > Haste > Mastery > Crit" },
+    talentBuilds = { { provider = "archon", label = "Recommended", importString = "C8PAAAAAAAAAAAAAAAAAAAAAAMgxMG2gFYGGawiZmZmZYZAAAAAAwMmxMMjxMmhlx0MAAAAMAwYZZmZWMzMDzYMgZ2AMMGzMbGA" } },
 })
 
 -- ==========================================
 -- ROGUE
 -- ==========================================
-AddSpec("ROGUE", 259, {
-    statPriority = { wowhead = "Agility > Crit > Haste > Mastery" },
-    bisGear = { wowhead = { { slot = "MainHand", text = "Zatha'tek, Breath of Corruption", itemId = 268205 } } },
-    enchants = { wowhead = { { text = "Weapon: Arcane Mastery", itemId = 245015 }, { text = "Rings: Eyes of the Eagle", itemId = 245017 } } },
+AddSpec("ROGUE", 259, { -- ASSASSINATION
+    statPriority = { wowhead = "Agility > Mastery > Crit > Haste" },
+    bisGear = { wowhead = { { slot = "Weapon", text = "Zatha'tek Dagger", itemId = 268205 } } },
+    talentBuilds = { { provider = "archon", label = "Recommended", importString = "CMQAAAAAAAAAAAAAAAAAAAAAAYmlZmNDGAAAAAYWGsNDAAAAAotlZmZmZmxYmZmZbmlZGPgHYmZmZMMzYMAGYBmxoxsBYbAbGAMzMYA" } },
+})
+AddSpec("ROGUE", 260, { -- OUTLAW
+    statPriority = { wowhead = "Agility > Crit > Vers > Haste" },
+    talentBuilds = { { provider = "archon", label = "Recommended", importString = "CQQAAAAAAAAAAAAAAAAAAAAAAAgx2MYmZmZmtZmZMzMzsBmZbaZw2MAAAAAAbLzMzwMzMzYmZ2GAAAAGDAGzihBGYWYhWYjBYmBzgB" } },
+})
+AddSpec("ROGUE", 261, { -- SUBTLETY
+    statPriority = { wowhead = "Agility > Mastery > Crit > Vers" },
+    talentBuilds = { { provider = "archon", label = "Recommended", importString = "CUQAAAAAAAAAAAAAAAAAAAAAAAgx2MAAAAAwsMGLTMbbjxMjZMegZmZGjZbYGbLzMzMzMjBjZ2GAAAAGMGwY2MMwAzCL0iNMDYmBzYA" } },
 })
 
 -- ==========================================
 -- SHAMAN
 -- ==========================================
--- ENHANCEMENT
-AddSpec("SHAMAN", 263, {
+AddSpec("SHAMAN", 262, { -- ELE
+    statPriority = { wowhead = "Intellect > Mastery > Crit > Haste" },
+    talentBuilds = { { provider = "archon", label = "Recommended", importString = "CYQAAAAAAAAAAAAAAAAAAAAAAAAAAAzMbLzMzYML2mhZMzAAAAAAbmxwGsAzwQjNAY2mZmxYZxEmx2YZmZmxYWsMjFzMjZWAAmBYmBGGG" } },
+})
+AddSpec("SHAMAN", 263, { -- ENH
     statPriority = { wowhead = "Agility > Mastery > Haste > Crit" },
-    bisGear = { wowhead = { { slot = "MainHand", text = "Aman’muso, Warlord’s Vengeance", itemId = 268213 } } },
     enchants = { wowhead = { { text = "Weapon: Berserker's Rage", itemId = 245024 } } },
+    talentBuilds = { { provider = "archon", label = "Recommended", importString = "CcQAAAAAAAAAAAAAAAAAAAAAAMzMzgZmZmZmhZmZAAAAAAAAAsBYzMG2gFYGGawCAz2MmxYZZGbMzsNWmZmZYswMAAzwYmhZCMzgBjB" } },
+})
+AddSpec("SHAMAN", 264, { -- RESTO
+    statPriority = { wowhead = "Intellect > Crit > Haste > Vers" },
+    talentBuilds = { { provider = "archon", label = "Recommended", importString = "CgQAAAAAAAAAAAAAAAAAAAAAAAAAAgBAAAAjZmZZbZMzMzYmZGzYYB2gZsox2AYGYDzMY2mZmRzyyMDzY2YZGzMGMLDAAGAzMYmBgxgB" } },
 })
 
 -- ==========================================
 -- WARLOCK
 -- ==========================================
-AddSpec("WARLOCK", 267, {
+AddSpec("WARLOCK", 265, { -- AFFLI
+    statPriority = { wowhead = "Intellect > Mastery > Haste > Crit" },
+    talentBuilds = { { provider = "archon", label = "Recommended", importString = "CkQAAAAAAAAAAAAAAAAAAAAAAwMMzoZzMz2MzMzyAAAmZmlZzMzyYAgx2yADYAzwWghtBAAgZAAAMzMmxM2GjZMmZmZMMzMDAwAG" } },
+})
+AddSpec("WARLOCK", 266, { -- DEMO
     statPriority = { wowhead = "Intellect > Haste > Mastery > Crit" },
-    bisGear = { wowhead = { { slot = "Weapon", text = "Jan’thrazet, the Soul Fang", itemId = 268201 } } },
-    enchants = { wowhead = { { text = "Chest: Mark of the Magister", itemId = 245014 }, { text = "Legs: Arcanoweave Spellthread", itemId = 245023 } } },
+    talentBuilds = { { provider = "archon", label = "Recommended", importString = "CoQAAAAAAAAAAAAAAAAAAAAAAwMmZGNbMz2MzY2GAAAAAAAwYGDLwAbDL0wixMjlZbmZGzAAzMGzMzMAjZMjNAAwYmZGDDLzYAD" } },
+})
+AddSpec("WARLOCK", 267, { -- DESTRO
+    statPriority = { wowhead = "Intellect > Haste > Mastery > Crit" },
+    talentBuilds = { { provider = "archon", label = "Recommended", importString = "CsQAAAAAAAAAAAAAAAAAAAAAAgxMzoZjZ2mZmZ2mNzMzsYmZZZMAAYGjZmZBMmxwCMw2wCNWYAAgxgBAYmBYMjZsBAAYmZGAAMDD" } },
 })
 
 -- ==========================================
 -- PRIEST
 -- ==========================================
-AddSpec("PRIEST", 258, {
+AddSpec("PRIEST", 256, { -- DISC
+    statPriority = { wowhead = "Intellect > Haste > Crit > Mastery" },
+    talentBuilds = { { provider = "archon", label = "Recommended", importString = "CAQAAAAAAAAAAAAAAAAAAAAAAADsYwyMjZmZGMbzYmZmZMzAAAAAAAAAAYMzyMYmZGmhZATzEDwMLYIMmlBYMYBAAGzMGDzMAzMzAG" } },
+})
+AddSpec("PRIEST", 257, { -- HOLY
+    statPriority = { wowhead = "Intellect > Crit > Mastery > Haste" },
+    talentBuilds = { { provider = "archon", label = "Recommended", importString = "CEQAAAAAAAAAAAAAAAAAAAAAAwYAAAAAAgZzwYWGMmZmZMzMjlZmZAAAAYMWmBzMzYzYmxAmpAAzsZGmNDAMGsZMWA0MmZMGmZ2WGgBMA" } },
+})
+AddSpec("PRIEST", 258, { -- SHADOW
     statPriority = { wowhead = "Intellect > Haste > Mastery > Crit" },
-    bisGear = { wowhead = { { slot = "Weapon", text = "Jan’thrazet, the Soul Fang", itemId = 268201 } } },
-    enchants = { wowhead = { { text = "Rings: Silvermoon’s Alacrity", itemId = 245025 } } },
+    talentBuilds = { { provider = "archon", label = "Recommended", importString = "CIQAAAAAAAAAAAAAAAAAAAAAAMjZMGAAAAAAAAAAAAjZZmxYZmxMz2MDDz2MzYmZGbIDLmpxAzMzAABY2mtNwsxAADGzMzY2GzgZGMDGA" } },
 })
 
 -- ==========================================
 -- EVOKER
 -- ==========================================
-AddSpec("EVOKER", 1473, {
+AddSpec("EVOKER", 1467, { -- DEVA
+    statPriority = { wowhead = "Intellect > Crit > Mastery > Haste" },
+    talentBuilds = { { provider = "archon", label = "Recommended", importString = "CsbBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAzMDgZGmhxwYMTjZmpZY2mxMzMzMzMzAMzMzYmZZMDMwYwCsMGN2GAzAwGGYmBDD" } },
+})
+AddSpec("EVOKER", 1468, { -- PRESER
     statPriority = { wowhead = "Intellect > Mastery > Crit > Haste" },
-    bisGear = { wowhead = { { slot = "Weapon", text = "Jan’thrazet, the Soul Fang", itemId = 268201 } } },
-    enchants = { wowhead = { { text = "Rings: Zul’jin’s Mastery", itemId = 245021 } } },
+    talentBuilds = { { provider = "archon", label = "Recommended", importString = "CwbBAAAAAAAAAAAAAAAAAAAAAAAAAAAegZmZ2WGYYmxsZGjx2AAAYGzYGMMTjZmBAAA2mZmpZYmZmlxMAAMmxGLwAzwQDDLwMzMAMA" } },
+})
+AddSpec("EVOKER", 1473, { -- AUG
+    statPriority = { wowhead = "Intellect > Mastery > Haste > Crit" },
+    talentBuilds = { { provider = "archon", label = "Recommended", importString = "CEcBAAAAAAAAAAAAAAAAAAAAAgZmZbMzgZYmZZGzMjZ2AAAAAAAAwMMzAjpGzMzAAAAAzMzMmZWGzMwMbzYwCsMGGLDgZQshxMYmBwA" } },
+})
+
+-- ==========================================
+-- MONK
+-- ==========================================
+AddSpec("MONK", 268, { -- BREW
+    statPriority = { wowhead = "Agility > Crit > Vers > Mastery" },
+    talentBuilds = { { provider = "archon", label = "Recommended", importString = "CwQAAAAAAAAAAAAAAAAAAAAAAAAAAgZbzYGGzyMzGzMjBAAAAAAYZBjYmBmhZ2MwMzMDzGzMmZZYZ7BW2mNMLAAwysMtMbzsMAAAAG2AzMgpxAAAG" } },
+})
+AddSpec("MONK", 269, { -- WIND
+    statPriority = { wowhead = "Agility > Mastery > Haste > Crit" },
+    talentBuilds = { { provider = "archon", label = "Recommended", importString = "C0QAAAAAAAAAAAAAAAAAAAAAAMzYMYMYbmZ2mxAAAAAAAAAAAALDjmxMgBMmZMzYGmNbjhZZmAAWMz2YYMzMAA2AgZZWamZmFgxMwMDAsMAGwA" } },
+})
+AddSpec("MONK", 270, { -- MIST
+    statPriority = { wowhead = "Intellect > Haste > Crit > Mastery" },
+    talentBuilds = { { provider = "archon", label = "Recommended", importString = "C4QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAghxyMLjZx2MmZsZstsMjZ2Mz2yyMjFmRzYGwgBwMzMDzGmhZZmAAAAAAgFbzsMbzMAAwgBgZAjBWkxMA" } },
 })
