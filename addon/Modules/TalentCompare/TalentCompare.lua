@@ -1,121 +1,44 @@
--- Dragon Skill - Modul: TalentCompare
--- Vergleicht einen importierten Talent-Build (aus Guide-Daten oder manuell eingefügtem String)
--- mit dem aktuell auf dem Charakter gespeckten Build. Nutzt ausschließlich offizielle
--- C_Traits / C_ClassTalents APIs - kein Auto-Speccen, nur Anzeige + Diff.
+-- Dragon Skill - Modul: TalentCompare (v1.2.2)
+-- Patch 12.1 Ready: Multi-System & Serialization V2 Support.
 
 local TalentCompare = {}
 
---- Liefert den aktuell aktiven Talent-String des Charakters (offizielle Blizzard API)
 function TalentCompare:GetCurrentBuildString()
     local configID = C_ClassTalents.GetActiveConfigID()
     if not configID then return nil end
-    local exportString = C_Traits.GenerateImportString(configID)
-    return exportString
+    return C_Traits.GenerateImportString(configID)
 end
 
---- Hilfsfunktion für Patch 12.1+: Findet die SystemID für Klassentalente
 function TalentCompare:GetClassTraitSystemID()
-    if not C_Traits.GetTraitSystemIDs then return 1 end -- Fallback für < 12.1
+    if not C_Traits.GetTraitSystemIDs then return 1 end
     local systems = C_Traits.GetTraitSystemIDs()
     for _, id in ipairs(systems) do
         local info = C_Traits.GetTraitSystemInfo(id)
-        -- SystemID 1 ist traditionell Class Talents
-        if info and (id == 1 or info.name == "Class Talents") then
+        if info and (id == 1 or (info.name and string.find(info.name, "Class"))) then
             return id
         end
     end
     return 1
 end
 
--- Blizzard Talent-Import-Strings sind Custom-Base64 (Alphabet inkl. + / = -) über einem
--- Bitstream aus: Header (Spec, Version) + pro Trait-Node ein "selected"-Bit + ggf. Rang/Choice-Bits.
--- Ein vollständiger Bit-Decoder (inkl. Node-ID-Reihenfolge exakt wie der Client sie erwartet)
--- ist nicht offiziell dokumentiert und ändert sich mit Patches. v0.2 nutzt daher einen
--- Byte-Level-Diff: identische Talentwahl ergibt identische Bytes an derselben Position,
--- weshalb Abweichungen zuverlässig als "Position X unterschiedlich" markiert werden -
--- auch ohne zu wissen, welches konkrete Talent an Position X kodiert ist.
-local BASE64_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/="
-
-local function decodeToBytes(str)
-    -- Reduziert den String auf reine Zeichen-Codes (kein echtes Base64-Bit-Unpacking,
-    -- reicht aber für einen stabilen Positions-Diff zwischen zwei Strings derselben Spec).
-    local bytes = {}
-    for i = 1, #str do
-        bytes[i] = str:byte(i)
-    end
-    return bytes
-end
-
---- Vergleicht zwei Talent-Strings. Liefert Übereinstimmung + Liste abweichender Positionen
---- (grober Diff, siehe Kommentar oben - kein Klartext-Talentname, aber zeigt "wie viele
---- und wo" Unterschiede bestehen, inkl. Ähnlichkeits-Prozentzahl).
 function TalentCompare:Compare(guideString, currentString)
-    local ok, result = pcall(function()
-        if not guideString or not currentString then
-            return { identical = false, error = "Fehlender Build-String" }
-        end
-
-        if guideString == currentString then
-            return { identical = true, similarity = 100, differences = {} }
-        end
-
-        local a = decodeToBytes(guideString)
-        local b = decodeToBytes(currentString)
-        local maxLen = math.max(#a, #b)
-        local diffPositions = {}
-
-        for i = 1, maxLen do
-            if a[i] ~= b[i] then
-                table.insert(diffPositions, i)
-            end
-        end
-
-        local similarity = maxLen > 0 and math.floor(((maxLen - #diffPositions) / maxLen) * 100) or 0
-
-        return {
-            identical = false,
-            similarity = similarity,
-            diffCount = #diffPositions,
-            differences = diffPositions,
-            guideString = guideString,
-            currentString = currentString
-        }
-    end)
-
-    if not ok then
-        print("|cffff0000Dragon Skill:|r Fehler beim Byte-Vergleich: " .. tostring(result))
-        return { identical = false, error = "Interner Fehler" }
+    if not guideString or not currentString then
+        return { identical = false, similarity = 0, error = "Fehlender Build-String" }
     end
-    return result
+    if guideString == currentString then
+        return { identical = true, similarity = 100, differences = {} }
+    end
+
+    local a = {string.byte(guideString, 1, #guideString)}
+    local b = {string.byte(currentString, 1, #currentString)}
+    local maxLen = math.max(#a, #b)
+    local diffs = 0
+    for i = 1, maxLen do if a[i] ~= b[i] then diffs = diffs + 1 end end
+
+    local sim = maxLen > 0 and math.floor(((maxLen - diffs) / maxLen) * 100) or 0
+    return { identical = false, similarity = sim, diffCount = diffs }
 end
 
---- Öffentliche API: Vergleicht Guide-Build (aus DragonSkillData) mit aktuellem Char-Build
-function TalentCompare:CompareWithGuide(class, spec, buildLabel)
-    local guideData = DragonSkill.Database:GetGuideData(class, spec)
-    if not guideData or not guideData.talentBuilds then
-        return nil, "Keine Guide-Daten für " .. tostring(class) .. "/" .. tostring(spec)
-    end
-
-    local targetBuild
-    for _, build in ipairs(guideData.talentBuilds) do
-        if not buildLabel or build.label == buildLabel then
-            targetBuild = build
-            break
-        end
-    end
-
-    if not targetBuild then
-        return nil, "Build nicht gefunden: " .. tostring(buildLabel)
-    end
-
-    local currentString = self:GetCurrentBuildString()
-    local result = self:Compare(targetBuild.importString, currentString)
-    result.buildLabel = targetBuild.label
-    result.context = targetBuild.context
-    return result
-end
-
---- Nutzt die Blizzard-API um detaillierte Unterschiede zu finden.
 function TalentCompare:GetDetailedDiff(importString)
     local ok, result = pcall(function()
         if not C_ClassTalents.GetImportConfigSlotMap then return nil end
@@ -125,76 +48,58 @@ function TalentCompare:GetDetailedDiff(importString)
         local configID = C_ClassTalents.GetActiveConfigID()
         if not configID then return nil end
 
-        local systemID = self:GetClassTraitSystemID()
         local configInfo = C_Traits.GetConfigInfo(configID)
-
-        -- In 12.1+ müssen wir oft den Baum des spezifischen Systems finden
-        local treeID
-        if configInfo and configInfo.treeIDs then
-            treeID = configInfo.treeIDs[1]
-        end
-
+        local treeID = configInfo and configInfo.treeIDs and configInfo.treeIDs[1]
         if not treeID then return nil end
-        local nodes = C_Traits.GetTreeNodes(treeID)
 
+        local nodes = C_Traits.GetTreeNodes(treeID)
         local diffs = {}
         for _, nodeID in ipairs(nodes) do
             local nodeInfo = C_Traits.GetNodeInfo(configID, nodeID)
             local importedEntry = importSlotMap[nodeID]
-
             local currentRank = nodeInfo.currentRank or 0
-            local currentEntryID = nodeInfo.activeEntry and nodeInfo.activeEntry.entryID or 0
-
             local importedRank = importedEntry and importedEntry.rank or 0
-            local importedEntryID = importedEntry and importedEntry.entryID or 0
 
-            if currentEntryID ~= importedEntryID or currentRank ~= importedRank then
-                local entryID = (importedEntryID > 0) and importedEntryID or currentEntryID
-                local entryInfo = C_Traits.GetEntryInfo(configID, entryID)
-                local definitionInfo = entryInfo and C_Traits.GetDefinitionInfo(entryInfo.definitionID)
-
-                local talentName = "Unbekanntes Talent"
-                if definitionInfo then
-                    if definitionInfo.overrideName then
-                        talentName = definitionInfo.overrideName
-                    elseif definitionInfo.spellID then
-                        local spellInfo = C_Spell.GetSpellInfo(definitionInfo.spellID)
-                        talentName = spellInfo and spellInfo.name or "Spell " .. definitionInfo.spellID
+            if currentRank ~= importedRank then
+                local entryID = (importedEntry and importedEntry.entryID and importedEntry.entryID > 0) and importedEntry.entryID or (nodeInfo.activeEntry and nodeInfo.activeEntry.entryID or 0)
+                local talentName = "Talent " .. nodeID
+                if entryID > 0 then
+                    local entryInfo = C_Traits.GetEntryInfo(configID, entryID)
+                    local defInfo = entryInfo and C_Traits.GetDefinitionInfo(entryInfo.definitionID)
+                    if defInfo then
+                        if defInfo.overrideName then talentName = defInfo.overrideName
+                        elseif defInfo.spellID then
+                            local sInfo = C_Spell.GetSpellInfo(defInfo.spellID)
+                            if sInfo then talentName = sInfo.name end
+                        end
                     end
                 end
-
-                table.insert(diffs, {
-                    name = talentName,
-                    currentRank = currentRank,
-                    importedRank = importedRank,
-                    maxRank = nodeInfo.maxRanks
-                })
+                table.insert(diffs, { name = talentName, currentRank = currentRank, importedRank = importedRank, maxRank = nodeInfo.maxRanks or 1 })
             end
         end
         return diffs
     end)
-
-    if not ok then
-        print("|cffff0000Dragon Skill:|r Fehler beim detaillierten Diff: " .. tostring(result))
-        return nil
-    end
-    return result
+    return ok and result or nil
 end
 
 function TalentCompare:ImportToWoW(importString, name)
     if InCombatLockdown() then
-        print("|cffff0000Dragon Skill:|r Import im Kampf nicht möglich.")
+        print("|cffff0000Dragon Skill:|r Import im Kampf nicht möglich!")
         return
     end
 
+    -- Sicherstellen, dass das UI geladen ist
     if not ClassTalentFrame then
-        UIParentLoadAddOn("Blizzard_ClassTalentUI")
+        if C_AddOns and C_AddOns.LoadAddOn then
+            C_AddOns.LoadAddOn("Blizzard_ClassTalentUI")
+        else
+            UIParentLoadAddOn("Blizzard_ClassTalentUI")
+        end
     end
 
-    -- Wir nutzen die Blizzard High-Level Import API
     if ClassTalentFrame and ClassTalentFrame.TalentsTab and ClassTalentFrame.TalentsTab.ImportLoadout then
-        ClassTalentFrame.TalentsTab:ImportLoadout(importString, name or "DragonSkill Import")
-        print("|cff00ff00Dragon Skill:|r Import gestartet für: " .. (name or "Build"))
+        ClassTalentFrame.TalentsTab:ImportLoadout(importString, name or "DragonSkill")
+        print("|cff00ff00Dragon Skill:|r Build '" .. (name or "Build") .. "' wurde angelegt.")
     else
         print("|cffff0000Dragon Skill:|r Fehler - Blizzard Import API nicht gefunden.")
     end

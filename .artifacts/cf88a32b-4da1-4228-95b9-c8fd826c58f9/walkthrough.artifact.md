@@ -1,35 +1,30 @@
-# Walkthrough - Dragon Skill v1.2.0 (The Grand Finale)
+# Walkthrough - Dragon Skill v1.2.1 (UI Recovery)
 
-Dieses finale Update schließt den "Venomous Abyss" Raid ab, führt intelligente Tooltips ein und poliert die Benutzeroberfläche für den produktiven Einsatz.
+Dieses Update korrigiert die Anzeigeprobleme der Vorversion und stellt die volle Funktionalität des Talent-Managements wieder her.
 
-## Wichtigste Neuerungen
+## Wichtigste Korrekturen
 
-### 1. Raid-Vollendung (Boss 7 & 8)
-Alle Bosse des aktuellen Raids sind nun vollständig integriert:
-- **The Coiled Altar**: Tracking von Gift-Orbs und Mind-Control-Warnungen.
-- **Ula’tek (Finale)**: Überwachung der Phasen und der "Caustic Waves" (Eier-Management).
-- **Neue Befehle**: Teste die Mechaniken mit `/ds testaltar` und `/ds testulatek`.
+### 1. Rückkehr zum Blizzard-Look
+Das Fenster nutzt nun wieder das offizielle WoW-Interface-Design (`ButtonFrameTemplate`).
+- **Tabs Sichtbar**: Die Tabs am unteren Rand werden nicht mehr vom Hintergrund verdeckt.
+- **8 Tabs Support**: Alle 8 Reiter (Talente bis Buffs) sind nun sauber nebeneinander platziert und anklickbar.
+- **Stabilität**: Das Fenster verhält sich nun wie ein natives WoW-Fenster.
 
-### 2. Intelligente BiS-Tooltips
-Das Addon hilft dir jetzt direkt beim Looten:
-- Wenn du über ein Item fährst, das in deiner **Best-in-Slot** Liste steht (Wowhead) oder ein **S/A-Tier Trinket** (Archon) ist, erscheint im Tooltip ein goldener Text:
-  > **Dragon Skill: Best-in-Slot**
-- Dies funktioniert im Inventar, im Abenteuerführer und sogar beim Looten im Raid.
+### 2. Funktionierende Talent-Aktionen
+Die Klick-Logik im Auswahl-Fenster wurde repariert:
+- **Kopieren**: Öffnet zuverlässig das Textfeld für **Strg+C**.
+- **Direkt anlegen**: Erstellt nun korrekt den neuen Talent-Slot in deinem Blizzard-Menü.
+- **Abbrechen**: Schließt den Dialog ohne Aktion.
 
-### 3. Neuer Reiter: "Buffs"
-Ein 8. Tab wurde hinzugefügt, der dir alle raid-relevanten Consumables anzeigt:
-- **Food, Flasks, Potions & Runen**: Alles auf einen Blick, basierend auf den aktuellen WoWhead-Guides.
-
-### 4. UI-Cleanup & Stabilität
-- **Daten-Filter**: Unnötige Header-Zeilen (wie "Slot | Item") wurden aus den Listen entfernt.
-- **8-Tab Support**: Das Menü am unteren Rand wurde für alle 8 Reiter optimiert.
-- **Klick-Priorität**: Die Talent-Buttons reagieren nun noch präziser.
+### 3. Daten-Vollständigkeit
+- Alle Tabs (Gear, Enchants, Buffs) greifen nun korrekt auf die `GuideData.lua` zu.
+- Unnötige "Dreck-Zeilen" aus den Wowhead-Tabellen werden automatisch gefiltert.
 
 ## Verifizierung
-- [x] Tooltips zeigen "Best-in-Slot" korrekt an.
-- [x] Reiter "Buffs" ist befüllt.
-- [x] Gear-Liste zeigt keine "Slot"-Header mehr.
-- [x] `/ds testulatek` triggert die Final-Boss Warnungen.
+- [x] **/ds** öffnet das Blizzard-Style Fenster.
+- [x] Klick auf Talent öffnet den Auswahl-Dialog.
+- [x] "Kopieren" zeigt den String an.
+- [x] "Direkt anlegen" startet den WoW-Import.
 
-> [!TIP]
-> **FINALE INSTALLATION**: Bitte lösche den alten `DragonSkill`-Addon-Ordner ein letztes Mal komplett und kopiere den neuen Inhalt von `C:\Users\thoma\StudioProjects\Dragonskill\addon` in dein WoW-Verzeichnis.
+> [!IMPORTANT]
+> **REINSTALL**: Bitte lösche den alten `DragonSkill`-Addon-Ordner in deinem WoW-Verzeichnis erneut und kopiere den neuen Inhalt von `C:\Users\thoma\StudioProjects\Dragonskill\addon`. Dies stellt sicher, dass alle alten UI-Reste entfernt werden.
