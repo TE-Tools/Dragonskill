@@ -56,7 +56,7 @@ function main() {
       if (spec.wowheadTalentsUrl) args.push("--talentsUrl", spec.wowheadTalentsUrl);
       if (spec.wowheadStatsUrl) args.push("--statsUrl", spec.wowheadStatsUrl);
       if (spec.wowheadRotationUrl) args.push("--rotationUrl", spec.wowheadRotationUrl);
-      if (spec.wowheadGearUrl) args.push("--gearUrl", spec.wowheadGearUrl); // Add gearUrl if handled
+      if (spec.wowheadGearUrl) args.push("--gearUrl", spec.wowheadGearUrl);
       const ok = runScraper("scrape-wowhead.js", args, outFile, "wowhead");
       ok ? successCount++ : failCount++;
     }

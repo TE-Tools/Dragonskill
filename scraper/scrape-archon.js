@@ -199,6 +199,7 @@ async function main() {
   const keptBuilds = (existing.talentBuilds || []).filter((b) => b.provider !== "archon");
 
   const data = {
+    ...existing,
     scrapedAt: new Date().toISOString(),
     statPriority: {
       ...(existing.statPriority || {}),

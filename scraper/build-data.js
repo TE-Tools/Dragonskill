@@ -153,7 +153,7 @@ function buildLuaTable(entries) {
 function main() {
   const { dataDir, out } = parseArgs();
   if (!dataDir || !out) {
-    console.error('Benutzung: node build-data.js --dataDir "<json-ordner>" --out "<GuideData.lua>"');
+    console.error('Benutzung: node build-data.js --dataDir "<json-ordner>" --out "<DragonSkill/Data/GuideData.lua>"');
     process.exit(1);
   }
 

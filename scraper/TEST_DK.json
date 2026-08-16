@@ -1,0 +1,270 @@
+{
+  "scrapedAt": "2026-08-16T09:22:48.266Z",
+  "statPriority": {
+    "wowhead": "San'layn: Strength > Haste > Mastery / Critical Strike / Versatility | Deathbringer: Strength > Critical Strike > Mastery / Versatility > Haste"
+  },
+  "bisGear": {
+    "wowhead": [
+      {
+        "slot": "Slot",
+        "item": "Item",
+        "source": "Source",
+        "itemId": null
+      },
+      {
+        "slot": "Weapon",
+        "item": "[url guide=34251]The Coiled Altar",
+        "source": "Unknown",
+        "itemId": 268213
+      },
+      {
+        "slot": "Head",
+        "item": "[item=271474 original-item=268229]",
+        "source": "[url guide=34244]Nek'zali the Soulcoiler",
+        "itemId": null
+      },
+      {
+        "slot": "Neck",
+        "item": "[url guide=34252]Ula'tek",
+        "source": "Unknown",
+        "itemId": 268265
+      },
+      {
+        "slot": "Shoulders",
+        "item": "[item=271472 original-item=239037]",
+        "source": "[url guide=34262]Temple of Sethraliss",
+        "itemId": null
+      },
+      {
+        "slot": "Cloak",
+        "item": "[url guide=34251]The Coiled Altar",
+        "source": "Unknown",
+        "itemId": 268253
+      },
+      {
+        "slot": "Chest",
+        "item": "[item=271477 original-item=268222]",
+        "source": "[url guide=34251]The Coiled Altar",
+        "itemId": null
+      },
+      {
+        "slot": "Wrist",
+        "item": "[url guide=15942]Crafting",
+        "source": "Unknown",
+        "itemId": 237834
+      },
+      {
+        "slot": "Gloves",
+        "item": "[item=271475 original-item=159413]",
+        "source": "[url guide=34260]King's Rest",
+        "itemId": null
+      },
+      {
+        "slot": "Belt",
+        "item": "[url guide=34251]The Coiled Altar",
+        "source": "Unknown",
+        "itemId": 268259
+      },
+      {
+        "slot": "Legs",
+        "item": "[url guide=34252]Ula'tek",
+        "source": "Unknown",
+        "itemId": 271878
+      },
+      {
+        "slot": "Boots",
+        "item": "[url guide=34264]Altar of Fangs",
+        "source": "Unknown",
+        "itemId": 273777
+      },
+      {
+        "slot": "Ring ()",
+        "item": "[url guide=15942]Crafting",
+        "source": "Unknown",
+        "itemId": 273066
+      },
+      {
+        "slot": "Ring",
+        "item": "[url guide=34248]Vashnik the Malignant",
+        "source": "Unknown",
+        "itemId": 268249
+      },
+      {
+        "slot": "Ring",
+        "item": "[url guide=33193]Blinding Vale",
+        "source": "Unknown",
+        "itemId": 251194
+      },
+      {
+        "slot": "Trinket",
+        "item": "[url guide=34252]Ula'tek",
+        "source": "Unknown",
+        "itemId": 270175
+      },
+      {
+        "slot": "Trinket",
+        "item": "[url guide=34251]The Coiled Altar",
+        "source": "Unknown",
+        "itemId": 270173
+      },
+      {
+        "slot": "Slot",
+        "item": "Item",
+        "source": "Source",
+        "itemId": null
+      },
+      {
+        "slot": "Weapon",
+        "item": "[url guide=34251]The Coiled Altar",
+        "source": "Unknown",
+        "itemId": 268213
+      },
+      {
+        "slot": "Head",
+        "item": "[item=271474 original-item=268229]",
+        "source": "[url guide=34244]Nek'zali the Soulcoiler",
+        "itemId": null
+      },
+      {
+        "slot": "Neck",
+        "item": "[url guide=34252]Ula'tek",
+        "source": "Unknown",
+        "itemId": 268265
+      },
+      {
+        "slot": "Shoulders",
+        "item": "[item=271472 original-item=239037]",
+        "source": "[url guide=34262]Temple of Sethraliss",
+        "itemId": null
+      },
+      {
+        "slot": "Cloak",
+        "item": "[url guide=34251]The Coiled Altar",
+        "source": "Unknown",
+        "itemId": 268253
+      },
+      {
+        "slot": "Chest",
+        "item": "[item=271477 original-item=268222]",
+        "source": "[url guide=34251]The Coiled Altar",
+        "itemId": null
+      },
+      {
+        "slot": "Wrist",
+        "item": "[url guide=15942]Crafting",
+        "source": "Unknown",
+        "itemId": 237834
+      },
+      {
+        "slot": "Gloves",
+        "item": "[item=271475 original-item=159413]",
+        "source": "[url guide=34260]King's Rest",
+        "itemId": null
+      },
+      {
+        "slot": "Belt",
+        "item": "[url guide=34251]The Coiled Altar",
+        "source": "Unknown",
+        "itemId": 268259
+      },
+      {
+        "slot": "Legs",
+        "item": "[url guide=34252]Ula'tek",
+        "source": "Unknown",
+        "itemId": 271878
+      },
+      {
+        "slot": "Boots",
+        "item": "[url guide=34264]Altar of Fangs",
+        "source": "Unknown",
+        "itemId": 273777
+      },
+      {
+        "slot": "Ring ()",
+        "item": "[url guide=15942]Crafting",
+        "source": "Unknown",
+        "itemId": 273066
+      },
+      {
+        "slot": "Ring",
+        "item": "[url guide=34260]King's Rest",
+        "source": "Unknown",
+        "itemId": 159459
+      },
+      {
+        "slot": "Ring",
+        "item": "[url guide=33183]Voidscar Arena",
+        "source": "Unknown",
+        "itemId": 252258
+      },
+      {
+        "slot": "Trinket",
+        "item": "[url guide=34252]Ula'tek",
+        "source": "Unknown",
+        "itemId": 270175
+      },
+      {
+        "slot": "Trinket",
+        "item": "[url guide=34251]The Coiled Altar",
+        "source": "Unknown",
+        "itemId": 270173
+      }
+    ]
+  },
+  "enchants": {
+    "wowhead": []
+  },
+  "gems": {
+    "wowhead": []
+  },
+  "consumables": {
+    "wowhead": []
+  },
+  "crafting": {
+    "wowhead": {
+      "embellishments": [],
+      "items": []
+    }
+  },
+  "rotation": {
+    "wowhead": []
+  },
+  "talentBuilds": [
+    {
+      "context": "deathbringer",
+      "label": "Raid",
+      "importString": "CoPAAAAAAAAAAAAAAAAAAAAAAwYWGzMmxMjhZZmZmmZxYmxMmBAAAAmZmZmZmZYGjZAYMzMzAAAMmtBGwSw2wEYYBwMMAAMzAYYA",
+      "provider": "wowhead"
+    },
+    {
+      "context": "deathbringer",
+      "label": "Mythic+",
+      "importString": "CoPAAAAAAAAAAAAAAAAAAAAAAwMzyMzMmxMzMMLzMz0MLGjxMGAAAAwMmZmZmZYGDAYmZmZGAAgxsNwAWC2GmADLAmxMAAMzAYYA",
+      "provider": "wowhead"
+    },
+    {
+      "context": "deathbringer",
+      "label": "Delves",
+      "importString": "CoPAAAAAAAAAAAAAAAAAAAAAAwYWmZmxMmZmhZZmZmmZxYmxMGAAAAwMzMzMzMDzYMAYMzMzAAAMmtBGwSwywEYYBghZAAMzAMYA",
+      "provider": "wowhead"
+    },
+    {
+      "context": "sanlayn",
+      "label": "Raid",
+      "importString": "CoPAAAAAAAAAAAAAAAAAAAAAAwYWmZmxMmZmhZZmZmmZxYMmxAAAAAmZmZmZmZYGjZAYMzMzAAAYgBmxiGLLgsMgNAzwAAAmZghB",
+      "provider": "wowhead"
+    },
+    {
+      "context": "sanlayn",
+      "label": "Mythic+",
+      "importString": "CoPAAAAAAAAAAAAAAAAAAAAAAwYWmZmxMmZmhZZmZmmZxYMmxAAAAAmxMzMzMDzYMAYMzMzAAAYgBmxiGLLgsMgNAzYmBAAmZghB",
+      "provider": "wowhead"
+    },
+    {
+      "context": "sanlayn",
+      "label": "Delves",
+      "importString": "CoPAAAAAAAAAAAAAAAAAAAAAAwYWmZmxMmZmhZZmZmmZxYMmxAAAAAmxMzMzMDzYMAYMzMzAAAYgBmxiGLLgsMgNAzYmBAAmZwgB",
+      "provider": "wowhead"
+    }
+  ]
+}

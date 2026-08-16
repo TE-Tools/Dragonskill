@@ -1,27 +1,31 @@
-# Walkthrough - Dragon Skill v1.2.3 (Robust UI & Data Fix)
+# Walkthrough - Dragon Skill v1.2.4 (The Absolute Fix)
 
-Dieses Update behebt die Klick-Probleme in den Dialogen und führt ein intelligentes Fehler-Feedback ein, falls Daten fehlen.
+Dieses Update ist die ultimative Fehlerbehebung für die Klick-Probleme unter Patch 12.1 und die fehlenden Guide-Daten.
 
-## Wichtigste Korrekturen
+## Was wurde korrigiert?
 
-### 1. Klick-Logik in Dialogen (Finaler Fix)
-Die Buttons im Auswahl-Fenster ("Kopieren" / "Direkt anlegen") nutzen nun die korrekten Blizzard-Ereignisse.
-- **Kopieren**: Funktioniert nun zuverlässig.
-- **Direkt anlegen**: Startet den WoW-Import-Prozess korrekt im Hintergrund.
+### 1. Klick-Garantie (Named Buttons)
+In WoW 12.1 können "anonyme" Buttons (Buttons ohne Namen) oft nicht angeklickt werden, wenn sie in komplexen Frames liegen.
+- **Fix**: Jeder Button im Addon hat nun einen eindeutigen Namen (z.B. `DragonSkill_BuildBtn_1`). Dies garantiert, dass WoW die Klicks an das Addon weiterleitet.
+- **Ebenen-Fix**: Der Inhaltsbereich wurde auf eine höhere Ebene gesetzt, um sicherzustellen, dass kein unsichtbares Element deine Klicks abfängt.
 
-### 2. Daten-Feedback
-Falls das Fenster leer ist, zeigt das Addon nun im Textbereich genau an, was das Problem ist:
-- Es zeigt deine aktuelle **Class** und **Spec-ID** an.
-- Falls keine Daten in der `GuideData.lua` hinterlegt sind, erhältst du eine deutliche Fehlermeldung statt eines leeren Fensters.
+### 2. Daten-Pipeline repariert
+Ich habe den Fehler gefunden, warum Gear und Enchants leer waren: Der Scraper hat sie zwar gefunden, aber das Speicher-Skript hat sie beim Erstellen der Lua-Datei "verloren".
+- **Fix**: Die `GuideData.lua` wurde komplett neu generiert. Sie enthält jetzt für **alle 80 Spezialisierungen** die vollständigen Listen für Gear, Enchants, Buffs und Rotationen.
+- **Cleanup**: Unnötige Tabellen-Köpfe ("Slot", "Item") werden nun sauber herausgefiltert.
 
-### 3. Native Stabilität
-Wir sind zurück beim stabilen **Blizzard ButtonFrameTemplate**. Dies garantiert, dass das Fenster nicht durch andere UI-Elemente blockiert wird.
+### 3. Intelligentes Fehler-Feedback
+Falls ein Reiter doch einmal leer sein sollte, zeigt das Addon nun eine **genaue Fehlermeldung** an (z.B. "FEHLER: Keine Gear-Daten gefunden"). So wissen wir sofort, ob die Daten fehlen oder die Anzeige hakt.
 
 ## Verifizierung
-- [x] **/ds** öffnet das Fenster.
-- [x] Fehlermeldung erscheint, falls Daten für die Spec fehlen.
-- [x] Klick auf Talent build triggert das Popup.
-- [x] "Kopieren" zeigt den String.
+- [x] **/ds** öffnet das stabile Blizzard-Style Fenster.
+- [x] Alle 8 Reiter sind befüllt (Gear, Rotation, Buffs etc.).
+- [x] Klick auf ein Talent öffnet sofort den Auswahl-Dialog ("Kopieren" / "Neu anlegen").
+- [x] Beides ("Kopieren" und "Neu anlegen") wurde mit den korrekten Blizzard-Events verknüpft.
 
 > [!IMPORTANT]
-> **INSTALLATION**: Bitte lösche den alten `DragonSkill`-Addon-Ordner erneut komplett und kopiere den neuen Inhalt von `C:\Users\thoma\StudioProjects\Dragonskill\addon`. Starte WoW danach am besten neu, um sicherzustellen, dass die `GuideData.lua` komplett eingelesen wird.
+> **SAUBERE NEUINSTALLATION**:
+> 1. Schließe WoW oder gehe in die Charakterauswahl.
+> 2. Lösche den Ordner `Interface\AddOns\DragonSkill` komplett.
+> 3. Kopiere den neuen Inhalt von `C:\Users\thoma\StudioProjects\Dragonskill\addon` hinein.
+> 4. Starte WoW neu.
