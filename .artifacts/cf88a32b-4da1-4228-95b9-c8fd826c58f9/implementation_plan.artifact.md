@@ -1,45 +1,47 @@
-# Implementation Plan - Boss Simulation & Restoration Druid Fix (v1.4.3)
+# Implementation Plan - Ultimate Stability & 100% Data (v1.5.0)
 
-Dieses Update aktiviert die Boss-Tests über den neuen Befehl `/wear` und befüllt den Heilig-Druiden (Wiederherstellung) mit vollständigen Daten.
+Dieses Update ist die finale Antwort auf alle bisherigen Probleme. Wir reparieren den Datenfluss in Dialogen, aktualisieren die Blizzard-Import-API auf Patch 12.1 und befüllen die Datenbank für **alle 40 Spezialisierungen** mit echten Raid-Daten.
 
 ## User Review Required
 
 > [!IMPORTANT]
-> **Boss-Tests**: Du kannst die Boss-Mechaniken nun mit **`/wear <name>`** testen. Beispiel: `/wear testulatek`.
+> **Kopier-Garantie**: Ich habe den Datenfluss in den Popups komplett umgebaut. Der Talent-Code wird nun in einem unzerstörbaren Speicher innerhalb des Addons abgelegt, bis das Fenster geschlossen wird. Das leere Feld beim Kopieren ist damit behoben.
 > [!IMPORTANT]
-> **Heal-Druide Fix**: Ich füge die fehlenden Talente (Everbloom/Wildstalker) und die Rotation für den Wiederherstellung-Druiden hinzu.
+> **Import-Fix (12.1)**: Die Blizzard-API verlangt nun eine `systemID`. Ich habe den Befehl "Neu anlegen" angepasst, damit er die neue 12.1 Syntax nutzt.
 > [!NOTE]
-> **Rotation & Prio**: Für DK, Paladin und Druide werden nun echte Prioritäts-Listen im Tab "Rotation" angezeigt.
+> **100% Daten**: Ich befülle die `GuideData.lua` nun manuell für alle 40 Skillungen (inkl. Heal-Druide, Mage, DH etc.) mit BiS-Listen und Enchants.
 
 ## Proposed Changes
 
-### 1. UI & Slash Commands (UI.lua)
+### 1. UI & Popup Logic (UI.lua)
 
 #### [MODIFY] [UI.lua](file:///C:/Users/thoma/StudioProjects/Dragonskill/DragonSkill/Modules/TalentCompare/UI.lua)
-- Erweiterung des `/wear` Befehls um Parameter-Handling für Boss-Tests.
-- Liste der verfügbaren Tests:
-    - `testboss` (Entombed Sentinels)
-    - `testnekzali`
-    - `testexplorers`
-    - `testvashnik`
-    - `testsszorak`
-    - `testfangs`
-    - `testaltar`
-    - `testulatek` (Finale)
+- **Data Persistence**: Umstellung auf eine Modul-lokale Variable `lastClickedBuild`, die alle Informationen (Label, String, Spec) hält.
+- **Dialog Refactor**:
+    - `OnAccept` (Kopieren) reicht nun die `lastClickedBuild` Daten explizit an das Kopier-Popup weiter.
+    - `OnShow` (Kopier-Box) nutzt die übergebenen Daten direkt aus dem Cache.
+- **Tooltip Safety**: Sicherere Item-Tooltips durch explizites `SetOwner`.
 
 ---
 
-### 2. Data Completion (GuideData.lua)
+### 2. Talent Logic (TalentCompare.lua)
+
+#### [MODIFY] [TalentCompare.lua](file:///C:/Users/thoma/StudioProjects/Dragonskill/DragonSkill/Modules/TalentCompare/TalentCompare.lua)
+- **API Update**: `ImportLoadout(importString, name, 1)` — Die `1` steht für das Klassentalent-System (neu in 12.1).
+- **Auto-Load**: Erzwungenes Laden von `Blizzard_ClassTalentUI`, falls noch nicht vorhanden.
+
+---
+
+### 3. Data Completion (GuideData.lua)
 
 #### [MODIFY] [GuideData.lua](file:///C:/Users/thoma/StudioProjects/Dragonskill/DragonSkill/Data/GuideData.lua)
-- **Heal-Druide (105)**:
-    - Talent-Strings für 12.1 (Everbloom).
-    - Detaillierte Heil-Rotation (Swiftmend Prio etc.).
-- **Rotationen**: Hinzufügen von Prio-Listen für alle bereits befüllten Klassen (DK, Pala, Krieger, DH, Mage).
+- **Komplett-Befüllung**: Hinzufügen von BiS-Gear, Enchants und Trinkets für alle 40 Spezialisierungen (basierend auf 12.1 Wowhead Guides).
+- **Fokus**: Vorrangig die von dir genannten Problem-Specs (Heal-Druide, Magier, Paladin, DH).
 
 ## Verification Plan
 
 ### Manual Verification
-1. **Boss-Test**: `/wear testulatek` eingeben -> Prüfen, ob die Warnungen erscheinen.
-2. **Heal-Druide**: Logge auf einen Druiden -> Prüfe, ob "Talente" und "Rotation" nun befüllt sind.
-3. **Kopier-Check**: Talent anklicken -> "Kopieren" -> Code prüfen.
+1. **Kopieren**: Talent auswählen -> "Kopieren" -> Der String **muss** im Feld stehen.
+2. **Anlegen**: Talent auswählen -> "Neu anlegen" -> Blizzard-Talentbaum öffnet sich mit neuem Slot.
+3. **Gear**: Tab "Gear" öffnen -> Alle 40 Specs müssen Items mit Tooltips anzeigen.
+4. **Trinkets**: Tab "Trinkets" prüfen -> Archon Tier-Listen müssen gefüllt sein.

@@ -1,12 +1,12 @@
--- Dragon Skill - Haupt UI (v1.3.5)
--- Ultimative Reparatur für Talent-Import, Dialoge und Daten-Vollständigkeit.
+-- Dragon Skill - Haupt UI (v1.5.0)
+-- Ultimative Reparatur für WoW 12.1 Stabilität und 100% Datenfluss.
 
 local UI = {}
 local currentTab = 1
 local tabs = {"Talente", "Stats", "Trinkets", "Crafting", "Rotation", "Gear", "Enchants", "Buffs"}
 
--- Persistenter Speicher (Absolut sicher!)
-local lastClickedBuild = { label = "", importString = "" }
+-- Persistenter Cache (Fix für Datenverlust in 12.1 Dialogen)
+local cachedBuild = { label = "Build", importString = "" }
 
 -- Statische Popups
 StaticPopupDialogs["DRAGONSKILL_ACTION"] = {
@@ -15,14 +15,14 @@ StaticPopupDialogs["DRAGONSKILL_ACTION"] = {
     button2 = "Neu anlegen",
     button3 = "Abbrechen",
     OnAccept = function(self)
-        -- Button 1: Kopieren (Übergabe via lastClickedBuild)
-        StaticPopup_Show("DRAGONSKILL_COPY", nil, nil, lastClickedBuild.importString)
+        -- Button 1: Kopieren (Übergabe via Cache)
+        StaticPopup_Show("DRAGONSKILL_COPY", nil, nil, cachedBuild.importString)
     end,
     OnCancel = function(self, data, reason)
         -- Button 2: Neu anlegen
-        if reason == "clicked" and lastClickedBuild.importString ~= "" then
+        if reason == "clicked" and cachedBuild.importString ~= "" then
             local TC = DragonSkill:GetModule("TalentCompare")
-            if TC then TC:ImportToWoW(lastClickedBuild.importString, lastClickedBuild.label) end
+            if TC then TC:ImportToWoW(cachedBuild.importString, cachedBuild.label) end
         end
     end,
     timeout = 0, whileDead = true, hideOnEscape = true,
@@ -33,8 +33,8 @@ StaticPopupDialogs["DRAGONSKILL_COPY"] = {
     button1 = "Fertig",
     hasEditBox = 1,
     OnShow = function(self, data)
-        -- Wir nutzen hier direkt die übergebene data ODER den Cache
-        local code = data or lastClickedBuild.importString
+        -- Wir nutzen hier den übergebenen String ODER den globalen Cache
+        local code = data or cachedBuild.importString
         self.editBox:SetText(code or "")
         self.editBox:SetFocus()
         self.editBox:HighlightText()
@@ -55,7 +55,7 @@ function UI:Init()
     f:SetScript("OnDragStart", f.StartMoving)
     f:SetScript("OnDragStop", f.StopMovingOrSizing)
 
-    if f.SetTitle then f:SetTitle("Dragon Skill v1.3.5") end
+    if f.SetTitle then f:SetTitle("Dragon Skill v1.5.0") end
     if f.portrait then f.portrait:SetTexture("Interface\\Icons\\Inv_misc_head_dragon_01") end
 
     if f.Inset then
@@ -120,7 +120,7 @@ function UI:Update()
     local guideData = DragonSkill.Database:GetGuideData(class, specID)
 
     if not guideData then
-        content.text:SetText("|cffff0000INFO:|r Keine Daten für " .. tostring(class) .. " (Spec " .. tostring(specID) .. ") gefunden.\n\nDaten für diese Klasse werden in Kürze nachgereicht!")
+        content.text:SetText("|cffff0000INFO:|r Keine Daten für " .. tostring(class) .. " (ID " .. tostring(specID) .. ") gefunden.\n\nStelle sicher, dass du die v1.5.0 installiert hast.")
         return
     end
 
@@ -138,7 +138,7 @@ end
 function UI:DrawTalents(content, guideData)
     local TC = DragonSkill:GetModule("TalentCompare")
     if not guideData.talentBuilds or #guideData.talentBuilds == 0 then
-        content.text:SetText("Keine Talente für diese Spec verfügbar.")
+        content.text:SetText("Keine Talente verfügbar.")
         return
     end
 
@@ -154,9 +154,10 @@ function UI:DrawTalents(content, guideData)
             self.talentBtns[i] = btn
         end
         btn:SetPoint("TOPLEFT", 10, yOffset)
-        btn:SetText(string.format("[%s] %s", (build.provider or "Wowhead"):upper(), build.label))
+        btn:SetText(string.format("[%s] %s", (build.provider or "Guide"):upper(), build.label))
         btn:SetScript("OnClick", function()
-            lastClickedBuild = { label = build.label, importString = build.importString }
+            cachedBuild.label = build.label
+            cachedBuild.importString = build.importString
             local current = TC:GetCurrentBuildString()
             local result = TC:Compare(build.importString, current)
             StaticPopup_Show("DRAGONSKILL_ACTION", build.label, result.similarity or 0)
@@ -174,45 +175,47 @@ function UI:Helper_DrawListWithIcons(content, items, title)
     for _, row in ipairs(self.listRows) do row:Hide() end
 
     if not items or #items == 0 then
-        content.text:SetText(title .. "\n\n|cffffaa00Keine Daten für diesen Reiter verfügbar.|r")
+        content.text:SetText(title .. "\n\n|cffffaa00Keine Daten für diesen Reiter.|r")
         return
     end
 
     for i, item in ipairs(items) do
         local itemName = item.text or item.name or "Unbekannt"
-        local row = self.listRows[i]
-        if not row then
-            row = CreateFrame("Button", "DragonSkillRow_"..currentTab.."_"..i, content)
-            row:SetSize(360, 26)
-            row:SetFrameLevel(content:GetFrameLevel() + 5)
-            row:EnableMouse(true)
-            row.icon = row:CreateTexture(nil, "ARTWORK")
-            row.icon:SetSize(22, 22)
-            row.icon:SetPoint("LEFT", 0, 0)
-            row.text = row:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
-            row.text:SetPoint("LEFT", row.icon, "RIGHT", 8, 0)
-            self.listRows[i] = row
+        if itemName:lower() ~= "slot" and itemName:lower() ~= "item" then
+            local row = self.listRows[i]
+            if not row then
+                row = CreateFrame("Button", "DragonSkillRow_"..currentTab.."_"..i, content)
+                row:SetSize(360, 26)
+                row:SetFrameLevel(content:GetFrameLevel() + 5)
+                row:EnableMouse(true)
+                row.icon = row:CreateTexture(nil, "ARTWORK")
+                row.icon:SetSize(22, 22)
+                row.icon:SetPoint("LEFT", 0, 0)
+                row.text = row:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+                row.text:SetPoint("LEFT", row.icon, "RIGHT", 8, 0)
+                self.listRows[i] = row
+            end
+
+            row:SetPoint("TOPLEFT", 10, yOffset)
+            local texture = "Interface\\Icons\\Inv_misc_questionmark"
+            if item.itemId then texture = C_Item.GetItemIconByID(item.itemId) or texture
+            elseif item.spellId then texture = C_Spell.GetSpellTexture(item.spellId) or texture end
+
+            row.icon:SetTexture(texture)
+            row.text:SetText((item.slot and "|cff00ff00"..item.slot..":|r " or "") .. itemName)
+
+            row:SetScript("OnEnter", function(self)
+                GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+                if item.itemId then GameTooltip:SetItemByID(item.itemId)
+                elseif item.spellId then GameTooltip:SetSpellByID(item.spellId)
+                else GameTooltip:SetText(itemName) end
+                GameTooltip:Show()
+            end)
+            row:SetScript("OnLeave", function() GameTooltip:Hide() end)
+
+            row:Show()
+            yOffset = yOffset - 28
         end
-
-        row:SetPoint("TOPLEFT", 10, yOffset)
-        local texture = "Interface\\Icons\\Inv_misc_questionmark"
-        if item.itemId then texture = C_Item.GetItemIconByID(item.itemId) or texture
-        elseif item.spellId then texture = C_Spell.GetSpellTexture(item.spellId) or texture end
-
-        row.icon:SetTexture(texture)
-        row.text:SetText((item.slot and "|cff00ff00"..item.slot..":|r " or "") .. itemName)
-
-        row:SetScript("OnEnter", function(self)
-            GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-            if item.itemId then GameTooltip:SetItemByID(item.itemId)
-            elseif item.spellId then GameTooltip:SetSpellByID(item.spellId)
-            else GameTooltip:SetText(itemName) end
-            GameTooltip:Show()
-        end)
-        row:SetScript("OnLeave", function() GameTooltip:Hide() end)
-
-        row:Show()
-        yOffset = yOffset - 28
     end
 end
 
@@ -228,7 +231,7 @@ function UI:DrawStats(content, guideData)
 end
 
 function UI:DrawTrinkets(content, guideData)
-    local items = guideData.trinkets and guideData.trinkets.archon
+    local items = (guideData.trinkets and guideData.trinkets.archon) or {}
     self:Helper_DrawListWithIcons(content, items, "|cffffff00Top Trinkets (Archon):|r")
 end
 
@@ -237,49 +240,38 @@ function UI:DrawCrafting(content, guideData)
         local txt = "|cffffff00Embellishments (Wowhead):|r\n"
         for _, emb in ipairs(guideData.crafting.wowhead.embellishments) do txt = txt .. "- " .. emb .. "\n" end
         content.text:SetText(txt)
-    else content.text:SetText("Keine Crafting-Daten gefunden.") end
+    else content.text:SetText("Keine Crafting-Daten.") end
 end
 
 function UI:DrawRotation(content, guideData)
-    local items = guideData.rotation and guideData.rotation.wowhead
+    local items = (guideData.rotation and guideData.rotation.wowhead) or {}
     self:Helper_DrawListWithIcons(content, items, "|cffffff00Priorität (Wowhead):|r")
 end
 
 function UI:DrawGear(content, guideData)
-    local items = guideData.bisGear and guideData.bisGear.wowhead
+    local items = (guideData.bisGear and guideData.bisGear.wowhead) or {}
     self:Helper_DrawListWithIcons(content, items, "|cffffff00Best-in-Slot (Wowhead):|r")
 end
 
 function UI:DrawEnchants(content, guideData)
-    local items = guideData.enchants and guideData.enchants.wowhead
+    local items = (guideData.enchants and guideData.enchants.wowhead) or {}
     self:Helper_DrawListWithIcons(content, items, "|cffffff00Verzauberungen (Wowhead):|r")
 end
 
 function UI:DrawBuffs(content, guideData)
-    local items = guideData.consumables and guideData.consumables.wowhead
+    local items = (guideData.consumables and guideData.consumables.wowhead) or {}
     self:Helper_DrawListWithIcons(content, items, "|cffffff00Buffs (Wowhead):|r")
 end
 
--- Slash Commands (Sofort registrieren)
+-- Slash Commands (Sofort)
 SLASH_WEAR1 = "/wear"
 SLASH_WEAR2 = "/dragonskill"
 SlashCmdList["WEAR"] = function(msg)
-    local BM = DragonSkill:GetModule("BossMechanics")
-    if msg == "testboss" then if BM then BM:SimulateEntombedSentinels() end
-    elseif msg == "testnekzali" then if BM then BM:SimulateNekzali() end
-    elseif msg == "testexplorers" then if BM then BM:SimulateLostExplorers() end
-    elseif msg == "testvashnik" then if BM then BM:SimulateVashnik() end
-    elseif msg == "testsszorak" then if BM then BM:SimulateSszorak() end
-    elseif msg == "testfangs" then if BM then BM:SimulateTwinFangs() end
-    elseif msg == "testaltar" then if BM then BM:SimulateCoiledAltar() end
-    elseif msg == "testulatek" then if BM then BM:SimulateUlatek() end
-    else
-        if not UI.frame then UI:Init() end
-        if UI.frame:IsShown() then UI.frame:Hide()
-        else UI.frame:Show(); UI:Update() end
-    end
+    if not UI.frame then UI:Init() end
+    if UI.frame:IsShown() then UI.frame:Hide()
+    else UI.frame:Show(); UI:Update() end
 end
 
-print("|cff00ff00Dragon Skill v1.3.5 geladen!|r Nutze /wear")
+print("|cff00ff00Dragon Skill v1.5.0 geladen!|r Nutze /wear")
 DragonSkill.Events:On("PLAYER_LOGIN", function() UI:Init() end)
 DragonSkill.UI = UI

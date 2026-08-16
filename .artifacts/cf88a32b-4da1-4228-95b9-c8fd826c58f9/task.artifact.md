@@ -1,20 +1,17 @@
-# Task: Dragon Skill v1.4.3 - Boss Tests & Druid Fix
+# Task: Dragon Skill v1.5.0 - Ultimate Stability & 100% Data
 
-## UI & Slash Commands
-- [ ] Update `/wear` handler in `UI.lua` to support test arguments (`testulatek`, etc.)
-- [ ] Ensure `BossMechanics` simulations are correctly mapped
+## UI & Dialog Fixes
+- [ ] Implement secure `activeBuildData` cache in `UI.lua`
+- [ ] Fix `StaticPopupDialogs` to prevent data loss in 12.1
+- [ ] Implement enhanced Item Tooltips in all lists
 
-## Restoration Druid Fix
-- [ ] Add 12.1 Talent strings for Restoration Druid (Spec 105)
-- [ ] Add Healing Rotation priority list to `GuideData.lua`
+## Talent Import Fix
+- [ ] Update `TalentCompare:ImportToWoW` to 12.1 API signature (`systemID = 1`)
 
-## Rotation Data Expansion
-- [ ] Add Rotation/Priority lists for:
-    - [ ] Blood DK (250)
-    - [ ] Protection Paladin (66)
-    - [ ] Retribution Paladin (70)
-    - [ ] Guardian Druid (104)
+## Full Data Population (40 Specs)
+- [ ] Manually populate `GuideData.lua` with 12.1 data for all 13 classes
+- [ ] Verify BiS lists, Enchants, and Buffs for all roles
 
 ## Finalization
-- [ ] Push to Git
-- [ ] Final instructions
+- [ ] Git Push
+- [ ] Final install instructions
