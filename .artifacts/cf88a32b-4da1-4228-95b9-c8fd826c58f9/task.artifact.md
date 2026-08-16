@@ -1,17 +1,21 @@
-# Task: Talent Management & Data Fix (v1.1.0)
+# Task: Dragon Skill v1.2.0 - The Grand Finale
 
-## Data Fix (Enchants, BiS, etc.)
-- [ ] Investigate why `enchants`, `bisGear`, and `crafting` are empty in `GuideData.lua`
-- [ ] Improve `scrape-wowhead.js` parsing for these sections
-- [ ] Regenerate `GuideData.lua`
+## Metadata & Core
+- [ ] Update `DragonSkill.toc` to v1.2.0 and register new files
+- [ ] Update `Modules/BossMechanics/Core.lua` with finale simulation commands
 
-## Talent Management (v1.1.0)
-- [ ] Implement `TalentCompare:ImportToWoW` helper
-- [ ] Update `UI:ShowImportDialog` with three options (Copy, Create New, Cancel)
-- [ ] Add combat check for "Create New" option
-- [ ] Ensure `Blizzard_ClassTalentUI` is loaded when needed
+## Final Boss Modules
+- [ ] Create `Modules/BossMechanics/Bosses/CoiledAltar.lua`
+- [ ] Create `Modules/BossMechanics/Bosses/Ulatek.lua`
+
+## UI Enhancements
+- [ ] Add "Buffs" tab to `UI.lua`
+- [ ] Implement Gear data cleanup (filter headers)
+- [ ] Expand tab system to 8 tabs in `UI.lua`
+
+## Tooltip Pro-Features
+- [ ] Implement BiS detection in `Modules/Tooltips/Tooltips.lua`
 
 ## Finalization
-- [ ] Manual test of the new workflow
-- [ ] Verify data population in all tabs
-- [ ] Git push & Final instructions
+- [ ] Commit & Push
+- [ ] Final instructions

@@ -3,7 +3,7 @@
 
 local UI = {}
 local currentTab = 1
-local tabs = {"Talente", "Stats", "Trinkets", "Crafting", "Rotation", "Gear", "Enchants"}
+local tabs = {"Talente", "Stats", "Trinkets", "Crafting", "Rotation", "Gear", "Enchants", "Buffs"}
 
 function UI:Init()
     if DragonSkillMainFrame then return end
@@ -88,9 +88,15 @@ function UI:Init()
     SLASH_DRAGONSKILL1 = "/ds"
     SLASH_DRAGONSKILL2 = "/dragonskill"
     SlashCmdList["DRAGONSKILL"] = function(msg)
-        if msg == "testboss" then
-            local BM = DragonSkill:GetModule("BossMechanics")
-            if BM then BM:SimulateEntombedSentinels() end
+        local BM = DragonSkill:GetModule("BossMechanics")
+        if msg == "testboss" then if BM then BM:SimulateEntombedSentinels() end
+        elseif msg == "testnekzali" then if BM then BM:SimulateNekzali() end
+        elseif msg == "testexplorers" then if BM then BM:SimulateLostExplorers() end
+        elseif msg == "testvashnik" then if BM then BM:SimulateVashnik() end
+        elseif msg == "testsszorak" then if BM then BM:SimulateSszorak() end
+        elseif msg == "testfangs" then if BM then BM:SimulateTwinFangs() end
+        elseif msg == "testaltar" then if BM then BM:SimulateCoiledAltar() end
+        elseif msg == "testulatek" then if BM then BM:SimulateUlatek() end
         elseif f:IsShown() then f:Hide()
         else f:Show(); UI:Update() end
     end
@@ -124,6 +130,7 @@ function UI:Update()
     elseif currentTab == 5 then self:DrawRotation(content)
     elseif currentTab == 6 then self:DrawGear(content)
     elseif currentTab == 7 then self:DrawEnchants(content)
+    elseif currentTab == 8 then self:DrawBuffs(content)
     end
 end
 
@@ -312,7 +319,12 @@ function UI:DrawGear(content)
     local guideData = DragonSkill.Database:GetGuideData(class, specID)
     if guideData and guideData.bisGear and guideData.bisGear.wowhead and #guideData.bisGear.wowhead > 0 then
         local list = {}
-        for _, g in ipairs(guideData.bisGear.wowhead) do table.insert(list, { text = string.format("|cff00ff00%s:|r %s", g.slot, g.item), itemId = g.itemId }) end
+        for _, g in ipairs(guideData.bisGear.wowhead) do
+            -- Filter Header Rows
+            if g.slot:lower() ~= "slot" then
+                table.insert(list, { text = string.format("|cff00ff00%s:|r %s", g.slot, g.item), itemId = g.itemId })
+            end
+        end
         self:Helper_DrawListWithIcons(content, list, "|cffffff00Best-in-Slot (Wowhead):|r")
     else content.text:SetText("Keine Gear-Daten.") end
 end
@@ -326,6 +338,17 @@ function UI:DrawEnchants(content)
         for _, e in ipairs(guideData.enchants.wowhead) do txt = txt .. "- " .. e .. "\n" end
         content.text:SetText(txt)
     else content.text:SetText("Keine Daten.") end
+end
+
+function UI:DrawBuffs(content)
+    local _, class = UnitClass("player")
+    local specID = GetSpecializationInfo(GetSpecialization() or 0)
+    local guideData = DragonSkill.Database:GetGuideData(class, specID)
+    if guideData and guideData.consumables and guideData.consumables.wowhead and #guideData.consumables.wowhead > 0 then
+        local txt = "|cffffff00Empfohlene Buffs (Wowhead):|r\n"
+        for _, c in ipairs(guideData.consumables.wowhead) do txt = txt .. "- " .. c .. "\n" end
+        content.text:SetText(txt)
+    else content.text:SetText("Keine Buff-Daten gefunden.") end
 end
 
 DragonSkill.Events:On("PLAYER_LOGIN", function() UI:Init() end)

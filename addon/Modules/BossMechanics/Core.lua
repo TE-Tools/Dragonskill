@@ -114,6 +114,28 @@ function BossMechanics:SimulateTwinFangs()
     end
 end
 
+function BossMechanics:SimulateCoiledAltar()
+    print("|cff00ff00Dragon Skill:|r Starte Test für Coiled Altar...")
+    local boss = self.Bosses[3016]
+    if boss then
+        self:PlaySound("START")
+        self.CurrentBoss = boss
+        if DragonSkill.BossMechanicsUI then DragonSkill.BossMechanicsUI:OnBossStart(boss) end
+        if boss.SimulateStart then boss:SimulateStart() end
+    end
+end
+
+function BossMechanics:SimulateUlatek()
+    print("|cff00ff00Dragon Skill:|r Starte Test für Ula’tek...")
+    local boss = self.Bosses[3017]
+    if boss then
+        self:PlaySound("START")
+        self.CurrentBoss = boss
+        if DragonSkill.BossMechanicsUI then DragonSkill.BossMechanicsUI:OnBossStart(boss) end
+        if boss.SimulateStart then boss:SimulateStart() end
+    end
+end
+
 function BossMechanics:PlaySound(type)
     local sounds = {
         START = 567478, -- Ready Check

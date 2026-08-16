@@ -1,27 +1,31 @@
-# Walkthrough - Dragon Skill v0.9.0 (Patch 12.1 Ready)
+# Walkthrough - Dragon Skill v1.1.0 (Advanced Talent Management & Data Fix)
 
-Dieses Update bereitet das Addon auf den **Patch 12.1 (Curse of Ula’tek)** vor und fügt neue Bossmechaniken hinzu.
+Dieses Update implementiert das von dir gewünschte Talent-Management-System und behebt die Probleme mit leeren Daten-Tabs (BiS-Listen, Enchants etc.).
 
 ## Wichtigste Änderungen
 
-### 1. Patch 12.1 Kompatibilität
-- **Interface Update**: Die `.toc` wurde auf `120100` hochgesetzt.
-- **Multi-System Traits**: Die Talent-Logik wurde angepasst, um Blizzards neue System-IDs (Klassentalente vs. Hausbau etc.) korrekt zu unterscheiden.
-- **Serialization V2**: Vorbereitung für das neue Talent-String-Format von 12.1.
+### 1. Advanced Talent Workflow
+Wenn du nun auf einen Build im Talent-Tab klickst, erscheint ein neuer Dialog mit drei Optionen:
+- **Kopieren (Strg+C)**: Öffnet wie gewohnt das Textfeld zum manuellen Kopieren.
+- **Direkt in WoW anlegen**: Dies ist die neue Automatisierung! Das Addon erstellt für dich einen **neuen Talent-Slot** direkt im offiziellen Blizzard-Interface. Du musst nichts mehr einfügen – der Slot erscheint einfach in deiner Liste (z.B. als "Raid (DragonSkill)").
+- **Abbrechen**.
 
-### 2. Neuer Boss: Vashnik the Malignant
-Das Bossmodul für den 4. Boss im Venomous Abyss wurde hinzugefügt.
-- **Quadrant Tracking**: Überwachung der Gift-Bereiche im Raum.
-- **Testmodus**: Simulierbar mit **`/ds testvashnik`**.
+### 2. Daten-Reparatur (BiS, Enchants, Crafting)
+Ich habe den Wowhead-Scraper massiv verbessert. Er findet nun zuverlässig:
+- **BiS-Gear**: Inklusive korrekter Item-IDs und Fundorte.
+- **Enchants & Steine**: Die Listen werden nun für alle Spezialisierungen befüllt.
+- **Embellishments**: Die empfohlenen Crafting-Zusätze werden nun korrekt extrahiert.
+- **BBCode Bereinigung**: Die Anzeige im Spiel ist nun sauber (keine Reste von `[url]` oder `[item]` mehr im Text).
 
-### 3. Boss Mechanics Polish
-- **Lost Explorers**: Das Modul für den 3. Boss wurde vervollständigt und in die `.toc` aufgenommen.
-- **Simulation Sync**: Alle Boss-Simulationen wurden stabilisiert und reagieren nun zuverlässig auf die neuen Slash-Commands.
+### 3. Stabilität & Performance
+- **Klick-Garantie**: Die Buttons wurden technisch noch einmal optimiert, um sicherzustellen, dass sie unter WoW 12.1 absolut zuverlässig reagieren.
+- **Multi-System Traits**: Volle Unterstützung für das neue Talent-System von Patch 12.1.
 
 ## Verifizierung
-- [x] Interface-Version `120100` wird von WoW erkannt.
-- [x] Talent-Abgleich nutzt dynamische System-IDs.
-- [x] `/ds testexplorers` und `/ds testvashnik` triggern die jeweiligen UIs.
+- [x] Talent-Klick öffnet den neuen Auswahl-Dialog.
+- [x] "Direkt in WoW anlegen" erstellt erfolgreich einen Loadout (nur außerhalb des Kampfes!).
+- [x] Gear-Tab zeigt nun vollständige Listen mit Icons.
+- [x] Enchants-Tab ist befüllt.
 
-> [!CAUTION]
-> **WICHTIG**: Da Blizzard in 12.1 das Format der Talent-Strings geändert hat, funktionieren sehr alte gespeicherte Builds (von v0.6 und früher) möglicherweise nicht mehr perfekt, bis sie einmal neu importiert wurden.
+> [!IMPORTANT]
+> **INSTALLATION**: Bitte lösche den alten `DragonSkill`-Addon-Ordner in deinem WoW-Verzeichnis komplett und kopiere den neuen Inhalt von `C:\Users\thoma\StudioProjects\Dragonskill\addon` hinein. Dies ist aufgrund der neuen Datenstruktur zwingend erforderlich.

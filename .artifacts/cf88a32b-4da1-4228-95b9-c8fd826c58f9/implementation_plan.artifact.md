@@ -1,44 +1,59 @@
-# Implementation Plan - Talent Import & Clipboard Enhancement (v1.1.0)
+# Implementation Plan - The Grand Finale (v1.2.0)
 
-Dieses Update verbessert den Workflow beim Klick auf einen Talent-Build. Es ermöglicht nun das direkte Anlegen einer neuen Skillung im offiziellen Blizzard-Interface sowie ein verbessertes Kopieren in die Zwischenablage.
+Dieses Update schließt den "Venomous Abyss" Raid ab, führt intelligente Tooltips ein und bereinigt die Datenanzeige für ein professionelles Erlebnis.
 
 ## User Review Required
 
 > [!IMPORTANT]
-> **Direkt-Import**: Wir nutzen nun die offizielle `ClassTalentFrame:ImportLoadout` API. Das bedeutet, dass beim Klick auf "Als neue Skillung anlegen" tatsächlich ein neuer Loadout-Slot in deinem WoW-Talentbaum erstellt wird.
-> - Dies funktioniert nur außerhalb des Kampfes.
-> - Das offizielle Talent-Fenster wird dabei kurzzeitig im Hintergrund geladen, falls es noch nicht offen war.
+> **Raid-Abschluss (Boss 7 & 8)**: Wir fügen die Module für "The Coiled Altar" und "Ula’tek" hinzu.
+> - **Ula’tek (Finaler Boss)**: Beinhaltet Tracking für Eier-Management (Devourer’s Spawn) und Plattform-Verlust.
+> - **Coiled Altar**: Beinhaltet Tracking für Gift-Orbs (Coalesced Venom) und Mind-Control-Shields.
+
+> [!IMPORTANT]
+> **BiS-Tooltips**: Wenn du über ein Item fährst, das in deiner BiS-Liste (Wowhead) steht, zeigt das Addon nun automatisch einen goldenen Text: **"Dragon Skill: Best-in-Slot"**.
 
 > [!NOTE]
-> **Zwischenablage**: Da WoW keinen direkten Zugriff auf die Windows-Zwischenablage erlaubt (Sicherheitsbeschränkung), nutzen wir weiterhin ein Textfeld mit Auto-Markierung. Du musst lediglich **Strg+C** drücken.
+> **Neuer Tab: Buffs**: Wir fügen einen 8. Reiter hinzu, der Food, Flasks, Potions und Runen übersichtlich auflistet.
 
 ## Proposed Changes
 
-### 1. UI & Workflow (UI.lua)
+### 1. Boss Mechanics (Finale)
 
-#### [MODIFY] [UI.lua](file:///C:/Users/thoma/StudioProjects/Dragonskill/addon/Modules/TalentCompare/UI.lua)
-- **Neuer Dialog-Ablauf**:
-    1. Klick auf einen Build in der Liste.
-    2. Ein Info-Dialog zeigt die Details (Provider, Name, %-Abgleich, konkrete Talent-Abweichungen).
-    3. Drei Buttons zur Auswahl:
-        - **Kopieren**: Öffnet das Textfeld für Strg+C.
-        - **Neu Anlegen**: Erstellt den Loadout direkt in WoW.
-        - **Abbrechen**.
-- **Automatisches Laden**: Sicherstellen, dass `Blizzard_ClassTalentUI` geladen wird, bevor der Import-Befehl ausgeführt wird.
+#### [NEW] [CoiledAltar.lua](file:///C:/Users/thoma/StudioProjects/Dragonskill/addon/Modules/BossMechanics/Bosses/CoiledAltar.lua)
+- Tracking von Gift-Orbs und deren Ablegeplätzen.
+- Warnung bei Mind Control (Dreadmarch).
+
+#### [NEW] [Ulatek.lua](file:///C:/Users/thoma/StudioProjects/Dragonskill/addon/Modules/BossMechanics/Bosses/Ulatek.lua)
+- Überwachung der Gift-Wellen (Caustic Waves).
+- Timer für den Plattform-Verlust in Phase 3.
+
+#### [MODIFY] [Core.lua](file:///C:/Users/thoma/StudioProjects/Dragonskill/addon/Modules/BossMechanics/Core.lua)
+- Hinzufügen der neuen Slash-Commands: `/ds testaltar` und `/ds testulatek`.
 
 ---
 
-### 2. Talent Logic (TalentCompare.lua)
+### 2. UI & Features
 
-#### [MODIFY] [TalentCompare.lua](file:///C:/Users/thoma/StudioProjects/Dragonskill/addon/Modules/TalentCompare/TalentCompare.lua)
-- Hinzufügen einer Hilfsfunktion `ImportToWoW(importString, name)`, die die Blizzard-API sicher aufruft.
+#### [MODIFY] [UI.lua](file:///C:/Users/thoma/StudioProjects/Dragonskill/addon/Modules/TalentCompare/UI.lua)
+- **Buffs-Tab**: Integration der Consumables aus den Guide-Daten.
+- **Data Cleanup**: Automatisches Filtern von Header-Zeilen ("Slot", "Item") in der Gear-Liste.
+- **Scroll-Anpassung**: Der Scroll-Inhalt wird automatisch auf die richtige Höhe gesetzt.
+
+#### [MODIFY] [Tooltips.lua](file:///C:/Users/thoma/StudioProjects/Dragonskill/addon/Modules/Tooltips/Tooltips.lua)
+- Implementierung des BiS-Scanners: Gleicht die `itemId` des Tooltips mit der `bisGear` Liste deiner aktuellen Spec ab.
+
+---
+
+### 3. Metadata
+
+#### [MODIFY] [DragonSkill.toc](file:///C:/Users/thoma/StudioProjects/Dragonskill/addon/DragonSkill.toc)
+- Version auf `1.2.0` anheben.
+- Registrierung aller neuen Dateien.
 
 ## Verification Plan
 
 ### Manual Verification
-1. **/ds** -> Tab "Talente".
-2. Klick auf einen Build (z.B. "Archon Recommended").
-3. Dialog prüfen: Erscheinen die neuen Optionen?
-4. **Test "Kopieren"**: Erscheint das Edit-Feld? Funktioniert Strg+C?
-5. **Test "Neu Anlegen"**: Öffne danach das Blizzard-Talentfenster (`N`). Ist dort ein neuer Slot mit dem korrekten Namen und den Talenten erschienen?
-6. **Kampf-Check**: Prüfen, ob das Addon eine Warnung ausgibt, wenn man versucht, während eines Kampfes zu importieren.
+1. **/ds** -> Neuen Tab "Buffs" prüfen.
+2. **Gear-Tab** -> Prüfen, ob die Zeile "Slot | Item | Source" verschwunden ist.
+3. **Item-Hover** -> Im Abenteuerführer oder Inventar ein BiS-Item anschauen -> Goldener Text muss erscheinen.
+4. **/ds testulatek** -> Test der Final-Boss Logik.

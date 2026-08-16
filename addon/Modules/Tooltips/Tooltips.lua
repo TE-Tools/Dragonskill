@@ -13,34 +13,37 @@ function Tooltips:OnTooltipSetItem(tooltip, data)
     if not itemId then return end
 
     local _, class = UnitClass("player")
-    local spec = GetSpecializationInfo(GetSpecialization())
+    local specIndex = GetSpecialization()
+    if not specIndex then return end
+    local spec = GetSpecializationInfo(specIndex)
     local guideData = DragonSkill.Database:GetGuideData(class, spec)
 
     if not guideData then return end
 
     -- Check BiS Gear
-    if guideData.bisGear then
-        for provider, items in pairs(guideData.bisGear) do
-            for _, item in ipairs(items) do
-                -- Wowhead names items, Archon might use IDs. Simple check.
-                if string.find(item.item:lower(), GetItemInfo(itemId):lower()) then
-                    tooltip:AddLine(" ")
-                    tooltip:AddLine("|cff00ff00Dragon Skill BiS (" .. provider .. "):|r " .. item.slot)
-                end
+    local isBiS = false
+    if guideData.bisGear and guideData.bisGear.wowhead then
+        for _, item in ipairs(guideData.bisGear.wowhead) do
+            if item.itemId == itemId then
+                isBiS = true
+                break
             end
         end
     end
 
-    -- Check Trinkets
-    if guideData.trinkets then
-        for provider, trinkets in pairs(guideData.trinkets) do
-            for _, t in ipairs(trinkets) do
-                if t.itemId == itemId or (t.name and string.find(t.name:lower(), GetItemInfo(itemId):lower())) then
-                    tooltip:AddLine(" ")
-                    tooltip:AddLine("|cff00ff00Dragon Skill Rank (" .. provider .. "):|r " .. (t.rank or "N/A"))
-                end
+    -- Check Trinkets (Rank S/A are also BiS)
+    if not isBiS and guideData.trinkets and guideData.trinkets.archon then
+        for _, t in ipairs(guideData.trinkets.archon) do
+            if t.itemId == itemId and (t.rank == "S" or t.rank == "A") then
+                isBiS = true
+                break
             end
         end
+    end
+
+    if isBiS then
+        tooltip:AddLine(" ")
+        tooltip:AddLine("|cffffd100Dragon Skill: Best-in-Slot|r")
     end
 end
 
