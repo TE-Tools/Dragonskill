@@ -51,7 +51,6 @@ StaticPopupDialogs["DRAGONSKILL_ACTION"] = {
             TC:ImportToWoW(build.importString, build.label or savedName)
         end
 
-        -- UI aktualisieren, damit Favoriten sichtbar werden
         if DragonSkill.UI and DragonSkill.UI.frame and DragonSkill.UI.frame:IsShown() then
             DragonSkill.UI:Update()
         end
@@ -85,7 +84,6 @@ StaticPopupDialogs["DRAGONSKILL_COPY"] = {
         end
 
         apply()
-        -- 12.1: Template fertig initialisieren lassen
         if C_Timer and C_Timer.After then
             C_Timer.After(0, apply)
             C_Timer.After(0.05, apply)
@@ -202,6 +200,12 @@ function UI:ClearContent(content)
     for _, child in ipairs(children) do
         child:Hide()
     end
+    if content.extraFS then
+        for _, fs in ipairs(content.extraFS) do
+            fs:Hide()
+        end
+        wipe(content.extraFS)
+    end
     if content.text then
         content.text:SetText("")
         content.text:Show()
@@ -268,13 +272,14 @@ function UI:DrawTalents(content, guideData)
     local TC = DragonSkill:GetModule("TalentCompare")
     local yOffset = -10
 
-    -- Guide-Builds
+    content.extraFS = content.extraFS or {}
+
     content.text:SetText("|cffffff00=== Guide-Builds ===|r")
     content.text:Show()
     yOffset = -28
 
-    for _, btn in ipairs(self.talentBtns) do btn:Hide() end
-    for _, btn in ipairs(self.favBtns) do btn:Hide() end
+    for _, btn in pairs(self.talentBtns) do btn:Hide() end
+    for _, btn in pairs(self.favBtns) do btn:Hide() end
 
     local builds = guideData.talentBuilds or {}
     if #builds == 0 then
@@ -302,16 +307,11 @@ function UI:DrawTalents(content, guideData)
         end
     end
 
-    -- Favoriten / gespeicherte Skillungen
     yOffset = yOffset - 12
     local favHeader = content:CreateFontString(nil, "OVERLAY", "GameFontNormal")
     favHeader:SetPoint("TOPLEFT", 10, yOffset)
     favHeader:SetText("|cffffff00=== Meine Skillungen ===|r")
     favHeader:Show()
-    -- keep reference so ClearContent hides it via GetChildren? FontStrings on content are not children frames.
-    -- Use a dummy frame marker or just accept it shows until next full rebuild.
-    -- Better: store on content and hide explicitly next Update via ClearContent only hides frames.
-    if not content.extraFS then content.extraFS = {} end
     table.insert(content.extraFS, favHeader)
     yOffset = yOffset - 22
 
@@ -321,7 +321,7 @@ function UI:DrawTalents(content, guideData)
         empty:SetPoint("TOPLEFT", 10, yOffset)
         empty:SetWidth(ROW_WIDTH)
         empty:SetJustifyH("LEFT")
-        empty:SetText("|cff888888Noch keine gespeicherten Skillungen.\nKlicke einen Guide-Build → „Anlegen + Import“.|r")
+        empty:SetText("|cff888888Noch keine gespeicherten Skillungen.\nKlicke einen Guide-Build -> Anlegen + Import.|r")
         empty:Show()
         table.insert(content.extraFS, empty)
         yOffset = yOffset - 40
@@ -353,7 +353,6 @@ function UI:DrawTalents(content, guideData)
             end)
             btn:Show()
 
-            -- Delete button
             local delKey = "del_" .. i
             if not self.favBtns[delKey] then
                 local del = CreateFrame("Button", "DragonSkillFavDel_" .. i, content, "UIPanelButtonTemplate")
@@ -374,7 +373,6 @@ function UI:DrawTalents(content, guideData)
         end
     end
 
-    -- Content-Höhe anpassen
     local needed = math.max(2000, math.abs(yOffset) + 80)
     content:SetHeight(needed)
 end
@@ -400,7 +398,6 @@ function UI:Helper_DrawListWithIcons(content, items, title)
         row:SetScript("OnLeave", nil)
     end
 
-    -- andere Tabs-Rows verstecken
     for tabId, otherRows in pairs(self.listRowsByTab) do
         if tabId ~= currentTab then
             for _, row in ipairs(otherRows) do row:Hide() end
