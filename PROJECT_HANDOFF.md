@@ -1,21 +1,21 @@
-# Dragon Skill – Projekt-Kontext (Stand v1.5.6)
+# Dragon Skill – Projekt-Kontext (Stand v1.5.8)
 
 Repo: https://github.com/TE-Tools/Dragonskill  
 Entwickler: **wear-alleria**
 
-## Stand v1.5.6
+## Fertig (v1.5.8)
 
-**Fertig:**
-- Talent-UI: Gems-Tab, Fenster 680px, Spec-Name im Titel
-- Match-% primär **node-basiert** (`CompareBuild`), Fallback Byte-String
-- Node-Diff mit Namen (Definition / Spell / SubTree)
-- Spec-Refresh Events
-- Scraper: keine auto-`consumables-*-` URLs mehr (oft 404)
-- CI: `contents: write` für GuideData-Push
+- Talent-UI: Match-Sort, Dedupe, ★, Node-Diff, Spec-Titel, ESC, 9 Tabs inkl. Gems
+- Skillungen: pro Spec gefiltert, Anlegen + Import
+- Tooltips: BiS, Trinket, Enchant, Gem, Consumable
+- Minimap-Button (`/ds minimap`), `/ds help`
+- Scraper: BiS/Enchants/Gems/Consumables/Rotation, Junk-Filter, keine 404-Consumables-URLs
+- CI: `contents: write`, GuideData-Push OK
 
-**Hinweis:**
-- Nach erfolgreichem Scrape-Workflow sollte `GuideData.lua` auf main aktualisiert sein
-- Manche Node-Namen bleiben `Node <id>`, wenn die Trait-API nichts liefert
+## API-Hinweis
+
+Manche Trait-Nodes bleiben `Node <id>`, wenn `C_Traits` keinen Namen liefert – patchabhängig.
 
 ## Befehle
-`/wear` · `/ds` · `/dragonskill`
+
+`/wear` · `/ds` · `/dragonskill` · `/ds help` · `/ds minimap`

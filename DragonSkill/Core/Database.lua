@@ -1,5 +1,4 @@
--- Dragon Skill - Database Layer (v1.5.2)
--- Verwaltet SavedVariables (Nutzerdaten) getrennt von gebündelten Guide-Daten (aus dem Scraper).
+-- Dragon Skill - Database Layer (v1.5.8)
 
 local Database = {}
 
@@ -7,21 +6,21 @@ function Database:Init()
     DragonSkillDB = DragonSkillDB or {
         version = DragonSkill.version,
         favorites = {},
-        history = {}
+        history = {},
+        minimap = { hide = false },
     }
     DragonSkillCharDB = DragonSkillCharDB or {
-        lastComparedBuild = nil
+        lastComparedBuild = nil,
     }
-    -- Migration / Defaults
     DragonSkillDB.favorites = DragonSkillDB.favorites or {}
     DragonSkillDB.history = DragonSkillDB.history or {}
+    DragonSkillDB.minimap = DragonSkillDB.minimap or { hide = false }
     DragonSkillDB.version = DragonSkill.version or DragonSkillDB.version
 
     self.account = DragonSkillDB
     self.char = DragonSkillCharDB
 end
 
--- Guide-Daten sind separate Lua-Dateien, die vom Scraper-Output generiert werden.
 function Database:GetGuideData(class, spec)
     if not DragonSkillData then return nil end
     local classData = DragonSkillData[class]
@@ -29,8 +28,6 @@ function Database:GetGuideData(class, spec)
     return classData[spec]
 end
 
--- Erstelle ein neues "Skilling"-Eintrag in den SavedVariables (favorites).
--- name: string, data: table (z.B. { importString = "...", provider=..., label=... })
 function Database:CreateSkilling(name, data)
     if not self.account then self:Init() end
     data = data or {}
@@ -48,7 +45,6 @@ function Database:CreateSkilling(name, data)
         finalName = string.format("%s-%d", name, i)
     end
 
-    -- Shallow-Kopie, damit Guide-Tabellen nicht mutiert werden
     local entry = {
         importString = data.importString,
         provider = data.provider,
@@ -68,19 +64,39 @@ function Database:GenerateAutoSkillingName(data)
     return string.format("%s: %s (%s)", tostring(provider), tostring(label), ts)
 end
 
--- Sortierte Liste der Favoriten: { { name = "...", data = {...} }, ... }
-function Database:GetSkillings()
+-- filterCurrentSpec: wenn true, nur Skillungen der aktuellen Klasse/Spec
+function Database:GetSkillings(filterCurrentSpec)
     if not self.account then self:Init() end
     local list = {}
     local favs = self.account.favorites or {}
-    for name, data in pairs(favs) do
-        table.insert(list, { name = name, data = data })
+
+    local class, specID
+    if filterCurrentSpec then
+        class = select(2, UnitClass("player"))
+        local idx = GetSpecialization()
+        specID = idx and select(1, GetSpecializationInfo(idx)) or nil
     end
+
+    for name, data in pairs(favs) do
+        if filterCurrentSpec and class and data then
+            -- Einträge ohne class/specID weiter anzeigen (Legacy)
+            local matchClass = not data.class or data.class == class
+            local matchSpec = not data.specID or not specID or data.specID == specID
+            if not (matchClass and matchSpec) then
+                -- skip
+            else
+                table.insert(list, { name = name, data = data })
+            end
+        else
+            table.insert(list, { name = name, data = data })
+        end
+    end
+
     table.sort(list, function(a, b)
         local ca = (a.data and a.data.createdAt) or ""
         local cb = (b.data and b.data.createdAt) or ""
         if ca == cb then return tostring(a.name) < tostring(b.name) end
-        return ca > cb -- neueste zuerst
+        return ca > cb
     end)
     return list
 end
