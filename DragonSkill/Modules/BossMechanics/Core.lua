@@ -1,7 +1,10 @@
--- Dragon Skill - Boss Mechanics Core
+-- Dragon Skill - Boss Mechanics Core (v1.5.9)
+-- Venomous Abyss + Tidebound Grotto Lair
+
 local BossMechanics = DragonSkill:RegisterModule("BossMechanics", {
     Bosses = {},
-    CurrentBoss = nil
+    BossesByName = {},
+    CurrentBoss = nil,
 })
 
 function BossMechanics:Init()
@@ -10,145 +13,119 @@ end
 
 function BossMechanics:RegisterBoss(id, bossTable)
     self.Bosses[id] = bossTable
+    if bossTable.Name then
+        self.BossesByName[string.lower(bossTable.Name)] = bossTable
+        -- kurze Aliase
+        local short = bossTable.Name:match("^([^%s,]+)")
+        if short then
+            self.BossesByName[string.lower(short)] = bossTable
+        end
+    end
+    if bossTable.Aliases then
+        for _, a in ipairs(bossTable.Aliases) do
+            self.BossesByName[string.lower(a)] = bossTable
+        end
+    end
+end
+
+function BossMechanics:FindBoss(encounterID, encounterName)
+    if encounterID and self.Bosses[encounterID] then
+        return self.Bosses[encounterID]
+    end
+    if encounterName and self.BossesByName[string.lower(encounterName)] then
+        return self.BossesByName[string.lower(encounterName)]
+    end
+    return nil
 end
 
 function BossMechanics:RegisterEvents()
-    DragonSkill.Events:On("ENCOUNTER_START", function(encounterID)
-        if self.Bosses[encounterID] then
-            self.CurrentBoss = self.Bosses[encounterID]
-            if self.CurrentBoss.OnStart then self.CurrentBoss:OnStart() end
-            if DragonSkill.BossMechanicsUI then DragonSkill.BossMechanicsUI:OnBossStart(self.CurrentBoss) end
+    DragonSkill.Events:On("ENCOUNTER_START", function(encounterID, encounterName)
+        local boss = self:FindBoss(encounterID, encounterName)
+        if not boss then return end
+        self.CurrentBoss = boss
+        if boss.OnStart then boss:OnStart() end
+        if DragonSkill.BossMechanicsUI then
+            DragonSkill.BossMechanicsUI:OnBossStart(boss)
         end
+        self:PlaySound("START")
     end)
 
     DragonSkill.Events:On("ENCOUNTER_END", function()
         if self.CurrentBoss then
             if self.CurrentBoss.OnEnd then self.CurrentBoss:OnEnd() end
-            if DragonSkill.BossMechanicsUI then DragonSkill.BossMechanicsUI:OnBossEnd() end
+            if DragonSkill.BossMechanicsUI then
+                DragonSkill.BossMechanicsUI:OnBossEnd()
+            end
             self.CurrentBoss = nil
         end
     end)
 
-    DragonSkill.Events:On("COMBAT_LOG_EVENT_UNFILTERED", function(...)
+    DragonSkill.Events:On("COMBAT_LOG_EVENT_UNFILTERED", function()
         if self.CurrentBoss and self.CurrentBoss.OnCombatLogEvent then
-            self.CurrentBoss:OnCombatLogEvent(...)
+            self.CurrentBoss:OnCombatLogEvent()
         end
     end)
 end
 
-function BossMechanics:SimulateEntombedSentinels()
-    print("|cff00ff00Dragon Skill:|r Starte Test für Entombed Sentinels...")
-    local boss = self.Bosses[3010]
-    if boss then
-        self:PlaySound("INTERMISSION")
-        self.CurrentBoss = boss
-        if DragonSkill.BossMechanicsUI then DragonSkill.BossMechanicsUI:OnBossStart(boss) end
-        if boss.SimulateIntermission then boss:SimulateIntermission() end
-    else
-        print("|cffff0000Fehler:|r Boss 'Entombed Sentinels' nicht registriert.")
+function BossMechanics:Simulate(idOrName)
+    local boss = self.Bosses[idOrName]
+    if not boss and type(idOrName) == "string" then
+        boss = self.BossesByName[string.lower(idOrName)]
+    end
+    if not boss then
+        print("|cffff0000Dragon Skill:|r Boss nicht gefunden: " .. tostring(idOrName))
+        return
+    end
+    print("|cff00ff00Dragon Skill:|r Test → " .. (boss.Name or tostring(idOrName)))
+    self.CurrentBoss = boss
+    if boss.OnStart then boss:OnStart() end
+    if DragonSkill.BossMechanicsUI then
+        DragonSkill.BossMechanicsUI:OnBossStart(boss)
+    end
+    self:PlaySound("START")
+    if boss.SimulateStart then
+        boss:SimulateStart()
+    elseif boss.SimulateIntermission then
+        boss:SimulateIntermission()
     end
 end
 
-function BossMechanics:SimulateNekzali()
-    print("|cff00ff00Dragon Skill:|r Starte Test für Nek'zali...")
-    local boss = self.Bosses[3011]
-    if boss then
-        self:PlaySound("START")
-        self.CurrentBoss = boss
-        if DragonSkill.BossMechanicsUI then DragonSkill.BossMechanicsUI:OnBossStart(boss) end
-        if boss.SimulateStart then boss:SimulateStart() end
-    else
-        print("|cffff0000Fehler:|r Boss 'Nek'zali' nicht registriert.")
-    end
-end
+-- Kompatibilität zu alten Slash-Tests
+function BossMechanics:SimulateEntombedSentinels() self:Simulate(3010) end
+function BossMechanics:SimulateNekzali() self:Simulate(3011) end
+function BossMechanics:SimulateLostExplorers() self:Simulate(3012) end
+function BossMechanics:SimulateVashnik() self:Simulate(3013) end
+function BossMechanics:SimulateSszorak() self:Simulate(3014) end
+function BossMechanics:SimulateTwinFangs() self:Simulate(3015) end
+function BossMechanics:SimulateCoiledAltar() self:Simulate(3016) end
+function BossMechanics:SimulateUlatek() self:Simulate(3017) end
+function BossMechanics:SimulateNymrissa() self:Simulate(3101) end
 
-function BossMechanics:SimulateLostExplorers()
-    print("|cff00ff00Dragon Skill:|r Starte Test für The Lost Explorers...")
-    local boss = self.Bosses[3012]
-    if boss then
-        self:PlaySound("START")
-        self.CurrentBoss = boss
-        if DragonSkill.BossMechanicsUI then DragonSkill.BossMechanicsUI:OnBossStart(boss) end
-        if boss.SimulateStart then boss:SimulateStart() end
-    else
-        print("|cffff0000Fehler:|r Boss 'The Lost Explorers' nicht registriert.")
-    end
-end
-
-function BossMechanics:SimulateVashnik()
-    print("|cff00ff00Dragon Skill:|r Starte Test für Vashnik...")
-    local boss = self.Bosses[3013]
-    if boss then
-        self:PlaySound("START")
-        self.CurrentBoss = boss
-        if DragonSkill.BossMechanicsUI then DragonSkill.BossMechanicsUI:OnBossStart(boss) end
-        if boss.SimulateStart then boss:SimulateStart() end
-    else
-        print("|cffff0000Fehler:|r Boss 'Vashnik' nicht registriert.")
-    end
-end
-
-function BossMechanics:SimulateSszorak()
-    print("|cff00ff00Dragon Skill:|r Starte Test für Sszorak...")
-    local boss = self.Bosses[3014]
-    if boss then
-        self:PlaySound("START")
-        self.CurrentBoss = boss
-        if DragonSkill.BossMechanicsUI then DragonSkill.BossMechanicsUI:OnBossStart(boss) end
-        if boss.SimulateStart then boss:SimulateStart() end
-    else
-        print("|cffff0000Fehler:|r Boss 'Sszorak' nicht registriert.")
-    end
-end
-
-function BossMechanics:SimulateTwinFangs()
-    print("|cff00ff00Dragon Skill:|r Starte Test für Twin Fangs...")
-    local boss = self.Bosses[3015]
-    if boss then
-        self:PlaySound("START")
-        self.CurrentBoss = boss
-        if DragonSkill.BossMechanicsUI then DragonSkill.BossMechanicsUI:OnBossStart(boss) end
-        if boss.SimulateStart then boss:SimulateStart() end
-    else
-        print("|cffff0000Fehler:|r Boss 'Twin Fangs' nicht registriert.")
-    end
-end
-
-function BossMechanics:SimulateCoiledAltar()
-    print("|cff00ff00Dragon Skill:|r Starte Test für Coiled Altar...")
-    local boss = self.Bosses[3016]
-    if boss then
-        self:PlaySound("START")
-        self.CurrentBoss = boss
-        if DragonSkill.BossMechanicsUI then DragonSkill.BossMechanicsUI:OnBossStart(boss) end
-        if boss.SimulateStart then boss:SimulateStart() end
-    end
-end
-
-function BossMechanics:SimulateUlatek()
-    print("|cff00ff00Dragon Skill:|r Starte Test für Ula’tek...")
-    local boss = self.Bosses[3017]
-    if boss then
-        self:PlaySound("START")
-        self.CurrentBoss = boss
-        if DragonSkill.BossMechanicsUI then DragonSkill.BossMechanicsUI:OnBossStart(boss) end
-        if boss.SimulateStart then boss:SimulateStart() end
-    end
-end
-
-function BossMechanics:PlaySound(type)
-    local sounds = {
-        START = 567478, -- Ready Check
-        INTERMISSION = 8959, -- Raid Warning
-        WARNING = 876098, -- Boss Whisper
-        ALERT = 567482, -- Quest Progress
-        DONE = 567499, -- Progress
-        CRITICAL = 1489541, -- High resonance
+function BossMechanics:ListBosses()
+    print("|cff00ff00Dragon Skill – Bosses (Venomous Abyss + Lair):|r")
+    local ordered = {
+        3011, 3010, 3013, 3012, 3014, 3015, 3016, 3017, 3101,
     }
-    local id = sounds[type]
-    if id then
-        PlaySound(id, "Master")
+    for _, id in ipairs(ordered) do
+        local b = self.Bosses[id]
+        if b then
+            print(string.format("  %d  %s", id, b.Name or "?"))
+        end
     end
+    print("  /ds boss <name|id>   ·  /ds boss list")
+end
+
+function BossMechanics:PlaySound(kind)
+    local sounds = {
+        START = 567478,
+        INTERMISSION = 8959,
+        WARNING = 876098,
+        ALERT = 567482,
+        DONE = 567499,
+        CRITICAL = 1489541,
+    }
+    local id = sounds[kind]
+    if id then PlaySound(id, "Master") end
 end
 
 DragonSkill.Events:On("PLAYER_LOGIN", function()

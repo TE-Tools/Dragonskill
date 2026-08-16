@@ -2,7 +2,7 @@
 ## Title: Dragon Skill
 ## Notes: Talent-Guides, Trinkets, Rotation und Crafting - by wear-alleria
 ## Author: wear-alleria
-## Version: 1.5.8
+## Version: 1.5.9
 ## SavedVariables: DragonSkillDB
 ## SavedVariablesPerCharacter: DragonSkillCharDB
 
@@ -28,3 +28,4 @@ Modules\BossMechanics\Bosses\Sszorak.lua
 Modules\BossMechanics\Bosses\TwinFangs.lua
 Modules\BossMechanics\Bosses\CoiledAltar.lua
 Modules\BossMechanics\Bosses\Ulatek.lua
+Modules\BossMechanics\Bosses\Nymrissa.lua
