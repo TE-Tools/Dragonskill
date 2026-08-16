@@ -1,24 +1,17 @@
-# Task: Dragon Skill v1.0.0 - Coordination Update
+# Task: Talent Management & Data Fix (v1.1.0)
 
-## Metadata & Core
-- [ ] Update `DragonSkill.toc` to v1.0.0 and add new files
-- [ ] Update `Modules/BossMechanics/Core.lua` with new simulation commands and sound triggers
+## Data Fix (Enchants, BiS, etc.)
+- [ ] Investigate why `enchants`, `bisGear`, and `crafting` are empty in `GuideData.lua`
+- [ ] Improve `scrape-wowhead.js` parsing for these sections
+- [ ] Regenerate `GuideData.lua`
 
-## Sszorak Module
-- [ ] Create `Modules/BossMechanics/Bosses/Sszorak.lua`
-- [ ] Implement Wind Tunnel orb tracking logic
-- [ ] Implement Cyst placement assignment
+## Talent Management (v1.1.0)
+- [ ] Implement `TalentCompare:ImportToWoW` helper
+- [ ] Update `UI:ShowImportDialog` with three options (Copy, Create New, Cancel)
+- [ ] Add combat check for "Create New" option
+- [ ] Ensure `Blizzard_ClassTalentUI` is loaded when needed
 
-## Twin Fangs Module
-- [ ] Create `Modules/BossMechanics/Bosses/TwinFangs.lua`
-- [ ] Implement Eternal Venom stack monitoring (UnitAura scanner)
-- [ ] Implement priority list for Ravenous Feast
-
-## UI & Visuals
-- [ ] Update `Modules/BossMechanics/UI.lua` with Glow support and stack indicators
-- [ ] Add sound files or Blizzard sound triggers for critical events
-
-## Final Verification
-- [ ] Test `/ds testsszorak`
-- [ ] Test `/ds testfangs`
-- [ ] Verify stack-based color coding in UI
+## Finalization
+- [ ] Manual test of the new workflow
+- [ ] Verify data population in all tabs
+- [ ] Git push & Final instructions

@@ -58,7 +58,7 @@ function buildLuaTable(entries) {
       for (const [provider, items] of Object.entries(data.bisGear || {})) {
         lua += `        ${provider} = {\n`;
         for (const item of items || []) {
-          lua += `            { slot = ${luaEscape(item.slot)}, item = ${luaEscape(item.item)}, source = ${luaEscape(item.source)} },\n`;
+          lua += `            { slot = ${luaEscape(item.slot)}, item = ${luaEscape(item.item)}, source = ${luaEscape(item.source)}, itemId = ${item.itemId || "nil"} },\n`;
         }
         lua += `        },\n`;
       }

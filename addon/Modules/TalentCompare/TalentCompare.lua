@@ -181,4 +181,23 @@ function TalentCompare:GetDetailedDiff(importString)
     return result
 end
 
+function TalentCompare:ImportToWoW(importString, name)
+    if InCombatLockdown() then
+        print("|cffff0000Dragon Skill:|r Import im Kampf nicht möglich.")
+        return
+    end
+
+    if not ClassTalentFrame then
+        UIParentLoadAddOn("Blizzard_ClassTalentUI")
+    end
+
+    -- Wir nutzen die Blizzard High-Level Import API
+    if ClassTalentFrame and ClassTalentFrame.TalentsTab and ClassTalentFrame.TalentsTab.ImportLoadout then
+        ClassTalentFrame.TalentsTab:ImportLoadout(importString, name or "DragonSkill Import")
+        print("|cff00ff00Dragon Skill:|r Import gestartet für: " .. (name or "Build"))
+    else
+        print("|cffff0000Dragon Skill:|r Fehler - Blizzard Import API nicht gefunden.")
+    end
+end
+
 DragonSkill:RegisterModule("TalentCompare", TalentCompare)

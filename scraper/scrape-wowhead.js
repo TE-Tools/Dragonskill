@@ -123,32 +123,27 @@ function extractStatPriority(markup) {
 function extractBiSGear(markup) {
   const gear = [];
   // Wowhead nutzt oft [table] oder [box] für BiS Listen.
-  // Wir suchen nach Tabellen, die "Slot" oder "Item" enthalten.
-  const tableRe = /\[table[^\]]*\]([\s\S]*?)\[\/table\]/gi;
+  const tableRe = /\[(?:table|box)[^\]]*\]([\s\S]*?)\[\/(?:table|box)\]/gi;
   let m;
   while ((m = tableRe.exec(markup))) {
     const content = m[1];
-    if (content.toLowerCase().includes("slot") || content.toLowerCase().includes("item")) {
-      // Zeilen trennen (bei [tr])
+    const lc = content.toLowerCase();
+    if (lc.includes("slot") || lc.includes("item") || lc.includes("bis")) {
       const rows = content.split(/\[tr\]/i).filter(r => r.includes("[td"));
       rows.forEach(row => {
-        // Spalten trennen (bei [td]) und BBCode entfernen
+        const itemMatch = row.match(/\[item=(\d+)\]/i);
         const cols = row.split(/\[td[^\]]*\]/i)
-          .map(c => c.replace(/\[\/td\]|\[\/tr\]|\[b\]|\[\/b\]|\[url=[^\]]+\]|\[\/url\]|\[symbol=[^\]]+\]|\[span[^\]]*\]|\[\/span\]/gi, "").trim())
+          .map(c => c.replace(/\[\/td\]|\[\/tr\]|\[b\]|\[\/b\]|\[url=[^\]]+\]|\[\/url\]|\[symbol=[^\]]+\]|\[span[^\]]*\]|\[\/span\]|\[item=\d+\]/gi, "").trim())
           .filter(Boolean);
 
-        // Versuche Item-ID zu finden (z.B. [item=268209])
-        const itemMatch = row.match(/\[item=(\d+)\]/i);
-
         if (cols.length >= 2) {
-          // Falls wir eine Item-ID haben, nehmen wir sie. Ansonsten den Text.
           const slot = cols[0];
-          const itemText = cols[1].replace(/\[item=\d+\]/gi, "").trim();
+          const itemText = cols[1];
           const source = cols[2] || "Unknown";
 
           gear.push({
             slot: slot,
-            item: itemText || `Item ${itemMatch ? itemMatch[1] : "???"}`,
+            item: itemText || (itemMatch ? `Item ${itemMatch[1]}` : "Unknown Item"),
             source: source.replace(/\[url=[^\]]+\]|\[\/url\]/gi, "").trim(),
             itemId: itemMatch ? parseInt(itemMatch[1]) : null
           });
@@ -159,14 +154,10 @@ function extractBiSGear(markup) {
   return gear;
 }
 
-/**
- * Extrahiert Enchants, Gems und Consumables.
- */
 function extractConsumables(markup) {
   const data = { enchants: [], gems: [], consumables: [] };
-
-  // Suche nach Abschnitten wie "Best Enchants", "Best Gems", "Best Consumables"
-  const sectionRe = /\[b\]([^\]]+(?:Enchants|Gems|Consumables|Potions|Flasks|Food))\[\/b\][\s\S]{0,500}?\[(?:ol|ul)\]([\s\S]{0,1000}?)\[\/(?:ol|ul)\]/gi;
+  // Erweitertes Suchmuster für Überschriften
+  const sectionRe = /\[b\]([^\]]+(?:Enchants|Gems|Consumables|Potions|Flasks|Food|Oil|Phials|Rune))\[\/b\][\s\S]{0,600}?\[(?:ol|ul)\]([\s\S]{0,1500}?)\[\/(?:ol|ul)\]/gi;
   let m;
   while ((m = sectionRe.exec(markup))) {
     const title = m[1].toLowerCase();
