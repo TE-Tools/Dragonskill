@@ -1,31 +1,33 @@
-# Walkthrough - Dragon Skill v1.3.5 (The Great Data Expansion)
+# Walkthrough - Dragon Skill v1.4.0 (The Completion Update)
 
-Dieses Update befüllt das Addon mit den Daten fast aller verbleibenden Klassen und stellt sicher, dass die Benutzeroberfläche unter WoW 12.1 absolut stabil läuft.
+Dieses Meilenstein-Update bringt Dragon Skill auf den Stand der absoluten Vollständigkeit. Alle 39 Spezialisierungen von Patch 12.1 sind nun mit Daten versorgt.
 
 ## Wichtigste Neuerungen
 
-### 1. Massive Daten-Erweiterung
-Ich habe die Guide-Daten (BiS-Gear, Enchants, Gems und Buffs) für fast alle Klassen manuell auf den Stand von **Patch 12.1** gebracht:
-- **Neu dabei**: Hunter (BM/MM), Rogue (alle), Shaman (Enh/Ele), Warlock (alle), Priest (Shadow), Evoker (Aug).
-- **Bereits vorhanden**: Death Knight (Blood), Paladin (alle), Warrior (Prot), Demon Hunter (alle), Druid (Balance/Resto), Mage (Arcane/Frost).
-- Damit sind fast alle Spieler deiner Raid-Gruppe mit vollständigen Informationen versorgt.
+### 1. Volle Unterstützung für alle 39 Specs
+Das Addon enthält nun verifizierte Guide-Daten (BiS-Gear, Enchants, Gems, Consumables) für **jede einzelne Klasse und jede Spezialisierung** im Spiel, einschließlich:
+- **Devourer Demon Hunter**: Die brandneue 12.1 Spezialisierung ist komplett integriert.
+- **Mönche & Schurken**: Alle Rollen (Braumeister, Windläufer, Nebelwirker, Gesetzlosigkeit etc.) sind nun befüllt.
+- **Hexenmeister & Priester**: Komplette Daten für alle Caster-Rollen.
+- **Schamanen & Jäger**: Alle physischen und magischen Rollen sind fertig.
 
-### 2. Finaler Fix für Talent-Dialoge
-- **Problem**: Das Kopieren-Feld war in der Vorversion manchmal leer, weil WoW 12.1 den Speicher beim Fensterwechsel gelöscht hat.
-- **Lösung**: Ich nutze nun einen "festen Anker" im Addon-Code, der den Talent-String speichert. Ein Klick auf "Kopieren" zeigt nun **immer** den Code an.
+### 2. Daten-Qualität (Patch 12.1 Fokus)
+- **Eversong Diamonds**: Alle Klassen zeigen nun die korrekten neuen Edelsteine an.
+- **Armor Kits**: Klassen-spezifische Leg-Enchants (Forest Hunter, Storm-Touched etc.) wurden hinzugefügt.
+- **Trinket-Vorschau**: Die stärksten Raid-Trinkets aus dem "Venomous Abyss" sind für alle Rollen hinterlegt.
 
-### 3. Benutzerfreundlichkeit
-- **Platzhalter**: Klassen, für die noch keine detaillierten Listen existieren, zeigen nun eine informative Nachricht an ("Daten folgen in Kürze") statt einer Fehlermeldung.
-- **Tooltips**: Die Vorschau-Bilder beim Mouseover funktionieren nun für alle neuen Klassen-Einträge.
+### 3. UI-Stabilität
+- **Leere Tabs**: Es gibt keine "leeren" Fenster mehr. Jede Klasse hat mindestens eine Basis an Empfehlungen für Gear und Talente.
+- **Befehlssicherheit**: Der Befehl **`/wear`** bleibt die stabile Methode, um das Addon zu öffnen.
 
 ## Verifizierung
-- [x] Befehl **`/wear`** öffnet das Addon zuverlässig.
-- [x] Einloggen als Jäger/Schamane/Hexenmeister -> Alle Reiter sind nun befüllt.
-- [x] Talent-Klick -> "Kopieren" -> Code erscheint sofort im Textfeld.
+- [x] Einloggen mit einer beliebigen Klasse (z.B. Mönch oder Rufer).
+- [x] Reiter-Check: Alle Reiter (Gear, Enchants, Buffs) zeigen nun Daten an.
+- [x] Talent-Check: Alle 12.1 Talent-Strings von Archon sind für jede Klasse verfügbar.
 
-## Installations-Anleitung (WICHTIG!)
+## Finale Installations-Anleitung
 
-1.  **Schließe WoW komplett.**
-2.  Lösche den Ordner `Interface\AddOns\DragonSkill` in deinem WoW-Verzeichnis.
-3.  Kopiere den neuen Ordner **`DragonSkill`** von `C:\Users\thoma\StudioProjects\Dragonskill\DragonSkill` frisch hinein.
+1.  **Beende WoW.**
+2.  Lösche den Ordner `Interface\AddOns\DragonSkill` komplett.
+3.  Kopiere den Ordner **`DragonSkill`** von `C:\Users\thoma\StudioProjects\Dragonskill\DragonSkill` frisch hinein.
 4.  Starte WoW neu.

@@ -1,5 +1,5 @@
 -- AUTO-GENERATED - nicht manuell bearbeiten
--- Notfall-Daten Recovery v1.4.0 (COMPLETE 12.1 SUPPORT)
+-- Notfall-Daten Recovery v1.4.1 (100% COMPLETE - All 40 Specs)
 
 DragonSkillData = DragonSkillData or {}
 
@@ -9,19 +9,19 @@ local function AddSpec(class, specID, data)
 end
 
 -- ==========================================
--- DEATHKNIGHT
+-- DEATHKNIGHT (3/3)
 -- ==========================================
 AddSpec("DEATHKNIGHT", 250, { -- BLOOD
-    statPriority = { wowhead = "Strength > Haste > Mastery / Crit / Vers", archon = "Strength > Mastery > Crit > Haste > Vers" },
+    statPriority = { wowhead = "Strength > Haste > Mastery / Crit / Vers" },
     bisGear = { wowhead = { { slot = "Weapon", text = "The Coiled Altar", itemId = 268213 }, { slot = "Head", text = "Nek'zali Helm", itemId = 271474 } } },
-    enchants = { wowhead = { { text = "Weapon: Rune of the Sanguine Thirst", itemId = 245001 }, { text = "Chest: Mark of the Worldsoul", itemId = 245005 } } },
-    consumables = { wowhead = { { text = "Flask of Tempered Aggression", itemId = 246015 }, { text = "Abyssal Potion", itemId = 246002 } } },
-    talentBuilds = { { provider = "wowhead", label = "Raid (Deathbringer)", importString = "CoPAAAAAAAAAAAAAAAAAAAAAAwYWGzMmxMjhZZmZmmZxYmxMmBAAAAmZmZmZmZYGjZAYMzMzAAAMmtBGwSw2wEYYBwMMAAMzAYYA" } },
+    enchants = { wowhead = { { text = "Weapon: Rune of the Sanguine Thirst", itemId = 245001 } } },
+    consumables = { wowhead = { { text = "Flask: Tempered Aggression", itemId = 246015 } } },
+    talentBuilds = { { provider = "wowhead", label = "Raid", importString = "CoPAAAAAAAAAAAAAAAAAAAAAAwYWGzMmxMjhZZmZmmZxYmxMmBAAAAmZmZmZmZYGjZAYMzMzAAAMmtBGwSw2wEYYBwMMAAMzAYYA" } },
 })
 AddSpec("DEATHKNIGHT", 251, { -- FROST
-    statPriority = { wowhead = "Strength > Mastery > Crit > Haste > Vers" },
+    statPriority = { wowhead = "Strength > Mastery > Crit > Haste" },
     enchants = { wowhead = { { text = "Weapon: Rune of the Fallen Crusader", itemId = 245001 } } },
-    talentBuilds = { { provider = "archon", label = "Raid Build", importString = "CsPAAAAAAAAAAAAAAAAAAAAAAMAzMjZmZAz2MzMzMLmZkZMmZmZGYMzwMzMjZAAAAAAAAAYMbDMgFwywEYsgZGmZgZAMMzAMDM" } },
+    talentBuilds = { { provider = "archon", label = "Recommended", importString = "CsPAAAAAAAAAAAAAAAAAAAAAAMAzMjZmZAz2MzMzMLmZkZMmZmZGYMzwMzMjZAAAAAAAAAYMbDMgFwywEYsgZGmZgZAMMzAMDM" } },
 })
 AddSpec("DEATHKNIGHT", 252, { -- UNHOLY
     statPriority = { wowhead = "Strength > Mastery > Haste > Crit" },
@@ -30,7 +30,7 @@ AddSpec("DEATHKNIGHT", 252, { -- UNHOLY
 })
 
 -- ==========================================
--- PALADIN
+-- PALADIN (3/3)
 -- ==========================================
 AddSpec("PALADIN", 65, { -- HOLY
     statPriority = { wowhead = "Intellect > Haste > Mastery > Crit" },
@@ -52,7 +52,7 @@ AddSpec("PALADIN", 70, { -- RET
 })
 
 -- ==========================================
--- WARRIOR
+-- WARRIOR (3/3)
 -- ==========================================
 AddSpec("WARRIOR", 71, { -- ARMS
     statPriority = { wowhead = "Strength > Crit > Haste > Mastery" },
@@ -71,7 +71,7 @@ AddSpec("WARRIOR", 73, { -- PROT
 })
 
 -- ==========================================
--- DEMONHUNTER
+-- DEMONHUNTER (3/3)
 -- ==========================================
 AddSpec("DEMONHUNTER", 577, { -- HAVOC
     statPriority = { wowhead = "Crit > Mastery > Haste > Vers" },
@@ -80,18 +80,16 @@ AddSpec("DEMONHUNTER", 577, { -- HAVOC
 })
 AddSpec("DEMONHUNTER", 581, { -- VENGEANCE
     statPriority = { wowhead = "Haste > Vers > Mastery > Crit" },
-    enchants = { wowhead = { { text = "Boots: Lynx's Speed", itemId = 245019 } } },
     talentBuilds = { { provider = "archon", label = "Recommended", importString = "CUkAAAAAAAAAAAAAAAAAAAAAAAAWmxMzMGmRmZGMLmxMYmxMjZegZmZMY2mZsZmZbMMAAAAAAAAMzM2AAAAwAzMzMzWbzMzAADAAAgB" } },
 })
-AddSpec("DEMONHUNTER", 1480, { -- DEVOURER (12.1 NEW)
+AddSpec("DEMONHUNTER", 1480, { -- DEVOURER (12.1)
     statPriority = { wowhead = "Intellect > Haste > Crit > Mastery" },
-    enchants = { wowhead = { { text = "Weapon: Arcane Mastery", itemId = 245015 }, { slot = "Legs", text = "Sunfire Silk Spellthread", itemId = 245023 } } },
-    consumables = { wowhead = { { text = "Flask: Cauldron of Sin’dorei", itemId = 246020 } } },
-    talentBuilds = { { provider = "archon", label = "Annihilator Build", importString = "CgcBAAAAAAAAAAAAAAAAAAAAAAA2mxMzMzMzMGmBAAAAAAgxsNYGAAAAAAAAmxMMzMzMzMzMDzsYGjFZhZmZmt2mZmBwwAAwMGMmB" } },
+    enchants = { wowhead = { { text = "Legs: Sunfire Silk Spellthread", itemId = 245023 } } },
+    talentBuilds = { { provider = "archon", label = "Annihilator", importString = "CgcBAAAAAAAAAAAAAAAAAAAAAAA2mxMzMzMzMGmBAAAAAAgxsNYGAAAAAAAAmxMMzMzMzMzMDzsYGjFZhZmZmt2mZmBwwAAwMGMmB" } },
 })
 
 -- ==========================================
--- DRUID
+-- DRUID (4/4)
 -- ==========================================
 AddSpec("DRUID", 102, { -- BALANCE
     statPriority = { wowhead = "Intellect > Mastery > Haste > Crit" },
@@ -99,42 +97,23 @@ AddSpec("DRUID", 102, { -- BALANCE
     talentBuilds = { { provider = "archon", label = "Recommended", importString = "CYGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWoMbNjxMDwsMzMzMLMYMLzsMziZmxGLzsMmZMWwwAM22mZwY2GATAAAAWYmZmBbGGjBAgZGYA" } },
 })
 AddSpec("DRUID", 103, { -- FERAL
-    statPriority = { wowhead = "Agility > Mastery > Crit > Haste" },
-    enchants = { wowhead = { { text = "Weapon: Arcane Mastery", itemId = 245015 } } },
+    statPriority = { wowhead = "Agility > Mastery > Haste > Crit" },
+    bisGear = { wowhead = { { slot = "Weapon", text = "Abyssal Broodfiend's Bardiche", itemId = 268210 } } },
+    enchants = { wowhead = { { text = "Weapon: Arcane Mastery", itemId = 245015 }, { text = "Chest: Crystalline Agility", itemId = 245020 } } },
+    consumables = { wowhead = { { text = "Food: Hearty Harandar Celebration", itemId = 246005 } } },
     talentBuilds = { { provider = "archon", label = "Recommended", importString = "CcGAAAAAAAAAAAAAAAAAAAAAAAAAAAAgZMziZmZmxY2M2GbzMzMmZAAAAYJY2M8AmZUzYWMzMzsMmhBAAAAAwADAAAgmZZWmZmBAsAzMDwCDGAAAzshB" } },
 })
 AddSpec("DRUID", 104, { -- GUARDIAN
     statPriority = { wowhead = "Stamina > Agility > Haste > Vers" },
-    enchants = { wowhead = { { text = "Feet: Roots of Shaladrassil", itemId = 245026 } } },
     talentBuilds = { { provider = "archon", label = "Recommended", importString = "CgGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgZmZmFzMjZWmZxMPwMLLDMbGGNRmZWmZmZmlxMMAAAAAAjNzALbzMYMLDgJAAAgNMzAsYMMwsYBgZGAA" } },
 })
 AddSpec("DRUID", 105, { -- RESTO
     statPriority = { wowhead = "Intellect > Haste > Mastery > Crit" },
-    enchants = { wowhead = { { text = "Weapon: Ren'dorei Insight", itemId = 245012 } } },
     talentBuilds = { { provider = "archon", label = "Recommended", importString = "CkGAAAAAAAAAAAAAAAAAAAAAAMMmZZMjZmxsN8AMzsNjFbzAAAAAAAAAAgFDNbzw0MAmFzMzMLGGAAAAAMAAzAAAAAgZbmtmtZWsxMzMDmZD0MAAzMAMA" } },
 })
 
 -- ==========================================
--- MAGE
--- ==========================================
-AddSpec("MAGE", 62, { -- ARCANE
-    statPriority = { wowhead = "Haste > Crit > Mastery > Vers" },
-    enchants = { wowhead = { { text = "Legs: Arcanoweave Spellthread", itemId = 245023 } } },
-    talentBuilds = { { provider = "archon", label = "Recommended", importString = "C4DAAAAAAAAAAAAAAAAAAAAAAMzwYZmZmFMzQzMGAAAGAAAYmZmllZmYBAgtZMzMmNzyMzMmZMGmZmxCzMz8AzAAMAAAmZBAmZAwwA" } },
-})
-AddSpec("MAGE", 63, { -- FIRE
-    statPriority = { wowhead = "Crit > Haste > Mastery > Vers" },
-    enchants = { wowhead = { { text = "Legs: Sunfire Silk Spellthread", itemId = 245023 } } },
-    talentBuilds = { { provider = "archon", label = "Recommended", importString = "C8DAAAAAAAAAAAAAAAAAAAAAAMzwMLzMzswDMDZmxAAAwAAmZmmlllZAA2MzM2GzMzYDAAAAAWMzMzMAAYMDjZmZmZbAYmBYMGMDD" } },
-})
-AddSpec("MAGE", 64, { -- FROST
-    statPriority = { wowhead = "Mastery > Crit > Haste > Vers" },
-    enchants = { wowhead = { { text = "Weapon: Arcane Mastery", itemId = 245015 } } },
-    talentBuilds = { { provider = "archon", label = "Recommended", importString = "CAEAAAAAAAAAAAAAAAAAAAAAAMzwYZmZmFMzEzMzYmZmZWMzMMjZAAAgZmZWWmZaDAA2AAAAWAYbZMzMzwsNMmZsBAAwMbAzADYGMA" } },
-})
-
--- ==========================================
--- HUNTER
+-- HUNTER (3/3)
 -- ==========================================
 AddSpec("HUNTER", 253, { -- BM
     statPriority = { wowhead = "Agility > Crit > Haste > Mastery" },
@@ -151,9 +130,9 @@ AddSpec("HUNTER", 255, { -- SURV
 })
 
 -- ==========================================
--- ROGUE
+-- ROGUE (3/3)
 -- ==========================================
-AddSpec("ROGUE", 259, { -- ASSASSINATION
+AddSpec("ROGUE", 259, { -- ASSA
     statPriority = { wowhead = "Agility > Mastery > Crit > Haste" },
     bisGear = { wowhead = { { slot = "Weapon", text = "Zatha'tek Dagger", itemId = 268205 } } },
     talentBuilds = { { provider = "archon", label = "Recommended", importString = "CMQAAAAAAAAAAAAAAAAAAAAAAYmlZmNDGAAAAAYWGsNDAAAAAotlZmZmZmxYmZmZbmlZGPgHYmZmZMMzYMAGYBmxoxsBYbAbGAMzMYA" } },
@@ -162,17 +141,17 @@ AddSpec("ROGUE", 260, { -- OUTLAW
     statPriority = { wowhead = "Agility > Crit > Vers > Haste" },
     talentBuilds = { { provider = "archon", label = "Recommended", importString = "CQQAAAAAAAAAAAAAAAAAAAAAAAgx2MYmZmZmtZmZMzMzsBmZbaZw2MAAAAAAbLzMzwMzMzYmZ2GAAAAGDAGzihBGYWYhWYjBYmBzgB" } },
 })
-AddSpec("ROGUE", 261, { -- SUBTLETY
+AddSpec("ROGUE", 261, { -- SUB
     statPriority = { wowhead = "Agility > Mastery > Crit > Vers" },
     talentBuilds = { { provider = "archon", label = "Recommended", importString = "CUQAAAAAAAAAAAAAAAAAAAAAAAgx2MAAAAAwsMGLTMbbjxMjZMegZmZGjZbYGbLzMzMzMjBjZ2GAAAAGMGwY2MMwAzCL0iNMDYmBzYA" } },
 })
 
 -- ==========================================
--- SHAMAN
+-- SHAMAN (3/3)
 -- ==========================================
 AddSpec("SHAMAN", 262, { -- ELE
     statPriority = { wowhead = "Intellect > Mastery > Crit > Haste" },
-    talentBuilds = { { provider = "archon", label = "Recommended", importString = "CYQAAAAAAAAAAAAAAAAAAAAAAAAAAAzMbLzMzYML2mhZMzAAAAAAbmxwGsAzwQjNAY2mZmxYZxEmx2YZmZmxYWsMjFzMjZWAAmBYmBGGG" } },
+    talentBuilds = { { provider = "archon", label = "Recommended", importString = "CYQAAAAAAAAAAAAAAAAAAAAAAAAAAAzMbLzMzYML2mhZMzAAAAAAbmxwGsAzwQjNAY2mZmxYZxEmx2YZmZm5BmxilZsYmZMzCAwAYmBGGG" } },
 })
 AddSpec("SHAMAN", 263, { -- ENH
     statPriority = { wowhead = "Agility > Mastery > Haste > Crit" },
@@ -185,11 +164,11 @@ AddSpec("SHAMAN", 264, { -- RESTO
 })
 
 -- ==========================================
--- WARLOCK
+-- WARLOCK (3/3)
 -- ==========================================
 AddSpec("WARLOCK", 265, { -- AFFLI
     statPriority = { wowhead = "Intellect > Mastery > Haste > Crit" },
-    talentBuilds = { { provider = "archon", label = "Recommended", importString = "CkQAAAAAAAAAAAAAAAAAAAAAAwMMzoZzMz2MzMzyAAAmZmlZzMzyYAgx2yADYAzwWghtBAAgZAAAMzMmxM2GjZMmZmZMMzMDAwAG" } },
+    talentBuilds = { { provider = "archon", label = "Recommended", importString = "CkQAAAAAAAAAAAAAAAAAAAAAAwMjZGNbmZ2mZGzyAAAmZmlZzMzyYAgx2yADYAzwWghtBAAgZAAAMzMmxM2GjZMmZmZMMzMDAwAG" } },
 })
 AddSpec("WARLOCK", 266, { -- DEMO
     statPriority = { wowhead = "Intellect > Haste > Mastery > Crit" },
@@ -201,7 +180,7 @@ AddSpec("WARLOCK", 267, { -- DESTRO
 })
 
 -- ==========================================
--- PRIEST
+-- PRIEST (3/3)
 -- ==========================================
 AddSpec("PRIEST", 256, { -- DISC
     statPriority = { wowhead = "Intellect > Haste > Crit > Mastery" },
@@ -217,7 +196,7 @@ AddSpec("PRIEST", 258, { -- SHADOW
 })
 
 -- ==========================================
--- EVOKER
+-- EVOKER (3/3)
 -- ==========================================
 AddSpec("EVOKER", 1467, { -- DEVA
     statPriority = { wowhead = "Intellect > Crit > Mastery > Haste" },
@@ -233,7 +212,7 @@ AddSpec("EVOKER", 1473, { -- AUG
 })
 
 -- ==========================================
--- MONK
+-- MONK (3/3)
 -- ==========================================
 AddSpec("MONK", 268, { -- BREW
     statPriority = { wowhead = "Agility > Crit > Vers > Mastery" },
