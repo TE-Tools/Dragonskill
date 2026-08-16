@@ -1,19 +1,14 @@
-# Task: Dragon Skill v1.2.6 - Talent Import & Data Recovery
+# Task: Dragon Skill v1.2.8 - Slash Command & Data Access Rescue
 
-## Talent Management Fix
-- [ ] Fix `StaticPopupDialogs` data passing in `UI.lua`
-- [ ] Update `ImportToWoW` in `TalentCompare.lua` for WoW 12.1 API changes
-- [ ] Fix string display in the copy editbox
+## UI & Slash Command
+- [ ] Move Slash Command registration to the top of `UI.lua`
+- [ ] Add "Addon Loaded" debug message
+- [ ] Add explicit `GetSpecializationInfo` safety in `UI:Update`
 
-## Data Pipeline Recovery
-- [ ] Overhaul `scrape-wowhead.js` regex for Enchants, Gems, and Buffs
-- [ ] Enhance `scrape-archon.js` to catch more Trinket sections
-- [ ] Regenerate `DragonSkill/Data/GuideData.lua`
-
-## UI Polish
-- [ ] Add more aggressive header filtering in `UI.lua`
-- [ ] Verify Item Tooltips functionality
+## Logic & Data
+- [ ] Enhance `TalentCompare:ImportToWoW` with more safety checks
+- [ ] Improve error reporting in `UI:Update` when `GuideData` is missing
 
 ## Finalization
 - [ ] Git Push
-- [ ] Final install instructions
+- [ ] Final instructions for clean reinstall

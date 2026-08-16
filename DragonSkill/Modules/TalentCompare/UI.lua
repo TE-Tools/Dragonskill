@@ -1,11 +1,13 @@
--- Dragon Skill - Haupt UI (v1.2.7)
--- Fix für Talent-Import und Daten-Anzeige unter WoW 12.1.
+-- Dragon Skill - Haupt UI (v1.2.9)
+-- Ultimative Reparatur für Klicks und Datenanzeige.
 
 local UI = {}
 local currentTab = 1
 local tabs = {"Talente", "Stats", "Trinkets", "Crafting", "Rotation", "Gear", "Enchants", "Buffs"}
 
--- Statische Dialoge mit EXTREM expliziter Datenübergabe
+-- Hilfe: Sicherer Daten-Speicher für Dialoge
+local popupData = nil
+
 StaticPopupDialogs["DRAGONSKILL_ACTION"] = {
     text = "Build: %s\nMatch: %d%%\n\nWas möchtest du tun?",
     button1 = "Kopieren",
@@ -13,32 +15,27 @@ StaticPopupDialogs["DRAGONSKILL_ACTION"] = {
     button3 = "Abbrechen",
     OnAccept = function(self)
         -- Button 1: Kopieren
-        StaticPopup_Show("DRAGONSKILL_COPY", nil, nil, self.data)
+        StaticPopup_Show("DRAGONSKILL_COPY", nil, nil, popupData)
     end,
     OnCancel = function(self, data, reason)
-        -- Button 2: Neu anlegen (Blizzard Logik!)
-        if reason == "clicked" then
+        -- Button 2: Neu anlegen
+        if reason == "clicked" and popupData then
             local TC = DragonSkill:GetModule("TalentCompare")
-            if TC and self.data then
-                print("|cff00ff00Dragon Skill:|r Sende Build an Blizzard API...")
-                TC:ImportToWoW(self.data.importString, self.data.label)
-            end
+            if TC then TC:ImportToWoW(popupData.importString, popupData.label) end
         end
     end,
     timeout = 0, whileDead = true, hideOnEscape = true,
 }
 
 StaticPopupDialogs["DRAGONSKILL_COPY"] = {
-    text = "Strg+C zum Kopieren drücken:",
+    text = "Markierten Text mit Strg+C kopieren:",
     button1 = "Fertig",
     hasEditBox = 1,
     OnShow = function(self, data)
-        -- Fallback: data kann Tabelle oder String sein
-        local buildString = ""
-        if type(data) == "table" then buildString = data.importString or ""
-        else buildString = tostring(data) end
-
-        self.editBox:SetText(buildString)
+        local code = ""
+        if type(data) == "table" then code = data.importString or ""
+        else code = tostring(data) end
+        self.editBox:SetText(code)
         self.editBox:SetFocus()
         self.editBox:HighlightText()
     end,
@@ -46,7 +43,7 @@ StaticPopupDialogs["DRAGONSKILL_COPY"] = {
 }
 
 function UI:Init()
-    if DragonSkillMainFrame then return end
+    if self.frame then return end
 
     local f = CreateFrame("Frame", "DragonSkillMainFrame", UIParent, "ButtonFrameTemplate")
     f:SetSize(450, 550)
@@ -58,7 +55,7 @@ function UI:Init()
     f:SetScript("OnDragStart", f.StartMoving)
     f:SetScript("OnDragStop", f.StopMovingOrSizing)
 
-    if f.SetTitle then f:SetTitle("Dragon Skill v1.2.7") end
+    if f.SetTitle then f:SetTitle("Dragon Skill") end
     if f.portrait then f.portrait:SetTexture("Interface\\Icons\\Inv_misc_head_dragon_01") end
 
     if f.Inset then
@@ -90,7 +87,6 @@ function UI:Init()
     PanelTemplates_SetTab(f, 1)
 
     SLASH_DRAGONSKILL1 = "/ds"
-    SLASH_DRAGONSKILL2 = "/dragonskill"
     SlashCmdList["DRAGONSKILL"] = function()
         if f:IsShown() then f:Hide() else f:Show(); UI:Update() end
     end
@@ -125,7 +121,7 @@ function UI:Update()
     local guideData = DragonSkill.Database:GetGuideData(class, specID)
 
     if not guideData then
-        content.text:SetText("|cffff0000FEHLER:|r Keine Guide-Daten für " .. tostring(class) .. " (ID " .. tostring(specID) .. ") gefunden.\nBitte stelle sicher, dass GuideData.lua im Addon-Ordner liegt.")
+        content.text:SetText("|cffff0000DATEN-FEHLER:|r Keine Daten gefunden.\nBitte WoW neu starten und Ordner prüfen.")
         return
     end
 
@@ -151,18 +147,17 @@ function UI:DrawTalents(content, guideData)
     for i, build in ipairs(guideData.talentBuilds) do
         local btn = self.talentBtns[i]
         if not btn then
-            btn = CreateFrame("Button", "DragonSkillBuildBtn_"..i, content, "UIPanelButtonTemplate")
+            btn = CreateFrame("Button", "DragonSkill_TalentBtn_"..i, content, "UIPanelButtonTemplate")
             btn:SetSize(360, 32)
-            btn:SetFrameLevel(content:GetFrameLevel() + 5)
             self.talentBtns[i] = btn
         end
         btn:SetPoint("TOPLEFT", 10, yOffset)
         btn:SetText(string.format("[%s] %s", build.provider:upper(), build.label))
         btn:SetScript("OnClick", function()
+            popupData = build -- Global speichern für den Dialog
             local current = TC:GetCurrentBuildString()
             local result = TC:Compare(build.importString, current)
-            -- Popup anzeigen und Build-Tabelle übergeben
-            StaticPopup_Show("DRAGONSKILL_ACTION", build.label, result.similarity or 0, build)
+            StaticPopup_Show("DRAGONSKILL_ACTION", build.label, result.similarity or 0)
         end)
         btn:Show()
         yOffset = yOffset - 38
@@ -182,7 +177,7 @@ function UI:Helper_DrawListWithIcons(content, items, title)
     for i, item in ipairs(items) do
         local row = self.listRows[i]
         if not row then
-            row = CreateFrame("Button", "DragonSkillListRow_"..currentTab.."_"..i, content)
+            row = CreateFrame("Button", "DragonSkill_Row_"..currentTab.."_"..i, content)
             row:SetSize(360, 26)
             row:SetFrameLevel(content:GetFrameLevel() + 5)
             row:EnableMouse(true)
@@ -198,7 +193,6 @@ function UI:Helper_DrawListWithIcons(content, items, title)
         local texture = "Interface\\Icons\\Inv_misc_questionmark"
         local itemName = item.text or item.name or "Unbekannt"
 
-        -- Filter Header
         if itemName:lower() == "slot" or itemName:lower() == "item" then goto next_item end
 
         if item.itemId then texture = C_Item.GetItemIconByID(item.itemId) or texture
@@ -207,7 +201,6 @@ function UI:Helper_DrawListWithIcons(content, items, title)
         row.icon:SetTexture(texture)
         row.text:SetText((item.slot and "|cff00ff00"..item.slot..":|r " or "") .. itemName)
 
-        -- Tooltip
         row:SetScript("OnEnter", function(self)
             GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
             if item.itemId then GameTooltip:SetItemByID(item.itemId)
@@ -262,15 +255,16 @@ end
 
 function UI:DrawEnchants(content, guideData)
     if guideData.enchants and guideData.enchants.wowhead and #guideData.enchants.wowhead > 0 then
-        self:Helper_DrawListWithIcons(content, guideData.enchants.wowhead, "|cffffff00Verzauberungen (Wowhead):|r")
+        self:Helper_DrawListWithIcons(content, guideData.enchants.wowhead, "|cffffff00VZ & Steine (Wowhead):|r")
     else content.text:SetText("Keine Enchants gefunden.") end
 end
 
 function UI:DrawBuffs(content, guideData)
     if guideData.consumables and guideData.consumables.wowhead and #guideData.consumables.wowhead > 0 then
         self:Helper_DrawListWithIcons(content, guideData.consumables.wowhead, "|cffffff00Buffs (Wowhead):|r")
-    else content.text:SetText("Keine Buff-Daten gefunden.") end
+    else content.text:SetText("Keine Buffs gefunden.") end
 end
 
+print("|cff00ff00Dragon Skill v1.2.9 geladen!|r")
 DragonSkill.Events:On("PLAYER_LOGIN", function() UI:Init() end)
 DragonSkill.UI = UI

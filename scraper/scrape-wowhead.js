@@ -1,5 +1,5 @@
 /**
- * Dragon Skill - Wowhead Talent Scraper (v1.2.8 - Universal Keyword Hunter)
+ * Dragon Skill - Wowhead Talent Scraper (v1.2.9 - Safety Merge)
  */
 
 const fs = require("fs");
@@ -17,10 +17,12 @@ async function fetchPage(url) {
   try {
     const res = await fetch(url, {
       headers: {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36"
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
+        "Accept-Language": "en-US,en;q=0.9"
       }
     });
-    if (res.status === 403) { console.error(`🛑 Wowhead blockiert (403).`); return null; }
+    if (res.status === 403) return null;
     if (res.status === 404) return null;
     return await res.text();
   } catch (e) { return null; }
@@ -28,8 +30,6 @@ async function fetchPage(url) {
 
 function unescapeWowheadMarkup(html) {
   if (!html) return "";
-  const m = html.match(/name="description" content="([\s\S]*?)"/i); // Not really markup but description often has summaries
-  // The real guide is in var g_guide = {...} or similar
   return html.replace(/\\r\\n|\\n/g, "\n").replace(/\\t/g, "\t").replace(/\\"/g, '"').replace(/\\\//g, "/");
 }
 
@@ -45,12 +45,10 @@ function extractTalents(markup) {
 
 function extractListByKeywords(markup, keywords) {
   const results = [];
-  // Suche alle Listen [ul]...[/ul]
   const listRe = /\[(?:ol|ul)\]([\s\S]*?)\[\/(?:ol|ul)\]/gi;
   let m;
   while ((m = listRe.exec(markup))) {
     const body = m[1];
-    // Prüfe ob der Text davor eines der Keywords enthält
     const preText = markup.slice(Math.max(0, m.index - 200), m.index).toLowerCase();
     if (keywords.some(k => preText.includes(k))) {
       const lis = body.match(/\[li\]([\s\S]*?)\[\/li\]/gi) || [];
@@ -82,18 +80,21 @@ async function main() {
   const buffs = extractListByKeywords(allMarkup, ["food", "flask", "potion", "phial", "rune"]);
 
   const outPath = path.resolve(out);
+  const existing = fs.existsSync(outPath) ? JSON.parse(fs.readFileSync(outPath, "utf-8")) : { talentBuilds: [] };
+
+  // MERGE LOGIC: Nur überschreiben wenn wir neue Daten haben
   const data = {
+    ...existing,
     scrapedAt: new Date().toISOString(),
-    bisGear: { wowhead: gear },
-    enchants: { wowhead: enchants },
-    gems: { wowhead: gems },
-    consumables: { wowhead: buffs },
-    talentBuilds: talents
+    bisGear: { ...existing.bisGear, wowhead: gear.length > 0 ? gear : (existing.bisGear && existing.bisGear.wowhead) || [] },
+    enchants: { ...existing.enchants, wowhead: enchants.length > 0 ? enchants : (existing.enchants && existing.enchants.wowhead) || [] },
+    gems: { ...existing.gems, wowhead: gems.length > 0 ? gems : (existing.gems && existing.gems.wowhead) || [] },
+    consumables: { ...existing.consumables, wowhead: buffs.length > 0 ? buffs : (existing.consumables && existing.consumables.wowhead) || [] },
+    talentBuilds: talents.length > 0 ? [...(existing.talentBuilds || []).filter(b => b.provider !== "wowhead"), ...talents] : existing.talentBuilds
   };
 
   fs.mkdirSync(path.dirname(outPath), { recursive: true });
   fs.writeFileSync(outPath, JSON.stringify(data, null, 2), "utf-8");
-  console.log(`✅ ${out}: Talente: ${talents.length}, Gear: ${gear.length}, Enchants: ${enchants.length}`);
 }
 
 main().catch(console.error);
