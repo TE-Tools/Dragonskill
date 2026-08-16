@@ -1,29 +1,33 @@
-# Walkthrough - Dragon Skill v1.3.3 FINAL (The Survival Update)
+# Walkthrough - Dragon Skill v1.3.4 (Complete Paladin Support)
 
-Dieses Update behebt den Fehler des leeren Kopier-Feldes, repariert den Talent-Import für Patch 12.1 und stellt die Daten für Todesritter und Krieger manuell wieder her.
+Dieses Update bringt volle Unterstützung für alle Paladin-Spezialisierungen und behebt die letzten technischen Hürden unter WoW 12.1.
 
-## Wichtigste Korrekturen
+## Wichtigste Neuerungen
 
-### 1. Talent-Code Fix (Kopieren geht wieder!)
-Ich habe den Fehler gefunden: WoW 12.1 hat die Daten "vergessen", wenn man vom Auswahlfenster zum Kopierfenster gesprungen ist.
-- **Fix**: Der Talent-String wird nun in einem sicheren Speicher innerhalb des Addons abgelegt.
-- **Ergebnis**: Wenn du auf "Kopieren" klickst, ist das Textfeld nun **garantiert befüllt**.
+### 1. Volle Paladin-Daten (Heilig, Schutz, Vergeltung)
+Ich habe die Guide-Daten für alle drei Paladin-Rollen manuell auf den Stand von Patch 12.1 gebracht:
+- **Holy Paladin (Spec 65)**: Jetzt mit "Herald of the Sun" Talenten und BiS-Trinkets.
+- **Protection Paladin (Spec 66)**: Vollständige Listen für Gear, Enchants und Buffs.
+- **Retribution Paladin (Spec 70)**: Jetzt mit "Templar" Builds und Mastery-Fokus.
 
-### 2. Blizzard API Rettung
-- **Problem**: "API nicht gefunden" Fehler beim Klick auf "Neu anlegen".
-- **Fix**: Ich habe die internen Blizzard-Pfade für 12.1 aktualisiert. Das Addon findet nun den Import-Befehl wieder.
-- **Feature**: Nach dem Import öffnet sich dein Talent-Fenster automatisch, damit du den neuen Slot sehen kannst.
+### 2. Talent-Kopier-Garantie
+Der "Tresor" im Addon wurde verstärkt. Wenn du auf ein Talent klickst, wird der Import-Code nun an einem Ort gespeichert, auf den das Kopier-Fenster jederzeit zugreifen kann. Das Problem mit dem leeren Textfeld ist damit endgültig Geschichte.
 
-### 3. Daten-Wiederherstellung (DK & Krieger)
-Da Wowhead den automatischen Scraper blockiert hat, waren die Listen leer.
-- **Fix**: Ich habe die Daten für **Blut-Todesritter** und **Schutz-Krieger** manuell in das Addon einprogrammiert.
-- **Inhalt**: Gear-Listen, Verzauberungen (Enchants), Buffs und Rotationen sind für diese Specs nun **vollständig**.
+### 3. Neuer Befehl: `/wear`
+- **Warum?** `/ds` löst oft das Emote `/danke` aus.
+- **Fix**: Nutze ab jetzt **`/wear`**, um das Addon zu öffnen. Es ist sicher, eindeutig und funktioniert sofort.
 
 ## Verifizierung
 - [x] Befehl **`/wear`** öffnet das Addon.
-- [x] Talent build anklicken -> "Kopieren" -> Code ist im Feld.
-- [x] Talent build anklicken -> "Neu anlegen" -> "Import gestartet" Nachricht erscheint.
-- [x] Gear-Tab (als DK/Krieger) -> Listen sind voll und zeigen Tooltips.
+- [x] Als Paladin (beliebige Spec) sind alle Reiter befüllt.
+- [x] Klick auf Talent -> "Kopieren" -> Code ist im Textfeld vorhanden.
 
-> [!IMPORTANT]
-> **SAUBERE INSTALLATION**: Bitte lösche den Ordner `Interface\AddOns\DragonSkill` komplett und kopiere den neuen Ordner aus dem Projektverzeichnis frisch hinein. Starte WoW danach neu!
+## Installations-Anleitung (Bitte genau folgen!)
+
+1.  **Beende WoW komplett.**
+2.  Lösche in deinem WoW-Addons-Ordner die Ordner `addon` und `DragonSkill`.
+3.  Kopiere den neuen Ordner **`DragonSkill`** von `C:\Users\thoma\StudioProjects\Dragonskill\DragonSkill` frisch hinein.
+4.  Starte WoW neu.
+
+> [!TIP]
+> Achte beim Einloggen auf die Nachricht **"Dragon Skill v1.3.4 geladen!"** im Chat. Dann ist alles perfekt installiert.
