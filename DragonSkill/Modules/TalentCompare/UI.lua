@@ -1,5 +1,5 @@
--- Dragon Skill - Haupt UI (v1.5.6)
--- Gems-Tab, node-Match-%, Spec im Titel
+-- Dragon Skill - Haupt UI (v1.5.7)
+-- Match-Sort, Dedupe, Junk-Filter, ESC schließt Fenster
 
 local UI = {}
 local currentTab = 1
@@ -11,6 +11,50 @@ local CONTENT_WIDTH = 600
 local FRAME_WIDTH = 680
 local FRAME_HEIGHT = 560
 local ROW_WIDTH = 580
+
+local JUNK_NAMES = {
+    ["cheat sheet"] = true,
+    ["talent builds"] = true,
+    ["talent build"] = true,
+    ["rotation"] = true,
+    ["bis gear"] = true,
+    ["consumables"] = true,
+    ["consumable"] = true,
+    ["overview"] = true,
+    ["basics"] = true,
+    ["abilities"] = true,
+    ["guide"] = true,
+    ["macros"] = true,
+    ["weak auras"] = true,
+    ["faq"] = true,
+}
+
+local function IsJunkItem(item)
+    local name = string.lower(tostring(item.text or item.name or ""))
+    if name == "" or name == "unbekannt" then return true end
+    if JUNK_NAMES[name] then return true end
+    -- reine Navigations-Einträge ohne ID
+    if not item.itemId and not item.spellId and not item.slot and #name < 18 then
+        return true
+    end
+    return false
+end
+
+local function FilterItems(items)
+    if not items then return {} end
+    local out = {}
+    local seen = {}
+    for _, item in ipairs(items) do
+        if not IsJunkItem(item) then
+            local key = tostring(item.itemId or "") .. "|" .. tostring(item.spellId or "") .. "|" .. tostring(item.text or item.name or "")
+            if not seen[key] then
+                seen[key] = true
+                table.insert(out, item)
+            end
+        end
+    end
+    return out
+end
 
 ---------------------------------------------------------------------------
 -- Static Popups
@@ -168,7 +212,7 @@ function UI:Init()
     f:SetScript("OnDragStop", f.StopMovingOrSizing)
 
     if f.SetTitle then
-        f:SetTitle("Dragon Skill v" .. (DragonSkill.version or "1.5.6") .. SpecTitleSuffix())
+        f:SetTitle("Dragon Skill v" .. (DragonSkill.version or "1.5.7") .. SpecTitleSuffix())
     end
     if f.portrait then f.portrait:SetTexture("Interface\\Icons\\Inv_misc_head_dragon_01") end
 
@@ -207,6 +251,22 @@ function UI:Init()
     end
     PanelTemplates_SetNumTabs(f, #tabs)
     PanelTemplates_SetTab(f, 1)
+
+    -- ESC schließt Fenster
+    if f.EnableKeyboard then
+        f:EnableKeyboard(true)
+        f:SetPropagateKeyboardInput(true)
+        f:SetScript("OnKeyDown", function(selfFrame, key)
+            if key == "ESCAPE" then
+                selfFrame:SetPropagateKeyboardInput(false)
+                selfFrame:Hide()
+            else
+                selfFrame:SetPropagateKeyboardInput(true)
+            end
+        end)
+    end
+
+    tinsert(UISpecialFrames, "DragonSkillMainFrame")
 
     f:Hide()
     self.frame = f
@@ -257,7 +317,7 @@ function UI:Update()
     if not self.frame or not self.frame.Content then return end
 
     if self.frame.SetTitle then
-        self.frame:SetTitle("Dragon Skill v" .. (DragonSkill.version or "1.5.6") .. SpecTitleSuffix())
+        self.frame:SetTitle("Dragon Skill v" .. (DragonSkill.version or "1.5.7") .. SpecTitleSuffix())
     end
 
     local content = self.frame.Content
@@ -302,13 +362,26 @@ end
 local function ShowDiffForBuild(build, TC)
     if not build or not build.importString or not TC then return end
     cachedBuildData = build
-    local summary = TC:FormatDiffSummary(build.importString, 14)
+    local match = MatchResult(TC, build.importString)
+    local summary = TC:FormatDiffSummary(build.importString, 18)
+    local modeHint = ""
+    if match.mode == "nodes" and match.total then
+        modeHint = string.format(
+            "|cff888888Match %d%% · %d/%d Nodes gleich|r\n\n",
+            match.similarity or 0,
+            (match.total or 0) - (match.diffCount or 0),
+            match.total or 0
+        )
+    elseif match.mode then
+        modeHint = string.format("|cff888888Match %d%% (%s)|r\n\n", match.similarity or 0, match.mode)
+    end
     local title = string.format(
-        "|cffffff00Diff: %s|r\n\n%s",
+        "|cffffff00Diff: %s|r\n\n%s%s",
         tostring(build.label or "Build"),
+        modeHint,
         summary
     )
-    print("|cff00ff00Dragon Skill Diff|r — " .. tostring(build.label or "Build"))
+    print("|cff00ff00Dragon Skill Diff|r — " .. tostring(build.label or "Build") .. string.format(" (%d%%)", match.similarity or 0))
     for line in string.gmatch(summary, "[^\n]+") do
         print(line)
     end
@@ -320,14 +393,38 @@ function UI:DrawTalents(content, guideData)
     local yOffset = -10
     content.extraFS = content.extraFS or {}
 
-    content.text:SetText("|cffffff00=== Guide-Builds ===|r  |cff888888(Links: Aktionen · Rechts: Node-Diff · Match = Nodes)|r")
+    content.text:SetText("|cffffff00=== Guide-Builds ===|r  |cff888888(sortiert nach Match · Links/Rechtsklick)|r")
     content.text:Show()
     yOffset = -28
 
     for _, btn in pairs(self.talentBtns) do btn:Hide() end
     for _, btn in pairs(self.favBtns) do btn:Hide() end
 
-    local builds = guideData.talentBuilds or {}
+    -- Dedupe + Match vorberechnen + sortieren
+    local raw = guideData.talentBuilds or {}
+    local builds = {}
+    local seen = {}
+    for _, build in ipairs(raw) do
+        local key = build.importString or ""
+        if key ~= "" and not seen[key] then
+            seen[key] = true
+            local r = MatchResult(TC, build.importString)
+            table.insert(builds, {
+                importString = build.importString,
+                provider = build.provider,
+                label = build.label,
+                _sim = r.similarity or 0,
+                _mode = r.mode,
+            })
+        end
+    end
+    table.sort(builds, function(a, b)
+        if a._sim == b._sim then
+            return tostring(a.label or "") < tostring(b.label or "")
+        end
+        return a._sim > b._sim
+    end)
+
     if #builds == 0 then
         content.text:SetText("|cffffff00=== Guide-Builds ===|r\n\n|cffffaa00Keine Guide-Talente gefunden.|r")
     else
@@ -343,11 +440,12 @@ function UI:DrawTalents(content, guideData)
             btn:ClearAllPoints()
             btn:SetPoint("TOPLEFT", 10, yOffset)
 
-            local result = MatchResult(TC, build.importString)
-            local sim = result.similarity or 0
+            local sim = build._sim or 0
             local simColor = sim >= 90 and "00ff00" or (sim >= 70 and "ffff00" or "ff6666")
+            local star = (i == 1 and sim >= 90) and "★ " or ""
             btn:SetText(string.format(
-                "[%s] %s  |cff%s%d%%|r",
+                "%s[%s] %s  |cff%s%d%%|r",
+                star,
                 string.upper(tostring(build.provider or "Guide")),
                 tostring(build.label or ("Build " .. i)),
                 simColor,
@@ -359,8 +457,7 @@ function UI:DrawTalents(content, guideData)
                 if mouseButton == "RightButton" then
                     ShowDiffForBuild(build, TC)
                 else
-                    local r = MatchResult(TC, build.importString)
-                    StaticPopup_Show("DRAGONSKILL_ACTION", build.label or "Build", r.similarity or 0)
+                    StaticPopup_Show("DRAGONSKILL_ACTION", build.label or "Build", sim)
                 end
             end)
             btn:Show()
@@ -448,6 +545,8 @@ end
 function UI:Helper_DrawListWithIcons(content, items, title)
     local yOffset = -10
     self:EnsureText(content)
+    items = FilterItems(items)
+
     if title then
         content.text:SetText(title)
         content.text:Show()
@@ -624,7 +723,7 @@ SlashCmdList["WEAR"] = function(msg)
     ToggleUI()
 end
 
-print("|cff00ff00Dragon Skill v" .. (DragonSkill.version or "1.5.6") .. " geladen!|r Nutze /wear, /ds oder /dragonskill")
+print("|cff00ff00Dragon Skill v" .. (DragonSkill.version or "1.5.7") .. " geladen!|r Nutze /wear, /ds oder /dragonskill")
 
 DragonSkill.Events:On("PLAYER_LOGIN", function()
     UI:Init()
