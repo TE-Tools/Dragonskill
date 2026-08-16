@@ -1,8 +1,8 @@
 ## Interface: 120100
 ## Title: Dragon Skill
-## Notes: Talent-Guides, Trinkets, Rotation und Crafting - by wear-alleria
+## Notes: Talent-Guides, BiS, Trinkets, Rotation – Minimap-Button – by wear-alleria
 ## Author: wear-alleria
-## Version: 1.5.9
+## Version: 1.6.0
 ## SavedVariables: DragonSkillDB
 ## SavedVariablesPerCharacter: DragonSkillCharDB
 
