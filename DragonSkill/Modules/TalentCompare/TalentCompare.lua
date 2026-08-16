@@ -1,5 +1,5 @@
--- Dragon Skill - Modul: TalentCompare (v1.2.8)
--- Patch 12.1 Ready: Multi-System & Fallback Import Logic.
+-- Dragon Skill - Modul: TalentCompare (v1.3.3)
+-- Patch 12.1 Ready: Multi-System & Secure Import Logic.
 
 local TalentCompare = {}
 
@@ -48,7 +48,7 @@ function TalentCompare:ImportToWoW(importString, name)
         UIParentLoadAddOn("Blizzard_ClassTalentUI")
     end
 
-    -- 12.1 API Check
+    -- 12.1 API Check & Fallback
     local success = false
     if ClassTalentFrame then
         if ClassTalentFrame.ImportLoadout then
@@ -61,10 +61,9 @@ function TalentCompare:ImportToWoW(importString, name)
     end
 
     if success then
-        print("|cff00ff00Dragon Skill:|r Build '" .. (name or "Build") .. "' an Blizzard-Interface gesendet.")
-        if ClassTalentFrame and not ClassTalentFrame:IsShown() then
-            ToggleTalentFrame()
-        end
+        print("|cff00ff00Dragon Skill:|r Build '" .. (name or "Build") .. "' an Blizzard gesendet.")
+        -- Fenster öffnen zur Kontrolle
+        if not ClassTalentFrame:IsShown() then ToggleTalentFrame() end
     else
         print("|cffff0000Dragon Skill:|r Fehler - Blizzard Import API nicht gefunden. Öffne dein Talent-Fenster ('N') händisch.")
     end

@@ -1,16 +1,17 @@
-# Task: Dragon Skill v1.3.2 - Emergency Repair
+# Task: Dragon Skill v1.3.3 - Final Interaction & Data Fix
 
-## Core System
-- [ ] Refactor `EventManager.lua` to use an anonymous frame (Fixes Forbidden Action)
+## UI & Dialogs
+- [ ] Implement `activeBuild` persistent storage in `UI.lua`
+- [ ] Fix `StaticPopup_Show` data passing in `UI.lua`
+- [ ] Add item tooltip safety in `UI.lua`
 
-## UI & Interaction
-- [ ] Change Slash Command to `/wear` in `UI.lua`
-- [ ] Fix syntax error in `Helper_DrawListWithIcons` (Remove `goto` / `next_item`)
-- [ ] Update startup message to v1.3.2
+## Talent Logic
+- [ ] Refine `ImportToWoW` in `TalentCompare.lua` for 12.1
 
-## Data Verification
-- [ ] Ensure `GuideData.lua` is correctly populated with all sections
+## Data Recovery
+- [ ] Manually populate `GuideData.lua` with Blood DK and Warrior data
+- [ ] Ensure all tabs show "No Data" instead of remaining empty if missing
 
 ## Finalization
 - [ ] Git Push
-- [ ] Final install instructions for user
+- [ ] Final instructions
