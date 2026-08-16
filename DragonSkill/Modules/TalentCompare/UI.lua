@@ -1,12 +1,12 @@
--- Dragon Skill - Haupt UI (v1.3.3)
--- Finale Reparatur für Talent-Import, Dialoge und Item-Vorschau.
+-- Dragon Skill - Haupt UI (v1.3.4)
+-- Ultimative Reparatur für Talent-Import, Dialoge und Daten-Zugriff.
 
 local UI = {}
 local currentTab = 1
 local tabs = {"Talente", "Stats", "Trinkets", "Crafting", "Rotation", "Gear", "Enchants", "Buffs"}
 
--- Persistenter Speicher für den aktiven Build (Fix für 12.1 Popup-Reset)
-local activeBuildData = nil
+-- Persistenter Speicher (Absolut sicher!)
+local lastClickedBuild = { label = "", importString = "" }
 
 -- Statische Popups
 StaticPopupDialogs["DRAGONSKILL_ACTION"] = {
@@ -15,28 +15,27 @@ StaticPopupDialogs["DRAGONSKILL_ACTION"] = {
     button2 = "Neu anlegen",
     button3 = "Abbrechen",
     OnAccept = function(self)
-        -- Button 1: Kopieren
-        StaticPopup_Show("DRAGONSKILL_COPY", nil, nil, activeBuildData)
+        -- Button 1: Kopieren (Übergabe via lastClickedBuild)
+        StaticPopup_Show("DRAGONSKILL_COPY", nil, nil, lastClickedBuild.importString)
     end,
     OnCancel = function(self, data, reason)
         -- Button 2: Neu anlegen
-        if reason == "clicked" and activeBuildData then
+        if reason == "clicked" and lastClickedBuild.importString ~= "" then
             local TC = DragonSkill:GetModule("TalentCompare")
-            if TC then TC:ImportToWoW(activeBuildData.importString, activeBuildData.label) end
+            if TC then TC:ImportToWoW(lastClickedBuild.importString, lastClickedBuild.label) end
         end
     end,
     timeout = 0, whileDead = true, hideOnEscape = true,
 }
 
 StaticPopupDialogs["DRAGONSKILL_COPY"] = {
-    text = "Markierten Text mit Strg+C kopieren:",
+    text = "Strg+C zum Kopieren drücken:",
     button1 = "Fertig",
     hasEditBox = 1,
     OnShow = function(self, data)
-        -- Wir nutzen hier direkt die persistente Variable falls data verloren ging
-        local build = data or activeBuildData
-        local code = (type(build) == "table") and build.importString or tostring(build or "")
-        self.editBox:SetText(code)
+        -- Wir nutzen hier direkt die übergebene data ODER den Cache
+        local code = data or lastClickedBuild.importString
+        self.editBox:SetText(code or "")
         self.editBox:SetFocus()
         self.editBox:HighlightText()
     end,
@@ -56,7 +55,7 @@ function UI:Init()
     f:SetScript("OnDragStart", f.StartMoving)
     f:SetScript("OnDragStop", f.StopMovingOrSizing)
 
-    if f.SetTitle then f:SetTitle("Dragon Skill v1.3.3") end
+    if f.SetTitle then f:SetTitle("Dragon Skill v1.3.4") end
     if f.portrait then f.portrait:SetTexture("Interface\\Icons\\Inv_misc_head_dragon_01") end
 
     if f.Inset then
@@ -110,6 +109,7 @@ function UI:Update()
         content.text:SetPoint("TOPLEFT", 10, -10)
         content.text:SetWidth(360)
         content.text:SetJustifyH("LEFT")
+        content.text:SetSpacing(3)
     end
     content.text:SetText("")
     content.text:Show()
@@ -120,7 +120,7 @@ function UI:Update()
     local guideData = DragonSkill.Database:GetGuideData(class, specID)
 
     if not guideData then
-        content.text:SetText("|cffff0000DATEN-FEHLER:|r Keine Daten gefunden.\n\nSuche für:\n- Klasse: " .. tostring(class) .. "\n- Spec ID: " .. tostring(specID) .. "\n\nBitte WoW neu starten und Ordner prüfen.")
+        content.text:SetText("|cffff0000DATEN-FEHLER:|r\n\nKeine Daten für " .. tostring(class) .. " (Spec " .. tostring(specID) .. ") gefunden.\n\nStelle sicher, dass du die neue Version 1.3.4 installiert hast.")
         return
     end
 
@@ -156,7 +156,7 @@ function UI:DrawTalents(content, guideData)
         btn:SetPoint("TOPLEFT", 10, yOffset)
         btn:SetText(string.format("[%s] %s", build.provider:upper(), build.label))
         btn:SetScript("OnClick", function()
-            activeBuildData = build -- Global speichern!
+            lastClickedBuild = { label = build.label, importString = build.importString }
             local current = TC:GetCurrentBuildString()
             local result = TC:Compare(build.importString, current)
             StaticPopup_Show("DRAGONSKILL_ACTION", build.label, result.similarity or 0)
@@ -262,7 +262,7 @@ function UI:DrawBuffs(content, guideData)
     else content.text:SetText("Keine Buff-Daten gefunden.") end
 end
 
--- Slash Commands (Sofort)
+-- Slash Commands (Sofort registrieren)
 SLASH_WEAR1 = "/wear"
 SLASH_WEAR2 = "/dragonskill"
 SlashCmdList["WEAR"] = function(msg)
@@ -271,6 +271,6 @@ SlashCmdList["WEAR"] = function(msg)
     else UI.frame:Show(); UI:Update() end
 end
 
-print("|cff00ff00Dragon Skill v1.3.3 geladen!|r Nutze /wear")
+print("|cff00ff00Dragon Skill v1.3.4 geladen!|r Nutze /wear")
 DragonSkill.Events:On("PLAYER_LOGIN", function() UI:Init() end)
 DragonSkill.UI = UI
