@@ -1,5 +1,5 @@
--- Dragon Skill - Haupt UI (v1.5.7)
--- Match-Sort, Dedupe, Junk-Filter, ESC schließt Fenster
+-- Dragon Skill - Haupt UI (v1.5.8)
+-- Spec-Skillungen, Minimap, /ds help
 
 local UI = {}
 local currentTab = 1
@@ -13,27 +13,17 @@ local FRAME_HEIGHT = 560
 local ROW_WIDTH = 580
 
 local JUNK_NAMES = {
-    ["cheat sheet"] = true,
-    ["talent builds"] = true,
-    ["talent build"] = true,
-    ["rotation"] = true,
-    ["bis gear"] = true,
-    ["consumables"] = true,
-    ["consumable"] = true,
-    ["overview"] = true,
-    ["basics"] = true,
-    ["abilities"] = true,
-    ["guide"] = true,
-    ["macros"] = true,
-    ["weak auras"] = true,
-    ["faq"] = true,
+    ["cheat sheet"] = true, ["talent builds"] = true, ["talent build"] = true,
+    ["rotation"] = true, ["bis gear"] = true, ["consumables"] = true,
+    ["consumable"] = true, ["overview"] = true, ["basics"] = true,
+    ["abilities"] = true, ["guide"] = true, ["macros"] = true,
+    ["weak auras"] = true, ["faq"] = true,
 }
 
 local function IsJunkItem(item)
     local name = string.lower(tostring(item.text or item.name or ""))
     if name == "" or name == "unbekannt" then return true end
     if JUNK_NAMES[name] then return true end
-    -- reine Navigations-Einträge ohne ID
     if not item.itemId and not item.spellId and not item.slot and #name < 18 then
         return true
     end
@@ -42,8 +32,7 @@ end
 
 local function FilterItems(items)
     if not items then return {} end
-    local out = {}
-    local seen = {}
+    local out, seen = {}, {}
     for _, item in ipairs(items) do
         if not IsJunkItem(item) then
             local key = tostring(item.itemId or "") .. "|" .. tostring(item.spellId or "") .. "|" .. tostring(item.text or item.name or "")
@@ -65,18 +54,17 @@ StaticPopupDialogs["DRAGONSKILL_ACTION"] = {
     button1 = "Kopieren",
     button2 = "Anlegen + Import",
     button3 = "Abbrechen",
-    OnAccept = function(self)
+    OnAccept = function()
         if cachedBuildData then
             StaticPopup_Show("DRAGONSKILL_COPY", nil, nil, cachedBuildData)
         end
     end,
-    OnCancel = function(self, data, reason)
+    OnCancel = function(_, _, reason)
         if reason ~= "clicked" or not cachedBuildData then return end
         local build = cachedBuildData
         local _, class = UnitClass("player")
         local specIndex = GetSpecialization()
         local specID = specIndex and select(1, GetSpecializationInfo(specIndex)) or nil
-
         local saveData = {
             importString = build.importString,
             provider = build.provider,
@@ -86,20 +74,13 @@ StaticPopupDialogs["DRAGONSKILL_ACTION"] = {
         }
         local savedName = DragonSkill.Database:CreateSkilling(nil, saveData)
         print("|cff00ff00Dragon Skill:|r Skilling gespeichert als '|cffffd100" .. tostring(savedName) .. "|r'.")
-
         local TC = DragonSkill:GetModule("TalentCompare")
-        if TC then
-            TC:ImportToWoW(build.importString, build.label or savedName)
-        end
-
+        if TC then TC:ImportToWoW(build.importString, build.label or savedName) end
         if DragonSkill.UI and DragonSkill.UI.frame and DragonSkill.UI.frame:IsShown() then
             DragonSkill.UI:Update()
         end
     end,
-    timeout = 0,
-    whileDead = true,
-    hideOnEscape = true,
-    preferredIndex = 3,
+    timeout = 0, whileDead = true, hideOnEscape = true, preferredIndex = 3,
 }
 
 StaticPopupDialogs["DRAGONSKILL_COPY"] = {
@@ -109,12 +90,7 @@ StaticPopupDialogs["DRAGONSKILL_COPY"] = {
     editBoxWidth = 320,
     OnShow = function(self, data)
         local build = data or cachedBuildData
-        local code = ""
-        if type(build) == "table" then
-            code = build.importString or ""
-        else
-            code = tostring(build or "")
-        end
+        local code = type(build) == "table" and (build.importString or "") or tostring(build or "")
         local function apply()
             local eb = self.EditBox or self.editBox
             if not eb then return end
@@ -132,57 +108,41 @@ StaticPopupDialogs["DRAGONSKILL_COPY"] = {
         local eb = self.EditBox or self.editBox
         if eb then eb:ClearFocus() end
     end,
-    EditBoxOnEnterPressed = function(self)
-        self:GetParent():Hide()
-    end,
-    EditBoxOnEscapePressed = function(self)
-        self:GetParent():Hide()
-    end,
-    timeout = 0,
-    whileDead = true,
-    hideOnEscape = true,
-    preferredIndex = 3,
+    EditBoxOnEnterPressed = function(self) self:GetParent():Hide() end,
+    EditBoxOnEscapePressed = function(self) self:GetParent():Hide() end,
+    timeout = 0, whileDead = true, hideOnEscape = true, preferredIndex = 3,
 }
 
 StaticPopupDialogs["DRAGONSKILL_DELETE"] = {
     text = "Skilling '%s' wirklich löschen?",
     button1 = "Löschen",
     button2 = "Abbrechen",
-    OnAccept = function(self, data)
-        local name = data
-        if name and DragonSkill.Database:DeleteSkilling(name) then
-            print("|cff00ff00Dragon Skill:|r '" .. tostring(name) .. "' gelöscht.")
+    OnAccept = function(_, data)
+        if data and DragonSkill.Database:DeleteSkilling(data) then
+            print("|cff00ff00Dragon Skill:|r '" .. tostring(data) .. "' gelöscht.")
             if DragonSkill.UI and DragonSkill.UI.frame and DragonSkill.UI.frame:IsShown() then
                 DragonSkill.UI:Update()
             end
         end
     end,
-    timeout = 0,
-    whileDead = true,
-    hideOnEscape = true,
-    preferredIndex = 3,
+    timeout = 0, whileDead = true, hideOnEscape = true, preferredIndex = 3,
 }
 
 StaticPopupDialogs["DRAGONSKILL_DIFF"] = {
     text = "%s",
     button1 = "OK",
     button2 = "Kopieren",
-    OnCancel = function(self, data, reason)
+    OnCancel = function(_, _, reason)
         if reason == "clicked" and cachedBuildData then
             StaticPopup_Show("DRAGONSKILL_COPY", nil, nil, cachedBuildData)
         end
     end,
-    timeout = 0,
-    whileDead = true,
-    hideOnEscape = true,
-    preferredIndex = 3,
+    timeout = 0, whileDead = true, hideOnEscape = true, preferredIndex = 3,
 }
 
 local function MatchResult(TC, importString)
     if not TC or not importString then return { similarity = 0 } end
-    if TC.CompareBuild then
-        return TC:CompareBuild(importString)
-    end
+    if TC.CompareBuild then return TC:CompareBuild(importString) end
     return TC:Compare(importString, TC:GetCurrentBuildString())
 end
 
@@ -195,7 +155,97 @@ local function SpecTitleSuffix()
 end
 
 ---------------------------------------------------------------------------
--- Frame Init
+-- Minimap
+---------------------------------------------------------------------------
+
+local minimapBtn
+
+local function UpdateMinimapPosition()
+    if not minimapBtn or not DragonSkillDB then return end
+    local angle = (DragonSkillDB.minimap and DragonSkillDB.minimap.angle) or 220
+    local rad = math.rad(angle)
+    local x, y = math.cos(rad) * 80, math.sin(rad) * 80
+    minimapBtn:SetPoint("CENTER", Minimap, "CENTER", x, y)
+end
+
+local function CreateMinimapButton()
+    if minimapBtn then return end
+    local btn = CreateFrame("Button", "DragonSkillMinimapButton", Minimap)
+    btn:SetSize(32, 32)
+    btn:SetFrameStrata("MEDIUM")
+    btn:SetFrameLevel(8)
+    btn:SetHighlightTexture("Interface\\Minimap\\UI-Minimap-ZoomButton-Highlight")
+
+    local icon = btn:CreateTexture(nil, "ARTWORK")
+    icon:SetSize(20, 20)
+    icon:SetPoint("CENTER", 0, 1)
+    icon:SetTexture("Interface\\Icons\\Inv_misc_head_dragon_01")
+    btn.icon = icon
+
+    local border = btn:CreateTexture(nil, "OVERLAY")
+    border:SetSize(54, 54)
+    border:SetPoint("TOPLEFT")
+    border:SetTexture("Interface\\Minimap\\MiniMap-TrackingBorder")
+
+    btn:RegisterForClicks("LeftButtonUp", "RightButtonUp")
+    btn:RegisterForDrag("LeftButton")
+    btn:SetScript("OnClick", function(_, button)
+        if button == "LeftButton" then
+            if not UI.frame then UI:Init() end
+            if UI.frame:IsShown() then UI.frame:Hide() else UI.frame:Show(); UI:Update() end
+        else
+            print("|cff00ff00Dragon Skill:|r /ds help für Optionen")
+        end
+    end)
+    btn:SetScript("OnDragStart", function(self)
+        self:SetScript("OnUpdate", function()
+            local mx, my = Minimap:GetCenter()
+            local cx, cy = GetCursorPosition()
+            local scale = Minimap:GetEffectiveScale()
+            cx, cy = cx / scale, cy / scale
+            local angle = math.deg(math.atan2(cy - my, cx - mx))
+            if not DragonSkillDB.minimap then DragonSkillDB.minimap = {} end
+            DragonSkillDB.minimap.angle = angle
+            UpdateMinimapPosition()
+        end)
+    end)
+    btn:SetScript("OnDragStop", function(self)
+        self:SetScript("OnUpdate", nil)
+    end)
+    btn:SetScript("OnEnter", function(self)
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:AddLine("Dragon Skill")
+        GameTooltip:AddLine("|cffaaaaaaLinksklick: Fenster|r")
+        GameTooltip:AddLine("|cffaaaaaaZiehen: Position|r")
+        GameTooltip:Show()
+    end)
+    btn:SetScript("OnLeave", function() GameTooltip:Hide() end)
+
+    minimapBtn = btn
+    UpdateMinimapPosition()
+    if DragonSkillDB and DragonSkillDB.minimap and DragonSkillDB.minimap.hide then
+        btn:Hide()
+    else
+        btn:Show()
+    end
+end
+
+function UI:ToggleMinimap()
+    if not DragonSkillDB then return end
+    DragonSkillDB.minimap = DragonSkillDB.minimap or {}
+    DragonSkillDB.minimap.hide = not DragonSkillDB.minimap.hide
+    if not minimapBtn then CreateMinimapButton() end
+    if DragonSkillDB.minimap.hide then
+        minimapBtn:Hide()
+        print("|cff00ff00Dragon Skill:|r Minimap-Button aus")
+    else
+        minimapBtn:Show()
+        print("|cff00ff00Dragon Skill:|r Minimap-Button an")
+    end
+end
+
+---------------------------------------------------------------------------
+-- Frame
 ---------------------------------------------------------------------------
 
 function UI:Init()
@@ -212,7 +262,7 @@ function UI:Init()
     f:SetScript("OnDragStop", f.StopMovingOrSizing)
 
     if f.SetTitle then
-        f:SetTitle("Dragon Skill v" .. (DragonSkill.version or "1.5.7") .. SpecTitleSuffix())
+        f:SetTitle("Dragon Skill v" .. (DragonSkill.version or "1.5.8") .. SpecTitleSuffix())
     end
     if f.portrait then f.portrait:SetTexture("Interface\\Icons\\Inv_misc_head_dragon_01") end
 
@@ -239,9 +289,7 @@ function UI:Init()
         local tab = CreateFrame("Button", "DragonSkillTabBtn" .. i, f, "PanelTabButtonTemplate")
         tab:SetID(i)
         tab:SetText(name)
-        tab:SetScript("OnClick", function(selfBtn)
-            UI:SelectTab(selfBtn:GetID())
-        end)
+        tab:SetScript("OnClick", function(selfBtn) UI:SelectTab(selfBtn:GetID()) end)
         f.Tabs[i] = tab
         if i == 1 then
             tab:SetPoint("TOPLEFT", f, "BOTTOMLEFT", 8, 1)
@@ -252,7 +300,6 @@ function UI:Init()
     PanelTemplates_SetNumTabs(f, #tabs)
     PanelTemplates_SetTab(f, 1)
 
-    -- ESC schließt Fenster
     if f.EnableKeyboard then
         f:EnableKeyboard(true)
         f:SetPropagateKeyboardInput(true)
@@ -277,27 +324,17 @@ end
 
 function UI:SelectTab(id)
     currentTab = id
-    if self.frame then
-        PanelTemplates_SetTab(self.frame, id)
-    end
+    if self.frame then PanelTemplates_SetTab(self.frame, id) end
     self:Update()
 end
 
 function UI:ClearContent(content)
-    local children = { content:GetChildren() }
-    for _, child in ipairs(children) do
-        child:Hide()
-    end
+    for _, child in ipairs({ content:GetChildren() }) do child:Hide() end
     if content.extraFS then
-        for _, fs in ipairs(content.extraFS) do
-            fs:Hide()
-        end
+        for _, fs in ipairs(content.extraFS) do fs:Hide() end
         wipe(content.extraFS)
     end
-    if content.text then
-        content.text:SetText("")
-        content.text:Show()
-    end
+    if content.text then content.text:SetText(""); content.text:Show() end
 end
 
 function UI:EnsureText(content)
@@ -315,18 +352,14 @@ end
 
 function UI:Update()
     if not self.frame or not self.frame.Content then return end
-
     if self.frame.SetTitle then
-        self.frame:SetTitle("Dragon Skill v" .. (DragonSkill.version or "1.5.7") .. SpecTitleSuffix())
+        self.frame:SetTitle("Dragon Skill v" .. (DragonSkill.version or "1.5.8") .. SpecTitleSuffix())
     end
 
     local content = self.frame.Content
     self:ClearContent(content)
     self:EnsureText(content)
-
-    if self.frame.ScrollFrame then
-        self.frame.ScrollFrame:SetVerticalScroll(0)
-    end
+    if self.frame.ScrollFrame then self.frame.ScrollFrame:SetVerticalScroll(0) end
 
     local _, class = UnitClass("player")
     local specIndex = GetSpecialization()
@@ -338,24 +371,15 @@ function UI:Update()
         return
     end
 
-    if currentTab == 1 then
-        self:DrawTalents(content, guideData)
-    elseif currentTab == 2 then
-        self:DrawStats(content, guideData)
-    elseif currentTab == 3 then
-        self:DrawTrinkets(content, guideData)
-    elseif currentTab == 4 then
-        self:DrawCrafting(content, guideData)
-    elseif currentTab == 5 then
-        self:DrawRotation(content, guideData)
-    elseif currentTab == 6 then
-        self:DrawGear(content, guideData)
-    elseif currentTab == 7 then
-        self:DrawEnchants(content, guideData)
-    elseif currentTab == 8 then
-        self:DrawGems(content, guideData)
-    elseif currentTab == 9 then
-        self:DrawBuffs(content, guideData)
+    if currentTab == 1 then self:DrawTalents(content, guideData)
+    elseif currentTab == 2 then self:DrawStats(content, guideData)
+    elseif currentTab == 3 then self:DrawTrinkets(content, guideData)
+    elseif currentTab == 4 then self:DrawCrafting(content, guideData)
+    elseif currentTab == 5 then self:DrawRotation(content, guideData)
+    elseif currentTab == 6 then self:DrawGear(content, guideData)
+    elseif currentTab == 7 then self:DrawEnchants(content, guideData)
+    elseif currentTab == 8 then self:DrawGems(content, guideData)
+    elseif currentTab == 9 then self:DrawBuffs(content, guideData)
     end
 end
 
@@ -366,25 +390,14 @@ local function ShowDiffForBuild(build, TC)
     local summary = TC:FormatDiffSummary(build.importString, 18)
     local modeHint = ""
     if match.mode == "nodes" and match.total then
-        modeHint = string.format(
-            "|cff888888Match %d%% · %d/%d Nodes gleich|r\n\n",
-            match.similarity or 0,
-            (match.total or 0) - (match.diffCount or 0),
-            match.total or 0
-        )
+        modeHint = string.format("|cff888888Match %d%% · %d/%d Nodes gleich|r\n\n",
+            match.similarity or 0, (match.total or 0) - (match.diffCount or 0), match.total or 0)
     elseif match.mode then
         modeHint = string.format("|cff888888Match %d%% (%s)|r\n\n", match.similarity or 0, match.mode)
     end
-    local title = string.format(
-        "|cffffff00Diff: %s|r\n\n%s%s",
-        tostring(build.label or "Build"),
-        modeHint,
-        summary
-    )
+    local title = string.format("|cffffff00Diff: %s|r\n\n%s%s", tostring(build.label or "Build"), modeHint, summary)
     print("|cff00ff00Dragon Skill Diff|r — " .. tostring(build.label or "Build") .. string.format(" (%d%%)", match.similarity or 0))
-    for line in string.gmatch(summary, "[^\n]+") do
-        print(line)
-    end
+    for line in string.gmatch(summary, "[^\n]+") do print(line) end
     StaticPopup_Show("DRAGONSKILL_DIFF", title)
 end
 
@@ -393,17 +406,16 @@ function UI:DrawTalents(content, guideData)
     local yOffset = -10
     content.extraFS = content.extraFS or {}
 
-    content.text:SetText("|cffffff00=== Guide-Builds ===|r  |cff888888(sortiert nach Match · Links/Rechtsklick)|r")
+    local scraped = guideData.scrapedAt and ("  |cff666666Daten: " .. tostring(guideData.scrapedAt):sub(1, 10) .. "|r") or ""
+    content.text:SetText("|cffffff00=== Guide-Builds ===|r  |cff888888(Match-Sort · L/R-Klick)|r" .. scraped)
     content.text:Show()
     yOffset = -28
 
     for _, btn in pairs(self.talentBtns) do btn:Hide() end
     for _, btn in pairs(self.favBtns) do btn:Hide() end
 
-    -- Dedupe + Match vorberechnen + sortieren
     local raw = guideData.talentBuilds or {}
-    local builds = {}
-    local seen = {}
+    local builds, seen = {}, {}
     for _, build in ipairs(raw) do
         local key = build.importString or ""
         if key ~= "" and not seen[key] then
@@ -414,14 +426,11 @@ function UI:DrawTalents(content, guideData)
                 provider = build.provider,
                 label = build.label,
                 _sim = r.similarity or 0,
-                _mode = r.mode,
             })
         end
     end
     table.sort(builds, function(a, b)
-        if a._sim == b._sim then
-            return tostring(a.label or "") < tostring(b.label or "")
-        end
+        if a._sim == b._sim then return tostring(a.label or "") < tostring(b.label or "") end
         return a._sim > b._sim
     end)
 
@@ -443,14 +452,9 @@ function UI:DrawTalents(content, guideData)
             local sim = build._sim or 0
             local simColor = sim >= 90 and "00ff00" or (sim >= 70 and "ffff00" or "ff6666")
             local star = (i == 1 and sim >= 90) and "★ " or ""
-            btn:SetText(string.format(
-                "%s[%s] %s  |cff%s%d%%|r",
-                star,
-                string.upper(tostring(build.provider or "Guide")),
-                tostring(build.label or ("Build " .. i)),
-                simColor,
-                sim
-            ))
+            btn:SetText(string.format("%s[%s] %s  |cff%s%d%%|r",
+                star, string.upper(tostring(build.provider or "Guide")),
+                tostring(build.label or ("Build " .. i)), simColor, sim))
 
             btn:SetScript("OnClick", function(_, mouseButton)
                 cachedBuildData = build
@@ -468,25 +472,30 @@ function UI:DrawTalents(content, guideData)
     yOffset = yOffset - 12
     local favHeader = content:CreateFontString(nil, "OVERLAY", "GameFontNormal")
     favHeader:SetPoint("TOPLEFT", 10, yOffset)
-    favHeader:SetText("|cffffff00=== Meine Skillungen ===|r")
+    favHeader:SetText("|cffffff00=== Meine Skillungen (diese Spec) ===|r")
     favHeader:Show()
     table.insert(content.extraFS, favHeader)
     yOffset = yOffset - 22
 
-    local skillings = DragonSkill.Database:GetSkillings() or {}
+    local skillings = {}
+    if DragonSkill.Database.GetSkillings then
+        skillings = DragonSkill.Database:GetSkillings(true) or {}
+    else
+        skillings = DragonSkill.Database:GetSkillings() or {}
+    end
+
     if #skillings == 0 then
         local empty = content:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
         empty:SetPoint("TOPLEFT", 10, yOffset)
         empty:SetWidth(ROW_WIDTH)
         empty:SetJustifyH("LEFT")
-        empty:SetText("|cff888888Noch keine gespeicherten Skillungen.\nKlicke einen Guide-Build -> Anlegen + Import.|r")
+        empty:SetText("|cff888888Keine Skillungen für diese Spec.\nGuide-Build → Anlegen + Import.|r")
         empty:Show()
         table.insert(content.extraFS, empty)
         yOffset = yOffset - 40
     else
         for i, entry in ipairs(skillings) do
-            local name = entry.name
-            local data = entry.data or {}
+            local name, data = entry.name, entry.data or {}
             local btn = self.favBtns[i]
             if not btn then
                 btn = CreateFrame("Button", "DragonSkillFavBtn_" .. i, content, "UIPanelButtonTemplate")
@@ -521,9 +530,8 @@ function UI:DrawTalents(content, guideData)
 
             local delKey = "del_" .. i
             if not self.favBtns[delKey] then
-                local del = CreateFrame("Button", "DragonSkillFavDel_" .. i, content, "UIPanelButtonTemplate")
-                del:SetSize(60, 28)
-                self.favBtns[delKey] = del
+                self.favBtns[delKey] = CreateFrame("Button", "DragonSkillFavDel_" .. i, content, "UIPanelButtonTemplate")
+                self.favBtns[delKey]:SetSize(60, 28)
             end
             local del = self.favBtns[delKey]
             del:SetParent(content)
@@ -534,7 +542,6 @@ function UI:DrawTalents(content, guideData)
                 StaticPopup_Show("DRAGONSKILL_DELETE", name, nil, name)
             end)
             del:Show()
-
             yOffset = yOffset - 32
         end
     end
@@ -546,12 +553,7 @@ function UI:Helper_DrawListWithIcons(content, items, title)
     local yOffset = -10
     self:EnsureText(content)
     items = FilterItems(items)
-
-    if title then
-        content.text:SetText(title)
-        content.text:Show()
-        yOffset = -30
-    end
+    if title then content.text:SetText(title); content.text:Show(); yOffset = -30 end
 
     self.listRowsByTab[currentTab] = self.listRowsByTab[currentTab] or {}
     local rows = self.listRowsByTab[currentTab]
@@ -587,7 +589,6 @@ function UI:Helper_DrawListWithIcons(content, items, title)
             row.text:SetWidth(ROW_WIDTH - 40)
             rows[i] = row
         end
-
         row:SetParent(content)
         row:ClearAllPoints()
         row:SetPoint("TOPLEFT", 10, yOffset)
@@ -600,40 +601,30 @@ function UI:Helper_DrawListWithIcons(content, items, title)
             texture = C_Spell.GetSpellTexture(item.spellId) or texture
         end
         row.icon:SetTexture(texture)
-
         local prefix = item.slot and ("|cff00ff00" .. item.slot .. ":|r ") or ""
         row.text:SetText(prefix .. itemName)
 
-        local captured = item
-        local capturedName = itemName
+        local captured, capturedName = item, itemName
         row:SetScript("OnEnter", function(selfRow)
             GameTooltip:SetOwner(selfRow, "ANCHOR_RIGHT")
-            if captured.itemId then
-                GameTooltip:SetItemByID(captured.itemId)
-            elseif captured.spellId then
-                GameTooltip:SetSpellByID(captured.spellId)
-            else
-                GameTooltip:SetText(capturedName)
-            end
+            if captured.itemId then GameTooltip:SetItemByID(captured.itemId)
+            elseif captured.spellId then GameTooltip:SetSpellByID(captured.spellId)
+            else GameTooltip:SetText(capturedName) end
             GameTooltip:Show()
         end)
         row:SetScript("OnLeave", function() GameTooltip:Hide() end)
-
         row:Show()
         yOffset = yOffset - 28
     end
-
     content:SetHeight(math.max(400, math.abs(yOffset) + 40))
 end
 
 function UI:DrawStats(content, guideData)
     local SP = DragonSkill:GetModule("StatPriority")
     local txt = "|cffffff00=== Deine Werte ===|r\n"
-    txt = txt .. string.format(
-        "Tempo: %.1f%%\nKritisch: %.1f%%\nMeisterschaft: %.1f%%\nVielseitigkeit: %.1f%%\n",
+    txt = txt .. string.format("Tempo: %.1f%%\nKritisch: %.1f%%\nMeisterschaft: %.1f%%\nVielseitigkeit: %.1f%%\n",
         GetHaste(), GetCritChance(), GetMasteryEffect(),
-        GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_DONE)
-    )
+        GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_DONE))
     local prio = guideData.statPriority
     if SP and SP.GetForCurrentSpec then
         local spData = SP:GetForCurrentSpec()
@@ -642,9 +633,7 @@ function UI:DrawStats(content, guideData)
     if prio then
         txt = txt .. "\n|cffffff00=== Empfehlung ===|r\n"
         txt = txt .. "|cffffd100Wowhead:|r " .. (prio.wowhead or "N/A") .. "\n"
-        if prio.archon then
-            txt = txt .. "|cffffd100Archon:|r " .. (prio.archon or "N/A") .. "\n"
-        end
+        if prio.archon then txt = txt .. "|cffffd100Archon:|r " .. (prio.archon or "N/A") .. "\n" end
     end
     content.text:SetText(txt)
 end
@@ -657,11 +646,8 @@ end
 
 function UI:DrawCrafting(content, guideData)
     local mod = DragonSkill:GetModule("Crafting")
-    if mod and mod.FormatText then
-        content.text:SetText(mod:FormatText(guideData))
-    else
-        content.text:SetText("Keine Crafting-Daten.")
-    end
+    if mod and mod.FormatText then content.text:SetText(mod:FormatText(guideData))
+    else content.text:SetText("Keine Crafting-Daten.") end
 end
 
 function UI:DrawRotation(content, guideData)
@@ -671,78 +657,71 @@ function UI:DrawRotation(content, guideData)
 end
 
 function UI:DrawGear(content, guideData)
-    local items = (guideData.bisGear and guideData.bisGear.wowhead) or {}
-    self:Helper_DrawListWithIcons(content, items, "|cffffff00Best-in-Slot (Wowhead):|r")
+    self:Helper_DrawListWithIcons(content, (guideData.bisGear and guideData.bisGear.wowhead) or {}, "|cffffff00Best-in-Slot (Wowhead):|r")
 end
 
 function UI:DrawEnchants(content, guideData)
-    local items = (guideData.enchants and guideData.enchants.wowhead) or {}
-    self:Helper_DrawListWithIcons(content, items, "|cffffff00Verzauberungen (Wowhead):|r")
+    self:Helper_DrawListWithIcons(content, (guideData.enchants and guideData.enchants.wowhead) or {}, "|cffffff00Verzauberungen (Wowhead):|r")
 end
 
 function UI:DrawGems(content, guideData)
-    local items = (guideData.gems and guideData.gems.wowhead) or {}
-    self:Helper_DrawListWithIcons(content, items, "|cffffff00Gems (Wowhead):|r")
+    self:Helper_DrawListWithIcons(content, (guideData.gems and guideData.gems.wowhead) or {}, "|cffffff00Gems (Wowhead):|r")
 end
 
 function UI:DrawBuffs(content, guideData)
-    local items = (guideData.consumables and guideData.consumables.wowhead) or {}
-    self:Helper_DrawListWithIcons(content, items, "|cffffff00Buffs / Consumables (Wowhead):|r")
+    self:Helper_DrawListWithIcons(content, (guideData.consumables and guideData.consumables.wowhead) or {}, "|cffffff00Buffs / Consumables (Wowhead):|r")
 end
 
 ---------------------------------------------------------------------------
--- Slash + Boot + Spec-Refresh
+-- Slash + Boot
 ---------------------------------------------------------------------------
 
 local function ToggleUI()
     if not UI.frame then UI:Init() end
-    if UI.frame:IsShown() then
-        UI.frame:Hide()
-    else
-        UI.frame:Show()
-        UI:Update()
-    end
+    if UI.frame:IsShown() then UI.frame:Hide()
+    else UI.frame:Show(); UI:Update() end
 end
 
 local function RefreshIfShown()
-    if UI.frame and UI.frame:IsShown() then
-        UI:Update()
-    end
+    if UI.frame and UI.frame:IsShown() then UI:Update() end
+end
+
+local function PrintHelp()
+    print("|cff00ff00Dragon Skill v" .. (DragonSkill.version or "?") .. "|r")
+    print("  /wear | /ds | /dragonskill  – Fenster")
+    print("  /ds help                   – diese Hilfe")
+    print("  /ds minimap                – Minimap an/aus")
+    print("  Talente: Links = Aktion, Rechts = Node-Diff, ESC = schließen")
 end
 
 SLASH_WEAR1 = "/wear"
 SLASH_WEAR2 = "/dragonskill"
 SLASH_WEAR3 = "/ds"
 SlashCmdList["WEAR"] = function(msg)
-    msg = msg and strtrim(msg) or ""
+    msg = msg and strtrim(msg):lower() or ""
     if msg == "testulatek" then
         local BM = DragonSkill:GetModule("BossMechanics")
         if BM and BM.SimulateUlatek then BM:SimulateUlatek() end
         return
     end
+    if msg == "help" or msg == "?" then PrintHelp(); return end
+    if msg == "minimap" then UI:ToggleMinimap(); return end
     ToggleUI()
 end
 
-print("|cff00ff00Dragon Skill v" .. (DragonSkill.version or "1.5.7") .. " geladen!|r Nutze /wear, /ds oder /dragonskill")
+print("|cff00ff00Dragon Skill v" .. (DragonSkill.version or "1.5.8") .. " geladen!|r  /ds help")
 
 DragonSkill.Events:On("PLAYER_LOGIN", function()
     UI:Init()
+    CreateMinimapButton()
 end)
 
 DragonSkill.Events:On("PLAYER_SPECIALIZATION_CHANGED", function()
-    if C_Timer and C_Timer.After then
-        C_Timer.After(0.15, RefreshIfShown)
-    else
-        RefreshIfShown()
-    end
+    if C_Timer and C_Timer.After then C_Timer.After(0.15, RefreshIfShown)
+    else RefreshIfShown() end
 end)
 
-DragonSkill.Events:On("TRAIT_CONFIG_UPDATED", function()
-    RefreshIfShown()
-end)
-
-DragonSkill.Events:On("ACTIVE_TALENT_GROUP_CHANGED", function()
-    RefreshIfShown()
-end)
+DragonSkill.Events:On("TRAIT_CONFIG_UPDATED", RefreshIfShown)
+DragonSkill.Events:On("ACTIVE_TALENT_GROUP_CHANGED", RefreshIfShown)
 
 DragonSkill.UI = UI
