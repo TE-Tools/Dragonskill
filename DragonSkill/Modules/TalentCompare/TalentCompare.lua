@@ -1,31 +1,25 @@
 -- Dragon Skill - Modul: TalentCompare (v1.5.2)
--- Patch 12.1: robusterer Import + Diff
+-- Patch 12.1 Ready: Multi-System & Secure Import Logic.
 
 local TalentCompare = {}
 
 function TalentCompare:GetCurrentBuildString()
-    local configID = C_ClassTalents and C_ClassTalents.GetActiveConfigID and C_ClassTalents.GetActiveConfigID()
+    local configID = C_ClassTalents.GetActiveConfigID()
     if not configID then return nil end
-    if C_Traits and C_Traits.GenerateImportString then
-        return C_Traits.GenerateImportString(configID)
-    end
-    return nil
+    return C_Traits.GenerateImportString(configID)
 end
 
 function TalentCompare:Compare(guideString, currentString)
     if not guideString or not currentString then return { similarity = 0 } end
     if guideString == currentString then return { similarity = 100 } end
-    local a, b = { string.byte(guideString, 1, #guideString) }, { string.byte(currentString, 1, #currentString) }
+    local a, b = {string.byte(guideString, 1, #guideString)}, {string.byte(currentString, 1, #currentString)}
     local diffs, maxLen = 0, math.max(#a, #b)
-    for i = 1, maxLen do
-        if a[i] ~= b[i] then diffs = diffs + 1 end
-    end
+    for i = 1, maxLen do if a[i] ~= b[i] then diffs = diffs + 1 end end
     return { similarity = math.floor(((maxLen - diffs) / maxLen) * 100) }
 end
 
 function TalentCompare:GetDetailedDiff(importString)
     local ok, result = pcall(function()
-        if not C_ClassTalents or not C_ClassTalents.GetImportConfigSlotMap then return {} end
         local map = C_ClassTalents.GetImportConfigSlotMap(importString)
         local configID = C_ClassTalents.GetActiveConfigID()
         if not map or not configID then return {} end
@@ -61,7 +55,8 @@ local function EnsureTalentUI()
     return ClassTalentFrame ~= nil
 end
 
--- Importiert den String in die offizielle Blizzard-Talent-UI (kein Secure-Bypass).
+-- Importiert den Talent-String in die offizielle Blizzard-UI (kein Auto-Speccen).
+-- Returns true bei erfolgreichem API-Aufruf.
 function TalentCompare:ImportToWoW(importString, name)
     if not importString or importString == "" then
         print("|cffff0000Dragon Skill:|r Kein Import-String vorhanden.")
@@ -77,58 +72,64 @@ function TalentCompare:ImportToWoW(importString, name)
 
     local loadoutName = name or "DragonSkill"
     local success = false
-    local errMsg
+    local errMsg = nil
 
-    -- 1) Moderne Frame-Methoden (12.x)
-    if ClassTalentFrame then
+    -- 1) ClassTalentFrame:ImportLoadout (Retail / 12.x)
+    if ClassTalentFrame and type(ClassTalentFrame.ImportLoadout) == "function" then
         local ok, err = pcall(function()
-            if ClassTalentFrame.ImportLoadout then
-                ClassTalentFrame:ImportLoadout(importString, loadoutName, 1)
-                success = true
-            elseif ClassTalentFrame.TalentsTab and ClassTalentFrame.TalentsTab.ImportLoadout then
-                ClassTalentFrame.TalentsTab:ImportLoadout(importString, loadoutName, 1)
-                success = true
-            elseif PlayerSpellsFrame and PlayerSpellsFrame.TalentsFrame and PlayerSpellsFrame.TalentsFrame.ImportLoadout then
-                -- Fallback: neuer PlayerSpells-Frame (je nach Build)
-                PlayerSpellsFrame.TalentsFrame:ImportLoadout(importString, loadoutName, 1)
-                success = true
-            end
+            ClassTalentFrame:ImportLoadout(importString, loadoutName, 1)
         end)
-        if not ok then
+        if ok then
+            success = true
+        else
             errMsg = tostring(err)
-            success = false
         end
     end
 
-    -- 2) C_ClassTalents Fallback falls vorhanden
-    if not success and C_ClassTalents then
+    -- 2) TalentsTab Fallback
+    if not success and ClassTalentFrame and ClassTalentFrame.TalentsTab
+        and type(ClassTalentFrame.TalentsTab.ImportLoadout) == "function" then
         local ok, err = pcall(function()
-            if C_ClassTalents.ImportLoadout then
-                C_ClassTalents.ImportLoadout(importString, loadoutName)
-                success = true
-            elseif C_ClassTalents.ImportTalentLoadout then
-                C_ClassTalents.ImportTalentLoadout(importString, loadoutName)
-                success = true
-            end
+            ClassTalentFrame.TalentsTab:ImportLoadout(importString, loadoutName, 1)
         end)
-        if not ok then
+        if ok then
+            success = true
+        else
+            errMsg = tostring(err)
+        end
+    end
+
+    -- 3) PlayerSpellsFrame (neuere Frame-Namen in manchen Builds)
+    if not success and PlayerSpellsFrame and type(PlayerSpellsFrame.ImportLoadout) == "function" then
+        local ok, err = pcall(function()
+            PlayerSpellsFrame:ImportLoadout(importString, loadoutName, 1)
+        end)
+        if ok then
+            success = true
+        else
             errMsg = tostring(err)
         end
     end
 
     if success then
         print("|cff00ff00Dragon Skill:|r Build '" .. loadoutName .. "' an Blizzard gesendet.")
-        if ClassTalentFrame and not ClassTalentFrame:IsShown() and ToggleTalentFrame then
-            ToggleTalentFrame()
-        elseif PlayerSpellsFrame and not PlayerSpellsFrame:IsShown() and TogglePlayerSpellsFrame then
-            pcall(TogglePlayerSpellsFrame)
-        elseif ToggleTalentFrame then
-            ToggleTalentFrame()
+        if ClassTalentFrame and not ClassTalentFrame:IsShown() then
+            pcall(ToggleTalentFrame)
+        elseif PlayerSpellsFrame and not PlayerSpellsFrame:IsShown() then
+            pcall(function()
+                if PlayerSpellsFrame.Show then PlayerSpellsFrame:Show() end
+            end)
+        else
+            pcall(ToggleTalentFrame)
         end
         return true
     end
 
-    print("|cffff0000Dragon Skill:|r Import-API nicht gefunden" .. (errMsg and (" (" .. errMsg .. ")") or "") .. ". Öffne Talente (N) und nutze 'Kopieren'.")
+    print("|cffff0000Dragon Skill:|r Import-API nicht gefunden" .. (errMsg and (" (" .. errMsg .. ")") or "") .. ". Öffne Talent-Fenster (N) und importiere manuell.")
+    -- Copy-Popup als Fallback anbieten
+    if StaticPopup_Show and StaticPopupDialogs["DRAGONSKILL_COPY"] then
+        StaticPopup_Show("DRAGONSKILL_COPY", nil, nil, { importString = importString, label = loadoutName })
+    end
     return false
 end
 

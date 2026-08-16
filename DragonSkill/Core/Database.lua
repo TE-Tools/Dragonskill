@@ -1,4 +1,4 @@
--- Dragon Skill - Database Layer
+-- Dragon Skill - Database Layer (v1.5.2)
 -- Verwaltet SavedVariables (Nutzerdaten) getrennt von gebündelten Guide-Daten (aus dem Scraper).
 
 local Database = {}
@@ -9,15 +9,19 @@ function Database:Init()
         favorites = {},
         history = {}
     }
-    DragonSkillDB.favorites = DragonSkillDB.favorites or {}
-    DragonSkillDB.history = DragonSkillDB.history or {}
     DragonSkillCharDB = DragonSkillCharDB or {
         lastComparedBuild = nil
     }
+    -- Migration / Defaults
+    DragonSkillDB.favorites = DragonSkillDB.favorites or {}
+    DragonSkillDB.history = DragonSkillDB.history or {}
+    DragonSkillDB.version = DragonSkill.version or DragonSkillDB.version
+
     self.account = DragonSkillDB
     self.char = DragonSkillCharDB
 end
 
+-- Guide-Daten sind separate Lua-Dateien, die vom Scraper-Output generiert werden.
 function Database:GetGuideData(class, spec)
     if not DragonSkillData then return nil end
     local classData = DragonSkillData[class]
@@ -26,16 +30,15 @@ function Database:GetGuideData(class, spec)
 end
 
 -- Erstelle ein neues "Skilling"-Eintrag in den SavedVariables (favorites).
--- name: string|nil, data: table (z.B. { importString = "...", provider=..., label=... })
+-- name: string, data: table (z.B. { importString = "...", provider=..., label=... })
 function Database:CreateSkilling(name, data)
+    if not self.account then self:Init() end
     data = data or {}
+
     if not name or name == "" then
         name = self:GenerateAutoSkillingName(data)
     end
-    self.account = self.account or DragonSkillDB
-    if not self.account then
-        self:Init()
-    end
+
     self.account.favorites = self.account.favorites or {}
 
     local finalName = name
@@ -45,46 +48,47 @@ function Database:CreateSkilling(name, data)
         finalName = string.format("%s-%d", name, i)
     end
 
-    -- Kopie, damit das Original-Build-Objekt nicht mutiert wird
-    local stored = {
+    -- Shallow-Kopie, damit Guide-Tabellen nicht mutiert werden
+    local entry = {
         importString = data.importString,
-        provider = data.provider or "Manual",
-        label = data.label or "Build",
+        provider = data.provider,
+        label = data.label or finalName,
+        class = data.class,
+        specID = data.specID,
         createdAt = date("!%Y-%m-%dT%H:%M:%SZ"),
     }
-    self.account.favorites[finalName] = stored
+    self.account.favorites[finalName] = entry
     return finalName
 end
 
 function Database:GenerateAutoSkillingName(data)
-    local provider = data and data.provider or "Manual"
-    local label = data and data.label or "Build"
+    local provider = (data and data.provider) or "Manual"
+    local label = (data and data.label) or "Build"
     local ts = date("%Y-%m-%d %H:%M")
-    return string.format("%s: %s (%s)", tostring(provider):upper(), tostring(label), ts)
+    return string.format("%s: %s (%s)", tostring(provider), tostring(label), ts)
 end
 
--- Sortierte Liste { { name = "...", data = {...} }, ... }
+-- Sortierte Liste der Favoriten: { { name = "...", data = {...} }, ... }
 function Database:GetSkillings()
     if not self.account then self:Init() end
     local list = {}
-    local favs = (self.account and self.account.favorites) or {}
+    local favs = self.account.favorites or {}
     for name, data in pairs(favs) do
-        if type(data) == "table" and data.importString then
-            table.insert(list, { name = name, data = data })
-        end
+        table.insert(list, { name = name, data = data })
     end
     table.sort(list, function(a, b)
-        local ca = a.data.createdAt or ""
-        local cb = b.data.createdAt or ""
-        if ca ~= cb then return ca > cb end
-        return a.name < b.name
+        local ca = (a.data and a.data.createdAt) or ""
+        local cb = (b.data and b.data.createdAt) or ""
+        if ca == cb then return tostring(a.name) < tostring(b.name) end
+        return ca > cb -- neueste zuerst
     end)
     return list
 end
 
 function Database:DeleteSkilling(name)
     if not self.account then self:Init() end
-    if self.account.favorites and name then
+    if not name or not self.account.favorites then return false end
+    if self.account.favorites[name] then
         self.account.favorites[name] = nil
         return true
     end
@@ -93,7 +97,8 @@ end
 
 function Database:GetSkilling(name)
     if not self.account then self:Init() end
-    return self.account.favorites and self.account.favorites[name]
+    if not name or not self.account.favorites then return nil end
+    return self.account.favorites[name]
 end
 
 DragonSkill = DragonSkill or {}
