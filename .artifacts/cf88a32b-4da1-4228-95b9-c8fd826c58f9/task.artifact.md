@@ -1,15 +1,19 @@
-# Task: Reliability & Data Fix (v1.2.5)
+# Task: Dragon Skill v1.2.6 - Talent Import & Data Recovery
 
-## Scraper Improvements
-- [ ] Update `scrape-wowhead.js`: Better regex for Enchants/Gems (support [h2]/[h3])
-- [ ] Update `scrape-archon.js`: Improved Trinket extraction
-- [ ] Regenerate `GuideData.lua`
+## Talent Management Fix
+- [ ] Fix `StaticPopupDialogs` data passing in `UI.lua`
+- [ ] Update `ImportToWoW` in `TalentCompare.lua` for WoW 12.1 API changes
+- [ ] Fix string display in the copy editbox
 
-## UI & Interaction
-- [ ] Fix Talent button Popups in `UI.lua` (Static registration)
-- [ ] Add Item Tooltips (OnEnter/OnLeave) to all lists in `UI.lua`
-- [ ] Add clear "No Data" states for all tabs
+## Data Pipeline Recovery
+- [ ] Overhaul `scrape-wowhead.js` regex for Enchants, Gems, and Buffs
+- [ ] Enhance `scrape-archon.js` to catch more Trinket sections
+- [ ] Regenerate `DragonSkill/Data/GuideData.lua`
+
+## UI Polish
+- [ ] Add more aggressive header filtering in `UI.lua`
+- [ ] Verify Item Tooltips functionality
 
 ## Finalization
-- [ ] Commit & Push
-- [ ] Instructions for clean reinstall
+- [ ] Git Push
+- [ ] Final install instructions

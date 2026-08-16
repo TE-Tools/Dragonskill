@@ -1,34 +1,44 @@
--- Dragon Skill - Haupt UI (v1.2.5)
--- Professionelle Blizzard-Look UI mit Tooltip-Vorschau und fixierter Interaktion.
+-- Dragon Skill - Haupt UI (v1.2.7)
+-- Fix für Talent-Import und Daten-Anzeige unter WoW 12.1.
 
 local UI = {}
 local currentTab = 1
 local tabs = {"Talente", "Stats", "Trinkets", "Crafting", "Rotation", "Gear", "Enchants", "Buffs"}
 
--- Statische Dialog-Definitionen (Fix für 12.1 Blockaden)
-StaticPopupDialogs["DRAGONSKILL_CONFIRM_ACTION"] = {
-    text = "Build: %s (%d%% Match)\n\nWas möchtest du tun?",
+-- Statische Dialoge mit EXTREM expliziter Datenübergabe
+StaticPopupDialogs["DRAGONSKILL_ACTION"] = {
+    text = "Build: %s\nMatch: %d%%\n\nWas möchtest du tun?",
     button1 = "Kopieren",
     button2 = "Neu anlegen",
     button3 = "Abbrechen",
-    OnAccept = function(self, data)
-        StaticPopup_Show("DRAGONSKILL_COPY_BOX", nil, nil, data.importString)
+    OnAccept = function(self)
+        -- Button 1: Kopieren
+        StaticPopup_Show("DRAGONSKILL_COPY", nil, nil, self.data)
     end,
     OnCancel = function(self, data, reason)
+        -- Button 2: Neu anlegen (Blizzard Logik!)
         if reason == "clicked" then
             local TC = DragonSkill:GetModule("TalentCompare")
-            if TC then TC:ImportToWoW(data.importString, data.label) end
+            if TC and self.data then
+                print("|cff00ff00Dragon Skill:|r Sende Build an Blizzard API...")
+                TC:ImportToWoW(self.data.importString, self.data.label)
+            end
         end
     end,
     timeout = 0, whileDead = true, hideOnEscape = true,
 }
 
-StaticPopupDialogs["DRAGONSKILL_COPY_BOX"] = {
-    text = "Strg+C zum Kopieren:",
+StaticPopupDialogs["DRAGONSKILL_COPY"] = {
+    text = "Strg+C zum Kopieren drücken:",
     button1 = "Fertig",
     hasEditBox = 1,
     OnShow = function(self, data)
-        self.editBox:SetText(data or "")
+        -- Fallback: data kann Tabelle oder String sein
+        local buildString = ""
+        if type(data) == "table" then buildString = data.importString or ""
+        else buildString = tostring(data) end
+
+        self.editBox:SetText(buildString)
         self.editBox:SetFocus()
         self.editBox:HighlightText()
     end,
@@ -45,10 +55,10 @@ function UI:Init()
     f:EnableMouse(true)
     f:SetClampedToScreen(true)
     f:RegisterForDrag("LeftButton")
-    f:SetScript("OnDragStart", function(self) self:StartMoving() end)
-    f:SetScript("OnDragStop", function(self) self:StopMovingOrSizing() end)
+    f:SetScript("OnDragStart", f.StartMoving)
+    f:SetScript("OnDragStop", f.StopMovingOrSizing)
 
-    if f.SetTitle then f:SetTitle("Dragon Skill v1.2.5") end
+    if f.SetTitle then f:SetTitle("Dragon Skill v1.2.7") end
     if f.portrait then f.portrait:SetTexture("Interface\\Icons\\Inv_misc_head_dragon_01") end
 
     if f.Inset then
@@ -60,39 +70,33 @@ function UI:Init()
     local scrollFrame = CreateFrame("ScrollFrame", "DragonSkillScrollFrame", f.Inset, "UIPanelScrollFrameTemplate")
     scrollFrame:SetPoint("TOPLEFT", 8, -8)
     scrollFrame:SetPoint("BOTTOMRIGHT", -25, 8)
-    scrollFrame:EnableMouse(true)
 
     local content = CreateFrame("Frame", "DragonSkillContentFrame", scrollFrame)
     content:SetSize(380, 1500)
-    content:EnableMouse(true)
     scrollFrame:SetScrollChild(content)
     f.Content = content
 
     f.Tabs = {}
     for i, name in ipairs(tabs) do
-        local tab = CreateFrame("Button", "DragonSkillTab_"..i, f, "PanelTabButtonTemplate")
+        local tab = CreateFrame("Button", "DragonSkillTabBtn"..i, f, "PanelTabButtonTemplate")
         tab:SetID(i)
         tab:SetText(name)
         tab:SetScript("OnClick", function(self) UI:SelectTab(self:GetID()) end)
         f.Tabs[i] = tab
-        if i == 1 then
-            tab:SetPoint("TOPLEFT", f, "BOTTOMLEFT", 15, 2)
-        else
-            tab:SetPoint("LEFT", f.Tabs[i-1], "RIGHT", -16, 0)
-        end
+        if i == 1 then tab:SetPoint("TOPLEFT", f, "BOTTOMLEFT", 15, 2)
+        else tab:SetPoint("LEFT", f.Tabs[i-1], "RIGHT", -16, 0) end
     end
     PanelTemplates_SetNumTabs(f, #tabs)
     PanelTemplates_SetTab(f, 1)
 
-    f:Hide()
-    self.frame = f
-
     SLASH_DRAGONSKILL1 = "/ds"
     SLASH_DRAGONSKILL2 = "/dragonskill"
     SlashCmdList["DRAGONSKILL"] = function()
-        if f:IsShown() then f:Hide()
-        else f:Show(); UI:Update() end
+        if f:IsShown() then f:Hide() else f:Show(); UI:Update() end
     end
+
+    f:Hide()
+    self.frame = f
 end
 
 function UI:SelectTab(id)
@@ -112,10 +116,8 @@ function UI:Update()
         content.text:SetPoint("TOPLEFT", 10, -10)
         content.text:SetWidth(360)
         content.text:SetJustifyH("LEFT")
-        content.text:SetSpacing(3)
     end
     content.text:SetText("")
-    content.text:Show()
 
     local _, class = UnitClass("player")
     local specIndex = GetSpecialization()
@@ -123,7 +125,7 @@ function UI:Update()
     local guideData = DragonSkill.Database:GetGuideData(class, specID)
 
     if not guideData then
-        content.text:SetText("|cffff0000FEHLER:|r Keine Daten für " .. tostring(class) .. " (" .. tostring(specID) .. ") gefunden.\nBitte stelle sicher, dass DragonSkill/Data/GuideData.lua existiert.")
+        content.text:SetText("|cffff0000FEHLER:|r Keine Guide-Daten für " .. tostring(class) .. " (ID " .. tostring(specID) .. ") gefunden.\nBitte stelle sicher, dass GuideData.lua im Addon-Ordner liegt.")
         return
     end
 
@@ -149,9 +151,9 @@ function UI:DrawTalents(content, guideData)
     for i, build in ipairs(guideData.talentBuilds) do
         local btn = self.talentBtns[i]
         if not btn then
-            btn = CreateFrame("Button", "DragonSkill_BuildBtn_"..i, content, "UIPanelButtonTemplate")
+            btn = CreateFrame("Button", "DragonSkillBuildBtn_"..i, content, "UIPanelButtonTemplate")
             btn:SetSize(360, 32)
-            btn:SetFrameLevel(content:GetFrameLevel() + 10)
+            btn:SetFrameLevel(content:GetFrameLevel() + 5)
             self.talentBtns[i] = btn
         end
         btn:SetPoint("TOPLEFT", 10, yOffset)
@@ -159,8 +161,8 @@ function UI:DrawTalents(content, guideData)
         btn:SetScript("OnClick", function()
             local current = TC:GetCurrentBuildString()
             local result = TC:Compare(build.importString, current)
-            -- Nutze statisches Popup mit Daten-Übergabe
-            StaticPopup_Show("DRAGONSKILL_CONFIRM_ACTION", build.label, result.similarity or 0, build)
+            -- Popup anzeigen und Build-Tabelle übergeben
+            StaticPopup_Show("DRAGONSKILL_ACTION", build.label, result.similarity or 0, build)
         end)
         btn:Show()
         yOffset = yOffset - 38
@@ -180,15 +182,13 @@ function UI:Helper_DrawListWithIcons(content, items, title)
     for i, item in ipairs(items) do
         local row = self.listRows[i]
         if not row then
-            row = CreateFrame("Button", "DragonSkill_ListRow_"..i, content)
+            row = CreateFrame("Button", "DragonSkillListRow_"..currentTab.."_"..i, content)
             row:SetSize(360, 26)
-            row:SetFrameLevel(content:GetFrameLevel() + 10)
+            row:SetFrameLevel(content:GetFrameLevel() + 5)
             row:EnableMouse(true)
-
             row.icon = row:CreateTexture(nil, "ARTWORK")
             row.icon:SetSize(22, 22)
             row.icon:SetPoint("LEFT", 0, 0)
-
             row.text = row:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
             row.text:SetPoint("LEFT", row.icon, "RIGHT", 8, 0)
             self.listRows[i] = row
@@ -198,30 +198,28 @@ function UI:Helper_DrawListWithIcons(content, items, title)
         local texture = "Interface\\Icons\\Inv_misc_questionmark"
         local itemName = item.text or item.name or "Unbekannt"
 
-        itemName = itemName:gsub("%[url[^%]]*%]", ""):gsub("%[/url%]", ""):gsub("%[item=%d+[^%]]*%]", ""):gsub("%[/item%]", ""):gsub("%[b%]", ""):gsub("%[/b%]", ""):trim()
+        -- Filter Header
+        if itemName:lower() == "slot" or itemName:lower() == "item" then goto next_item end
 
         if item.itemId then texture = C_Item.GetItemIconByID(item.itemId) or texture
         elseif item.spellId then texture = C_Spell.GetSpellTexture(item.spellId) or texture end
 
         row.icon:SetTexture(texture)
-        row.text:SetText(itemName)
+        row.text:SetText((item.slot and "|cff00ff00"..item.slot..":|r " or "") .. itemName)
 
-        -- TOOLTIP (VORSCHAU)
+        -- Tooltip
         row:SetScript("OnEnter", function(self)
             GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-            if item.itemId then
-                GameTooltip:SetItemByID(item.itemId)
-            elseif item.spellId then
-                GameTooltip:SetSpellByID(item.spellId)
-            else
-                GameTooltip:SetText(itemName)
-            end
+            if item.itemId then GameTooltip:SetItemByID(item.itemId)
+            elseif item.spellId then GameTooltip:SetSpellByID(item.spellId)
+            else GameTooltip:SetText(itemName) end
             GameTooltip:Show()
         end)
         row:SetScript("OnLeave", function() GameTooltip:Hide() end)
 
         row:Show()
         yOffset = yOffset - 28
+        ::next_item::
     end
 end
 
@@ -238,10 +236,8 @@ end
 
 function UI:DrawTrinkets(content, guideData)
     if guideData.trinkets and guideData.trinkets.archon and #guideData.trinkets.archon > 0 then
-        local list = {}
-        for _, t in ipairs(guideData.trinkets.archon) do table.insert(list, { name = string.format("[%s] %s", t.rank, t.name), itemId = t.itemId }) end
-        self:Helper_DrawListWithIcons(content, list, "|cffffff00Top Trinkets (Archon):|r")
-    else content.text:SetText("|cffff0000FEHLER:|r Keine Trinket-Daten in GuideData.lua gefunden.") end
+        self:Helper_DrawListWithIcons(content, guideData.trinkets.archon, "|cffffff00Top Trinkets (Archon):|r")
+    else content.text:SetText("Keine Trinket-Daten gefunden.") end
 end
 
 function UI:DrawCrafting(content, guideData)
@@ -249,39 +245,31 @@ function UI:DrawCrafting(content, guideData)
         local txt = "|cffffff00Embellishments (Wowhead):|r\n"
         for _, emb in ipairs(guideData.crafting.wowhead.embellishments) do txt = txt .. "- " .. emb .. "\n" end
         content.text:SetText(txt)
-    else content.text:SetText("|cffff0000FEHLER:|r Keine Crafting-Daten gefunden.") end
+    else content.text:SetText("Keine Crafting-Daten.") end
 end
 
 function UI:DrawRotation(content, guideData)
     if guideData.rotation and guideData.rotation.wowhead and #guideData.rotation.wowhead > 0 then
         self:Helper_DrawListWithIcons(content, guideData.rotation.wowhead, "|cffffff00Prio-Liste (Wowhead):|r")
-    else content.text:SetText("|cffff0000FEHLER:|r Keine Rotations-Daten gefunden.") end
+    else content.text:SetText("Keine Rotations-Daten.") end
 end
 
 function UI:DrawGear(content, guideData)
     if guideData.bisGear and guideData.bisGear.wowhead and #guideData.bisGear.wowhead > 0 then
-        local list = {}
-        for _, g in ipairs(guideData.bisGear.wowhead) do
-            if g.slot:lower() ~= "slot" then table.insert(list, { text = string.format("|cff00ff00%s:|r %s", g.slot, g.item), itemId = g.itemId }) end
-        end
-        self:Helper_DrawListWithIcons(content, list, "|cffffff00Best-in-Slot (Wowhead):|r")
-    else content.text:SetText("|cffff0000FEHLER:|r Keine Gear-Daten gefunden.") end
+        self:Helper_DrawListWithIcons(content, guideData.bisGear.wowhead, "|cffffff00Best-in-Slot (Wowhead):|r")
+    else content.text:SetText("Keine Gear-Daten.") end
 end
 
 function UI:DrawEnchants(content, guideData)
     if guideData.enchants and guideData.enchants.wowhead and #guideData.enchants.wowhead > 0 then
-        local txt = "|cffffff00VZ & Steine (Wowhead):|r\n"
-        for _, e in ipairs(guideData.enchants.wowhead) do txt = txt .. "- " .. e .. "\n" end
-        content.text:SetText(txt)
-    else content.text:SetText("|cffff0000FEHLER:|r Keine Enchants gefunden.") end
+        self:Helper_DrawListWithIcons(content, guideData.enchants.wowhead, "|cffffff00Verzauberungen (Wowhead):|r")
+    else content.text:SetText("Keine Enchants gefunden.") end
 end
 
 function UI:DrawBuffs(content, guideData)
     if guideData.consumables and guideData.consumables.wowhead and #guideData.consumables.wowhead > 0 then
-        local txt = "|cffffff00Empfohlene Buffs (Wowhead):|r\n"
-        for _, c in ipairs(guideData.consumables.wowhead) do txt = txt .. "- " .. c .. "\n" end
-        content.text:SetText(txt)
-    else content.text:SetText("|cffff0000FEHLER:|r Keine Buffs gefunden.") end
+        self:Helper_DrawListWithIcons(content, guideData.consumables.wowhead, "|cffffff00Buffs (Wowhead):|r")
+    else content.text:SetText("Keine Buff-Daten gefunden.") end
 end
 
 DragonSkill.Events:On("PLAYER_LOGIN", function() UI:Init() end)

@@ -5,51 +5,47 @@ DragonSkillData = DragonSkillData or {}
 
 DragonSkillData["DEATHKNIGHT"] = DragonSkillData["DEATHKNIGHT"] or {}
 DragonSkillData["DEATHKNIGHT"][250] = {
-    scrapedAt = "2026-08-16T09:45:11.123Z",
+    scrapedAt = "2026-08-16T10:00:48.505Z",
     statPriority = {
         wowhead = "San'layn: Strength > Haste > Mastery / Critical Strike / Versatility | Deathbringer: Strength > Critical Strike > Mastery / Versatility > Haste",
         archon = "Strength > Mastery > Crit > Haste > Vers",
     },
-    statAverages = {
-        archon = {
-        },
-    },
     bisGear = {
         wowhead = {
-            { slot = "Slot", item = "Item", source = "Source", itemId = nil },
-            { slot = "Weapon", item = "[url guide=34251]The Coiled Altar", source = "Unknown", itemId = 268213 },
-            { slot = "Head", item = "[item=271474 original-item=268229]", source = "[url guide=34244]Nek'zali the Soulcoiler", itemId = nil },
-            { slot = "Neck", item = "[url guide=34252]Ula'tek", source = "Unknown", itemId = 268265 },
-            { slot = "Shoulders", item = "[item=271472 original-item=239037]", source = "[url guide=34262]Temple of Sethraliss", itemId = nil },
-            { slot = "Cloak", item = "[url guide=34251]The Coiled Altar", source = "Unknown", itemId = 268253 },
-            { slot = "Chest", item = "[item=271477 original-item=268222]", source = "[url guide=34251]The Coiled Altar", itemId = nil },
-            { slot = "Wrist", item = "[url guide=15942]Crafting", source = "Unknown", itemId = 237834 },
-            { slot = "Gloves", item = "[item=271475 original-item=159413]", source = "[url guide=34260]King's Rest", itemId = nil },
-            { slot = "Belt", item = "[url guide=34251]The Coiled Altar", source = "Unknown", itemId = 268259 },
-            { slot = "Legs", item = "[url guide=34252]Ula'tek", source = "Unknown", itemId = 271878 },
-            { slot = "Boots", item = "[url guide=34264]Altar of Fangs", source = "Unknown", itemId = 273777 },
-            { slot = "Ring ()", item = "[url guide=15942]Crafting", source = "Unknown", itemId = 273066 },
-            { slot = "Ring", item = "[url guide=34248]Vashnik the Malignant", source = "Unknown", itemId = 268249 },
-            { slot = "Ring", item = "[url guide=33193]Blinding Vale", source = "Unknown", itemId = 251194 },
-            { slot = "Trinket", item = "[url guide=34252]Ula'tek", source = "Unknown", itemId = 270175 },
-            { slot = "Trinket", item = "[url guide=34251]The Coiled Altar", source = "Unknown", itemId = 270173 },
-            { slot = "Slot", item = "Item", source = "Source", itemId = nil },
-            { slot = "Weapon", item = "[url guide=34251]The Coiled Altar", source = "Unknown", itemId = 268213 },
-            { slot = "Head", item = "[item=271474 original-item=268229]", source = "[url guide=34244]Nek'zali the Soulcoiler", itemId = nil },
-            { slot = "Neck", item = "[url guide=34252]Ula'tek", source = "Unknown", itemId = 268265 },
-            { slot = "Shoulders", item = "[item=271472 original-item=239037]", source = "[url guide=34262]Temple of Sethraliss", itemId = nil },
-            { slot = "Cloak", item = "[url guide=34251]The Coiled Altar", source = "Unknown", itemId = 268253 },
-            { slot = "Chest", item = "[item=271477 original-item=268222]", source = "[url guide=34251]The Coiled Altar", itemId = nil },
-            { slot = "Wrist", item = "[url guide=15942]Crafting", source = "Unknown", itemId = 237834 },
-            { slot = "Gloves", item = "[item=271475 original-item=159413]", source = "[url guide=34260]King's Rest", itemId = nil },
-            { slot = "Belt", item = "[url guide=34251]The Coiled Altar", source = "Unknown", itemId = 268259 },
-            { slot = "Legs", item = "[url guide=34252]Ula'tek", source = "Unknown", itemId = 271878 },
-            { slot = "Boots", item = "[url guide=34264]Altar of Fangs", source = "Unknown", itemId = 273777 },
-            { slot = "Ring ()", item = "[url guide=15942]Crafting", source = "Unknown", itemId = 273066 },
-            { slot = "Ring", item = "[url guide=34260]King's Rest", source = "Unknown", itemId = 159459 },
-            { slot = "Ring", item = "[url guide=33183]Voidscar Arena", source = "Unknown", itemId = 252258 },
-            { slot = "Trinket", item = "[url guide=34252]Ula'tek", source = "Unknown", itemId = 270175 },
-            { slot = "Trinket", item = "[url guide=34251]The Coiled Altar", source = "Unknown", itemId = 270173 },
+            { text = "Item", itemId = nil, slot = "Slot" },
+            { text = "[url guide=34251]The Coiled Altar", itemId = 268213, slot = "Weapon" },
+            { text = "[item=271474 original-item=268229]", itemId = nil, slot = "Head" },
+            { text = "[url guide=34252]Ula'tek", itemId = 268265, slot = "Neck" },
+            { text = "[item=271472 original-item=239037]", itemId = nil, slot = "Shoulders" },
+            { text = "[url guide=34251]The Coiled Altar", itemId = 268253, slot = "Cloak" },
+            { text = "[item=271477 original-item=268222]", itemId = nil, slot = "Chest" },
+            { text = "[url guide=15942]Crafting", itemId = 237834, slot = "Wrist" },
+            { text = "[item=271475 original-item=159413]", itemId = nil, slot = "Gloves" },
+            { text = "[url guide=34251]The Coiled Altar", itemId = 268259, slot = "Belt" },
+            { text = "[url guide=34252]Ula'tek", itemId = 271878, slot = "Legs" },
+            { text = "[url guide=34264]Altar of Fangs", itemId = 273777, slot = "Boots" },
+            { text = "[url guide=15942]Crafting", itemId = 273066, slot = "Ring ()" },
+            { text = "[url guide=34248]Vashnik the Malignant", itemId = 268249, slot = "Ring" },
+            { text = "[url guide=33193]Blinding Vale", itemId = 251194, slot = "Ring" },
+            { text = "[url guide=34252]Ula'tek", itemId = 270175, slot = "Trinket" },
+            { text = "[url guide=34251]The Coiled Altar", itemId = 270173, slot = "Trinket" },
+            { text = "Item", itemId = nil, slot = "Slot" },
+            { text = "[url guide=34251]The Coiled Altar", itemId = 268213, slot = "Weapon" },
+            { text = "[item=271474 original-item=268229]", itemId = nil, slot = "Head" },
+            { text = "[url guide=34252]Ula'tek", itemId = 268265, slot = "Neck" },
+            { text = "[item=271472 original-item=239037]", itemId = nil, slot = "Shoulders" },
+            { text = "[url guide=34251]The Coiled Altar", itemId = 268253, slot = "Cloak" },
+            { text = "[item=271477 original-item=268222]", itemId = nil, slot = "Chest" },
+            { text = "[url guide=15942]Crafting", itemId = 237834, slot = "Wrist" },
+            { text = "[item=271475 original-item=159413]", itemId = nil, slot = "Gloves" },
+            { text = "[url guide=34251]The Coiled Altar", itemId = 268259, slot = "Belt" },
+            { text = "[url guide=34252]Ula'tek", itemId = 271878, slot = "Legs" },
+            { text = "[url guide=34264]Altar of Fangs", itemId = 273777, slot = "Boots" },
+            { text = "[url guide=15942]Crafting", itemId = 273066, slot = "Ring ()" },
+            { text = "[url guide=34260]King's Rest", itemId = 159459, slot = "Ring" },
+            { text = "[url guide=33183]Voidscar Arena", itemId = 252258, slot = "Ring" },
+            { text = "[url guide=34252]Ula'tek", itemId = 270175, slot = "Trinket" },
+            { text = "[url guide=34251]The Coiled Altar", itemId = 270173, slot = "Trinket" },
         },
     },
     enchants = {
@@ -67,6 +63,9 @@ DragonSkillData["DEATHKNIGHT"][250] = {
     crafting = {
         wowhead = {
             embellishments = {
+                "[item=273066]",
+                "[item=240167]",
+                "[item=273069] ([symbol=wow-hero-talent-sanlayn] [color=#CE655E]San'layn[/color])",
             },
         },
     },
@@ -151,34 +150,30 @@ DragonSkillData["DEATHKNIGHT"][250] = {
 }
 
 DragonSkillData["DEATHKNIGHT"][251] = {
-    scrapedAt = "2026-08-16T09:45:11.610Z",
+    scrapedAt = "2026-08-16T10:00:48.899Z",
     statPriority = {
         wowhead = "Deathbringer: Strength > Critical Strike > Mastery > Haste > Versatility | Rider of the Apocalypse: Strength > Critical Strike > Mastery > Haste > Versatility",
         archon = "Strength > Mastery > Crit > Haste > Vers",
     },
-    statAverages = {
-        archon = {
-        },
-    },
     bisGear = {
         wowhead = {
-            { slot = "Slot", item = "Item", source = "Source", itemId = nil },
-            { slot = "Weapon", item = "[url guide=34252]Ula'tek", source = "Unknown", itemId = 268202 },
-            { slot = "Offhand", item = "[url guide=34252]Ula'tek", source = "Unknown", itemId = 268202 },
-            { slot = "Head", item = "[url guide=34180]Tier Set", source = "Unknown", itemId = 271474 },
-            { slot = "Neck", item = "[url guide=34252]Ula'tek", source = "Unknown", itemId = 268265 },
-            { slot = "Shoulders", item = "[url guide=34180]Tier Set", source = "Unknown", itemId = 271472 },
-            { slot = "Cloak", item = "[url guide=34251]The Coiled Altar", source = "Unknown", itemId = 268253 },
-            { slot = "Chest", item = "[url guide=34251]The Coiled Altar", source = "Unknown", itemId = 268222 },
-            { slot = "Wrist", item = "[item=237834 bonus=8793:8960:12214:13454:13750:13751:13836:12497]", source = "[url guide=15942]Crafting/Misc", itemId = nil },
-            { slot = "Gloves", item = "[url guide=34180]Tier Set", source = "Unknown", itemId = 271475 },
-            { slot = "Belt", item = "[url guide=34251]The Coiled Altar", source = "Unknown", itemId = 268259 },
-            { slot = "Legs", item = "[url guide=34252]Ula'tek", source = "Unknown", itemId = 271878 },
-            { slot = "Boots", item = "[url guide=34248]Vashnik the Malignant", source = "Unknown", itemId = 268260 },
-            { slot = "Ring", item = "[url guide=34248]Vashnik the Malignant", source = "Unknown", itemId = 268249 },
-            { slot = "Ring", item = "[url guide=15942]Crafting/Misc", source = "Unknown", itemId = 251513 },
-            { slot = "Trinket", item = "[url guide=34251]The Coiled Altar", source = "Unknown", itemId = 270173 },
-            { slot = "Trinket", item = "[url guide=34252]Ula'tek", source = "Unknown", itemId = 270175 },
+            { text = "Item", itemId = nil, slot = "Slot" },
+            { text = "[url guide=34252]Ula'tek", itemId = 268202, slot = "Weapon" },
+            { text = "[url guide=34252]Ula'tek", itemId = 268202, slot = "Offhand" },
+            { text = "[url guide=34180]Tier Set", itemId = 271474, slot = "Head" },
+            { text = "[url guide=34252]Ula'tek", itemId = 268265, slot = "Neck" },
+            { text = "[url guide=34180]Tier Set", itemId = 271472, slot = "Shoulders" },
+            { text = "[url guide=34251]The Coiled Altar", itemId = 268253, slot = "Cloak" },
+            { text = "[url guide=34251]The Coiled Altar", itemId = 268222, slot = "Chest" },
+            { text = "[item=237834 bonus=8793:8960:12214:13454:13750:13751:13836:12497]", itemId = nil, slot = "Wrist" },
+            { text = "[url guide=34180]Tier Set", itemId = 271475, slot = "Gloves" },
+            { text = "[url guide=34251]The Coiled Altar", itemId = 268259, slot = "Belt" },
+            { text = "[url guide=34252]Ula'tek", itemId = 271878, slot = "Legs" },
+            { text = "[url guide=34248]Vashnik the Malignant", itemId = 268260, slot = "Boots" },
+            { text = "[url guide=34248]Vashnik the Malignant", itemId = 268249, slot = "Ring" },
+            { text = "[url guide=15942]Crafting/Misc", itemId = 251513, slot = "Ring" },
+            { text = "[url guide=34251]The Coiled Altar", itemId = 270173, slot = "Trinket" },
+            { text = "[url guide=34252]Ula'tek", itemId = 270175, slot = "Trinket" },
         },
     },
     enchants = {
@@ -196,11 +191,21 @@ DragonSkillData["DEATHKNIGHT"][251] = {
     crafting = {
         wowhead = {
             embellishments = {
+                "[item=251513]",
+                "[item=251490]",
             },
         },
     },
     rotation = {
         wowhead = {
+            { text = "if you have 2 charges", spellId = "47568" },
+            { text = "if you have 2  stacks, or 1  and  [span class=tip tooltip=two-km][symbol=wow-atlas-quest-wrapper-turnin][/span]", spellId = "49020" },
+            { text = "with", spellId = "49184" },
+            { text = "to avoid Runic Power waste [span class=tip tooltip=breath-pooling][symbol=wow-atlas-quest-wrapper-turnin][/span]", spellId = "49143" },
+            { text = "with  [span class=tip tooltip=rm-pooling][symbol=wow-atlas-quest-wrapper-turnin][/span]", spellId = "49020" },
+            { text = "to generate", spellId = "47568" },
+            { text = "without  [span class=tip tooltip=naked-oblit][symbol=wow-atlas-quest-wrapper-turnin][/span]", spellId = "49020" },
+            { text = "[span class=tip tooltip=naked-hb][symbol=wow-atlas-quest-wrapper-turnin][/span]", spellId = "49184" },
         },
     },
     trinkets = {
@@ -272,38 +277,34 @@ DragonSkillData["DEATHKNIGHT"][251] = {
 }
 
 DragonSkillData["DEATHKNIGHT"][252] = {
-    scrapedAt = "2026-08-16T09:45:12.201Z",
+    scrapedAt = "2026-08-16T10:00:49.328Z",
     statPriority = {
         wowhead = "San'layn: Strength > Mastery > Crit > Haste > Versatility | Rider of the Apocalypse: Strength > Mastery > Crit > Haste > Versatility",
         archon = "Strength > Mastery > Crit > Haste > Vers",
     },
-    statAverages = {
-        archon = {
-        },
-    },
     bisGear = {
         wowhead = {
-            { slot = "Slot", item = "Item", source = "Source", itemId = nil },
-            { slot = "Weapon", item = "[url guide=34251]The Coiled Altar", source = "Unknown", itemId = 268213 },
-            { slot = "Head", item = "[url guide=34180]Tier Set", source = "Unknown", itemId = 271474 },
-            { slot = "Neck", item = "[url guide=34252]Ula'tek", source = "Unknown", itemId = 268265 },
-            { slot = "Shoulders", item = "[url guide=34180]Tier Set", source = "Unknown", itemId = 271472 },
-            { slot = "Cloak", item = "[url guide=34251]The Coiled Altar", source = "Unknown", itemId = 268253 },
-            { slot = "Chest", item = "[url guide=34180]Tier Set", source = "Unknown", itemId = 271477 },
-            { slot = "Wrist", item = "[url guide=15942]Crafting", source = "Unknown", itemId = 237834 },
-            { slot = "Gloves", item = "[url guide=34180]Tier Set", source = "Unknown", itemId = 271475 },
-            { slot = "Belt", item = "[url guide=34251]The Coiled Altar", source = "Unknown", itemId = 268259 },
-            { slot = "Legs", item = "[url guide=34252]Ula'tek", source = "Unknown", itemId = 271878 },
-            { slot = "Boots", item = "[url guide=15942]Crafting", source = "Unknown", itemId = 237828 },
-            { slot = "Ring", item = "[url guide=34264]Altar of Fangs", source = "Unknown", itemId = 273792 },
-            { slot = "Ring", item = "[url guide=33183]Voidscar Arena]", source = "Unknown", itemId = 252258 },
-            { slot = "Trinket", item = "[url guide=34252]Ula'tek", source = "Unknown", itemId = 270175 },
-            { slot = "Trinket", item = "[url guide=34251]The Coiled Altar", source = "Unknown", itemId = 270173 },
-            { slot = "Type", item = "Buff", source = "Unknown", itemId = nil },
-            { slot = "Elemental, Abberation, Demon", item = "[spell=1252486]", source = "Unknown", itemId = nil },
-            { slot = "Beast, Mechanical", item = "[spell=1252487]", source = "Unknown", itemId = nil },
-            { slot = "Humanoid, Dragonkin", item = "[spell=1252488]", source = "Unknown", itemId = nil },
-            { slot = "Undead, Giant, Not Specified", item = "[spell=1252489]", source = "Unknown", itemId = nil },
+            { text = "Item", itemId = nil, slot = "Slot" },
+            { text = "[url guide=34251]The Coiled Altar", itemId = 268213, slot = "Weapon" },
+            { text = "[url guide=34180]Tier Set", itemId = 271474, slot = "Head" },
+            { text = "[url guide=34252]Ula'tek", itemId = 268265, slot = "Neck" },
+            { text = "[url guide=34180]Tier Set", itemId = 271472, slot = "Shoulders" },
+            { text = "[url guide=34251]The Coiled Altar", itemId = 268253, slot = "Cloak" },
+            { text = "[url guide=34180]Tier Set", itemId = 271477, slot = "Chest" },
+            { text = "[url guide=15942]Crafting", itemId = 237834, slot = "Wrist" },
+            { text = "[url guide=34180]Tier Set", itemId = 271475, slot = "Gloves" },
+            { text = "[url guide=34251]The Coiled Altar", itemId = 268259, slot = "Belt" },
+            { text = "[url guide=34252]Ula'tek", itemId = 271878, slot = "Legs" },
+            { text = "[url guide=15942]Crafting", itemId = 237828, slot = "Boots" },
+            { text = "[url guide=34264]Altar of Fangs", itemId = 273792, slot = "Ring" },
+            { text = "[url guide=33183]Voidscar Arena]", itemId = 252258, slot = "Ring" },
+            { text = "[url guide=34252]Ula'tek", itemId = 270175, slot = "Trinket" },
+            { text = "[url guide=34251]The Coiled Altar", itemId = 270173, slot = "Trinket" },
+            { text = "Buff", itemId = nil, slot = "Type" },
+            { text = "[spell=1252486]", itemId = nil, slot = "Elemental, Abberation, Demon" },
+            { text = "[spell=1252487]", itemId = nil, slot = "Beast, Mechanical" },
+            { text = "[spell=1252488]", itemId = nil, slot = "Humanoid, Dragonkin" },
+            { text = "[spell=1252489]", itemId = nil, slot = "Undead, Giant, Not Specified" },
         },
     },
     enchants = {
@@ -321,6 +322,8 @@ DragonSkillData["DEATHKNIGHT"][252] = {
     crafting = {
         wowhead = {
             embellishments = {
+                "[item=240166]",
+                "[item=245876] (Early season only)",
             },
         },
     },
@@ -392,34 +395,30 @@ DragonSkillData["DEATHKNIGHT"][252] = {
 
 DragonSkillData["DEMONHUNTER"] = DragonSkillData["DEMONHUNTER"] or {}
 DragonSkillData["DEMONHUNTER"][577] = {
-    scrapedAt = "2026-08-16T09:45:13.085Z",
+    scrapedAt = "2026-08-16T10:00:49.752Z",
     statPriority = {
         wowhead = "Fel-Scarred: Agility > Critical Strike > Mastery > Haste > Versatility | Aldrachi Reaver: Agility > Critical Strike > Mastery > Haste > Versatility",
         archon = "Agility > Crit > Mastery > Haste > Vers",
     },
-    statAverages = {
-        archon = {
-        },
-    },
     bisGear = {
         wowhead = {
-            { slot = "Slot", item = "Item", source = "Source", itemId = nil },
-            { slot = "Weapon", item = "[url guide=34251]The Coiled Altar", source = "Unknown", itemId = 268209 },
-            { slot = "Offhand", item = "[url guide=15942]Crafting/Misc", source = "Unknown", itemId = 237840 },
-            { slot = "Head", item = "[url guide=34252]Ula'tek", source = "Unknown", itemId = 271875 },
-            { slot = "Neck", item = "[url guide=34252]Ula'tek", source = "Unknown", itemId = 268265 },
-            { slot = "Shoulders", item = "[item=271535 original-item=268246]", source = "[url guide=34248]Vashnik the Malignant", itemId = nil },
-            { slot = "Cloak", item = "[url guide=34251]The Coiled Altar", source = "Unknown", itemId = 268253 },
-            { slot = "Chest", item = "[item=271540 original-item=239048]", source = "[url guide=34260]King's Rest", itemId = nil },
-            { slot = "Wrist", item = "[url guide=15942]Crafting/Misc", source = "Unknown", itemId = 244576 },
-            { slot = "Gloves", item = "[url guide=34245]Entombed Sentinels", source = "Unknown", itemId = 271538 },
-            { slot = "Belt", item = "[url guide=34251]The Coiled Altar", source = "Unknown", itemId = 268256 },
-            { slot = "Legs", item = "[item=271536 original-item=268225]", source = "[url guide=34251]The Coiled Altar", itemId = nil },
-            { slot = "Boots", item = "[url guide=34262]Temple of Sethraliss", source = "Unknown", itemId = 159327 },
-            { slot = "Ring", item = "[url guide=34248]Vashnik the Malignant", source = "Unknown", itemId = 268249 },
-            { slot = "Ring", item = "[url guide=34262]Temple of Sethraliss", source = "Unknown", itemId = 158366 },
-            { slot = "Trinket", item = "[url guide=34251]The Coiled Altar", source = "Unknown", itemId = 270173 },
-            { slot = "Trinket", item = "[url guide=34252]Ula'tek", source = "Unknown", itemId = 270175 },
+            { text = "Item", itemId = nil, slot = "Slot" },
+            { text = "[url guide=34251]The Coiled Altar", itemId = 268209, slot = "Weapon" },
+            { text = "[url guide=15942]Crafting/Misc", itemId = 237840, slot = "Offhand" },
+            { text = "[url guide=34252]Ula'tek", itemId = 271875, slot = "Head" },
+            { text = "[url guide=34252]Ula'tek", itemId = 268265, slot = "Neck" },
+            { text = "[item=271535 original-item=268246]", itemId = nil, slot = "Shoulders" },
+            { text = "[url guide=34251]The Coiled Altar", itemId = 268253, slot = "Cloak" },
+            { text = "[item=271540 original-item=239048]", itemId = nil, slot = "Chest" },
+            { text = "[url guide=15942]Crafting/Misc", itemId = 244576, slot = "Wrist" },
+            { text = "[url guide=34245]Entombed Sentinels", itemId = 271538, slot = "Gloves" },
+            { text = "[url guide=34251]The Coiled Altar", itemId = 268256, slot = "Belt" },
+            { text = "[item=271536 original-item=268225]", itemId = nil, slot = "Legs" },
+            { text = "[url guide=34262]Temple of Sethraliss", itemId = 159327, slot = "Boots" },
+            { text = "[url guide=34248]Vashnik the Malignant", itemId = 268249, slot = "Ring" },
+            { text = "[url guide=34262]Temple of Sethraliss", itemId = 158366, slot = "Ring" },
+            { text = "[url guide=34251]The Coiled Altar", itemId = 270173, slot = "Trinket" },
+            { text = "[url guide=34252]Ula'tek", itemId = 270175, slot = "Trinket" },
         },
     },
     enchants = {
@@ -437,6 +436,8 @@ DragonSkillData["DEMONHUNTER"][577] = {
     crafting = {
         wowhead = {
             embellishments = {
+                "[item=273060]",
+                "[item=240167]",
             },
         },
     },
@@ -513,35 +514,31 @@ DragonSkillData["DEMONHUNTER"][577] = {
 }
 
 DragonSkillData["DEMONHUNTER"][581] = {
-    scrapedAt = "2026-08-16T09:45:13.541Z",
+    scrapedAt = "2026-08-16T10:00:50.161Z",
     statPriority = {
         wowhead = "Aldrachi Reaver: Item Level (Agility+Stamina) > Haste > Crit > Versatility > Mastery | Annihilator: Item Level (Agility+Stamina) > Haste > Crit > Versatility > Mastery",
         archon = "Agility > Haste > Crit > Mastery > Vers",
     },
-    statAverages = {
-        archon = {
-        },
-    },
     bisGear = {
         wowhead = {
-            { slot = "Slot", item = "Item", source = "Source", itemId = nil },
-            { slot = "Weapon", item = "[url guide=34251]The Coiled Altar", source = "Unknown", itemId = 268209 },
-            { slot = "Offhand", item = "Crafted", source = "Unknown", itemId = 237840 },
-            { slot = "Head", item = "[item=271537 original-item=271875]", source = "[url guide=34252]Ula'tek", itemId = nil },
-            { slot = "Neck", item = "[url guide=34252]Ula'tek", source = "Unknown", itemId = 268265 },
-            { slot = "Shoulders", item = "[item=271535 original-item=251223]", source = "[url guide=33183]Voidscar Arena", itemId = nil },
-            { slot = "Cloak", item = "[url guide=34251]The Coiled Altar", source = "Unknown", itemId = 268253 },
-            { slot = "Chest", item = "[url guide=34248]Vashnik the Malignant", source = "Unknown", itemId = 271540 },
-            { slot = "Wrist", item = "Crafted", source = "Unknown", itemId = 244576 },
-            { slot = "Gloves", item = "[item=271538 original-item=251124]", source = "[url guide=33189]Murder Row", itemId = nil },
-            { slot = "Belt", item = "[url guide=34251]The Coiled Altar", source = "Unknown", itemId = 268256 },
-            { slot = "Legs", item = "[item=271536 original-item=268225]", source = "[url guide=34251]The Coiled Altar", itemId = nil },
-            { slot = "Boots", item = "[url guide=33190]Den of Nalorakk", source = "Unknown", itemId = 251153 },
-            { slot = "Ring", item = "[url guide=34249]Sszorak", source = "Unknown", itemId = 268252 },
-            { slot = "Ring", item = "[url guide=34260]King's Rest", source = "Unknown", itemId = 159459 },
-            { slot = "Trinket", item = "[url guide=34247]The Lost Explorers", source = "Unknown", itemId = 270164 },
-            { slot = "Trinket", item = "[url guide=34252]Ula'tek", source = "Unknown", itemId = 270175 },
-            { slot = "Trinket (Raw Damage)", item = "[url guide=34251]The Coiled Altar", source = "Unknown", itemId = 270173 },
+            { text = "Item", itemId = nil, slot = "Slot" },
+            { text = "[url guide=34251]The Coiled Altar", itemId = 268209, slot = "Weapon" },
+            { text = "Crafted", itemId = 237840, slot = "Offhand" },
+            { text = "[item=271537 original-item=271875]", itemId = nil, slot = "Head" },
+            { text = "[url guide=34252]Ula'tek", itemId = 268265, slot = "Neck" },
+            { text = "[item=271535 original-item=251223]", itemId = nil, slot = "Shoulders" },
+            { text = "[url guide=34251]The Coiled Altar", itemId = 268253, slot = "Cloak" },
+            { text = "[url guide=34248]Vashnik the Malignant", itemId = 271540, slot = "Chest" },
+            { text = "Crafted", itemId = 244576, slot = "Wrist" },
+            { text = "[item=271538 original-item=251124]", itemId = nil, slot = "Gloves" },
+            { text = "[url guide=34251]The Coiled Altar", itemId = 268256, slot = "Belt" },
+            { text = "[item=271536 original-item=268225]", itemId = nil, slot = "Legs" },
+            { text = "[url guide=33190]Den of Nalorakk", itemId = 251153, slot = "Boots" },
+            { text = "[url guide=34249]Sszorak", itemId = 268252, slot = "Ring" },
+            { text = "[url guide=34260]King's Rest", itemId = 159459, slot = "Ring" },
+            { text = "[url guide=34247]The Lost Explorers", itemId = 270164, slot = "Trinket" },
+            { text = "[url guide=34252]Ula'tek", itemId = 270175, slot = "Trinket" },
+            { text = "[url guide=34251]The Coiled Altar", itemId = 270173, slot = "Trinket (Raw Damage)" },
         },
     },
     enchants = {
@@ -559,6 +556,8 @@ DragonSkillData["DEMONHUNTER"][581] = {
     crafting = {
         wowhead = {
             embellishments = {
+                "[item=245876]",
+                "[item=240167]",
             },
         },
     },
@@ -659,34 +658,30 @@ DragonSkillData["DEMONHUNTER"][581] = {
 }
 
 DragonSkillData["DEMONHUNTER"][1480] = {
-    scrapedAt = "2026-08-16T09:45:14.033Z",
+    scrapedAt = "2026-08-16T10:00:50.575Z",
     statPriority = {
         wowhead = "Annihilator: Intellect > Haste > Mastery > Critical Strike > Versatility | Void-Scarred: Intellect > Haste (until 800/18%-20%) > Critical Strike > Mastery > Versatility > Haste (above 800/18%-20%).",
         archon = "Intellect > Mastery > Haste > Crit > Vers",
     },
-    statAverages = {
-        archon = {
-        },
-    },
     bisGear = {
         wowhead = {
-            { slot = "Slot", item = "Item", source = "Source", itemId = nil },
-            { slot = "Weapon", item = "[url guide=34252]Ula'tek", source = "Unknown", itemId = 271092 },
-            { slot = "Offhand", item = "[url guide=34251]The Coiled Altar", source = "Unknown", itemId = 268211 },
-            { slot = "Head", item = "[item=271537 original-item=271875]", source = "[url guide=34252]Ula'tek", itemId = nil },
-            { slot = "Neck", item = "[url guide=34252]Ula'tek", source = "Unknown", itemId = 268265 },
-            { slot = "Shoulders", item = "[item=271535 original-item=251223]", source = "[url guide=33183]Voidscar Arena", itemId = nil },
-            { slot = "Cloak", item = "[url guide=34251]The Coiled Altar", source = "Unknown", itemId = 268253 },
-            { slot = "Chest", item = "[item=271540 original-item=251159]", source = "[url guide=33190]Den of Nalorakk", itemId = nil },
-            { slot = "Wrist", item = "crafted with", source = "[url guide=15942]Crafting/Misc", itemId = 244576 },
-            { slot = "Gloves", item = "[url guide=34180]Tier Set", source = "Unknown", itemId = 271538 },
-            { slot = "Belt", item = "[url guide=34251]The Coiled Altar", source = "Unknown", itemId = 268256 },
-            { slot = "Legs", item = "[item=271536 original-item=268225]", source = "[url guide=34251]The Coiled Altar", itemId = nil },
-            { slot = "Boots", item = "crafted with", source = "[url guide=15942]Crafting/Misc", itemId = 244569 },
-            { slot = "Ring", item = "[url guide=34248]Vashnik the Malignant", source = "Unknown", itemId = 268249 },
-            { slot = "Ring", item = "[url guide=34262]Temple of Sethraliss", source = "Unknown", itemId = 158366 },
-            { slot = "Trinket", item = "[url guide=33189]Murder Row", source = "Unknown", itemId = 250215 },
-            { slot = "Trinket", item = "[url guide=34247]The Lost Explorers", source = "Unknown", itemId = 270164 },
+            { text = "Item", itemId = nil, slot = "Slot" },
+            { text = "[url guide=34252]Ula'tek", itemId = 271092, slot = "Weapon" },
+            { text = "[url guide=34251]The Coiled Altar", itemId = 268211, slot = "Offhand" },
+            { text = "[item=271537 original-item=271875]", itemId = nil, slot = "Head" },
+            { text = "[url guide=34252]Ula'tek", itemId = 268265, slot = "Neck" },
+            { text = "[item=271535 original-item=251223]", itemId = nil, slot = "Shoulders" },
+            { text = "[url guide=34251]The Coiled Altar", itemId = 268253, slot = "Cloak" },
+            { text = "[item=271540 original-item=251159]", itemId = nil, slot = "Chest" },
+            { text = "crafted with", itemId = 244576, slot = "Wrist" },
+            { text = "[url guide=34180]Tier Set", itemId = 271538, slot = "Gloves" },
+            { text = "[url guide=34251]The Coiled Altar", itemId = 268256, slot = "Belt" },
+            { text = "[item=271536 original-item=268225]", itemId = nil, slot = "Legs" },
+            { text = "crafted with", itemId = 244569, slot = "Boots" },
+            { text = "[url guide=34248]Vashnik the Malignant", itemId = 268249, slot = "Ring" },
+            { text = "[url guide=34262]Temple of Sethraliss", itemId = 158366, slot = "Ring" },
+            { text = "[url guide=33189]Murder Row", itemId = 250215, slot = "Trinket" },
+            { text = "[url guide=34247]The Lost Explorers", itemId = 270164, slot = "Trinket" },
         },
     },
     enchants = {
@@ -695,6 +690,12 @@ DragonSkillData["DEMONHUNTER"][1480] = {
     },
     gems = {
         wowhead = {
+            { text = "Intellect", itemId = nil },
+            { text = "Haste (until 800/18%-20%)", itemId = nil },
+            { text = "Critical Strike", itemId = nil },
+            { text = "Mastery", itemId = nil },
+            { text = "Versatility", itemId = nil },
+            { text = "Haste (above 800/18%-20%).", itemId = nil },
         },
     },
     consumables = {
@@ -704,6 +705,8 @@ DragonSkillData["DEMONHUNTER"][1480] = {
     crafting = {
         wowhead = {
             embellishments = {
+                "[item=240166]",
+                "[item=240166]",
             },
         },
     },
@@ -793,34 +796,30 @@ DragonSkillData["DEMONHUNTER"][1480] = {
 
 DragonSkillData["DRUID"] = DragonSkillData["DRUID"] or {}
 DragonSkillData["DRUID"][102] = {
-    scrapedAt = "2026-08-16T09:45:14.570Z",
+    scrapedAt = "2026-08-16T10:00:50.945Z",
     statPriority = {
         wowhead = "Keeper of the Grove: Intellect > Mastery > Haste = Critical Strike > Versatility | Elune's Chosen: Intellect > Mastery > Haste > Critical Strike > Versatility",
         archon = "Intellect > Mastery > Haste > Crit > Vers",
     },
-    statAverages = {
-        archon = {
-        },
-    },
     bisGear = {
         wowhead = {
-            { slot = "Slot", item = "Item", source = "Source", itemId = nil },
-            { slot = "Weapon", item = "[url guide=34252]Ula'tek", source = "Unknown", itemId = 271092 },
-            { slot = "Offhand", item = "[item=245769 bonus=8791:13771:8960:13751:12497:13836]", source = "[url guide=15942]Crafting/Misc", itemId = nil },
-            { slot = "Head", item = "[item=271875 bonus=13848:13847:13750]", source = "[url guide=34252]Ula'tek", itemId = nil },
-            { slot = "Neck", item = "[item=268265 bonus=13848:13708]", source = "[url guide=34252]Ula'tek", itemId = nil },
-            { slot = "Shoulders", item = "[item=244572 bonus=8791:13836:13751:13836:9627:8960:12384]", source = "[url guide=15942]Crafting/Misc", itemId = nil },
-            { slot = "Cloak", item = "[item=268253 bonus=13848:13708]", source = "[url guide=34251]The Coiled Altar", itemId = nil },
-            { slot = "Chest", item = "[url guide=33190]Den of Nalorakk", source = "Unknown", itemId = 251159 },
-            { slot = "Wrist", item = "[item=268240 bonus=13750]", source = "[url guide=34244]Nek'zali the Soulcoiler", itemId = nil },
-            { slot = "Gloves", item = "[url guide=34180]Tier Set", source = "Unknown", itemId = 268234 },
-            { slot = "Belt", item = "[item=268256 bonus=13750:13848:13708]", source = "[url guide=34251]The Coiled Altar", itemId = nil },
-            { slot = "Legs", item = "[item=268225 bonus=13848:13708]", source = "[url guide=34251]The Coiled Altar", itemId = nil },
-            { slot = "Boots", item = "[url guide=33190]Den of Nalorakk", source = "Unknown", itemId = 251153 },
-            { slot = "Ring", item = "[item=252258 bonus=13750]", source = "[url guide=33183]Voidscar Arena", itemId = nil },
-            { slot = "Ring", item = "[item=268249 bonus=13750]", source = "[url guide=34248]Vashnik the Malignant", itemId = nil },
-            { slot = "Trinket", item = "[url guide=34247]The Lost Explorers", source = "Unknown", itemId = 270164 },
-            { slot = "Trinket", item = "[url guide=34264]Altar of Fangs", source = "Unknown", itemId = 273796 },
+            { text = "Item", itemId = nil, slot = "Slot" },
+            { text = "[url guide=34252]Ula'tek", itemId = 271092, slot = "Weapon" },
+            { text = "[item=245769 bonus=8791:13771:8960:13751:12497:13836]", itemId = nil, slot = "Offhand" },
+            { text = "[item=271875 bonus=13848:13847:13750]", itemId = nil, slot = "Head" },
+            { text = "[item=268265 bonus=13848:13708]", itemId = nil, slot = "Neck" },
+            { text = "[item=244572 bonus=8791:13836:13751:13836:9627:8960:12384]", itemId = nil, slot = "Shoulders" },
+            { text = "[item=268253 bonus=13848:13708]", itemId = nil, slot = "Cloak" },
+            { text = "[url guide=33190]Den of Nalorakk", itemId = 251159, slot = "Chest" },
+            { text = "[item=268240 bonus=13750]", itemId = nil, slot = "Wrist" },
+            { text = "[url guide=34180]Tier Set", itemId = 268234, slot = "Gloves" },
+            { text = "[item=268256 bonus=13750:13848:13708]", itemId = nil, slot = "Belt" },
+            { text = "[item=268225 bonus=13848:13708]", itemId = nil, slot = "Legs" },
+            { text = "[url guide=33190]Den of Nalorakk", itemId = 251153, slot = "Boots" },
+            { text = "[item=252258 bonus=13750]", itemId = nil, slot = "Ring" },
+            { text = "[item=268249 bonus=13750]", itemId = nil, slot = "Ring" },
+            { text = "[url guide=34247]The Lost Explorers", itemId = 270164, slot = "Trinket" },
+            { text = "[url guide=34264]Altar of Fangs", itemId = 273796, slot = "Trinket" },
         },
     },
     enchants = {
@@ -838,6 +837,8 @@ DragonSkillData["DRUID"][102] = {
     crafting = {
         wowhead = {
             embellishments = {
+                "[item=240167]",
+                "[item=273059]",
             },
         },
     },
@@ -924,33 +925,29 @@ DragonSkillData["DRUID"][102] = {
 }
 
 DragonSkillData["DRUID"][103] = {
-    scrapedAt = "2026-08-16T09:45:15.660Z",
+    scrapedAt = "2026-08-16T10:00:51.398Z",
     statPriority = {
         wowhead = "Druid of the Claw: Agility > Mastery > Haste > Critical Strike > Versatility | Wildstalker: Agility > Mastery > Critical Strike > Haste > Versatility",
         archon = "Agility > Mastery > Haste > Crit > Vers",
     },
-    statAverages = {
-        archon = {
-        },
-    },
     bisGear = {
         wowhead = {
-            { slot = "Slot", item = "Item", source = "Source", itemId = nil },
-            { slot = "Weapon", item = "[url guide=34252]Ula'tek", source = "Unknown", itemId = 268215 },
-            { slot = "Head", item = "[url guide=33219] Catalyst", source = "Unknown", itemId = 271528 },
-            { slot = "Neck", item = "[url guide=34252]Ula'tek", source = "Unknown", itemId = 268265 },
-            { slot = "Shoulders", item = "[url guide=33219] Catalyst", source = "Unknown", itemId = 271526 },
-            { slot = "Cloak", item = "[url guide=34251]The Coiled Altar", source = "Unknown", itemId = 268253 },
-            { slot = "Chest", item = "[url guide=34248]Vashnik the Malignant", source = "Unknown", itemId = 271531 },
-            { slot = "Wrist", item = "[url guide=15942]Crafting/Misc", source = "Unknown", itemId = 244576 },
-            { slot = "Gloves", item = "[url guide=15942]Crafting/Misc", source = "Unknown", itemId = 244575 },
-            { slot = "Belt", item = "[url guide=34251]The Coiled Altar", source = "Unknown", itemId = 268256 },
-            { slot = "Legs", item = "[url guide=33219] Catalyst", source = "Unknown", itemId = 271527 },
-            { slot = "Boots", item = "[url guide=34250]The Twin Fangs", source = "Unknown", itemId = 268261 },
-            { slot = "Ring", item = "[url guide=34248]Vashnik the Malignant", source = "Unknown", itemId = 268249 },
-            { slot = "Ring", item = "[url guide=33183]Voidscar Arena", source = "Unknown", itemId = 252258 },
-            { slot = "Trinket", item = "[url guide=34251]The Coiled Altar", source = "Unknown", itemId = 270173 },
-            { slot = "Trinket", item = "[url guide=34252]Ula'tek", source = "Unknown", itemId = 270175 },
+            { text = "Item", itemId = nil, slot = "Slot" },
+            { text = "[url guide=34252]Ula'tek", itemId = 268215, slot = "Weapon" },
+            { text = "[url guide=33219] Catalyst", itemId = 271528, slot = "Head" },
+            { text = "[url guide=34252]Ula'tek", itemId = 268265, slot = "Neck" },
+            { text = "[url guide=33219] Catalyst", itemId = 271526, slot = "Shoulders" },
+            { text = "[url guide=34251]The Coiled Altar", itemId = 268253, slot = "Cloak" },
+            { text = "[url guide=34248]Vashnik the Malignant", itemId = 271531, slot = "Chest" },
+            { text = "[url guide=15942]Crafting/Misc", itemId = 244576, slot = "Wrist" },
+            { text = "[url guide=15942]Crafting/Misc", itemId = 244575, slot = "Gloves" },
+            { text = "[url guide=34251]The Coiled Altar", itemId = 268256, slot = "Belt" },
+            { text = "[url guide=33219] Catalyst", itemId = 271527, slot = "Legs" },
+            { text = "[url guide=34250]The Twin Fangs", itemId = 268261, slot = "Boots" },
+            { text = "[url guide=34248]Vashnik the Malignant", itemId = 268249, slot = "Ring" },
+            { text = "[url guide=33183]Voidscar Arena", itemId = 252258, slot = "Ring" },
+            { text = "[url guide=34251]The Coiled Altar", itemId = 270173, slot = "Trinket" },
+            { text = "[url guide=34252]Ula'tek", itemId = 270175, slot = "Trinket" },
         },
     },
     enchants = {
@@ -968,6 +965,8 @@ DragonSkillData["DRUID"][103] = {
     crafting = {
         wowhead = {
             embellishments = {
+                "[item=240166]",
+                "[item=240166]",
             },
         },
     },
@@ -1058,33 +1057,29 @@ DragonSkillData["DRUID"][103] = {
 }
 
 DragonSkillData["DRUID"][104] = {
-    scrapedAt = "2026-08-16T09:45:16.430Z",
+    scrapedAt = "2026-08-16T10:00:51.874Z",
     statPriority = {
         wowhead = "Survivability: Agility > Haste > Versatility > Critical Strike > Mastery | DPS: Agility > Haste > Versatility > Critical Strike > Mastery",
         archon = "Agility > Haste > Mastery > Vers > Crit",
     },
-    statAverages = {
-        archon = {
-        },
-    },
     bisGear = {
         wowhead = {
-            { slot = "Slot", item = "Item", source = "Source", itemId = nil },
-            { slot = "Weapon", item = "[url guide=34252]Ula'tek", source = "Unknown", itemId = 268215 },
-            { slot = "Head", item = "[url guide=34252]Ula'tek", source = "Unknown", itemId = 271875 },
-            { slot = "Neck", item = "[url guide=34252]Ula'tek", source = "Unknown", itemId = 268265 },
-            { slot = "Shoulders", item = "[url guide=34180]Tier Set", source = "Unknown", itemId = 271526 },
-            { slot = "Cloak", item = "[url guide=34251]The Coiled Altar", source = "Unknown", itemId = 268253 },
-            { slot = "Chest", item = "[url guide=34180]Tier Set", source = "Unknown", itemId = 271531 },
-            { slot = "Wrist", item = "[url guide=34244]Nek'zali the Soulcoiler", source = "Unknown", itemId = 268240 },
-            { slot = "Gloves", item = "[url guide=34180]Tier Set", source = "Unknown", itemId = 271529 },
-            { slot = "Belt", item = "[url guide=34251]The Coiled Altar", source = "Unknown", itemId = 268256 },
-            { slot = "Legs", item = "[url guide=34180]Tier Set", source = "Unknown", itemId = 271527 },
-            { slot = "Boots", item = "[url guide=34250]The Twin Fangs", source = "Unknown", itemId = 268261 },
-            { slot = "Ring", item = "[url guide=34249]Sszorak", source = "Unknown", itemId = 268252 },
-            { slot = "Ring 2", item = "[url guide=34248]Vashnik the Malignant", source = "Unknown", itemId = 268249 },
-            { slot = "Trinket", item = "[url guide=34247]The Lost Explorers", source = "Unknown", itemId = 270164 },
-            { slot = "Trinket 2", item = "[url guide=34251]The Coiled Altar", source = "Unknown", itemId = 270173 },
+            { text = "Item", itemId = nil, slot = "Slot" },
+            { text = "[url guide=34252]Ula'tek", itemId = 268215, slot = "Weapon" },
+            { text = "[url guide=34252]Ula'tek", itemId = 271875, slot = "Head" },
+            { text = "[url guide=34252]Ula'tek", itemId = 268265, slot = "Neck" },
+            { text = "[url guide=34180]Tier Set", itemId = 271526, slot = "Shoulders" },
+            { text = "[url guide=34251]The Coiled Altar", itemId = 268253, slot = "Cloak" },
+            { text = "[url guide=34180]Tier Set", itemId = 271531, slot = "Chest" },
+            { text = "[url guide=34244]Nek'zali the Soulcoiler", itemId = 268240, slot = "Wrist" },
+            { text = "[url guide=34180]Tier Set", itemId = 271529, slot = "Gloves" },
+            { text = "[url guide=34251]The Coiled Altar", itemId = 268256, slot = "Belt" },
+            { text = "[url guide=34180]Tier Set", itemId = 271527, slot = "Legs" },
+            { text = "[url guide=34250]The Twin Fangs", itemId = 268261, slot = "Boots" },
+            { text = "[url guide=34249]Sszorak", itemId = 268252, slot = "Ring" },
+            { text = "[url guide=34248]Vashnik the Malignant", itemId = 268249, slot = "Ring 2" },
+            { text = "[url guide=34247]The Lost Explorers", itemId = 270164, slot = "Trinket" },
+            { text = "[url guide=34251]The Coiled Altar", itemId = 270173, slot = "Trinket 2" },
         },
     },
     enchants = {
@@ -1102,6 +1097,8 @@ DragonSkillData["DRUID"][104] = {
     crafting = {
         wowhead = {
             embellishments = {
+                "[item=245876]",
+                "[item=240166]",
             },
         },
     },
@@ -1188,50 +1185,46 @@ DragonSkillData["DRUID"][104] = {
 }
 
 DragonSkillData["DRUID"][105] = {
-    scrapedAt = "2026-08-16T09:45:17.350Z",
+    scrapedAt = "2026-08-16T10:00:52.333Z",
     statPriority = {
         wowhead = "Keeper of the Grove: Intellect > Haste > Mastery > Versatility > Critical Strike | Wildstalker: Intellect > Haste > Mastery > Versatility > Critical Strike",
         archon = "Intellect > Haste > Mastery > Crit > Vers",
     },
-    statAverages = {
-        archon = {
-        },
-    },
     bisGear = {
         wowhead = {
-            { slot = "Slot", item = "Item", source = "Source", itemId = nil },
-            { slot = "Helm", item = "[color=q4][item=271528 original-item=271875][/color]", source = "[icon name=inv_121_raid_achievement_ulatek][/icon][url guide=34252]Ula'tek [i](Raid)[/i] & [icon name=inv_radientazeritematrix][/icon][url guide=33219] Catalyst", itemId = nil },
-            { slot = "Neck", item = "[color=q4][/color]", source = "[icon name=inv_121_raid_achievement_twins][/icon][url guide=34250]The Twin Fangs  [i](Raid)[/i]", itemId = 268251 },
-            { slot = "Shoulders", item = "[color=q4][/color]", source = "[skill=165]", itemId = 244572 },
-            { slot = "Cape", item = "[color=q4][/color]", source = "[icon name=inv_121_raid_achievement_zuljinmalacrass][/icon][url guide=34251]The Coiled Alter  [i](Raid)[/i]", itemId = 268253 },
-            { slot = "Chest", item = "[color=q4][item=271531 original-item=268235][/color]", source = "[icon name=inv_121_raid_achievement_priestess][/icon][url guide=34244]Nek'zali the Soulcoiler (Raid) & [icon name=inv_radientazeritematrix][/icon][url guide=33219] Catalyst", itemId = nil },
-            { slot = "Bracers", item = "[color=q4][/color]", source = "[skill=165]", itemId = 244576 },
-            { slot = "Gloves", item = "[color=q4][/color]", source = "[icon name=inv_121_raid_achievement_golems][/icon][url guide=34245]Entomed Sentinels [i](Raid)[/i]", itemId = 271529 },
-            { slot = "Belt", item = "[color=q4][/color]", source = "[icon name=inv_121_raid_achievement_zuljinmalacrass][/icon][url guide=34251]The Coiled Alter  [i](Raid)[/i]", itemId = 268256 },
-            { slot = "Legs", item = "[color=q4][item=271527 original-item=268225][/color]", source = "[icon name=inv_121_raid_achievement_zuljinmalacrass][/icon][url guide=34251]The Coiled Alter  [i](Raid)[/i] & [icon name=inv_radientazeritematrix][/icon][url guide=33219] Catalyst", itemId = nil },
-            { slot = "Boots", item = "[color=q4][/color]", source = "[skill=165]", itemId = 244569 },
-            { slot = "Ring", item = "[color=q4][/color]", source = "[icon name=achievement_boss_elitenagamale][/icon][url guide=34240]Nymrissa Wavebinder [i](Raid)[/i]", itemId = 268266 },
-            { slot = "Ring", item = "[color=q4][/color]", source = "[icon name=inv_achievement_dungeon_voidscararena][/icon][url guide=33183]Voidscar Arena", itemId = 252258 },
-            { slot = "Trinkets", item = "[color=q4][/color]", source = "[icon name=achievement_boss_elitenagamale][/icon][url guide=34240]Nymrissa Wavebinder [i](Raid)[/i]", itemId = 270167 },
-            { slot = "Trinkets", item = "[color=q4][/color]", source = "[icon name=inv_121_raid_achievement_priestess][/icon][url guide=34244]Nek'zali the Soulcoiler  [i](Raid)[/i]", itemId = 270162 },
-            { slot = "1h Weapon", item = "[color=q4][/color]", source = "[icon name=inv_121_raid_achievement_ulatek][/icon][url guide=34252]Ula'tek [i](Raid)[/i]", itemId = 271092 },
-            { slot = "Offhand", item = "[color=q4][/color]", source = "[icon name=inv_121_raid_achievement_golems][/icon][url guide=34245]Entomed Sentinels  [i](Raid)[/i]", itemId = 268197 },
-            { slot = "Slot", item = "Item", source = "Source", itemId = nil },
-            { slot = "Helm", item = "[color=q4][item=271528 original-item=251140][/color]", source = "[icon name=inv_achievement_dungeon_murderrow][/icon][url guide=33189]Murder Row & [icon name=inv_radientazeritematrix][/icon][url guide=33219] Catalyst", itemId = nil },
-            { slot = "Neck", item = "[color=q4][/color]", source = "[icon name=inv_achievement_dungeon_murderrow][/icon][url guide=33189]Murder Row", itemId = 251142 },
-            { slot = "Shoulders", item = "[color=q4][/color]", source = "[skill=165]", itemId = 244572 },
-            { slot = "Cape", item = "[color=q4][/color]", source = "[icon name=inv_achievement_dungeon_lightbloom][/icon][url guide=33193]The Blinding Vale", itemId = 251190 },
-            { slot = "Chest", item = "[color=q4][item=271531 original-item=251159][/color]", source = "[icon name=inv_achievement_dungeon_proveyourworth][/icon][url guide=33190]Den of Nalorakk & [icon name=inv_radientazeritematrix][/icon][url guide=33219] Catalyst", itemId = nil },
-            { slot = "Bracers", item = "[color=q4][/color]", source = "[skill=165]", itemId = 244576 },
-            { slot = "Gloves", item = "[color=q4][item=271529 original-item=159337][/color]", source = "[icon name=achievement_dungeon_templeofsethraliss][/icon][url guide=33272]Temple of Sethraliss & [icon name=inv_radientazeritematrix][/icon][url guide=33219] Catalyst", itemId = nil },
-            { slot = "Belt", item = "[color=q4][/color]", source = "[icon name=achievement_dungeon_templeofsethraliss][/icon][url guide=33272]Temple of Sethraliss", itemId = 159317 },
-            { slot = "Legs", item = "[color=q4][item=271527 original-item=159313][/color]", source = "[icon name=achievement_dungeon_kingsrest][/icon][url guide=33272]Kings Rest & [icon name=inv_radientazeritematrix][/icon][url guide=33219] Catalyst", itemId = nil },
-            { slot = "Boots", item = "[color=q4][/color]", source = "[icon name=inv_achievement_dungeon_proveyourworth][/icon][url guide=33190]Den of Nalorakk", itemId = 251153 },
-            { slot = "Ring", item = "[color=q4][/color]", source = "[icon name=achievement_dungeon_kingsrest][/icon][url guide=33272]Kings Rest", itemId = 159459 },
-            { slot = "Ring", item = "[color=q4][/color]", source = "[icon name=inv_achievement_dungeon_voidscararena][/icon][url guide=33183]Voidscar Arena", itemId = 252258 },
-            { slot = "Trinkets", item = "[color=q4][/color]", source = "[icon name=inv_achievement_dungeon_lightbloom][/icon][url guide=33193]The Blinding Vale", itemId = 250214 },
-            { slot = "Trinkets", item = "[color=q4][/color]", source = "[icon name=inv_achievement_dungeon_murderrow][/icon][url guide=33189]Murder Row", itemId = 250255 },
-            { slot = "2h Weapon", item = "[color=q4][/color]", source = "[icon name=achievement_dungeon_templeofsethraliss][/icon][url guide=33272]Temple of Sethraliss", itemId = 159636 },
+            { text = "Item", itemId = nil, slot = "Slot" },
+            { text = "[color=q4][item=271528 original-item=271875][/color]", itemId = nil, slot = "Helm" },
+            { text = "[color=q4][/color]", itemId = 268251, slot = "Neck" },
+            { text = "[color=q4][/color]", itemId = 244572, slot = "Shoulders" },
+            { text = "[color=q4][/color]", itemId = 268253, slot = "Cape" },
+            { text = "[color=q4][item=271531 original-item=268235][/color]", itemId = nil, slot = "Chest" },
+            { text = "[color=q4][/color]", itemId = 244576, slot = "Bracers" },
+            { text = "[color=q4][/color]", itemId = 271529, slot = "Gloves" },
+            { text = "[color=q4][/color]", itemId = 268256, slot = "Belt" },
+            { text = "[color=q4][item=271527 original-item=268225][/color]", itemId = nil, slot = "Legs" },
+            { text = "[color=q4][/color]", itemId = 244569, slot = "Boots" },
+            { text = "[color=q4][/color]", itemId = 268266, slot = "Ring" },
+            { text = "[color=q4][/color]", itemId = 252258, slot = "Ring" },
+            { text = "[color=q4][/color]", itemId = 270167, slot = "Trinkets" },
+            { text = "[color=q4][/color]", itemId = 270162, slot = "Trinkets" },
+            { text = "[color=q4][/color]", itemId = 271092, slot = "1h Weapon" },
+            { text = "[color=q4][/color]", itemId = 268197, slot = "Offhand" },
+            { text = "Item", itemId = nil, slot = "Slot" },
+            { text = "[color=q4][item=271528 original-item=251140][/color]", itemId = nil, slot = "Helm" },
+            { text = "[color=q4][/color]", itemId = 251142, slot = "Neck" },
+            { text = "[color=q4][/color]", itemId = 244572, slot = "Shoulders" },
+            { text = "[color=q4][/color]", itemId = 251190, slot = "Cape" },
+            { text = "[color=q4][item=271531 original-item=251159][/color]", itemId = nil, slot = "Chest" },
+            { text = "[color=q4][/color]", itemId = 244576, slot = "Bracers" },
+            { text = "[color=q4][item=271529 original-item=159337][/color]", itemId = nil, slot = "Gloves" },
+            { text = "[color=q4][/color]", itemId = 159317, slot = "Belt" },
+            { text = "[color=q4][item=271527 original-item=159313][/color]", itemId = nil, slot = "Legs" },
+            { text = "[color=q4][/color]", itemId = 251153, slot = "Boots" },
+            { text = "[color=q4][/color]", itemId = 159459, slot = "Ring" },
+            { text = "[color=q4][/color]", itemId = 252258, slot = "Ring" },
+            { text = "[color=q4][/color]", itemId = 250214, slot = "Trinkets" },
+            { text = "[color=q4][/color]", itemId = 250255, slot = "Trinkets" },
+            { text = "[color=q4][/color]", itemId = 159636, slot = "2h Weapon" },
         },
     },
     enchants = {
@@ -1249,6 +1242,8 @@ DragonSkillData["DRUID"][105] = {
     crafting = {
         wowhead = {
             embellishments = {
+                "[item=240167][i] (Ideal, armor-only)[/i]",
+                "[item=245876][i] (Worse, offhands & weapons only)[/i]",
             },
         },
     },
@@ -1326,38 +1321,34 @@ DragonSkillData["DRUID"][105] = {
 
 DragonSkillData["EVOKER"] = DragonSkillData["EVOKER"] or {}
 DragonSkillData["EVOKER"][1467] = {
-    scrapedAt = "2026-08-16T09:45:18.210Z",
+    scrapedAt = "2026-08-16T10:00:52.796Z",
     statPriority = {
         wowhead = "Flameshaper: Intellect > Critical Strike > Mastery > Haste > Versatility | Scalecommander: Intellect > Critical Strike > Mastery > Haste > Versatility",
         archon = "Intellect > Crit > Haste > Mastery > Vers",
     },
-    statAverages = {
-        archon = {
-        },
-    },
     bisGear = {
         wowhead = {
-            { slot = "Slot", item = "Item", source = "Source", itemId = nil },
-            { slot = "Weapon", item = "[url guide=34252]Ula'tek", source = "Unknown", itemId = 271092 },
-            { slot = "Offhand", item = "[item=245769 bonus=13836:9627:13771:8960:8791]", source = "[url guide=15942]Crafting", itemId = nil },
-            { slot = "Head", item = "[item=271501 original-item=268230]", source = "[url guide=34180]Tier Set", itemId = nil },
-            { slot = "Neck", item = "[url guide=34252]Ula'tek", source = "Unknown", itemId = 268265 },
-            { slot = "Shoulders", item = "[item=271499 original-item=268231]", source = "[url guide=34180]Tier Set", itemId = nil },
-            { slot = "Cloak", item = "[url guide=34251]The Coiled Altar", source = "Unknown", itemId = 268253 },
-            { slot = "Chest", item = "[item=271504 original-item=271876]", source = "[url guide=34180]Tier Set", itemId = nil },
-            { slot = "Wrist", item = "[item=244584 bonus=13667:12497:8960:12384:13836:8791]", source = "[url guide=15942]Crafting", itemId = nil },
-            { slot = "Gloves", item = "[item=271502 original-item=193752]", source = "[url guide=34180]Tier Set", itemId = nil },
-            { slot = "Belt", item = "[url guide=34248]Vashnik the Malignant", source = "Unknown", itemId = 268254 },
-            { slot = "Legs", item = "[item=271500 original-item=268237]", source = "[url guide=34180]Tier Set", itemId = nil },
-            { slot = "Boots", item = "[url guide=34249]Sszorak", source = "Unknown", itemId = 268233 },
-            { slot = "Ring", item = "[url guide=34248]Vashnik the Malignant", source = "Unknown", itemId = 268249 },
-            { slot = "Ring", item = "[url guide=34262]Temple of Sethraliss", source = "Unknown", itemId = 158366 },
-            { slot = "Trinket", item = "[url guide=34247]The Lost Explorers", source = "Unknown", itemId = 270164 },
-            { slot = "Trinket", item = "[url guide=34240]Nymrissa Wavecaller", source = "Unknown", itemId = 270167 },
-            { slot = "Priority", item = "Location", source = "Item/Notes", itemId = nil },
-            { slot = "[large][color=necrolord]1[/color][/large]", item = "[icon name=inv_121_raid_achievement_ulatek inline=true size=small type=round color=c13][/icon] [url guide=34252]Ula'tek (Heroic & Mythic)", source = "[color=q6]Most Pieces[/color] [toggler id=\"voidcore-1\"][i]Click for Notes[/i][/toggler]", itemId = nil },
-            { slot = "[large][color=rogue]2[/color][/large]", item = "[icon name=inv_121_raid_achievement_zuljinmalacrass inline=true size=small type=round color=c13][/icon] [url guide=34251]Coiled Altar (Mythic)", source = "[color=q6]Most Pieces[/color] [toggler id=\"voidcore-2\" hidden][i]Click for Notes[/i][/toggler]", itemId = nil },
-            { slot = "[large][color=druid]3[/color][/large]", item = "[icon name=8039569 inline=true size=small type=round color=c13][/icon] [url guide=34045] Early Mythic Bosses or Dungeons", source = "Depends [toggler id=\"voidcore-3\" hidden][i]Click for Notes[/i][/toggler]", itemId = nil },
+            { text = "Item", itemId = nil, slot = "Slot" },
+            { text = "[url guide=34252]Ula'tek", itemId = 271092, slot = "Weapon" },
+            { text = "[item=245769 bonus=13836:9627:13771:8960:8791]", itemId = nil, slot = "Offhand" },
+            { text = "[item=271501 original-item=268230]", itemId = nil, slot = "Head" },
+            { text = "[url guide=34252]Ula'tek", itemId = 268265, slot = "Neck" },
+            { text = "[item=271499 original-item=268231]", itemId = nil, slot = "Shoulders" },
+            { text = "[url guide=34251]The Coiled Altar", itemId = 268253, slot = "Cloak" },
+            { text = "[item=271504 original-item=271876]", itemId = nil, slot = "Chest" },
+            { text = "[item=244584 bonus=13667:12497:8960:12384:13836:8791]", itemId = nil, slot = "Wrist" },
+            { text = "[item=271502 original-item=193752]", itemId = nil, slot = "Gloves" },
+            { text = "[url guide=34248]Vashnik the Malignant", itemId = 268254, slot = "Belt" },
+            { text = "[item=271500 original-item=268237]", itemId = nil, slot = "Legs" },
+            { text = "[url guide=34249]Sszorak", itemId = 268233, slot = "Boots" },
+            { text = "[url guide=34248]Vashnik the Malignant", itemId = 268249, slot = "Ring" },
+            { text = "[url guide=34262]Temple of Sethraliss", itemId = 158366, slot = "Ring" },
+            { text = "[url guide=34247]The Lost Explorers", itemId = 270164, slot = "Trinket" },
+            { text = "[url guide=34240]Nymrissa Wavecaller", itemId = 270167, slot = "Trinket" },
+            { text = "Location", itemId = nil, slot = "Priority" },
+            { text = "[icon name=inv_121_raid_achievement_ulatek inline=true size=small type=round color=c13][/icon] [url guide=34252]Ula'tek (Heroic & Mythic)", itemId = nil, slot = "[large][color=necrolord]1[/color][/large]" },
+            { text = "[icon name=inv_121_raid_achievement_zuljinmalacrass inline=true size=small type=round color=c13][/icon] [url guide=34251]Coiled Altar (Mythic)", itemId = nil, slot = "[large][color=rogue]2[/color][/large]" },
+            { text = "[icon name=8039569 inline=true size=small type=round color=c13][/icon] [url guide=34045] Early Mythic Bosses or Dungeons", itemId = nil, slot = "[large][color=druid]3[/color][/large]" },
         },
     },
     enchants = {
@@ -1375,6 +1366,8 @@ DragonSkillData["EVOKER"][1467] = {
     crafting = {
         wowhead = {
             embellishments = {
+                "[item=273060]",
+                "[item=240167]",
             },
         },
     },
@@ -1460,34 +1453,30 @@ DragonSkillData["EVOKER"][1467] = {
 }
 
 DragonSkillData["EVOKER"][1468] = {
-    scrapedAt = "2026-08-16T09:45:19.371Z",
+    scrapedAt = "2026-08-16T10:00:53.224Z",
     statPriority = {
         wowhead = "Raid: Intellect > Mastery > Crit > Haste > Versatility | Mythic+: Intellect > Crit [i][/i] > Haste > Mastery > Versatility",
         archon = "Intellect > Mastery > Haste > Crit > Vers",
     },
-    statAverages = {
-        archon = {
-        },
-    },
     bisGear = {
         wowhead = {
-            { slot = "Slot", item = "Item", source = "Source", itemId = nil },
-            { slot = "Helm", item = "[color=q4][item=271501 original-item=239035][/color]", source = "[icon name=achievement_dungeon_templeofsethraliss][/icon][url guide=33272]Temple of Sethraliss & [icon name=inv_radientazeritematrix][/icon][url guide=33219] Catalyst", itemId = nil },
-            { slot = "Neck", item = "[color=q4][/color]", source = "[icon name=inv_121_raid_achievement_ulatek][/icon][url guide=34252]Ula'tek [i](Raid)[/i]", itemId = 268265 },
-            { slot = "Shoulders", item = "[color=q4][item=271499 original-item=268231][/color]", source = "[icon name=inv_121_raid_achievement_zuljinmalacrass][/icon][url guide=34251]The Coiled Altar [i](Raid)[/i] & [icon name=inv_radientazeritematrix][/icon][url guide=33219] Catalyst", itemId = nil },
-            { slot = "Cape", item = "[color=q4][/color]", source = "[icon name=inv_121_raid_achievement_zuljinmalacrass][/icon][url guide=34251]The Coiled Altar [i](Raid)[/i]", itemId = 268253 },
-            { slot = "Chest", item = "[color=q4][item=271504 original-item=271876][/color]", source = "[icon name=inv_121_raid_achievement_ulatek][/icon][url guide=34252]Ula'tek [i](Raid)[/i] & [icon name=inv_radientazeritematrix][/icon][url guide=33219] Catalyst", itemId = nil },
-            { slot = "Bracers", item = "[color=q4][/color]", source = "[icon name=achievement_boss_elitenagamale][/icon][url guide=34240]Nymrissa Wavebinder [i](Raid)[/i]", itemId = 268217 },
-            { slot = "Gloves", item = "[color=q4][item=271502 original-item=160213][/color]", source = "[icon name=achievement_dungeon_kingsrest][/icon][url guide=33272]Kings Rest & [icon name=inv_radientazeritematrix][/icon][url guide=33219] Catalyst", itemId = nil },
-            { slot = "Belt", item = "[color=q4][/color]", source = "[icon name=inv_121_raid_achievement_alchemist][/icon][url guide=34248]Vashnik the Malignant [i](Raid)[/i]", itemId = 268254 },
-            { slot = "Legs", item = "[color=q4][item=271500 original-item=268237][/color]", source = "[icon name=inv_121_raid_achievement_zuljinmalacrass][/icon][url guide=34251]The Coiled Altar [i](Raid)[/i] & [icon name=inv_radientazeritematrix][/icon][url guide=33219] Catalyst", itemId = nil },
-            { slot = "Boots", item = "[color=q4][/color]", source = "[icon name=achievement_dungeon_templeofsethraliss][/icon][url guide=33272]Temple of Sethraliss", itemId = 159388 },
-            { slot = "Ring", item = "[color=q4][/color]", source = "[icon name=inv_121_raid_achievement_alchemist][/icon][url guide=34248]Vashnik the Malignant [i](Raid)[/i]", itemId = 268249 },
-            { slot = "Ring", item = "[color=q4][/color]", source = "[icon name=achievement_dungeon_templeofsethraliss][/icon][url guide=33272]Temple of Sethraliss", itemId = 158366 },
-            { slot = "Trinkets", item = "[color=q4][/color]", source = "[icon name=inv_121_raid_achievement_tortollans][/icon][url guide=34247]The Lost Explorers [i](Raid)[/i]", itemId = 270164 },
-            { slot = "Trinkets", item = "[color=q4][/color]", source = "[icon name=inv_121_raid_achievement_priestess][/icon][url guide=34244]Nek'zali the Soulcoiler [i](Raid)[/i]", itemId = 270162 },
-            { slot = "1h Weapon", item = "[color=q4][/color]", source = "[icon name=inv_121_raid_achievement_ulatek][/icon][url guide=34252]Ula'tek [i](Raid)[/i]", itemId = 271092 },
-            { slot = "Offhand", item = "[color=q4][/color]", source = "[icon name=inv_121_raid_achievement_golems][/icon][url guide=34245]Entomed Sentinels [i](Raid)[/i]", itemId = 268197 },
+            { text = "Item", itemId = nil, slot = "Slot" },
+            { text = "[color=q4][item=271501 original-item=239035][/color]", itemId = nil, slot = "Helm" },
+            { text = "[color=q4][/color]", itemId = 268265, slot = "Neck" },
+            { text = "[color=q4][item=271499 original-item=268231][/color]", itemId = nil, slot = "Shoulders" },
+            { text = "[color=q4][/color]", itemId = 268253, slot = "Cape" },
+            { text = "[color=q4][item=271504 original-item=271876][/color]", itemId = nil, slot = "Chest" },
+            { text = "[color=q4][/color]", itemId = 268217, slot = "Bracers" },
+            { text = "[color=q4][item=271502 original-item=160213][/color]", itemId = nil, slot = "Gloves" },
+            { text = "[color=q4][/color]", itemId = 268254, slot = "Belt" },
+            { text = "[color=q4][item=271500 original-item=268237][/color]", itemId = nil, slot = "Legs" },
+            { text = "[color=q4][/color]", itemId = 159388, slot = "Boots" },
+            { text = "[color=q4][/color]", itemId = 268249, slot = "Ring" },
+            { text = "[color=q4][/color]", itemId = 158366, slot = "Ring" },
+            { text = "[color=q4][/color]", itemId = 270164, slot = "Trinkets" },
+            { text = "[color=q4][/color]", itemId = 270162, slot = "Trinkets" },
+            { text = "[color=q4][/color]", itemId = 271092, slot = "1h Weapon" },
+            { text = "[color=q4][/color]", itemId = 268197, slot = "Offhand" },
         },
     },
     enchants = {
@@ -1505,6 +1494,8 @@ DragonSkillData["EVOKER"][1468] = {
     crafting = {
         wowhead = {
             embellishments = {
+                "[item=240167][i] (Ideal, but can only be attached to armor items)[/i]",
+                "[item=245876][i] (Worse, but can be put on an early Offhand)[/i]",
             },
         },
     },
@@ -1575,38 +1566,34 @@ DragonSkillData["EVOKER"][1468] = {
 }
 
 DragonSkillData["EVOKER"][1473] = {
-    scrapedAt = "2026-08-16T09:45:20.481Z",
+    scrapedAt = "2026-08-16T10:00:53.638Z",
     statPriority = {
         wowhead = "Chronowarden: Intellect > Mastery > Critical Strike > Haste > Versatility | Scalecommander: Intellect > Mastery > Critical Strike > Haste > Versatility",
         archon = "Intellect > Crit > Haste > Mastery > Vers",
     },
-    statAverages = {
-        archon = {
-        },
-    },
     bisGear = {
         wowhead = {
-            { slot = "Slot", item = "Item", source = "Source", itemId = nil },
-            { slot = "Weapon", item = "[url guide=34252]Ula'tek", source = "Unknown", itemId = 271092 },
-            { slot = "Offhand", item = "[item=245769 bonus=13836:9627:13771:8960:8791]", source = "[url guide=15942]Crafting", itemId = nil },
-            { slot = "Head", item = "[item=271501 original-item=239035]", source = "[url guide=34180]Tier Set", itemId = nil },
-            { slot = "Neck", item = "[url guide=34252]Ula'tek", source = "Unknown", itemId = 268265 },
-            { slot = "Shoulders", item = "[item=271499 original-item=268231]", source = "[url guide=34180]Tier Set", itemId = nil },
-            { slot = "Cloak", item = "[url guide=34251]The Coiled Altar", source = "Unknown", itemId = 268253 },
-            { slot = "Chest", item = "[item=271504 original-item=271876]", source = "[url guide=34180]Tier Set", itemId = nil },
-            { slot = "Wrist", item = "[item=244584 bonus=13667:12497:8960:12384:13836:8791]", source = "[url guide=15942]Crafting", itemId = nil },
-            { slot = "Gloves", item = "[item=271502 original-item=193752]", source = "[url guide=34180]Tier Set", itemId = nil },
-            { slot = "Belt", item = "[url guide=34248]Vashnik the Malignant", source = "Unknown", itemId = 268254 },
-            { slot = "Legs", item = "[item=271500 original-item=268237]", source = "[url guide=34180]Tier Set", itemId = nil },
-            { slot = "Boots", item = "[url guide=34249]Sszorak", source = "Unknown", itemId = 268233 },
-            { slot = "Ring", item = "[url guide=34248]Vashnik the Malignant", source = "Unknown", itemId = 268249 },
-            { slot = "Ring", item = "[url guide=34262]Temple of Sethraliss", source = "Unknown", itemId = 158366 },
-            { slot = "Trinket", item = "[url guide=34247]The Lost Explorers", source = "Unknown", itemId = 270164 },
-            { slot = "Trinket", item = "[url guide=33189]Murder Row", source = "Unknown", itemId = 250215 },
-            { slot = "Priority", item = "Location", source = "Item/Notes", itemId = nil },
-            { slot = "[large][color=necrolord]1[/color][/large]", item = "[icon name=inv_121_raid_achievement_ulatek inline=true size=small type=round color=c7][/icon] [url guide=34252]Ula'tek (Heroic & Mythic)", source = "[color=q6]Most Pieces[/color] [toggler id=\"voidcore-1\"][i]Click for Notes[/i][/toggler]", itemId = nil },
-            { slot = "[large][color=rogue]2[/color][/large]", item = "[icon name=inv_121_raid_achievement_zuljinmalacrass inline=true size=small type=round color=c7][/icon] [url guide=34251]Coiled Altar (Mythic)", source = "[color=q6]Most Pieces[/color] [toggler id=\"voidcore-2\" hidden][i]Click for Notes[/i][/toggler]", itemId = nil },
-            { slot = "[large][color=druid]3[/color][/large]", item = "[icon name=8039569 inline=true size=small type=round color=c7][/icon] [url guide=34045] Early Mythic Bosses", source = "Depends [toggler id=\"voidcore-3\" hidden][i]Click for Notes[/i][/toggler]", itemId = nil },
+            { text = "Item", itemId = nil, slot = "Slot" },
+            { text = "[url guide=34252]Ula'tek", itemId = 271092, slot = "Weapon" },
+            { text = "[item=245769 bonus=13836:9627:13771:8960:8791]", itemId = nil, slot = "Offhand" },
+            { text = "[item=271501 original-item=239035]", itemId = nil, slot = "Head" },
+            { text = "[url guide=34252]Ula'tek", itemId = 268265, slot = "Neck" },
+            { text = "[item=271499 original-item=268231]", itemId = nil, slot = "Shoulders" },
+            { text = "[url guide=34251]The Coiled Altar", itemId = 268253, slot = "Cloak" },
+            { text = "[item=271504 original-item=271876]", itemId = nil, slot = "Chest" },
+            { text = "[item=244584 bonus=13667:12497:8960:12384:13836:8791]", itemId = nil, slot = "Wrist" },
+            { text = "[item=271502 original-item=193752]", itemId = nil, slot = "Gloves" },
+            { text = "[url guide=34248]Vashnik the Malignant", itemId = 268254, slot = "Belt" },
+            { text = "[item=271500 original-item=268237]", itemId = nil, slot = "Legs" },
+            { text = "[url guide=34249]Sszorak", itemId = 268233, slot = "Boots" },
+            { text = "[url guide=34248]Vashnik the Malignant", itemId = 268249, slot = "Ring" },
+            { text = "[url guide=34262]Temple of Sethraliss", itemId = 158366, slot = "Ring" },
+            { text = "[url guide=34247]The Lost Explorers", itemId = 270164, slot = "Trinket" },
+            { text = "[url guide=33189]Murder Row", itemId = 250215, slot = "Trinket" },
+            { text = "Location", itemId = nil, slot = "Priority" },
+            { text = "[icon name=inv_121_raid_achievement_ulatek inline=true size=small type=round color=c7][/icon] [url guide=34252]Ula'tek (Heroic & Mythic)", itemId = nil, slot = "[large][color=necrolord]1[/color][/large]" },
+            { text = "[icon name=inv_121_raid_achievement_zuljinmalacrass inline=true size=small type=round color=c7][/icon] [url guide=34251]Coiled Altar (Mythic)", itemId = nil, slot = "[large][color=rogue]2[/color][/large]" },
+            { text = "[icon name=8039569 inline=true size=small type=round color=c7][/icon] [url guide=34045] Early Mythic Bosses", itemId = nil, slot = "[large][color=druid]3[/color][/large]" },
         },
     },
     enchants = {
@@ -1624,11 +1611,24 @@ DragonSkillData["EVOKER"][1473] = {
     crafting = {
         wowhead = {
             embellishments = {
+                "[item=273060]",
+                "[item=240167]",
             },
         },
     },
     rotation = {
         wowhead = {
+            { text = "Maintain  on allied DPS players. - [span class=tip tooltip=prescience][symbol=wow-atlas-quest-wrapper-turnin][/span]", spellId = "409311" },
+            { text = "Cast  if a few seconds or less remain on the active buff duration.", spellId = "395152" },
+            { text = "Cast  (see section on cooldown usage for more details).", spellId = "403631" },
+            { text = "Cast  (see section on cooldown usage for more details).", spellId = "370553" },
+            { text = "Cast  at Rank 1 or Max Rank. - [span class=tip tooltip=firebreath][symbol=wow-atlas-quest-wrapper-turnin][/span]", spellId = "357208" },
+            { text = "Cast  at Rank 1, unless increased radius is needed to hit relevant targets. - [span class=tip tooltip=upheaval][symbol=wow-atlas-quest-wrapper-turnin][/span]", spellId = "408092" },
+            { text = "Only if talented: Cast  (see section on cooldown usage for more details).", spellId = "404977" },
+            { text = "Cast . - [span class=tip tooltip=eruption][symbol=wow-atlas-quest-wrapper-turnin][/span]", spellId = "395160" },
+            { text = "Cast  as filler in nearly all situations.", spellId = "361469" },
+            { text = "Cast  as backup filler that can be cast while moving, or used to slow enemies.", spellId = "362969" },
+            { text = "Maintain  on a Tank. - [span class=tip tooltip=blistering][symbol=wow-atlas-quest-wrapper-turnin][/span]", spellId = "360827" },
         },
     },
     trinkets = {
@@ -1701,34 +1701,30 @@ DragonSkillData["EVOKER"][1473] = {
 
 DragonSkillData["HUNTER"] = DragonSkillData["HUNTER"] or {}
 DragonSkillData["HUNTER"][253] = {
-    scrapedAt = "2026-08-16T09:45:21.285Z",
+    scrapedAt = "2026-08-16T10:00:54.067Z",
     statPriority = {
         wowhead = "Pack Leader: Weapon Damage > Agility > Mastery > Critical Strike > Haste > Versatility | Dark Ranger: Weapon Damage > Agility > Critical Strike > Mastery > Haste > Versatility",
         archon = "Agility > Crit > Mastery > Haste > Vers",
     },
-    statAverages = {
-        archon = {
-        },
-    },
     bisGear = {
         wowhead = {
-            { slot = "Slot", item = "Item", source = "Source", itemId = nil },
-            { slot = "Weapon", item = "[item=268207 bonus=13848:13708]", source = "[url guide=34252]Ula'tek", itemId = nil },
-            { slot = "Head", item = "[item=271492 ]", source = "[url guide=34250]The Twin Fangs", itemId = nil },
-            { slot = "Neck", item = "[item=268265 bonus=13848:13708]", source = "[url guide=34252]Ula'tek", itemId = nil },
-            { slot = "Shoulders", item = "[item=271490 original-item=268231]", source = "[url guide=34251]The Coiled Altar", itemId = nil },
-            { slot = "Cloak", item = "[url guide=34251]The Coiled Altar", source = "Unknown", itemId = 268253 },
-            { slot = "Chest", item = "[item=271495 original-item=271876 bonus=13848:13708]", source = "[url guide=34252]Ula'tek", itemId = nil },
-            { slot = "Wrist", item = "[item=244584 bonus=13751:12497:13836:12384:8793]", source = "[skill=165]", itemId = nil },
-            { slot = "Gloves", item = "[item=271493 original-item=160213]", source = "[url guide=34260]King's Rest", itemId = nil },
-            { slot = "Belt", item = "[item=244581 bonus=13751:12497:13836:12384:8793]", source = "[skill=165]", itemId = nil },
-            { slot = "Legs", item = "[item=271491 original-item=268237]", source = "[url guide=34251]The Coiled Altar", itemId = nil },
-            { slot = "Boots", item = "[url guide=34249]Sszorak", source = "Unknown", itemId = 268233 },
-            { slot = "Ring", item = "[url guide=34248]Vashnik the Malignant", source = "Unknown", itemId = 268249 },
-            { slot = "Ring", item = "[color=q4][/color]", source = "[url guide=33183]Voidscar Arena", itemId = 252258 },
-            { slot = "Trinket", item = "[url guide=34251]The Coiled Altar", source = "Unknown", itemId = 270173 },
-            { slot = "Trinket", item = "[url guide=34252]Ula'tek", source = "Unknown", itemId = 270175 },
-            { slot = "Trinket (Raid only)", item = "[url guide=34245]Entombed Sentinels", source = "Unknown", itemId = 270165 },
+            { text = "Item", itemId = nil, slot = "Slot" },
+            { text = "[item=268207 bonus=13848:13708]", itemId = nil, slot = "Weapon" },
+            { text = "[item=271492 ]", itemId = nil, slot = "Head" },
+            { text = "[item=268265 bonus=13848:13708]", itemId = nil, slot = "Neck" },
+            { text = "[item=271490 original-item=268231]", itemId = nil, slot = "Shoulders" },
+            { text = "[url guide=34251]The Coiled Altar", itemId = 268253, slot = "Cloak" },
+            { text = "[item=271495 original-item=271876 bonus=13848:13708]", itemId = nil, slot = "Chest" },
+            { text = "[item=244584 bonus=13751:12497:13836:12384:8793]", itemId = nil, slot = "Wrist" },
+            { text = "[item=271493 original-item=160213]", itemId = nil, slot = "Gloves" },
+            { text = "[item=244581 bonus=13751:12497:13836:12384:8793]", itemId = nil, slot = "Belt" },
+            { text = "[item=271491 original-item=268237]", itemId = nil, slot = "Legs" },
+            { text = "[url guide=34249]Sszorak", itemId = 268233, slot = "Boots" },
+            { text = "[url guide=34248]Vashnik the Malignant", itemId = 268249, slot = "Ring" },
+            { text = "[color=q4][/color]", itemId = 252258, slot = "Ring" },
+            { text = "[url guide=34251]The Coiled Altar", itemId = 270173, slot = "Trinket" },
+            { text = "[url guide=34252]Ula'tek", itemId = 270175, slot = "Trinket" },
+            { text = "[url guide=34245]Entombed Sentinels", itemId = 270165, slot = "Trinket (Raid only)" },
         },
     },
     enchants = {
@@ -1737,6 +1733,18 @@ DragonSkillData["HUNTER"][253] = {
     },
     gems = {
         wowhead = {
+            { text = "Weapon Damage", itemId = nil },
+            { text = "Agility", itemId = nil },
+            { text = "Mastery", itemId = nil },
+            { text = "Critical Strike", itemId = nil },
+            { text = "Haste", itemId = nil },
+            { text = "Versatility", itemId = nil },
+            { text = "Weapon Damage", itemId = nil },
+            { text = "Agility", itemId = nil },
+            { text = "Critical Strike", itemId = nil },
+            { text = "Mastery", itemId = nil },
+            { text = "Haste", itemId = nil },
+            { text = "Versatility", itemId = nil },
         },
     },
     consumables = {
@@ -1746,6 +1754,8 @@ DragonSkillData["HUNTER"][253] = {
     crafting = {
         wowhead = {
             embellishments = {
+                "[item=240166]",
+                "[item=245875]",
             },
         },
     },
@@ -1828,37 +1838,33 @@ DragonSkillData["HUNTER"][253] = {
 }
 
 DragonSkillData["HUNTER"][254] = {
-    scrapedAt = "2026-08-16T09:45:22.366Z",
+    scrapedAt = "2026-08-16T10:00:54.481Z",
     statPriority = {
         wowhead = "Sentinel: Agility > Critical Strike > Mastery > Versatility > Haste | Dark Ranger: Agility > Critical Strike > Mastery > Versatility > Haste",
         archon = "Agility > Crit > Mastery > Haste > Vers",
     },
-    statAverages = {
-        archon = {
-        },
-    },
     bisGear = {
         wowhead = {
-            { slot = "Slot", item = "Item", source = "Source", itemId = nil },
-            { slot = "Weapon", item = "[item=268207 bonus=12854]", source = "[url guide=34252]Ula'tek", itemId = nil },
-            { slot = "Head", item = "[item=271492 original-item=268230 bonus=12854]", source = "Catalyst the [url guide=34244]Nek'zali the Soulcoiler Head", itemId = nil },
-            { slot = "Neck", item = "[item=268265 bonus=12854]", source = "[url guide=34252]Ula'tek", itemId = nil },
-            { slot = "Shoulders", item = "[item=271490 original-item=268231 bonus=12854]", source = "Catalyst the [url guide=34251]The Coiled Altar Shoulders", itemId = nil },
-            { slot = "Cloak", item = "[item=268253 bonus=12854]", source = "[url guide=34251]The Coiled Altar", itemId = nil },
-            { slot = "Chest", item = "[item=271495 original-item=271876 bonus=12854]", source = "Catalyst the [url guide=34252]Ula'tek Chest", itemId = nil },
-            { slot = "Wrist", item = "[item=244584 bonus=12214:8960:12497:12066:13622:13667]", source = "[url guide=15942]Crafting/Misc", itemId = nil },
-            { slot = "Gloves", item = "[item=271493 original-item=193752 bonus=12854]", source = "Catalyst the [url guide=34263]Ruby Life Pools Gloves", itemId = nil },
-            { slot = "Belt", item = "[item=244581 bonus=12214:8960:12497:12066:13622:13667]", source = "[url guide=15942]Crafting/Misc", itemId = nil },
-            { slot = "Legs", item = "[item=271491 original-item=268237 bonus=12854]", source = "Catalyst the [url guide=34251]The Coiled Altar Legs", itemId = nil },
-            { slot = "Boots", item = "[item=268233 bonus=12854]", source = "[url guide=34249]Sszorak", itemId = nil },
-            { slot = "Ring", item = "[item=251136 bonus=12806]", source = "[url guide=33189]Murder Row", itemId = nil },
-            { slot = "Ring", item = "[item=268249 bonus=12854]", source = "[url guide=34248]Vashnik the Malignant", itemId = nil },
-            { slot = "Trinket", item = "[item=270175 bonus=12854]", source = "[url guide=34252]Ula'tek", itemId = nil },
-            { slot = "Trinket", item = "[item=270173 bonus=12854]", source = "[url guide=34251]The Coiled Altar", itemId = nil },
-            { slot = "Priority", item = "Location", source = "Item/Notes", itemId = nil },
-            { slot = "[large][color=necrolord]1[/color][/large]", item = "[icon name=inv_121_raid_achievement_ulatek inline=true size=small type=round color=c3][/icon] [url guide=34252]Ula'tek", source = "[color=q6]Most Pieces[/color] [toggler id=VOIDCORE_1][i]Click for Notes[/i][/toggler]", itemId = nil },
-            { slot = "[large][color=rogue]2[/color][/large]", item = "[icon name=inv_121_raid_achievement_zuljinmalacrass inline=true size=small type=round color=c3][/icon] [url guide=34251]Coiled Altar", source = "[color=q6]Trinket[/color] [toggler id=VOIDCORE_2 hidden][i]Click for Notes[/i][/toggler]", itemId = nil },
-            { slot = "[large][color=druid]3[/color][/large]", item = "[icon name=8039569 inline=true size=small type=round color=c3][/icon] [url guide=34045]Early Mythic Bosses", source = "Depends [toggler id=VOIDCORE_3 hidden][i]Click for Notes[/i][/toggler]", itemId = nil },
+            { text = "Item", itemId = nil, slot = "Slot" },
+            { text = "[item=268207 bonus=12854]", itemId = nil, slot = "Weapon" },
+            { text = "[item=271492 original-item=268230 bonus=12854]", itemId = nil, slot = "Head" },
+            { text = "[item=268265 bonus=12854]", itemId = nil, slot = "Neck" },
+            { text = "[item=271490 original-item=268231 bonus=12854]", itemId = nil, slot = "Shoulders" },
+            { text = "[item=268253 bonus=12854]", itemId = nil, slot = "Cloak" },
+            { text = "[item=271495 original-item=271876 bonus=12854]", itemId = nil, slot = "Chest" },
+            { text = "[item=244584 bonus=12214:8960:12497:12066:13622:13667]", itemId = nil, slot = "Wrist" },
+            { text = "[item=271493 original-item=193752 bonus=12854]", itemId = nil, slot = "Gloves" },
+            { text = "[item=244581 bonus=12214:8960:12497:12066:13622:13667]", itemId = nil, slot = "Belt" },
+            { text = "[item=271491 original-item=268237 bonus=12854]", itemId = nil, slot = "Legs" },
+            { text = "[item=268233 bonus=12854]", itemId = nil, slot = "Boots" },
+            { text = "[item=251136 bonus=12806]", itemId = nil, slot = "Ring" },
+            { text = "[item=268249 bonus=12854]", itemId = nil, slot = "Ring" },
+            { text = "[item=270175 bonus=12854]", itemId = nil, slot = "Trinket" },
+            { text = "[item=270173 bonus=12854]", itemId = nil, slot = "Trinket" },
+            { text = "Location", itemId = nil, slot = "Priority" },
+            { text = "[icon name=inv_121_raid_achievement_ulatek inline=true size=small type=round color=c3][/icon] [url guide=34252]Ula'tek", itemId = nil, slot = "[large][color=necrolord]1[/color][/large]" },
+            { text = "[icon name=inv_121_raid_achievement_zuljinmalacrass inline=true size=small type=round color=c3][/icon] [url guide=34251]Coiled Altar", itemId = nil, slot = "[large][color=rogue]2[/color][/large]" },
+            { text = "[icon name=8039569 inline=true size=small type=round color=c3][/icon] [url guide=34045]Early Mythic Bosses", itemId = nil, slot = "[large][color=druid]3[/color][/large]" },
         },
     },
     enchants = {
@@ -1867,6 +1873,11 @@ DragonSkillData["HUNTER"][254] = {
     },
     gems = {
         wowhead = {
+            { text = "Agility", itemId = nil },
+            { text = "Critical Strike", itemId = nil },
+            { text = "Mastery", itemId = nil },
+            { text = "Versatility", itemId = nil },
+            { text = "Haste", itemId = nil },
         },
     },
     consumables = {
@@ -1876,6 +1887,8 @@ DragonSkillData["HUNTER"][254] = {
     crafting = {
         wowhead = {
             embellishments = {
+                "[item=240167]",
+                "[item=240167]",
             },
         },
     },
@@ -1970,33 +1983,29 @@ DragonSkillData["HUNTER"][254] = {
 }
 
 DragonSkillData["HUNTER"][255] = {
-    scrapedAt = "2026-08-16T09:45:23.909Z",
+    scrapedAt = "2026-08-16T10:00:54.936Z",
     statPriority = {
         wowhead = "Pack Leader: Agility > Mastery > Critical Strike and Haste > Versatility | Sentinel: Agility > Mastery > Critical Strike > Haste > Versatility",
         archon = "Agility > Mastery > Crit > Haste > Vers",
     },
-    statAverages = {
-        archon = {
-        },
-    },
     bisGear = {
         wowhead = {
-            { slot = "Slot", item = "Item", source = "Source", itemId = nil },
-            { slot = "Weapon", item = "[url guide=34252]Ula'tek", source = "Unknown", itemId = 268215 },
-            { slot = "Head", item = "[item=271492 original-item=251220] (Catalyzed from [color=q4][/color])", source = "[url guide=34180]Tier Set|[url guide=33183]Voidscar Arena", itemId = 251220 },
-            { slot = "Neck", item = "[url guide=34252]Ula'tek", source = "Unknown", itemId = 268265 },
-            { slot = "Shoulders", item = "[item=271490 original-item=268231] (Catalyzed from )", source = "[url guide=34180]Tier Set|[url guide=34251]The Coiled Altar", itemId = 268231 },
-            { slot = "Cloak", item = "[url guide=34251]The Coiled Altar", source = "Unknown", itemId = 268253 },
-            { slot = "Chest", item = "[url guide=34252]Ula'tek", source = "Unknown", itemId = 271876 },
-            { slot = "Wrist", item = "[item=244584 bonus=13836:13751:9627:13750:8793:8960:12384]", source = "[url guide=15942]Crafting", itemId = nil },
-            { slot = "Gloves", item = "[item=271493 original-item=160213] (Catalyzed from [color=q4][/color])", source = "[url guide=34180]Tier Set|[url guide=34260]King's Rest", itemId = 160213 },
-            { slot = "Belt", item = "[item=244581 bonus=13836:13751:9627:13750:8793:8960:12384]", source = "[url guide=15942]Crafting", itemId = nil },
-            { slot = "Legs", item = "[item=271491 original-item=268237] (Catalysed from )", source = "[url guide=34180]Tier Set|[url guide=34251]The Coiled Altar", itemId = 268237 },
-            { slot = "Boots", item = "[url guide=34249]Sszorak", source = "Unknown", itemId = 268233 },
-            { slot = "Ring", item = "[color=q4][/color]", source = "[url guide=34251]The Coiled Altar", itemId = 273792 },
-            { slot = "Ring", item = "[color=q4][/color]", source = "[url guide=33183]Voidscar Arena", itemId = 252258 },
-            { slot = "Trinket", item = "[url guide=34252]Ula'tek", source = "Unknown", itemId = 270175 },
-            { slot = "Trinket", item = "[url guide=34251]The Coiled Altar", source = "Unknown", itemId = 270173 },
+            { text = "Item", itemId = nil, slot = "Slot" },
+            { text = "[url guide=34252]Ula'tek", itemId = 268215, slot = "Weapon" },
+            { text = "[item=271492 original-item=251220] (Catalyzed from [color=q4][/color])", itemId = 251220, slot = "Head" },
+            { text = "[url guide=34252]Ula'tek", itemId = 268265, slot = "Neck" },
+            { text = "[item=271490 original-item=268231] (Catalyzed from )", itemId = 268231, slot = "Shoulders" },
+            { text = "[url guide=34251]The Coiled Altar", itemId = 268253, slot = "Cloak" },
+            { text = "[url guide=34252]Ula'tek", itemId = 271876, slot = "Chest" },
+            { text = "[item=244584 bonus=13836:13751:9627:13750:8793:8960:12384]", itemId = nil, slot = "Wrist" },
+            { text = "[item=271493 original-item=160213] (Catalyzed from [color=q4][/color])", itemId = 160213, slot = "Gloves" },
+            { text = "[item=244581 bonus=13836:13751:9627:13750:8793:8960:12384]", itemId = nil, slot = "Belt" },
+            { text = "[item=271491 original-item=268237] (Catalysed from )", itemId = 268237, slot = "Legs" },
+            { text = "[url guide=34249]Sszorak", itemId = 268233, slot = "Boots" },
+            { text = "[color=q4][/color]", itemId = 273792, slot = "Ring" },
+            { text = "[color=q4][/color]", itemId = 252258, slot = "Ring" },
+            { text = "[url guide=34252]Ula'tek", itemId = 270175, slot = "Trinket" },
+            { text = "[url guide=34251]The Coiled Altar", itemId = 270173, slot = "Trinket" },
         },
     },
     enchants = {
@@ -2005,6 +2014,12 @@ DragonSkillData["HUNTER"][255] = {
     },
     gems = {
         wowhead = {
+            { text = "Agility", itemId = nil },
+            { text = "Mastery", itemId = nil },
+            { text = "Critical Strike and Haste", itemId = nil },
+            { text = "Versatility", itemId = nil },
+            { text = "[spell=1296636] - Mongoose Fury also increases the damage of Wildfire Bomb by 10%", itemId = nil },
+            { text = "[spell=1296635] - Each blast of Boomstick extends the duration of Mongoose Fury by 1.0 sec. Mongoose Fury effects are increased by 10%.", itemId = nil },
         },
     },
     consumables = {
@@ -2014,6 +2029,8 @@ DragonSkillData["HUNTER"][255] = {
     crafting = {
         wowhead = {
             embellishments = {
+                "[item=273069]",
+                "[item=273069]",
             },
         },
     },
@@ -2116,34 +2133,30 @@ DragonSkillData["HUNTER"][255] = {
 
 DragonSkillData["MAGE"] = DragonSkillData["MAGE"] or {}
 DragonSkillData["MAGE"][62] = {
-    scrapedAt = "2026-08-16T09:45:24.388Z",
+    scrapedAt = "2026-08-16T10:00:55.428Z",
     statPriority = {
         wowhead = "Spellslinger: Intellect > Haste > Mastery > Critical Strike > Versatility | Sunfury: Intellect > Haste > Versatility > Critical Strike > Mastery",
         archon = "Intellect > Mastery > Haste > Crit > Vers",
     },
-    statAverages = {
-        archon = {
-        },
-    },
     bisGear = {
         wowhead = {
-            { slot = "Slot", item = "Item", source = "Source", itemId = nil },
-            { slot = "Weapon", item = "[url guide=34252]Ula'tek", source = "Unknown", itemId = 271092 },
-            { slot = "Offhand", item = "[url guide=15942]Crafting", source = "Unknown", itemId = 245769 },
-            { slot = "Head", item = "[item=271564 original-item=271874]", source = "[url guide=34252]Ula'tek", itemId = nil },
-            { slot = "Neck", item = "[url guide=34252]Ula'tek", source = "Unknown", itemId = 268265 },
-            { slot = "Shoulders", item = "[item=271562 original-item=268241]", source = "[url guide=34250]The Twin Fangs", itemId = nil },
-            { slot = "Cloak", item = "[url guide=34251]The Coiled Altar", source = "Unknown", itemId = 268253 },
-            { slot = "Chest", item = "[item=271567 original-item=273785]", source = "[url guide=34264]Altar of Fangs", itemId = nil },
-            { slot = "Wrist", item = "[url guide=15942]Crafting", source = "Unknown", itemId = 239648 },
-            { slot = "Gloves", item = "[item=271565 original-item=268243]", source = "[url guide=34251]The Coiled Altar", itemId = nil },
-            { slot = "Belt", item = "[url guide=34249]Sszorak", source = "Unknown", itemId = 268257 },
-            { slot = "Legs", item = "[item=271563 original-item=268236]", source = "[url guide=34244]Nek'zali the Soulcoiler", itemId = nil },
-            { slot = "Boots", item = "[url guide=34251]The Coiled Altar", source = "Unknown", itemId = 268255 },
-            { slot = "Ring", item = "[url guide=34240]Nymrissa Wavecaller", source = "Unknown", itemId = 268266 },
-            { slot = "Ring", item = "[url guide=33190]Den of Nalorakk", source = "Unknown", itemId = 251148 },
-            { slot = "Trinket", item = "[url guide=33189]Murder Row", source = "Unknown", itemId = 250215 },
-            { slot = "Trinket", item = "[url guide=34247]The Lost Explorers", source = "Unknown", itemId = 270164 },
+            { text = "Item", itemId = nil, slot = "Slot" },
+            { text = "[url guide=34252]Ula'tek", itemId = 271092, slot = "Weapon" },
+            { text = "[url guide=15942]Crafting", itemId = 245769, slot = "Offhand" },
+            { text = "[item=271564 original-item=271874]", itemId = nil, slot = "Head" },
+            { text = "[url guide=34252]Ula'tek", itemId = 268265, slot = "Neck" },
+            { text = "[item=271562 original-item=268241]", itemId = nil, slot = "Shoulders" },
+            { text = "[url guide=34251]The Coiled Altar", itemId = 268253, slot = "Cloak" },
+            { text = "[item=271567 original-item=273785]", itemId = nil, slot = "Chest" },
+            { text = "[url guide=15942]Crafting", itemId = 239648, slot = "Wrist" },
+            { text = "[item=271565 original-item=268243]", itemId = nil, slot = "Gloves" },
+            { text = "[url guide=34249]Sszorak", itemId = 268257, slot = "Belt" },
+            { text = "[item=271563 original-item=268236]", itemId = nil, slot = "Legs" },
+            { text = "[url guide=34251]The Coiled Altar", itemId = 268255, slot = "Boots" },
+            { text = "[url guide=34240]Nymrissa Wavecaller", itemId = 268266, slot = "Ring" },
+            { text = "[url guide=33190]Den of Nalorakk", itemId = 251148, slot = "Ring" },
+            { text = "[url guide=33189]Murder Row", itemId = 250215, slot = "Trinket" },
+            { text = "[url guide=34247]The Lost Explorers", itemId = 270164, slot = "Trinket" },
         },
     },
     enchants = {
@@ -2161,6 +2174,8 @@ DragonSkillData["MAGE"][62] = {
     crafting = {
         wowhead = {
             embellishments = {
+                "[item=245769] with [item=273059]",
+                "[item=239648] with [item=240167]",
             },
         },
     },
@@ -2237,40 +2252,36 @@ DragonSkillData["MAGE"][62] = {
 }
 
 DragonSkillData["MAGE"][63] = {
-    scrapedAt = "2026-08-16T09:45:25.830Z",
+    scrapedAt = "2026-08-16T10:00:55.864Z",
     statPriority = {
         wowhead = "Sunfury: Intellect > Haste > Mastery > Versatility > Critical Strike | Frostfire: Intellect > Haste > Mastery > Versatility > Critical Strike",
         archon = "Intellect > Haste > Mastery > Crit > Vers",
     },
-    statAverages = {
-        archon = {
-        },
-    },
     bisGear = {
         wowhead = {
-            { slot = "Slot", item = "Item", source = "Source", itemId = nil },
-            { slot = "Weapon", item = "[url guide=34252]Ula'tek", source = "Unknown", itemId = 271092 },
-            { slot = "Offhand", item = "[url guide=15942]Crafting", source = "Unknown", itemId = 245769 },
-            { slot = "Head", item = "[item=271564 original-item=271874]", source = "[url guide=34180]Tier Set", itemId = nil },
-            { slot = "Neck", item = "[url guide=33189]Murder Row", source = "Unknown", itemId = 251142 },
-            { slot = "Shoulders", item = "[item=271562 original-item=268241]", source = "[url guide=34180]Tier Set", itemId = nil },
-            { slot = "Cloak", item = "[url guide=34251]The Coiled Altar", source = "Unknown", itemId = 268253 },
-            { slot = "Chest", item = "[item=271567 original-item=273785]", source = "[url guide=34180]Tier Set", itemId = nil },
-            { slot = "Wrist", item = "[url guide=15942]Crafting/Misc", source = "Unknown", itemId = 239648 },
-            { slot = "Gloves", item = "[item=271565 original-item=268243]", source = "[url guide=34180]Tier Set", itemId = nil },
-            { slot = "Belt", item = "[url guide=34249]Sszorak", source = "Unknown", itemId = 268257 },
-            { slot = "Legs", item = "[item=271563 original-item=268236]", source = "[url guide=34180]Tier Set", itemId = nil },
-            { slot = "Boots", item = "[url guide=34251]The Coiled Altar", source = "Unknown", itemId = 268255 },
-            { slot = "Ring", item = "[url guide=34240]Nymrissa Wavecaller", source = "Unknown", itemId = 268266 },
-            { slot = "Ring", item = "[url guide=34260]King's Rest", source = "Unknown", itemId = 159459 },
-            { slot = "Trinket", item = "[url guide=34264]Altar of Fangs", source = "Unknown", itemId = 273796 },
-            { slot = "Trinket", item = "[url guide=34247]The Lost Explorers", source = "Unknown", itemId = 270164 },
-            { slot = "Priority", item = "Location", source = "Item/Notes", itemId = nil },
-            { slot = "[large][color=necrolord]1[/color][/large]", item = "[icon name=inv_121_raid_achievement_ulatek inline=true size=small type=round color=c8][/icon] [url guide=34252]Ula'tek (Heroic & Mythic)", source = "[color=q6]High Risk, High Reward[/color] [toggler id=\"voidcore-1\"][i]Click for Notes[/i][/toggler]", itemId = nil },
-            { slot = "[large][color=rogue]2[/color][/large]", item = "[icon name=inv_121_raid_achievement_zuljinmalacrass inline=true size=small type=round color=c8][/icon] [url guide=34251]Coiled Altar (Mythic)", source = "[color=q6]Mostly Useful[/color] [toggler id=\"voidcore-2\" hidden][i]Click for Notes[/i][/toggler]", itemId = nil },
-            { slot = "[large][color=druid]3[/color][/large]", item = "[icon name=8039569 inline=true size=small type=round color=c8][/icon] [url guide=34045] Early Mythic Bosses or Dungeons", source = "Safest, but least Impactful [toggler id=\"voidcore-3\" hidden][i]Click for Notes[/i][/toggler]", itemId = nil },
-            { slot = "[center][large]1[/large][/center]", item = "[icon-badge=273796 quality=3 tooltip=\"Bonus_3_Tooltip\"]", source = "Unknown", itemId = nil },
-            { slot = "[center][large]2[/large][/center]", item = "[icon-badge=270164 quality=4 tooltip=\"Bonus_2_Tooltip\"]", source = "Unknown", itemId = nil },
+            { text = "Item", itemId = nil, slot = "Slot" },
+            { text = "[url guide=34252]Ula'tek", itemId = 271092, slot = "Weapon" },
+            { text = "[url guide=15942]Crafting", itemId = 245769, slot = "Offhand" },
+            { text = "[item=271564 original-item=271874]", itemId = nil, slot = "Head" },
+            { text = "[url guide=33189]Murder Row", itemId = 251142, slot = "Neck" },
+            { text = "[item=271562 original-item=268241]", itemId = nil, slot = "Shoulders" },
+            { text = "[url guide=34251]The Coiled Altar", itemId = 268253, slot = "Cloak" },
+            { text = "[item=271567 original-item=273785]", itemId = nil, slot = "Chest" },
+            { text = "[url guide=15942]Crafting/Misc", itemId = 239648, slot = "Wrist" },
+            { text = "[item=271565 original-item=268243]", itemId = nil, slot = "Gloves" },
+            { text = "[url guide=34249]Sszorak", itemId = 268257, slot = "Belt" },
+            { text = "[item=271563 original-item=268236]", itemId = nil, slot = "Legs" },
+            { text = "[url guide=34251]The Coiled Altar", itemId = 268255, slot = "Boots" },
+            { text = "[url guide=34240]Nymrissa Wavecaller", itemId = 268266, slot = "Ring" },
+            { text = "[url guide=34260]King's Rest", itemId = 159459, slot = "Ring" },
+            { text = "[url guide=34264]Altar of Fangs", itemId = 273796, slot = "Trinket" },
+            { text = "[url guide=34247]The Lost Explorers", itemId = 270164, slot = "Trinket" },
+            { text = "Location", itemId = nil, slot = "Priority" },
+            { text = "[icon name=inv_121_raid_achievement_ulatek inline=true size=small type=round color=c8][/icon] [url guide=34252]Ula'tek (Heroic & Mythic)", itemId = nil, slot = "[large][color=necrolord]1[/color][/large]" },
+            { text = "[icon name=inv_121_raid_achievement_zuljinmalacrass inline=true size=small type=round color=c8][/icon] [url guide=34251]Coiled Altar (Mythic)", itemId = nil, slot = "[large][color=rogue]2[/color][/large]" },
+            { text = "[icon name=8039569 inline=true size=small type=round color=c8][/icon] [url guide=34045] Early Mythic Bosses or Dungeons", itemId = nil, slot = "[large][color=druid]3[/color][/large]" },
+            { text = "[icon-badge=273796 quality=3 tooltip=\"Bonus_3_Tooltip\"]", itemId = nil, slot = "[center][large]1[/large][/center]" },
+            { text = "[icon-badge=270164 quality=4 tooltip=\"Bonus_2_Tooltip\"]", itemId = nil, slot = "[center][large]2[/large][/center]" },
         },
     },
     enchants = {
@@ -2288,11 +2299,15 @@ DragonSkillData["MAGE"][63] = {
     crafting = {
         wowhead = {
             embellishments = {
+                "[item=273060]",
+                "[item=240167]",
             },
         },
     },
     rotation = {
         wowhead = {
+            { text = "with", spellId = "11366" },
+            { text = "The below casts are used to generate :", spellId = "48108" },
         },
     },
     trinkets = {
@@ -2364,34 +2379,30 @@ DragonSkillData["MAGE"][63] = {
 }
 
 DragonSkillData["MAGE"][64] = {
-    scrapedAt = "2026-08-16T09:45:26.328Z",
+    scrapedAt = "2026-08-16T10:00:56.259Z",
     statPriority = {
         wowhead = "Frostfire: Intellect > Mastery > Critical Strike > Haste > Versatility | Spellslinger: Intellect > Mastery > Critical Strike > Haste > Versatility",
         archon = "Intellect > Crit > Mastery > Haste > Vers",
     },
-    statAverages = {
-        archon = {
-        },
-    },
     bisGear = {
         wowhead = {
-            { slot = "Slot", item = "Item", source = "Source", itemId = nil },
-            { slot = "Weapon", item = "[url guide=34252]Ula'tek", source = "Unknown", itemId = 271092 },
-            { slot = "Offhand", item = "[url guide=34240]Nymrissa Wavecaller", source = "Unknown", itemId = 268263 },
-            { slot = "Head", item = "[item=271564 original-item=271874]", source = "[url guide=34180]Tier Set", itemId = nil },
-            { slot = "Neck", item = "[url guide=34252]Ula'tek", source = "Unknown", itemId = 268265 },
-            { slot = "Shoulders", item = "[item=271562 original-item=239031]", source = "[url guide=34180]Tier Set", itemId = nil },
-            { slot = "Cloak", item = "[url guide=34251]The Coiled Altar", source = "Unknown", itemId = 268253 },
-            { slot = "Chest", item = "[item=271567 original-item=273785]", source = "[url guide=34180]Tier Set", itemId = nil },
-            { slot = "Wrist", item = "[item=239648 bonus=8791:8960:12214:12384:13668:13751]", source = "[url guide=15942]Crafting/Misc", itemId = nil },
-            { slot = "Gloves", item = "[item=271565 original-item=268243]", source = "[url guide=34180]Tier Set", itemId = nil },
-            { slot = "Belt", item = "[item=239649 bonus=8791:8960:12214:12384:13668:13751]", source = "[url guide=15942]Crafting/Misc", itemId = nil },
-            { slot = "Legs", item = "[item=271563 original-item=159234]", source = "[url guide=34180]Tier Set", itemId = nil },
-            { slot = "Boots", item = "[url guide=34251]The Coiled Altar", source = "Unknown", itemId = 268255 },
-            { slot = "Ring", item = "[url guide=34248]Vashnik the Malignant", source = "Unknown", itemId = 268249 },
-            { slot = "Ring", item = "[url guide=34262]Temple of Sethraliss", source = "Unknown", itemId = 158366 },
-            { slot = "Trinket", item = "[url guide=34247]The Lost Explorers", source = "Unknown", itemId = 270164 },
-            { slot = "Trinket", item = "[url guide=34240]Nymrissa Wavecaller", source = "Unknown", itemId = 270167 },
+            { text = "Item", itemId = nil, slot = "Slot" },
+            { text = "[url guide=34252]Ula'tek", itemId = 271092, slot = "Weapon" },
+            { text = "[url guide=34240]Nymrissa Wavecaller", itemId = 268263, slot = "Offhand" },
+            { text = "[item=271564 original-item=271874]", itemId = nil, slot = "Head" },
+            { text = "[url guide=34252]Ula'tek", itemId = 268265, slot = "Neck" },
+            { text = "[item=271562 original-item=239031]", itemId = nil, slot = "Shoulders" },
+            { text = "[url guide=34251]The Coiled Altar", itemId = 268253, slot = "Cloak" },
+            { text = "[item=271567 original-item=273785]", itemId = nil, slot = "Chest" },
+            { text = "[item=239648 bonus=8791:8960:12214:12384:13668:13751]", itemId = nil, slot = "Wrist" },
+            { text = "[item=271565 original-item=268243]", itemId = nil, slot = "Gloves" },
+            { text = "[item=239649 bonus=8791:8960:12214:12384:13668:13751]", itemId = nil, slot = "Belt" },
+            { text = "[item=271563 original-item=159234]", itemId = nil, slot = "Legs" },
+            { text = "[url guide=34251]The Coiled Altar", itemId = 268255, slot = "Boots" },
+            { text = "[url guide=34248]Vashnik the Malignant", itemId = 268249, slot = "Ring" },
+            { text = "[url guide=34262]Temple of Sethraliss", itemId = 158366, slot = "Ring" },
+            { text = "[url guide=34247]The Lost Explorers", itemId = 270164, slot = "Trinket" },
+            { text = "[url guide=34240]Nymrissa Wavecaller", itemId = 270167, slot = "Trinket" },
         },
     },
     enchants = {
@@ -2409,6 +2420,8 @@ DragonSkillData["MAGE"][64] = {
     crafting = {
         wowhead = {
             embellishments = {
+                "[item=240167] (For Armor)",
+                "[item=245876] (For Weapons)",
             },
         },
     },
@@ -2491,40 +2504,38 @@ DragonSkillData["MAGE"][64] = {
 
 DragonSkillData["MONK"] = DragonSkillData["MONK"] or {}
 DragonSkillData["MONK"][268] = {
-    scrapedAt = "2026-08-16T09:45:27.707Z",
+    scrapedAt = "2026-08-16T10:00:56.645Z",
     statPriority = {
         wowhead = "Shado-Pan: Item Level / Agility / Armor / Stamina > Versatility = Critical Strike = Mastery > Haste | Master of Harmony: Item Level / Agility / Armor / Stamina > Versatility = Critical Strike = Mastery > Haste | Shado-Pan: Item Level / Agility > Critical Strike > Versatility = Mastery > Haste | Master of Harmony: Item Level / Agility > Critical Strike > Versatility = Mastery > Haste",
         archon = "Agility > Crit > Vers > Mastery > Haste",
     },
-    statAverages = {
-        archon = {
-        },
-    },
     bisGear = {
         wowhead = {
-            { slot = "Slot", item = "Item", source = "Source", itemId = nil },
-            { slot = "Weapon (2h)", item = "[item=268215 bonus=13848:13846]", source = "[icon name=inv_121_raid_achievement_ulatek color=c10 inline=true type=round][/icon]Ula'tek", itemId = nil },
-            { slot = "Weapons (1h)", item = "[item=268209 bonus=13848]", source = "[icon name=inv_121_raid_achievement_zuljinmalacrass color=c10 inline=true type=round][/icon]The Coiled Altar\n    [icon name=inv_121_raid_achievement_brute color=c10 inline=true type=round][/icon]Sszorak", itemId = 268206 },
-            { slot = "Head", item = "[item=271519 bonus=13848:13847:10835 original-item=271875]", source = "[url guide=33219]Catalyst|[icon name=inv_121_raid_achievement_ulatek color=c10 inline=true type=round][/icon][url guide=34252]Raid|Vault", itemId = nil },
-            { slot = "Neck", item = "[item=268265 bonus=13848:13708:10835]", source = "[icon name=inv_121_raid_achievement_ulatek color=c10 inline=true type=round][/icon]Ula'tek", itemId = nil },
-            { slot = "Shoulders", item = "[item=271517 original-item=273774]", source = "[url guide=33219]Catalyst|[icon name=inv_achievement_dungeon_altaroffangs color=c10 inline=true type=round][/icon][url guide=34264]Mythic+|Vault", itemId = nil },
-            { slot = "Cloak", item = "[item=268253 bonus=13848]", source = "[icon name=inv_121_raid_achievement_zuljinmalacrass color=c10 inline=true type=round][/icon]The Coiled Altar", itemId = nil },
-            { slot = "Chest", item = "[item=271522 original-item=251226]", source = "[url guide=33219]Catalyst|[icon name=inv_achievement_dungeon_voidscararena color=c10 inline=true type=round][/icon][url guide=33183]Mythic+|Vault", itemId = nil },
-            { slot = "Wrist", item = "[item=244576 bonus=13751:12497:13836:10835:8795:13454]", source = "[icon name=ui_profession_leatherworking color=c10 inline=true type=round][/icon][url guide=33200]Leatherworking", itemId = nil },
-            { slot = "Gloves", item = "[item=271520 original-item=193758]", source = "[url guide=33219]Catalyst|[icon name=achievement_dungeon_lifepools color=c10 inline=true type=round][/icon][url guide=17811]Mythic+|Vault", itemId = nil },
-            { slot = "Belt", item = "[item=268256 bonus=13848]", source = "[icon name=inv_121_raid_achievement_zuljinmalacrass color=c10 inline=true type=round][/icon]The Coiled Altar", itemId = nil },
-            { slot = "Legs", item = "[item=271518 bonus=13848 original-item=268225]", source = "[url guide=33219]Catalyst|[icon name=inv_121_raid_achievement_zuljinmalacrass color=c10 inline=true type=round][/icon][url guide=34251]Raid|Vault", itemId = nil },
-            { slot = "Boots", item = "[color=q4][/color]", source = "[icon name=achievement_dungeon_kingsrest color=c10 inline=true type=round][/icon]Kings' Rest", itemId = 159304 },
-            { slot = "Ring", item = "[color=q4][/color]", source = "[icon name=inv_achievement_dungeon_proveyourworth color=c10 inline=true type=round][/icon]Den of Nalorakk", itemId = 251148 },
-            { slot = "Ring", item = "[item=251513 bonus=13751:12497:13836]", source = "[icon name=ui_profession_jewelcrafting color=c10 inline=true type=round][/icon][url guide=33205]Jewelcrafting", itemId = nil },
-            { slot = "Trinket (Damage)", item = "[item=270175 bonus=13848]", source = "[icon name=inv_121_raid_achievement_ulatek color=c10 inline=true type=round][/icon]Ula'tek", itemId = nil },
-            { slot = "Trinket (Damage)", item = "[item=270173 bonus=13848]", source = "[icon name=inv_121_raid_achievement_zuljinmalacrass color=c10 inline=true type=round][/icon]The Coiled Altar", itemId = nil },
-            { slot = "Trinket (Defense)", item = "[icon name=inv_121_raid_achievement_tortollans color=c10 inline=true type=round][/icon]The Lost Explorers", source = "Unknown", itemId = 270160 },
-            { slot = "Trinket (Defense)", item = "[color=q4][/color]", source = "[icon name=achievement_dungeon_kingsrest color=c10 inline=true type=round][/icon]Kings' Rest", itemId = 159617 },
-            { slot = "Priority", item = "Instance/Boss", source = "Item/Notes", itemId = nil },
-            { slot = "1", item = "[icon name=inv_121_raid_achievement_ulatek color=c10 inline=true type=round][/icon]Ula'tek", source = "Realistically, every item on Ula'tek's loot table is useful for Brewmasters. This especially includes the weapon and necklace. Although the  is also best-in-slot when received at its elevated item level, a basic Myth-track version will not match the strength of other Myth-track helms featuring more ideal secondary stats.", itemId = 271875 },
-            { slot = "2", item = "[icon name=achievement_dungeon_kingsrest inline=true  type=round][/icon][url guide=34260]King's Rest", source = "Of the 12 possible items that can be rolled here, only one () fails to at least be good, if not strong or outright BiS. This includes three tier slots that can be catalyzed, both damage and defensive trinkets, and even one- and two-handed weapons! Consider this your most reliable source of gear if not actively raiding The Venomous Abyss on at least Heroic.", itemId = 159459 },
-            { slot = "1", item = "[icon name=inv_121_raid_achievement_zuljinmalacrass color=c10 inline=true type=round][/icon]The Coiled Altar (Mythic)", source = "Most of the items here are only exceptional if you are able to obtain their elevated item level versions from Mythic difficulty. The one exception to this is ; even the very rare  is outclassed by a crafted 2h weapon, by comparison.", itemId = 270173 },
+            { text = "[div style=\"border:1px solid #6ED4CD; padding:10px;\"]\n[center][color=#6ED4CD]Master of Harmony[/color] Defensive Priority[/center]\n[hr]\n[ol]\n[li]Item Level / Agility / Armor / Stamina[/li]\n[li]Versatility = Critical Strike = Mastery[/li]\n[li]Haste[/li]\n[/ol]\n[/div]", itemId = nil, slot = "[div style=\"border:1px solid #FFAD36; padding:10px;\"]\n[center][color=#FFAD36]Shado-Pan[/color] Defensive Priority[/center]\n[hr]\n[ol]\n[li]Item Level / Agility / Armor / Stamina[/li]\n[li]Versatility = Critical Strike = Mastery[/li]\n[li]Haste[/li]\n[/ol]\n[/div]" },
+            { text = "[div style=\"border:1px solid #6ED4CD; padding:10px;\"]\n[center][color=#6ED4CD]Master of Harmony[/color] Offensive Priority[/center]\n[hr]\n[ol]\n[li]Item Level / Agility[/li]\n[li]Critical Strike[/li]\n[li]Versatility = Mastery[/li]\n[li]Haste[/li]\n[/ol]\n[/div]", itemId = nil, slot = "[div style=\"border:1px solid #FFAD36; padding:10px;\"]\n[center][color=#FFAD36]Shado-Pan[/color] Offensive Priority[/center]\n[hr]\n[ol]\n[li]Item Level / Agility[/li]\n[li]Critical Strike[/li]\n[li]Versatility = Mastery[/li]\n[li]Haste[/li]\n[/ol]\n[/div]" },
+            { text = "Item", itemId = nil, slot = "Slot" },
+            { text = "[item=268215 bonus=13848:13846]", itemId = nil, slot = "Weapon (2h)" },
+            { text = "[item=268209 bonus=13848]", itemId = 268206, slot = "Weapons (1h)" },
+            { text = "[item=271519 bonus=13848:13847:10835 original-item=271875]", itemId = nil, slot = "Head" },
+            { text = "[item=268265 bonus=13848:13708:10835]", itemId = nil, slot = "Neck" },
+            { text = "[item=271517 original-item=273774]", itemId = nil, slot = "Shoulders" },
+            { text = "[item=268253 bonus=13848]", itemId = nil, slot = "Cloak" },
+            { text = "[item=271522 original-item=251226]", itemId = nil, slot = "Chest" },
+            { text = "[item=244576 bonus=13751:12497:13836:10835:8795:13454]", itemId = nil, slot = "Wrist" },
+            { text = "[item=271520 original-item=193758]", itemId = nil, slot = "Gloves" },
+            { text = "[item=268256 bonus=13848]", itemId = nil, slot = "Belt" },
+            { text = "[item=271518 bonus=13848 original-item=268225]", itemId = nil, slot = "Legs" },
+            { text = "[color=q4][/color]", itemId = 159304, slot = "Boots" },
+            { text = "[color=q4][/color]", itemId = 251148, slot = "Ring" },
+            { text = "[item=251513 bonus=13751:12497:13836]", itemId = nil, slot = "Ring" },
+            { text = "[item=270175 bonus=13848]", itemId = nil, slot = "Trinket (Damage)" },
+            { text = "[item=270173 bonus=13848]", itemId = nil, slot = "Trinket (Damage)" },
+            { text = "[icon name=inv_121_raid_achievement_tortollans color=c10 inline=true type=round][/icon]The Lost Explorers", itemId = 270160, slot = "Trinket (Defense)" },
+            { text = "[color=q4][/color]", itemId = 159617, slot = "Trinket (Defense)" },
+            { text = "Instance/Boss", itemId = nil, slot = "Priority" },
+            { text = "[icon name=inv_121_raid_achievement_ulatek color=c10 inline=true type=round][/icon]Ula'tek", itemId = 271875, slot = "1" },
+            { text = "[icon name=achievement_dungeon_kingsrest inline=true  type=round][/icon][url guide=34260]King's Rest", itemId = 159459, slot = "2" },
+            { text = "[icon name=inv_121_raid_achievement_zuljinmalacrass color=c10 inline=true type=round][/icon]The Coiled Altar (Mythic)", itemId = 270173, slot = "1" },
         },
     },
     enchants = {
@@ -2533,6 +2544,11 @@ DragonSkillData["MONK"][268] = {
     },
     gems = {
         wowhead = {
+            { text = "[spell=1252524] - 15-second Agility buff; always available", itemId = nil },
+            { text = "[spell=1257183] - 6-second ramping Critical Strike buff, refreshing every second for 10 seconds; [color=venthyr]Garnet[/color] (Critical Strike)", itemId = nil },
+            { text = "[spell=1252814] - Physical damage to primary target; [color=purple-gem]Amethyst[/color] (Mastery)", itemId = nil },
+            { text = "[spell=1252817] - 8-yard AoE Fire damage, penalized for tanks; [color=kyrian]Lapis[/color] (Versatility)", itemId = nil },
+            { text = "[spell=1252818] - 15-second Haste/Speed buff; [color=necrolord]Peridot[/color] (Haste)", itemId = nil },
         },
     },
     consumables = {
@@ -2542,6 +2558,8 @@ DragonSkillData["MONK"][268] = {
     crafting = {
         wowhead = {
             embellishments = {
+                "[item=251513]",
+                "[item=251490]/[item=240167]",
             },
         },
     },
@@ -2626,33 +2644,29 @@ DragonSkillData["MONK"][268] = {
 }
 
 DragonSkillData["MONK"][269] = {
-    scrapedAt = "2026-08-16T09:45:28.194Z",
+    scrapedAt = "2026-08-16T10:00:57.047Z",
     statPriority = {
         wowhead = "Shado-pan: Agility > Haste > Critical Strike > Mastery > Versatility | Conduit of the Celestials: Agility > Haste > Mastery > Critical Strike > Versatility",
         archon = "Agility > Haste > Crit > Mastery > Vers",
     },
-    statAverages = {
-        archon = {
-        },
-    },
     bisGear = {
         wowhead = {
-            { slot = "Slot", item = "Item", source = "Source", itemId = nil },
-            { slot = "2H Weapon", item = "[url guide=34252]Ula'tek", source = "Unknown", itemId = 268215 },
-            { slot = "Head", item = "[url guide=34252]Ula'tek", source = "Unknown", itemId = 271875 },
-            { slot = "Neck", item = "[url guide=34252]Ula'tek", source = "Unknown", itemId = 268265 },
-            { slot = "Shoulder", item = "[url guide=34180]Tier Set", source = "Unknown", itemId = 271517 },
-            { slot = "Cloak", item = "[url guide=34251]The Coiled Altar", source = "Unknown", itemId = 268253 },
-            { slot = "Chest", item = "[url guide=34244]Nek'zali the Soulcoiler", source = "Unknown", itemId = 268235 },
-            { slot = "Wrist", item = "[url guide=15942]Crafting", source = "Unknown", itemId = 244576 },
-            { slot = "Hands", item = "[url guide=33189]Murder Row", source = "Unknown", itemId = 251124 },
-            { slot = "Belt", item = "[url guide=34251]The Coiled Altar", source = "Unknown", itemId = 268256 },
-            { slot = "Legs", item = "[url guide=34251]The Coiled Altar", source = "Unknown", itemId = 268225 },
-            { slot = "Feet", item = "[url guide=15942]Crafting", source = "Unknown", itemId = 244569 },
-            { slot = "Ring", item = "[url guide=34262]Temple of Sethraliss", source = "Unknown", itemId = 158366 },
-            { slot = "Ring", item = "[url guide=33183]Voidscar Arena", source = "Unknown", itemId = 252258 },
-            { slot = "Trinket 1", item = "[url guide=34252]Ula'tek", source = "Unknown", itemId = 270175 },
-            { slot = "Trinket 2", item = "[url guide=34251]The Coiled Altar", source = "Unknown", itemId = 270173 },
+            { text = "Item", itemId = nil, slot = "Slot" },
+            { text = "[url guide=34252]Ula'tek", itemId = 268215, slot = "2H Weapon" },
+            { text = "[url guide=34252]Ula'tek", itemId = 271875, slot = "Head" },
+            { text = "[url guide=34252]Ula'tek", itemId = 268265, slot = "Neck" },
+            { text = "[url guide=34180]Tier Set", itemId = 271517, slot = "Shoulder" },
+            { text = "[url guide=34251]The Coiled Altar", itemId = 268253, slot = "Cloak" },
+            { text = "[url guide=34244]Nek'zali the Soulcoiler", itemId = 268235, slot = "Chest" },
+            { text = "[url guide=15942]Crafting", itemId = 244576, slot = "Wrist" },
+            { text = "[url guide=33189]Murder Row", itemId = 251124, slot = "Hands" },
+            { text = "[url guide=34251]The Coiled Altar", itemId = 268256, slot = "Belt" },
+            { text = "[url guide=34251]The Coiled Altar", itemId = 268225, slot = "Legs" },
+            { text = "[url guide=15942]Crafting", itemId = 244569, slot = "Feet" },
+            { text = "[url guide=34262]Temple of Sethraliss", itemId = 158366, slot = "Ring" },
+            { text = "[url guide=33183]Voidscar Arena", itemId = 252258, slot = "Ring" },
+            { text = "[url guide=34252]Ula'tek", itemId = 270175, slot = "Trinket 1" },
+            { text = "[url guide=34251]The Coiled Altar", itemId = 270173, slot = "Trinket 2" },
         },
     },
     enchants = {
@@ -2670,6 +2684,8 @@ DragonSkillData["MONK"][269] = {
     crafting = {
         wowhead = {
             embellishments = {
+                "[item=240167]",
+                "[item=240167]",
             },
         },
     },
@@ -2758,51 +2774,47 @@ DragonSkillData["MONK"][269] = {
 }
 
 DragonSkillData["MONK"][270] = {
-    scrapedAt = "2026-08-16T09:45:29.322Z",
+    scrapedAt = "2026-08-16T10:00:57.429Z",
     statPriority = {
         wowhead = "Raid: Intellect > Haste > Critical Strike > Versatility > Mastery | Mythic+: Intellect > Haste > Mastery > Critical Strike > Versatility",
         archon = "Intellect > Haste > Crit > Vers > Mastery",
     },
-    statAverages = {
-        archon = {
-        },
-    },
     bisGear = {
         wowhead = {
-            { slot = "Slot", item = "Item", source = "Source", itemId = nil },
-            { slot = "Helm", item = "[color=q4][item=271519 original-item=271875][/color]", source = "[icon name=inv_121_raid_achievement_ulatek size=small type=round inline=true color=q4][/icon] [url guide=34252]Ula'tek & [url guide=33219] Catalyst", itemId = nil },
-            { slot = "Neck", item = "[color=q4][/color]", source = "[icon name=inv_121_raid_achievement_ulatek size=small type=round inline=true color=q4][/icon] [url guide=34252]Ula'tek", itemId = 268265 },
-            { slot = "Shoulders", item = "[color=q4][item=271517 original-item=251146][/color]", source = "[icon name=inv_achievement_dungeon_proveyourworth size=small type=round inline=true color=q3][/icon] [url guide=33190]Den of Nalorakk & [url guide=33219] Catalyst", itemId = nil },
-            { slot = "Cape", item = "[color=q4][/color]", source = "[icon name=achievement_dungeon_lifepools size=small type=round inline=true color=q3][/icon] [url guide=34263]Ruby Life Pools", itemId = 193763 },
-            { slot = "Chest", item = "[color=q4][item=271522 original-item=251226][/color]", source = "[icon name=inv_achievement_dungeon_voidscararena size=small type=round inline=true color=q3][/icon] [url guide=33183]Voidscar Arena & [url guide=33219] Catalyst", itemId = nil },
-            { slot = "Bracers", item = "[color=q4][/color]", source = "[icon name=inv_achievement_dungeon_murderrow size=small type=round inline=true color=q3][/icon] [url guide=33189]Murder Row", itemId = 251135 },
-            { slot = "Gloves", item = "[color=q4][item=271520 original-item=251124][/color]", source = "[icon name=inv_achievement_dungeon_murderrow size=small type=round inline=true color=q3][/icon] [url guide=33189]Murder Row & [url guide=33219] Catalyst", itemId = nil },
-            { slot = "Belt", item = "[color=q4][/color]", source = "[icon name=inv_achievement_dungeon_lightbloom size=small type=round inline=true color=q3][/icon] [url guide=33193]The Blinding Vale", itemId = 251189 },
-            { slot = "Legs", item = "[color=q4][item=271518 original-item=159313][/color]", source = "[icon name=achievement_dungeon_kingsrest size=small type=round inline=true color=q3][/icon] [url guide=34260]Kings' Rest & [url guide=33219] Catalyst", itemId = nil },
-            { slot = "Boots", item = "[color=q4][/color]", source = "[icon name=achievement_boss_elitenagamale size=small type=round inline=true color=q4][/icon] [url guide=34240]Nymrissa Wavebinder", itemId = 268247 },
-            { slot = "Ring", item = "[color=q4][/color]", source = "[icon name=achievement_boss_elitenagamale size=small type=round inline=true color=q4][/icon] [url guide=34240]Nymrissa Wavebinder", itemId = 268266 },
-            { slot = "Ring", item = "[color=q4][/color]", source = "[icon name=achievement_dungeon_kingsrest size=small type=round inline=true color=q3][/icon] [url guide=34260]Kings' Rest", itemId = 159459 },
-            { slot = "Trinkets", item = "[color=q4][/color]", source = "[icon name=achievement_boss_elitenagamale size=small type=round inline=true color=q4][/icon] [url guide=34240]Nymrissa Wavebinder", itemId = 270167 },
-            { slot = "Trinkets", item = "[color=q4][/color]", source = "[icon name=inv_121_raid_achievement_priestess size=small type=round inline=true color=q4][/icon] [url guide=34244]Nek'zali the Soulcoiler", itemId = 270162 },
-            { slot = "1h Weapon", item = "[color=q4][/color]", source = "[icon name=inv_121_raid_achievement_zuljinmalacrass size=small type=round inline=true color=q4][/icon] [url guide=34251]The Coiled Altar", itemId = 268211 },
-            { slot = "Offhand", item = "[color=q4][/color]", source = "[icon name=achievement_dungeon_kingsrest size=small type=round inline=true color=q3][/icon] [url guide=34260]Kings' Rest", itemId = 159667 },
-            { slot = "Slot", item = "Item", source = "Source", itemId = nil },
-            { slot = "Helm", item = "[color=q4][item=271519 original-item=271875][/color]", source = "[icon name=inv_121_raid_achievement_ulatek size=small type=round inline=true color=q4][/icon] [url guide=34252]Ula'tek & [url guide=33219] Catalyst", itemId = nil },
-            { slot = "Neck", item = "[color=q4][/color]", source = "[icon name=inv_121_raid_achievement_ulatek size=small type=round inline=true color=q4][/icon] [url guide=34252]Ula'tek", itemId = 268265 },
-            { slot = "Shoulders", item = "[color=q4][/color]", source = "[icon name=inv_121_raid_achievement_tortollans size=small type=round inline=true color=q4][/icon] [url guide=34247]The Lost Explorers", itemId = 271517 },
-            { slot = "Cape", item = "[color=q4][/color]", source = "[icon name=inv_121_raid_achievement_zuljinmalacrass size=small type=round inline=true color=q4][/icon] [url guide=34251]The Coiled Altar", itemId = 268253 },
-            { slot = "Chest", item = "[color=q4][item=271522 original-item=268235][/color]", source = "[icon name=inv_121_raid_achievement_priestess size=small type=round inline=true color=q4][/icon] [url guide=34244]Nek'zali the Soulcoiler & [url guide=33219] Catalyst", itemId = nil },
-            { slot = "Bracers", item = "[color=q4][/color]", source = "[icon name=inv_achievement_dungeon_murderrow size=small type=round inline=true color=q3][/icon] [url guide=33189]Murder Row", itemId = 251135 },
-            { slot = "Gloves", item = "[color=q4][item=271520 original-item=251124][/color]", source = "[icon name=inv_achievement_dungeon_murderrow size=small type=round inline=true color=q3][/icon] [url guide=33189]Murder Row & [url guide=33219] Catalyst", itemId = nil },
-            { slot = "Belt", item = "[color=q4][/color]", source = "[icon name=inv_121_raid_achievement_zuljinmalacrass size=small type=round inline=true color=q4][/icon] [url guide=34251]The Coiled Altar", itemId = 268256 },
-            { slot = "Legs", item = "[color=q4][item=271518 original-item=268225][/color]", source = "[icon name=inv_121_raid_achievement_zuljinmalacrass size=small type=round inline=true color=q4][/icon] [url guide=34251]The Coiled Altar & [url guide=33219] Catalyst", itemId = nil },
-            { slot = "Boots", item = "[color=q4][/color]", source = "[icon name=inv_achievement_dungeon_proveyourworth size=small type=round inline=true color=q3][/icon] [url guide=33190]Den of Nalorakk", itemId = 251153 },
-            { slot = "Ring", item = "[color=q4][/color]", source = "[icon name=achievement_boss_elitenagamale size=small type=round inline=true color=q4][/icon] [url guide=34240]Nymrissa Wavebinder", itemId = 268266 },
-            { slot = "Ring", item = "[color=q4][/color]", source = "[icon name=inv_achievement_dungeon_voidscararena size=small type=round inline=true color=q3][/icon] [url guide=33183]Voidscar Arena", itemId = 252258 },
-            { slot = "Trinkets", item = "[color=q4][/color]", source = "[icon name=achievement_boss_elitenagamale size=small type=round inline=true color=q4][/icon] [url guide=34240]Nymrissa Wavebinder", itemId = 270167 },
-            { slot = "Trinkets", item = "[color=q4][/color]", source = "[icon name=inv_121_raid_achievement_priestess size=small type=round inline=true color=q4][/icon] [url guide=34244]Nek'zali the Soulcoiler", itemId = 270162 },
-            { slot = "1h Weapon", item = "[color=q4][/color]", source = "[icon name=inv_121_raid_achievement_zuljinmalacrass size=small type=round inline=true color=q4][/icon] [url guide=34251]The Coiled Altar", itemId = 268211 },
-            { slot = "Offhand", item = "[color=q4][/color]", source = "[icon name=inv_121_raid_achievement_golems size=small type=round inline=true color=q4][/icon] [url guide=34245]Entomed Sentinels", itemId = 268197 },
+            { text = "Item", itemId = nil, slot = "Slot" },
+            { text = "[color=q4][item=271519 original-item=271875][/color]", itemId = nil, slot = "Helm" },
+            { text = "[color=q4][/color]", itemId = 268265, slot = "Neck" },
+            { text = "[color=q4][item=271517 original-item=251146][/color]", itemId = nil, slot = "Shoulders" },
+            { text = "[color=q4][/color]", itemId = 193763, slot = "Cape" },
+            { text = "[color=q4][item=271522 original-item=251226][/color]", itemId = nil, slot = "Chest" },
+            { text = "[color=q4][/color]", itemId = 251135, slot = "Bracers" },
+            { text = "[color=q4][item=271520 original-item=251124][/color]", itemId = nil, slot = "Gloves" },
+            { text = "[color=q4][/color]", itemId = 251189, slot = "Belt" },
+            { text = "[color=q4][item=271518 original-item=159313][/color]", itemId = nil, slot = "Legs" },
+            { text = "[color=q4][/color]", itemId = 268247, slot = "Boots" },
+            { text = "[color=q4][/color]", itemId = 268266, slot = "Ring" },
+            { text = "[color=q4][/color]", itemId = 159459, slot = "Ring" },
+            { text = "[color=q4][/color]", itemId = 270167, slot = "Trinkets" },
+            { text = "[color=q4][/color]", itemId = 270162, slot = "Trinkets" },
+            { text = "[color=q4][/color]", itemId = 268211, slot = "1h Weapon" },
+            { text = "[color=q4][/color]", itemId = 159667, slot = "Offhand" },
+            { text = "Item", itemId = nil, slot = "Slot" },
+            { text = "[color=q4][item=271519 original-item=271875][/color]", itemId = nil, slot = "Helm" },
+            { text = "[color=q4][/color]", itemId = 268265, slot = "Neck" },
+            { text = "[color=q4][/color]", itemId = 271517, slot = "Shoulders" },
+            { text = "[color=q4][/color]", itemId = 268253, slot = "Cape" },
+            { text = "[color=q4][item=271522 original-item=268235][/color]", itemId = nil, slot = "Chest" },
+            { text = "[color=q4][/color]", itemId = 251135, slot = "Bracers" },
+            { text = "[color=q4][item=271520 original-item=251124][/color]", itemId = nil, slot = "Gloves" },
+            { text = "[color=q4][/color]", itemId = 268256, slot = "Belt" },
+            { text = "[color=q4][item=271518 original-item=268225][/color]", itemId = nil, slot = "Legs" },
+            { text = "[color=q4][/color]", itemId = 251153, slot = "Boots" },
+            { text = "[color=q4][/color]", itemId = 268266, slot = "Ring" },
+            { text = "[color=q4][/color]", itemId = 252258, slot = "Ring" },
+            { text = "[color=q4][/color]", itemId = 270167, slot = "Trinkets" },
+            { text = "[color=q4][/color]", itemId = 270162, slot = "Trinkets" },
+            { text = "[color=q4][/color]", itemId = 268211, slot = "1h Weapon" },
+            { text = "[color=q4][/color]", itemId = 268197, slot = "Offhand" },
         },
     },
     enchants = {
@@ -2820,11 +2832,24 @@ DragonSkillData["MONK"][270] = {
     crafting = {
         wowhead = {
             embellishments = {
+                "[item=240167] (Armor slots only, actual Best in Slot)",
+                "[item=245874] (Weapon slots only)",
             },
         },
     },
     rotation = {
         wowhead = {
+            { text = "to keep someone alive that would otherwise die without your intervention", spellId = "116670" },
+            { text = "if at 3 charges", spellId = "115151" },
+            { text = "if at 20 stacks", spellId = "115869" },
+            { text = "[span display-options=\"conduit-of-the-celestials\"]If you have 2  stacks, consume at least one to avoid overcapping[/span][span display-options=\"master-of-harmony\"]If you have 2  or 6  stacks, use some stacks to avoid overcapping[/span]", spellId = "1260565" },
+            { text = "(empowering ) - [span class=tip tooltip=TFT-Raid-Prio][symbol=wow-atlas-quest-wrapper-turnin][/span]", spellId = "116680" },
+            { text = "Any remaining  charges", spellId = "115151" },
+            { text = "with high  coverage and an injured raid", spellId = "116670" },
+            { text = "Consume  procs with an injured raid", spellId = "1260565" },
+            { text = "with a  proc", spellId = "124682" },
+            { text = "if you have any stacks", spellId = "115869" },
+            { text = ", or  if on cooldown, to fill - [span class=tip tooltip=bok_tooltip][symbol=wow-atlas-quest-wrapper-turnin][/span]", spellId = "100784" },
         },
     },
     trinkets = {
@@ -2897,37 +2922,33 @@ DragonSkillData["MONK"][270] = {
 
 DragonSkillData["PALADIN"] = DragonSkillData["PALADIN"] or {}
 DragonSkillData["PALADIN"][65] = {
-    scrapedAt = "2026-08-16T09:45:30.082Z",
+    scrapedAt = "2026-08-16T10:00:57.866Z",
     statPriority = {
         wowhead = "Herald of the Sun: Intellect > Mastery > Haste = Crit > Versatility | Lightsmith: Intellect > Mastery > Haste = Crit > Versatility",
         archon = "Intellect > Haste > Mastery > Crit > Vers",
     },
-    statAverages = {
-        archon = {
-        },
-    },
     bisGear = {
         wowhead = {
-            { slot = "Slot", item = "Item", source = "Source", itemId = nil },
-            { slot = "Weapon", item = "[url guide=34251]The Coiled Altar", source = "Unknown", itemId = 268211 },
-            { slot = "Shield", item = "[url guide=34240]Nymrissa Wavecaller", source = "Unknown", itemId = 268262 },
-            { slot = "Head", item = "[item=271465 original-item=268229]", source = "[url guide=34244]Nek'zali the Soulcoiler", itemId = nil },
-            { slot = "Neck", item = "[url guide=34252]Ula'tek", source = "Unknown", itemId = 268265 },
-            { slot = "Shoulders", item = "[item=271463 original-item=251138]", source = "[url guide=33189]Murder Row", itemId = nil },
-            { slot = "Cloak", item = "[url guide=34251]The Coiled Altar", source = "Unknown", itemId = 268253 },
-            { slot = "Chest", item = "[item=271468 original-item=268222]", source = "[url guide=34251]The Coiled Altar", itemId = nil },
-            { slot = "Wrist", item = "[url guide=34247]The Lost Explorers", source = "Unknown", itemId = 268239 },
-            { slot = "Gloves", item = "[url guide=34245]Entombed Sentinels", source = "Unknown", itemId = 271466 },
-            { slot = "Belt", item = "[url guide=34251]The Coiled Altar", source = "Unknown", itemId = 268259 },
-            { slot = "Legs", item = "[item=271464 original-item=271878]", source = "[url guide=34252]Ula'tek", itemId = nil },
-            { slot = "Boots", item = "[url guide=34248]Vashnik the Malignant", source = "Unknown", itemId = 268260 },
-            { slot = "Ring", item = "[url guide=34248]Vashnik the Malignant", source = "Unknown", itemId = 268249 },
-            { slot = "Ring", item = "[url guide=33183]Voidscar Arena", source = "Unknown", itemId = 252258 },
-            { slot = "Trinket", item = "[url guide=34244]Nek'zali the Soulcoiler", source = "Unknown", itemId = 270162 },
-            { slot = "Trinket", item = "[url guide=34247]The Lost Explorers", source = "Unknown", itemId = 270164 },
-            { slot = "[center][large]1[/large][/center]", item = "[url guide=34252]Ula'tek - Until you get to Mythic Ula'tek, your top priority is to get the two cantrip items on Myth track by bonus rolling Heroic.\n\nThere are only two items on our loot table,  and , and we want both of them.", source = "Unknown", itemId = 268265 },
-            { slot = "[center][large]2[/large][/center]", item = "[url guide=34247]The Lost Explorers - These Turtles have an excellent loot table for us, including weapon, shield, and a decent trinket.", source = "Unknown", itemId = nil },
-            { slot = "[center][large]3[/large][/center]", item = "[url guide=34244]Nek'zali the Soulcoiler - I recommend bonus rolling this boss until you get .", source = "Unknown", itemId = 270162 },
+            { text = "Item", itemId = nil, slot = "Slot" },
+            { text = "[url guide=34251]The Coiled Altar", itemId = 268211, slot = "Weapon" },
+            { text = "[url guide=34240]Nymrissa Wavecaller", itemId = 268262, slot = "Shield" },
+            { text = "[item=271465 original-item=268229]", itemId = nil, slot = "Head" },
+            { text = "[url guide=34252]Ula'tek", itemId = 268265, slot = "Neck" },
+            { text = "[item=271463 original-item=251138]", itemId = nil, slot = "Shoulders" },
+            { text = "[url guide=34251]The Coiled Altar", itemId = 268253, slot = "Cloak" },
+            { text = "[item=271468 original-item=268222]", itemId = nil, slot = "Chest" },
+            { text = "[url guide=34247]The Lost Explorers", itemId = 268239, slot = "Wrist" },
+            { text = "[url guide=34245]Entombed Sentinels", itemId = 271466, slot = "Gloves" },
+            { text = "[url guide=34251]The Coiled Altar", itemId = 268259, slot = "Belt" },
+            { text = "[item=271464 original-item=271878]", itemId = nil, slot = "Legs" },
+            { text = "[url guide=34248]Vashnik the Malignant", itemId = 268260, slot = "Boots" },
+            { text = "[url guide=34248]Vashnik the Malignant", itemId = 268249, slot = "Ring" },
+            { text = "[url guide=33183]Voidscar Arena", itemId = 252258, slot = "Ring" },
+            { text = "[url guide=34244]Nek'zali the Soulcoiler", itemId = 270162, slot = "Trinket" },
+            { text = "[url guide=34247]The Lost Explorers", itemId = 270164, slot = "Trinket" },
+            { text = "[url guide=34252]Ula'tek - Until you get to Mythic Ula'tek, your top priority is to get the two cantrip items on Myth track by bonus rolling Heroic.\n\nThere are only two items on our loot table,  and , and we want both of them.", itemId = 268265, slot = "[center][large]1[/large][/center]" },
+            { text = "[url guide=34247]The Lost Explorers - These Turtles have an excellent loot table for us, including weapon, shield, and a decent trinket.", itemId = nil, slot = "[center][large]2[/large][/center]" },
+            { text = "[url guide=34244]Nek'zali the Soulcoiler - I recommend bonus rolling this boss until you get .", itemId = 270162, slot = "[center][large]3[/large][/center]" },
         },
     },
     enchants = {
@@ -2945,6 +2966,8 @@ DragonSkillData["PALADIN"][65] = {
     crafting = {
         wowhead = {
             embellishments = {
+                "[item=245876] is the best embellishment, but can only be put on weapons. Like previous expansions, embellishments are only minor throughput gains, and you will eventually replace your crafted weapon with a Mythic one and instead craft a second item with the second best embellishment.",
+                "[item=240167] is our second best embellishment.",
             },
         },
     },
@@ -3045,34 +3068,30 @@ DragonSkillData["PALADIN"][65] = {
 }
 
 DragonSkillData["PALADIN"][66] = {
-    scrapedAt = "2026-08-16T09:45:30.649Z",
+    scrapedAt = "2026-08-16T10:00:58.311Z",
     statPriority = {
         wowhead = "Survivability: Strength > Haste > Mastery > Critical Strike > Versatility | DPS: Strength > Haste > Critical Strike > Mastery > Versatility",
         archon = "Strength > Haste > Crit > Mastery > Vers",
     },
-    statAverages = {
-        archon = {
-        },
-    },
     bisGear = {
         wowhead = {
-            { slot = "Slot", item = "Item", source = "Source", itemId = nil },
-            { slot = "Weapon", item = "[url guide=34251]The Coiled Altar", source = "Unknown", itemId = 268209 },
-            { slot = "Shield", item = "[url guide=34247]The Lost Explorers", source = "Unknown", itemId = 268196 },
-            { slot = "Head", item = "[url guide=34180]Tier Set", source = "Unknown", itemId = 271465 },
-            { slot = "Neck", item = "[url guide=34252]Ula'tek", source = "Unknown", itemId = 268265 },
-            { slot = "Shoulders", item = "[url guide=34180]Tier Set", source = "Unknown", itemId = 271463 },
-            { slot = "Cloak", item = "[url guide=34251]The Coiled Altar", source = "Unknown", itemId = 268253 },
-            { slot = "Chest", item = "[url guide=34180]Tier Set", source = "Unknown", itemId = 271468 },
-            { slot = "Wrist", item = "[url guide=15942]Crafting Blacksmithing", source = "Unknown", itemId = 237834 },
-            { slot = "Gloves", item = "[url guide=34180]Tier Set", source = "Unknown", itemId = 271466 },
-            { slot = "Belt", item = "[url guide=34251]The Coiled Altar", source = "Unknown", itemId = 268259 },
-            { slot = "Legs", item = "[url guide=34252]Ula'tek", source = "Unknown", itemId = 271878 },
-            { slot = "Boots", item = "[url guide=15942]Crafting Blacksmithing", source = "Unknown", itemId = 237828 },
-            { slot = "Ring", item = "[url guide=34249]Sszorak", source = "Unknown", itemId = 268252 },
-            { slot = "Ring 2", item = "[url guide=34248]Vashnik the Malignant", source = "Unknown", itemId = 268249 },
-            { slot = "Trinket", item = "[url guide=34251]The Coiled Altar", source = "Unknown", itemId = 270173 },
-            { slot = "Trinket 2", item = "[url guide=34252]Ula'tek", source = "Unknown", itemId = 270175 },
+            { text = "Item", itemId = nil, slot = "Slot" },
+            { text = "[url guide=34251]The Coiled Altar", itemId = 268209, slot = "Weapon" },
+            { text = "[url guide=34247]The Lost Explorers", itemId = 268196, slot = "Shield" },
+            { text = "[url guide=34180]Tier Set", itemId = 271465, slot = "Head" },
+            { text = "[url guide=34252]Ula'tek", itemId = 268265, slot = "Neck" },
+            { text = "[url guide=34180]Tier Set", itemId = 271463, slot = "Shoulders" },
+            { text = "[url guide=34251]The Coiled Altar", itemId = 268253, slot = "Cloak" },
+            { text = "[url guide=34180]Tier Set", itemId = 271468, slot = "Chest" },
+            { text = "[url guide=15942]Crafting Blacksmithing", itemId = 237834, slot = "Wrist" },
+            { text = "[url guide=34180]Tier Set", itemId = 271466, slot = "Gloves" },
+            { text = "[url guide=34251]The Coiled Altar", itemId = 268259, slot = "Belt" },
+            { text = "[url guide=34252]Ula'tek", itemId = 271878, slot = "Legs" },
+            { text = "[url guide=15942]Crafting Blacksmithing", itemId = 237828, slot = "Boots" },
+            { text = "[url guide=34249]Sszorak", itemId = 268252, slot = "Ring" },
+            { text = "[url guide=34248]Vashnik the Malignant", itemId = 268249, slot = "Ring 2" },
+            { text = "[url guide=34251]The Coiled Altar", itemId = 270173, slot = "Trinket" },
+            { text = "[url guide=34252]Ula'tek", itemId = 270175, slot = "Trinket 2" },
         },
     },
     enchants = {
@@ -3090,6 +3109,8 @@ DragonSkillData["PALADIN"][66] = {
     crafting = {
         wowhead = {
             embellishments = {
+                "[item=245876]",
+                "[item=240166]",
             },
         },
     },
@@ -3174,33 +3195,29 @@ DragonSkillData["PALADIN"][66] = {
 }
 
 DragonSkillData["PALADIN"][70] = {
-    scrapedAt = "2026-08-16T09:45:31.564Z",
+    scrapedAt = "2026-08-16T10:00:58.704Z",
     statPriority = {
         wowhead = "Templar: Strength > Mastery > Haste > Critical Strike > Versatility | Herald of the Sun: Strength > Mastery > Haste > Critical Strike > Versatility",
         archon = "Strength > Mastery > Crit > Haste > Vers",
     },
-    statAverages = {
-        archon = {
-        },
-    },
     bisGear = {
         wowhead = {
-            { slot = "Slot", item = "Item", source = "Source", itemId = nil },
-            { slot = "Weapon", item = "[item=268213 bonus=13848]", source = "[url guide=34251]The Coiled Altar", itemId = nil },
-            { slot = "Head", item = "[item=271465 original-item=268229 bonus=12854]", source = "[url guide=34180]Tier Set", itemId = nil },
-            { slot = "Neck", item = "[item=268265 bonus=13848:13708]", source = "[url guide=34252]Ula'tek", itemId = nil },
-            { slot = "Shoulders", item = "[item=271463 original-item=251138 bonus=12854]", source = "[url guide=34180]Tier Set", itemId = nil },
-            { slot = "Cloak", item = "[item=268253 bonus=13848]", source = "[url guide=34251]The Coiled Altar", itemId = nil },
-            { slot = "Chest", item = "[item=271468 original-item=268222 bonus=13848]", source = "[url guide=34180]Tier Set", itemId = nil },
-            { slot = "Wrist", item = "[item=237834 bonus=13751:12497:13836:8790:13454]", source = "[url guide=15942]Blacksmithing", itemId = nil },
-            { slot = "Gloves", item = "[item=271466 original-item=251214 bonus=12854]", source = "[url guide=34180]Tier Set", itemId = nil },
-            { slot = "Belt", item = "[item=268259 bonus=13848]", source = "[url guide=34251]The Coiled Altar", itemId = nil },
-            { slot = "Legs", item = "[item=271464 original-item=271878 bonus=13848:13846]", source = "[url guide=34252]Ula'tek", itemId = nil },
-            { slot = "Boots", item = "[item=268260 bonus=12854]", source = "[url guide=34248]Vashnik the Malignant", itemId = nil },
-            { slot = "Ring", item = "[item=252258 bonus=12854]", source = "[url guide=33183]Voidscar Arena", itemId = nil },
-            { slot = "Ring", item = "[item=251513 bonus=13751:12497:13836]", source = "[url guide=15942]Jewelcrafting", itemId = nil },
-            { slot = "Trinket", item = "[item=270173 bonus=13848]", source = "[url guide=34251]The Coiled Altar", itemId = nil },
-            { slot = "Trinket", item = "[item=270175 bonus=13848]", source = "[url guide=34252]Ula'tek", itemId = nil },
+            { text = "Item", itemId = nil, slot = "Slot" },
+            { text = "[item=268213 bonus=13848]", itemId = nil, slot = "Weapon" },
+            { text = "[item=271465 original-item=268229 bonus=12854]", itemId = nil, slot = "Head" },
+            { text = "[item=268265 bonus=13848:13708]", itemId = nil, slot = "Neck" },
+            { text = "[item=271463 original-item=251138 bonus=12854]", itemId = nil, slot = "Shoulders" },
+            { text = "[item=268253 bonus=13848]", itemId = nil, slot = "Cloak" },
+            { text = "[item=271468 original-item=268222 bonus=13848]", itemId = nil, slot = "Chest" },
+            { text = "[item=237834 bonus=13751:12497:13836:8790:13454]", itemId = nil, slot = "Wrist" },
+            { text = "[item=271466 original-item=251214 bonus=12854]", itemId = nil, slot = "Gloves" },
+            { text = "[item=268259 bonus=13848]", itemId = nil, slot = "Belt" },
+            { text = "[item=271464 original-item=271878 bonus=13848:13846]", itemId = nil, slot = "Legs" },
+            { text = "[item=268260 bonus=12854]", itemId = nil, slot = "Boots" },
+            { text = "[item=252258 bonus=12854]", itemId = nil, slot = "Ring" },
+            { text = "[item=251513 bonus=13751:12497:13836]", itemId = nil, slot = "Ring" },
+            { text = "[item=270173 bonus=13848]", itemId = nil, slot = "Trinket" },
+            { text = "[item=270175 bonus=13848]", itemId = nil, slot = "Trinket" },
         },
     },
     enchants = {
@@ -3218,6 +3235,8 @@ DragonSkillData["PALADIN"][70] = {
     crafting = {
         wowhead = {
             embellishments = {
+                "[item=251513 bonus=13751:12497:13836]",
+                "[item=251490]",
             },
         },
     },
@@ -3309,39 +3328,30 @@ DragonSkillData["PALADIN"][70] = {
 
 DragonSkillData["PRIEST"] = DragonSkillData["PRIEST"] or {}
 DragonSkillData["PRIEST"][256] = {
-    scrapedAt = "2026-08-16T09:45:32.127Z",
+    scrapedAt = "2026-08-16T10:00:59.124Z",
     statPriority = {
         wowhead = "Oracle: Intellect > Haste > Mastery > Critical Strike > Versatility | Voidweaver: Haste > Intellect > Mastery > Critical Strike > Versatility | Oracle: Intellect > Haste > Mastery > Critical Strike > Versatility | Voidweaver: Intellect > Haste > Mastery > Critical Strike > Versatility",
         archon = "Intellect > Haste > Crit > Mastery > Vers",
     },
-    statAverages = {
-        archon = {
-        },
-    },
     bisGear = {
         wowhead = {
-            { slot = "Slot", item = "Item", source = "Source", itemId = nil },
-            { slot = "Weapon", item = "[npc=268956]", source = "Unknown", itemId = 271092 },
-            { slot = "Offhand", item = "[zone=9526]", source = "Unknown", itemId = 159667 },
-            { slot = "Head", item = "[npc=268956]", source = "Unknown", itemId = 271874 },
-            { slot = "Neck", item = "[npc=268956]", source = "Unknown", itemId = 268265 },
-            { slot = "Shoulders", item = "[item=271553 bonus=13848 original-item=268241]", source = "[npc=257361]", itemId = nil },
-            { slot = "Cloak", item = "[npc=24239]", source = "Unknown", itemId = 268253 },
-            { slot = "Chest", item = "[item=271558 bonus=13848 original-item=251139]", source = "[zone=16091]", itemId = nil },
-            { slot = "Wrist", item = "Crafting", source = "Unknown", itemId = 239648 },
-            { slot = "Gloves", item = "[item=271556 bonus=13848 original-item=268243]", source = "[url guide=34251]The Coiled Altar", itemId = nil },
-            { slot = "Belt", item = "Crafting", source = "Unknown", itemId = 239649 },
-            { slot = "Legs", item = "[npc=257347]", source = "Unknown", itemId = 271554 },
-            { slot = "Boots", item = "[npc=24239]", source = "Unknown", itemId = 268255 },
-            { slot = "Ring", item = "[npc=252959]", source = "Unknown", itemId = 268266 },
-            { slot = "Ring", item = "[zone=16425]", source = "Unknown", itemId = 252258 },
-            { slot = "Trinket", item = "[npc=252959]", source = "Unknown", itemId = 270167 },
-            { slot = "Trinket", item = "[npc=253563]", source = "Unknown", itemId = 270162 },
-            { slot = "[icon-badge=271092 quality=4 tooltip=\"BiS Weapon\"]", item = "[icon-badge=271874 quality=4 tooltip=\"BiS Helm with bonus stats\"]", source = "[icon-badge=268265 quality=4 tooltip=\"BiS Neck with bonus socket\"]", itemId = nil },
-            { slot = "[icon-badge=159667 quality=3 tooltip=\"BiS Off-Hand\"]", item = "[icon-badge=252258 quality=3 tooltip=\"BiS Ring\"]", source = "[icon-badge=251139 quality=3 tooltip=\"BiS Chest\"]", itemId = nil },
-            { slot = "[center][large]1[/large][/center]", item = "[icon-badge=271092 quality=4 tooltip=\"BiS Weapon\"]", source = "Unknown", itemId = nil },
-            { slot = "[center][large]2[/large][/center]", item = "[icon-badge=271874 quality=4 tooltip=\"BiS Helm with bonus stats\"]", source = "Unknown", itemId = nil },
-            { slot = "[center][large]3[/large][/center]", item = "[icon-badge=268265 quality=4 tooltip=\"BiS Neck with bonus socket\"]", source = "Unknown", itemId = nil },
+            { text = "Item", itemId = nil, slot = "Slot" },
+            { text = "[npc=268956]", itemId = 271092, slot = "Weapon" },
+            { text = "[zone=9526]", itemId = 159667, slot = "Offhand" },
+            { text = "[npc=268956]", itemId = 271874, slot = "Head" },
+            { text = "[npc=268956]", itemId = 268265, slot = "Neck" },
+            { text = "[item=271553 bonus=13848 original-item=268241]", itemId = nil, slot = "Shoulders" },
+            { text = "[npc=24239]", itemId = 268253, slot = "Cloak" },
+            { text = "[item=271558 bonus=13848 original-item=251139]", itemId = nil, slot = "Chest" },
+            { text = "Crafting", itemId = 239648, slot = "Wrist" },
+            { text = "[item=271556 bonus=13848 original-item=268243]", itemId = nil, slot = "Gloves" },
+            { text = "Crafting", itemId = 239649, slot = "Belt" },
+            { text = "[npc=257347]", itemId = 271554, slot = "Legs" },
+            { text = "[npc=24239]", itemId = 268255, slot = "Boots" },
+            { text = "[npc=252959]", itemId = 268266, slot = "Ring" },
+            { text = "[zone=16425]", itemId = 252258, slot = "Ring" },
+            { text = "[npc=252959]", itemId = 270167, slot = "Trinket" },
+            { text = "[npc=253563]", itemId = 270162, slot = "Trinket" },
         },
     },
     enchants = {
@@ -3359,6 +3369,8 @@ DragonSkillData["PRIEST"][256] = {
     crafting = {
         wowhead = {
             embellishments = {
+                "[item=240166]",
+                "[item=273059]",
             },
         },
     },
@@ -3429,39 +3441,30 @@ DragonSkillData["PRIEST"][256] = {
 }
 
 DragonSkillData["PRIEST"][257] = {
-    scrapedAt = "2026-08-16T09:45:33.044Z",
+    scrapedAt = "2026-08-16T10:00:59.532Z",
     statPriority = {
         wowhead = "Archon: Intellect > Crit > Versatility = Mastery > Haste | Oracle: Intellect > Crit > Versatility = Mastery > Haste | Archon: Intellect > Versatility > Critical Strike > Haste > Mastery | Oracle: Intellect > Versatility > Critical Strike > Haste > Mastery",
         archon = "Intellect > Crit > Haste > Mastery > Vers",
     },
-    statAverages = {
-        archon = {
-        },
-    },
     bisGear = {
         wowhead = {
-            { slot = "Slot", item = "Item", source = "Source", itemId = nil },
-            { slot = "Weapon", item = "[npc=268956]", source = "Unknown", itemId = 271092 },
-            { slot = "Offhand", item = "[npc=252959]", source = "Unknown", itemId = 268263 },
-            { slot = "Head", item = "[npc=268956]", source = "Unknown", itemId = 271874 },
-            { slot = "Neck", item = "[npc=268956]", source = "Unknown", itemId = 268265 },
-            { slot = "Shoulders", item = "[npc=267077]", source = "Unknown", itemId = 271553 },
-            { slot = "Cloak", item = "[zone=16091]", source = "Unknown", itemId = 251132 },
-            { slot = "Chest", item = "[item=271558 bonus=13848 original-item=268221]", source = "[npc=252959]", itemId = nil },
-            { slot = "Wrist", item = "Crafting", source = "Unknown", itemId = 239648 },
-            { slot = "Gloves", item = "[npc=258557]", source = "Unknown", itemId = 271556 },
-            { slot = "Belt", item = "Crafting", source = "Unknown", itemId = 239649 },
-            { slot = "Legs", item = "[item=271554 bonus=13848 original-item=159234]", source = "[zone=9526]", itemId = nil },
-            { slot = "Boots", item = "[npc=253563]", source = "Unknown", itemId = 268218 },
-            { slot = "Ring", item = "[npc=257347]", source = "Unknown", itemId = 268252 },
-            { slot = "Ring", item = "[zone=16368]", source = "Unknown", itemId = 251148 },
-            { slot = "Trinket", item = "[npc=267077]", source = "Unknown", itemId = 270164 },
-            { slot = "Trinket", item = "[npc=253563]", source = "Unknown", itemId = 270162 },
-            { slot = "[icon-badge=271092 quality=4 tooltip=\"BiS Weapon\"]", item = "[icon-badge=271874 quality=4 tooltip=\"BiS Helm with bonus stats\"]", source = "[icon-badge=268265 quality=4 tooltip=\"BiS Neck with bonus socket\"]", itemId = nil },
-            { slot = "[icon-badge=251148 quality=3 tooltip=\"BiS Ring\"]", item = "[icon-badge=159234 quality=3 tooltip=\"BiS Legs\"]", source = "[icon-badge=251132 quality=3 tooltip=\"BiS Cloak\"]", itemId = nil },
-            { slot = "[center][large]1[/large][/center]", item = "[icon-badge=271092 quality=4 tooltip=\"BiS Weapon\"]", source = "Unknown", itemId = nil },
-            { slot = "[center][large]2[/large][/center]", item = "[icon-badge=271874 quality=4 tooltip=\"BiS Helm with bonus stats\"]", source = "Unknown", itemId = nil },
-            { slot = "[center][large]3[/large][/center]", item = "[icon-badge=268265 quality=4 tooltip=\"BiS Neck with bonus socket\"]", source = "Unknown", itemId = nil },
+            { text = "Item", itemId = nil, slot = "Slot" },
+            { text = "[npc=268956]", itemId = 271092, slot = "Weapon" },
+            { text = "[npc=252959]", itemId = 268263, slot = "Offhand" },
+            { text = "[npc=268956]", itemId = 271874, slot = "Head" },
+            { text = "[npc=268956]", itemId = 268265, slot = "Neck" },
+            { text = "[npc=267077]", itemId = 271553, slot = "Shoulders" },
+            { text = "[zone=16091]", itemId = 251132, slot = "Cloak" },
+            { text = "[item=271558 bonus=13848 original-item=268221]", itemId = nil, slot = "Chest" },
+            { text = "Crafting", itemId = 239648, slot = "Wrist" },
+            { text = "[npc=258557]", itemId = 271556, slot = "Gloves" },
+            { text = "Crafting", itemId = 239649, slot = "Belt" },
+            { text = "[item=271554 bonus=13848 original-item=159234]", itemId = nil, slot = "Legs" },
+            { text = "[npc=253563]", itemId = 268218, slot = "Boots" },
+            { text = "[npc=257347]", itemId = 268252, slot = "Ring" },
+            { text = "[zone=16368]", itemId = 251148, slot = "Ring" },
+            { text = "[npc=267077]", itemId = 270164, slot = "Trinket" },
+            { text = "[npc=253563]", itemId = 270162, slot = "Trinket" },
         },
     },
     enchants = {
@@ -3479,6 +3482,8 @@ DragonSkillData["PRIEST"][257] = {
     crafting = {
         wowhead = {
             embellishments = {
+                "[item=240166]",
+                "[item=273059]",
             },
         },
     },
@@ -3549,34 +3554,30 @@ DragonSkillData["PRIEST"][257] = {
 }
 
 DragonSkillData["PRIEST"][258] = {
-    scrapedAt = "2026-08-16T09:45:33.819Z",
+    scrapedAt = "2026-08-16T10:00:59.885Z",
     statPriority = {
         wowhead = "Archon: Intellect > Haste > Mastery > Critical Strike > Versatility | Voidweaver: Intellect > Haste > Mastery > Critical Strike > Versatility",
         archon = "Intellect > Haste > Mastery > Crit > Vers",
     },
-    statAverages = {
-        archon = {
-        },
-    },
     bisGear = {
         wowhead = {
-            { slot = "Slot", item = "Item", source = "Source", itemId = nil },
-            { slot = "Weapon", item = "[item=271092 bonus=13848]", source = "[url guide=34252]Ula'tek", itemId = nil },
-            { slot = "Offhand", item = "[item=245769 bonus=8793:13751:12497:13836:13771:8960]", source = "[url guide=15942]Crafting/Misc", itemId = nil },
-            { slot = "Head", item = "[item=271555 bonus=13848:13846:10835 original-item=271874]", source = "[url guide=34252]Ula'tek", itemId = nil },
-            { slot = "Neck", item = "[item=268265 bonus=13708:13750:13848]", source = "[url guide=34252]Ula'tek", itemId = nil },
-            { slot = "Shoulders", item = "[color=q4][item=239045 bonus=12854 spec=258][/color]", source = "[url guide=34260]King's Rest", itemId = nil },
-            { slot = "Cloak", item = "[item=268253 bonus=13848]", source = "[url guide=34251]The Coiled Altar", itemId = nil },
-            { slot = "Chest", item = "[url guide=34248]Vashnik the Malignant", source = "Unknown", itemId = 271558 },
-            { slot = "Wrist", item = "[item=239648 bonus=8793:12384:8960:13750:13751:12497:13836 spec=258]", source = "[url guide=15942]Crafting/Misc", itemId = nil },
-            { slot = "Gloves", item = "[item=271556 bonus=13848 original-item=268243]", source = "[url guide=34251]The Coiled Altar", itemId = nil },
-            { slot = "Belt", item = "[item=268257 bonus=10835:12854 ]", source = "[url guide=34249]Sszorak", itemId = nil },
-            { slot = "Legs", item = "[item=271554 original-item=251160]", source = "[url guide=33190]Den of Nalorakk", itemId = nil },
-            { slot = "Boots", item = "[item=268255 bonus=13848]", source = "[url guide=34251]The Coiled Altar", itemId = nil },
-            { slot = "Ring", item = "[item=252258 bonus=10835:12854]", source = "[url guide=33183]Voidscar Arena", itemId = nil },
-            { slot = "Ring", item = "[item=268249 bonus=10835:12854]", source = "[url guide=34248]Vashnik the Malignant", itemId = nil },
-            { slot = "Trinket", item = "[url guide=34247]The Lost Explorers", source = "Unknown", itemId = 270164 },
-            { slot = "Trinket", item = "[color=q4][item=250215 bonus=12854][/color]", source = "[url guide=33189]Murder Row", itemId = nil },
+            { text = "Item", itemId = nil, slot = "Slot" },
+            { text = "[item=271092 bonus=13848]", itemId = nil, slot = "Weapon" },
+            { text = "[item=245769 bonus=8793:13751:12497:13836:13771:8960]", itemId = nil, slot = "Offhand" },
+            { text = "[item=271555 bonus=13848:13846:10835 original-item=271874]", itemId = nil, slot = "Head" },
+            { text = "[item=268265 bonus=13708:13750:13848]", itemId = nil, slot = "Neck" },
+            { text = "[color=q4][item=239045 bonus=12854 spec=258][/color]", itemId = nil, slot = "Shoulders" },
+            { text = "[item=268253 bonus=13848]", itemId = nil, slot = "Cloak" },
+            { text = "[url guide=34248]Vashnik the Malignant", itemId = 271558, slot = "Chest" },
+            { text = "[item=239648 bonus=8793:12384:8960:13750:13751:12497:13836 spec=258]", itemId = nil, slot = "Wrist" },
+            { text = "[item=271556 bonus=13848 original-item=268243]", itemId = nil, slot = "Gloves" },
+            { text = "[item=268257 bonus=10835:12854 ]", itemId = nil, slot = "Belt" },
+            { text = "[item=271554 original-item=251160]", itemId = nil, slot = "Legs" },
+            { text = "[item=268255 bonus=13848]", itemId = nil, slot = "Boots" },
+            { text = "[item=252258 bonus=10835:12854]", itemId = nil, slot = "Ring" },
+            { text = "[item=268249 bonus=10835:12854]", itemId = nil, slot = "Ring" },
+            { text = "[url guide=34247]The Lost Explorers", itemId = 270164, slot = "Trinket" },
+            { text = "[color=q4][item=250215 bonus=12854][/color]", itemId = nil, slot = "Trinket" },
         },
     },
     enchants = {
@@ -3594,6 +3595,8 @@ DragonSkillData["PRIEST"][258] = {
     crafting = {
         wowhead = {
             embellishments = {
+                "[item=273059]",
+                "[item=240166]",
             },
         },
     },
@@ -3683,40 +3686,36 @@ DragonSkillData["PRIEST"][258] = {
 
 DragonSkillData["ROGUE"] = DragonSkillData["ROGUE"] or {}
 DragonSkillData["ROGUE"][259] = {
-    scrapedAt = "2026-08-16T09:45:34.348Z",
+    scrapedAt = "2026-08-16T10:01:00.256Z",
     statPriority = {
         wowhead = "Fatebound: Agility > Critical Strike > Haste > Mastery > Versatility | Deathstalker: Agility > Critical Strike > Haste > Mastery > Versatility",
         archon = "Agility > Crit > Haste > Mastery > Vers",
     },
-    statAverages = {
-        archon = {
-        },
-    },
     bisGear = {
         wowhead = {
-            { slot = "Slot", item = "Item", source = "Source", itemId = nil },
-            { slot = "Weapon", item = "[url guide=34252]Ula'tek", source = "Unknown", itemId = 271093 },
-            { slot = "Offhand", item = "[item=237837 bonus=12214:13836:13751:9627:13771:8960]", source = "[url guide=15942]Crafting/Misc", itemId = nil },
-            { slot = "Head", item = "[item=271510 original-item=271875]", source = "[url guide=34252]Ula'tek", itemId = nil },
-            { slot = "Neck", item = "[url guide=34252]Ula'tek", source = "Unknown", itemId = 268265 },
-            { slot = "Shoulders", item = "[item=271508 original-item=251223]", source = "[url guide=33183]Voidscar Arena", itemId = nil },
-            { slot = "Cloak", item = "[url guide=34251]The Coiled Altar", source = "Unknown", itemId = 268253 },
-            { slot = "Chest", item = "[item=271513 original-item=251159]", source = "[url guide=33190]Den of Nalorakk", itemId = nil },
-            { slot = "Wrist", item = "[item=244576 bonus=12214:13836:13751:9627:13750:8790:8960:12384]", source = "[url guide=15942]Crafting/Misc", itemId = nil },
-            { slot = "Gloves", item = "[url guide=34245]Entombed Sentinels", source = "Unknown", itemId = 271511 },
-            { slot = "Belt", item = "[url guide=34251]The Coiled Altar", source = "Unknown", itemId = 268256 },
-            { slot = "Legs", item = "[item=271509 original-item=268225]", source = "[url guide=34251]The Coiled Altar", itemId = nil },
-            { slot = "Boots", item = "[url guide=33190]Den of Nalorakk", source = "Unknown", itemId = 251153 },
-            { slot = "Ring", item = "[url guide=34264]Altar of Fangs", source = "Unknown", itemId = 273792 },
-            { slot = "Ring", item = "[url guide=34248]Vashnik the Malignant", source = "Unknown", itemId = 268249 },
-            { slot = "Trinket", item = "[url guide=34252]Ula'tek", source = "Unknown", itemId = 270175 },
-            { slot = "Trinket", item = "[url guide=34252]Ula'tek", source = "Unknown", itemId = 270168 },
-            { slot = "Priority", item = "Instance", source = "Item/Notes", itemId = nil },
-            { slot = "1", item = "[url guide=34252]Ula'tek", source = "Ula'tek is simply the strongest single source of power in Season 2. Out of the five items that can be bonus rolled, four are best in slot, and the  is best in a lot of aoe/cleave situations. If heroic Ula'tek can be killed weekly, it is highly recommended to bonus roll Ula'tek until every item is obtained.", itemId = 270168 },
-            { slot = "2", item = "[url guide=34247]The Lost Explorers", source = "The Lost Explorers are an earlier boss in the raid, and offer a good passive/all-around trinket, usable belt, as well as a tier item. If bonus rolling on Mythic, it will save a good amount of crests. This isn't a super high-value bonus roll, and you should feel free to bonus roll or take vault options as you want at this point.", itemId = nil },
-            { slot = "3", item = "[url guide=34224]Any Mythic  Venomous Abyss Boss", source = "Bonus rolling at this point has lost a lot of its value, but you can still get crest savings and value out of bonus rolling mythic raid bosses. Depending on the rest of your gear, you will want to determine what bosses have the highest chance of giving crest savings.", itemId = nil },
-            { slot = "4", item = "[url guide=33190]Den of Nalorakk", source = "Den of Nalorakk has both our best in slot Chest piece to catalyze, as well as our best in slot feet. The three other items on the drop table are not good.", itemId = nil },
-            { slot = "5", item = "[url guide=34264]Altar of Fangs", source = "Altar of Fangs has a great ring, as well as a dagger with a bonus effect. The dagger is not very good in cleave/aoe, but provides some bonus damage in pure single target if desired. Altar of Fangs should be considered the last place you would want to use bonus rolls, as using them on any mythic raid boss for crest savings is going to be preferred.", itemId = nil },
+            { text = "Item", itemId = nil, slot = "Slot" },
+            { text = "[url guide=34252]Ula'tek", itemId = 271093, slot = "Weapon" },
+            { text = "[item=237837 bonus=12214:13836:13751:9627:13771:8960]", itemId = nil, slot = "Offhand" },
+            { text = "[item=271510 original-item=271875]", itemId = nil, slot = "Head" },
+            { text = "[url guide=34252]Ula'tek", itemId = 268265, slot = "Neck" },
+            { text = "[item=271508 original-item=251223]", itemId = nil, slot = "Shoulders" },
+            { text = "[url guide=34251]The Coiled Altar", itemId = 268253, slot = "Cloak" },
+            { text = "[item=271513 original-item=251159]", itemId = nil, slot = "Chest" },
+            { text = "[item=244576 bonus=12214:13836:13751:9627:13750:8790:8960:12384]", itemId = nil, slot = "Wrist" },
+            { text = "[url guide=34245]Entombed Sentinels", itemId = 271511, slot = "Gloves" },
+            { text = "[url guide=34251]The Coiled Altar", itemId = 268256, slot = "Belt" },
+            { text = "[item=271509 original-item=268225]", itemId = nil, slot = "Legs" },
+            { text = "[url guide=33190]Den of Nalorakk", itemId = 251153, slot = "Boots" },
+            { text = "[url guide=34264]Altar of Fangs", itemId = 273792, slot = "Ring" },
+            { text = "[url guide=34248]Vashnik the Malignant", itemId = 268249, slot = "Ring" },
+            { text = "[url guide=34252]Ula'tek", itemId = 270175, slot = "Trinket" },
+            { text = "[url guide=34252]Ula'tek", itemId = 270168, slot = "Trinket" },
+            { text = "Instance", itemId = nil, slot = "Priority" },
+            { text = "[url guide=34252]Ula'tek", itemId = 270168, slot = "1" },
+            { text = "[url guide=34247]The Lost Explorers", itemId = nil, slot = "2" },
+            { text = "[url guide=34224]Any Mythic  Venomous Abyss Boss", itemId = nil, slot = "3" },
+            { text = "[url guide=33190]Den of Nalorakk", itemId = nil, slot = "4" },
+            { text = "[url guide=34264]Altar of Fangs", itemId = nil, slot = "5" },
         },
     },
     enchants = {
@@ -3734,6 +3733,8 @@ DragonSkillData["ROGUE"][259] = {
     crafting = {
         wowhead = {
             embellishments = {
+                "[item=273060]",
+                "[item=273069]",
             },
         },
     },
@@ -3830,34 +3831,30 @@ DragonSkillData["ROGUE"][259] = {
 }
 
 DragonSkillData["ROGUE"][260] = {
-    scrapedAt = "2026-08-16T09:45:35.151Z",
+    scrapedAt = "2026-08-16T10:01:00.678Z",
     statPriority = {
         wowhead = "Trickster: Agility > Haste > Critical Strike > Versatility > Mastery | Fatebound: Agility > Haste > Critical Strike > Versatility > Mastery",
         archon = "Agility > Crit > Haste > Mastery > Vers",
     },
-    statAverages = {
-        archon = {
-        },
-    },
     bisGear = {
         wowhead = {
-            { slot = "Slot", item = "Item", source = "Source", itemId = nil },
-            { slot = "Weapon", item = "[url guide=34251]The Coiled Altar", source = "Unknown", itemId = 268209 },
-            { slot = "Offhand", item = "[url guide=34264]Altar of Fangs", source = "Unknown", itemId = 275070 },
-            { slot = "Head", item = "[url guide=34252]Ula'tek", source = "Unknown", itemId = 271875 },
-            { slot = "Neck", item = "[url guide=34252]Ula'tek", source = "Unknown", itemId = 268265 },
-            { slot = "Shoulders", item = "[url guide=34180]Tier Set", source = "Unknown", itemId = 271508 },
-            { slot = "Cloak", item = "[url guide=34244]Nek'zali the Soulcoiler", source = "Unknown", itemId = 268248 },
-            { slot = "Chest", item = "[url guide=34180]Tier Set", source = "Unknown", itemId = 271513 },
-            { slot = "Wrist", item = "[url guide=34244]Nek'zali the Soulcoiler", source = "Unknown", itemId = 268240 },
-            { slot = "Gloves", item = "[item=271511 original-item=251124]", source = "[url guide=34180]Tier Set", itemId = nil },
-            { slot = "Belt", item = "[item=244573 bonus=12214:8960:12497:12066:13622:13667:12214:8792:8960:12384]", source = "[url guide=15942]Crafting/Misc", itemId = nil },
-            { slot = "Legs", item = "[url guide=34180]Tier Set", source = "Unknown", itemId = 271509 },
-            { slot = "Boots", item = "[item=244569 bonus=12214:8960:12497:12066:13622:13667:12214:8792:8960:12384]", source = "[url guide=15942]Crafting/Misc", itemId = nil },
-            { slot = "Ring", item = "[url guide=34240]Nymrissa Wavecaller", source = "Unknown", itemId = 268266 },
-            { slot = "Ring", item = "[url guide=34249]Sszorak", source = "Unknown", itemId = 268252 },
-            { slot = "Trinket", item = "[url guide=34251]The Coiled Altar", source = "Unknown", itemId = 270173 },
-            { slot = "Trinket", item = "[url guide=34252]Ula'tek", source = "Unknown", itemId = 270175 },
+            { text = "Item", itemId = nil, slot = "Slot" },
+            { text = "[url guide=34251]The Coiled Altar", itemId = 268209, slot = "Weapon" },
+            { text = "[url guide=34264]Altar of Fangs", itemId = 275070, slot = "Offhand" },
+            { text = "[url guide=34252]Ula'tek", itemId = 271875, slot = "Head" },
+            { text = "[url guide=34252]Ula'tek", itemId = 268265, slot = "Neck" },
+            { text = "[url guide=34180]Tier Set", itemId = 271508, slot = "Shoulders" },
+            { text = "[url guide=34244]Nek'zali the Soulcoiler", itemId = 268248, slot = "Cloak" },
+            { text = "[url guide=34180]Tier Set", itemId = 271513, slot = "Chest" },
+            { text = "[url guide=34244]Nek'zali the Soulcoiler", itemId = 268240, slot = "Wrist" },
+            { text = "[item=271511 original-item=251124]", itemId = nil, slot = "Gloves" },
+            { text = "[item=244573 bonus=12214:8960:12497:12066:13622:13667:12214:8792:8960:12384]", itemId = nil, slot = "Belt" },
+            { text = "[url guide=34180]Tier Set", itemId = 271509, slot = "Legs" },
+            { text = "[item=244569 bonus=12214:8960:12497:12066:13622:13667:12214:8792:8960:12384]", itemId = nil, slot = "Boots" },
+            { text = "[url guide=34240]Nymrissa Wavecaller", itemId = 268266, slot = "Ring" },
+            { text = "[url guide=34249]Sszorak", itemId = 268252, slot = "Ring" },
+            { text = "[url guide=34251]The Coiled Altar", itemId = 270173, slot = "Trinket" },
+            { text = "[url guide=34252]Ula'tek", itemId = 270175, slot = "Trinket" },
         },
     },
     enchants = {
@@ -3875,6 +3872,7 @@ DragonSkillData["ROGUE"][260] = {
     crafting = {
         wowhead = {
             embellishments = {
+                "[item=240166]",
             },
         },
     },
@@ -3962,34 +3960,30 @@ DragonSkillData["ROGUE"][260] = {
 }
 
 DragonSkillData["ROGUE"][261] = {
-    scrapedAt = "2026-08-16T09:45:35.664Z",
+    scrapedAt = "2026-08-16T10:01:01.112Z",
     statPriority = {
         wowhead = "Deathstalker: Agility > Mastery > Haste (~1100 Haste) > Critical Strike > Versatility | Trickster: Agility > Mastery > Haste (~1100 Haste) > Critical Strike > Versatility | Deathstalker: Agility > Mastery > Haste (~700 Haste) > Critical Strike > Versatility | Trickster: Agility > Mastery > Haste (~700 Haste) > Critical Strike > Versatility",
         archon = "Agility > Mastery > Crit > Haste > Vers",
     },
-    statAverages = {
-        archon = {
-        },
-    },
     bisGear = {
         wowhead = {
-            { slot = "Slot", item = "Item", source = "Source", itemId = nil },
-            { slot = "Main-Hand", item = "[url guide=34252]Ula'tek", source = "Unknown", itemId = 271093 },
-            { slot = "Off-Hand", item = "[url guide=15942]Crafting/Misc", source = "Unknown", itemId = 237837 },
-            { slot = "Head", item = "[item=271510 original-item=271875]", source = "[url guide=34180]Tier Set - [url guide=34252]Ula'tek", itemId = nil },
-            { slot = "Neck", item = "[url guide=34252]Ula'tek", source = "Unknown", itemId = 268265 },
-            { slot = "Shoulders", item = "[item=271508 original-item=268246]", source = "[url guide=34180]Tier Set - [url guide=34248]Vashnik the Malignant", itemId = nil },
-            { slot = "Cloak", item = "[url guide=34251]The Coiled Altar", source = "Unknown", itemId = 268253 },
-            { slot = "Chest", item = "[item=271513 original-item=268235]", source = "[url guide=34180]Tier Set - [url guide=34244]Nek'zali the Soulcoiler", itemId = nil },
-            { slot = "Wrist", item = "[url guide=15942]Crafting/Misc", source = "Unknown", itemId = 244576 },
-            { slot = "Gloves", item = "[item=271511 original-item=268234]", source = "[url guide=34180]Tier Set - [url guide=34249]Sszorak", itemId = nil },
-            { slot = "Belt", item = "[url guide=34251]The Coiled Altar", source = "Unknown", itemId = 268256 },
-            { slot = "Legs", item = "[item=271509 original-item=268225]", source = "[url guide=34251]The Coiled Altar", itemId = nil },
-            { slot = "Boots", item = "[url guide=33219] Catalyst", source = "Unknown", itemId = 271512 },
-            { slot = "Ring", item = "[url guide=33183]Voidscar Arena", source = "Unknown", itemId = 252258 },
-            { slot = "Ring", item = "[url guide=33193]Blinding Vale", source = "Unknown", itemId = 251194 },
-            { slot = "Trinket", item = "[url guide=34251]The Coiled Altar", source = "Unknown", itemId = 270173 },
-            { slot = "Trinket", item = "[url guide=34252]Ula'tek", source = "Unknown", itemId = 270175 },
+            { text = "Item", itemId = nil, slot = "Slot" },
+            { text = "[url guide=34252]Ula'tek", itemId = 271093, slot = "Main-Hand" },
+            { text = "[url guide=15942]Crafting/Misc", itemId = 237837, slot = "Off-Hand" },
+            { text = "[item=271510 original-item=271875]", itemId = nil, slot = "Head" },
+            { text = "[url guide=34252]Ula'tek", itemId = 268265, slot = "Neck" },
+            { text = "[item=271508 original-item=268246]", itemId = nil, slot = "Shoulders" },
+            { text = "[url guide=34251]The Coiled Altar", itemId = 268253, slot = "Cloak" },
+            { text = "[item=271513 original-item=268235]", itemId = nil, slot = "Chest" },
+            { text = "[url guide=15942]Crafting/Misc", itemId = 244576, slot = "Wrist" },
+            { text = "[item=271511 original-item=268234]", itemId = nil, slot = "Gloves" },
+            { text = "[url guide=34251]The Coiled Altar", itemId = 268256, slot = "Belt" },
+            { text = "[item=271509 original-item=268225]", itemId = nil, slot = "Legs" },
+            { text = "[url guide=33219] Catalyst", itemId = 271512, slot = "Boots" },
+            { text = "[url guide=33183]Voidscar Arena", itemId = 252258, slot = "Ring" },
+            { text = "[url guide=33193]Blinding Vale", itemId = 251194, slot = "Ring" },
+            { text = "[url guide=34251]The Coiled Altar", itemId = 270173, slot = "Trinket" },
+            { text = "[url guide=34252]Ula'tek", itemId = 270175, slot = "Trinket" },
         },
     },
     enchants = {
@@ -4007,6 +4001,8 @@ DragonSkillData["ROGUE"][261] = {
     crafting = {
         wowhead = {
             embellishments = {
+                "[item=273060]",
+                "[item=240167]",
             },
         },
     },
@@ -4084,34 +4080,30 @@ DragonSkillData["ROGUE"][261] = {
 
 DragonSkillData["SHAMAN"] = DragonSkillData["SHAMAN"] or {}
 DragonSkillData["SHAMAN"][262] = {
-    scrapedAt = "2026-08-16T09:45:36.122Z",
+    scrapedAt = "2026-08-16T10:01:01.492Z",
     statPriority = {
         wowhead = "Farseer: Mastery to 1200 rating > Haste/Crit > Versatility > Intellect | Stormbringer: Mastery to 1200 rating > Haste/Crit > Versatility > Intellect",
         archon = "Intellect > Mastery > Crit > Haste > Vers",
     },
-    statAverages = {
-        archon = {
-        },
-    },
     bisGear = {
         wowhead = {
-            { slot = "Slot", item = "Item", source = "Source", itemId = nil },
-            { slot = "Weapon", item = "[url guide=34252]Ula'tek", source = "Unknown", itemId = 271092 },
-            { slot = "Offhand", item = "[url guide=34240]Nymrissa Wavecaller", source = "Unknown", itemId = 268262 },
-            { slot = "Head", item = "[url guide=34180]Tier Set", source = "Unknown", itemId = 271483 },
-            { slot = "Neck", item = "[url guide=34252]Ula'tek", source = "Unknown", itemId = 268265 },
-            { slot = "Shoulders", item = "[url guide=34180]Tier Set", source = "Unknown", itemId = 271481 },
-            { slot = "Cloak", item = "[url guide=34251]The Coiled Altar", source = "Unknown", itemId = 268253 },
-            { slot = "Chest", item = "[url guide=34180]Tier Set", source = "Unknown", itemId = 271486 },
-            { slot = "Wrist", item = "[url guide=15942]Crafting", source = "Unknown", itemId = 244584 },
-            { slot = "Gloves", item = "[url guide=34180]Tier Set", source = "Unknown", itemId = 271484 },
-            { slot = "Belt", item = "[url guide=34248]Vashnik the Malignant", source = "Unknown", itemId = 268254 },
-            { slot = "Legs", item = "[url guide=34180]Tier Set", source = "Unknown", itemId = 271482 },
-            { slot = "Boots", item = "[url guide=15942]Crafting", source = "Unknown", itemId = 244577 },
-            { slot = "Ring", item = "[url guide=34248]Vashnik the Malignant", source = "Unknown", itemId = 268249 },
-            { slot = "Ring", item = "[url guide=33183]Voidscar Arena", source = "Unknown", itemId = 252258 },
-            { slot = "Trinket", item = "[url guide=34247]The Lost Explorers", source = "Unknown", itemId = 270164 },
-            { slot = "Trinket", item = "[url guide=34264]Altar of Fangs", source = "Unknown", itemId = 273796 },
+            { text = "Item", itemId = nil, slot = "Slot" },
+            { text = "[url guide=34252]Ula'tek", itemId = 271092, slot = "Weapon" },
+            { text = "[url guide=34240]Nymrissa Wavecaller", itemId = 268262, slot = "Offhand" },
+            { text = "[url guide=34180]Tier Set", itemId = 271483, slot = "Head" },
+            { text = "[url guide=34252]Ula'tek", itemId = 268265, slot = "Neck" },
+            { text = "[url guide=34180]Tier Set", itemId = 271481, slot = "Shoulders" },
+            { text = "[url guide=34251]The Coiled Altar", itemId = 268253, slot = "Cloak" },
+            { text = "[url guide=34180]Tier Set", itemId = 271486, slot = "Chest" },
+            { text = "[url guide=15942]Crafting", itemId = 244584, slot = "Wrist" },
+            { text = "[url guide=34180]Tier Set", itemId = 271484, slot = "Gloves" },
+            { text = "[url guide=34248]Vashnik the Malignant", itemId = 268254, slot = "Belt" },
+            { text = "[url guide=34180]Tier Set", itemId = 271482, slot = "Legs" },
+            { text = "[url guide=15942]Crafting", itemId = 244577, slot = "Boots" },
+            { text = "[url guide=34248]Vashnik the Malignant", itemId = 268249, slot = "Ring" },
+            { text = "[url guide=33183]Voidscar Arena", itemId = 252258, slot = "Ring" },
+            { text = "[url guide=34247]The Lost Explorers", itemId = 270164, slot = "Trinket" },
+            { text = "[url guide=34264]Altar of Fangs", itemId = 273796, slot = "Trinket" },
         },
     },
     enchants = {
@@ -4129,6 +4121,8 @@ DragonSkillData["SHAMAN"][262] = {
     crafting = {
         wowhead = {
             embellishments = {
+                "[item=240167]",
+                "[item=240167]",
             },
         },
     },
@@ -4210,38 +4204,34 @@ DragonSkillData["SHAMAN"][262] = {
 }
 
 DragonSkillData["SHAMAN"][263] = {
-    scrapedAt = "2026-08-16T09:45:37.582Z",
+    scrapedAt = "2026-08-16T10:01:01.849Z",
     statPriority = {
         wowhead = "Stormbringer: Agility > Mastery = Haste > Critical Strike > Versatility | Totemic: Agility > Mastery = Haste > Critical Strike > Versatility",
         archon = "Agility > Mastery > Haste > Crit > Vers",
     },
-    statAverages = {
-        archon = {
-        },
-    },
     bisGear = {
         wowhead = {
-            { slot = "Slot", item = "[icon name=ui_profession_enchanting inline=true size=small tooltip=enchanting][/icon]", source = "Item", itemId = nil },
-            { slot = "Main Hand", item = "[icon name=inv_12_profession_enchanting_enchantedvellum_purple inline=true][/icon]", source = "[color=q4][item=268209 bonus=13848][/color]", itemId = nil },
-            { slot = "Off Hand", item = "[icon name=inv_12_profession_enchanting_enchantedvellum_purple inline=true][/icon]", source = "[color=q4][item=237850 bonus=13751:12497:13836:13771:8793][/color]", itemId = nil },
-            { slot = "Head", item = "[icon name=inv_12_profession_enchanting_enchantedvellum_blue inline=true][/icon][icon name=inv_potiond_4][/icon]", source = "[color=q4][item=271483 bonus=12854 original-item=251220][/color] &ndash;", itemId = nil },
-            { slot = "Neck", item = "[color=q4][item=268265 bonus=13848:13708:10835][/color]", source = "[url guide=34252][icon name=inv_121_raid_achievement_ulatek]Ula'tek[/icon]", itemId = nil },
-            { slot = "Shoulders", item = "[icon name=inv_12_profession_enchanting_enchantedvellum_blue inline=true][/icon]", source = "[color=q4][item=271481 bonus=13848 original-item=268231][/color] &ndash;", itemId = nil },
-            { slot = "Cloak", item = "[color=q4][item=268253 bonus=13848][/color]", source = "[url guide=34251][icon name=inv_121_raid_achievement_zuljinmalacrass]The Coiled Altar[/icon]", itemId = nil },
-            { slot = "Chest", item = "[icon name=inv_12_profession_enchanting_enchantedvellum_blue inline=true][/icon]", source = "[color=q4][item=271486 bonus=13848:13708 original-item=271876][/color] &ndash;", itemId = nil },
-            { slot = "Wrist", item = "[icon name=inv_potiond_4][/icon]", source = "[color=q4][item=244584 bonus=13751:12497:13836:12384:8793][/color]", itemId = nil },
-            { slot = "Gloves", item = "[color=q4][item=271484 bonus=12854 original-item=160213][/color] &ndash;", source = "[url guide=33219] Catalyst &ndash; [url guide=34260][icon name=achievement_dungeon_kingsrest]King's Rest[/icon]", itemId = nil },
-            { slot = "Belt", item = "[icon name=inv_potiond_4][/icon]", source = "[color=q4][item=268254 bonus=12854][/color]", itemId = nil },
-            { slot = "Legs", item = "[icon name=inv_12_profession_leatherworking_amani_armor_kit inline=true][/icon]", source = "[color=q4][item=271482 bonus=13848 original-item=268237][/color] &ndash;", itemId = nil },
-            { slot = "Boots", item = "[icon name=inv_12_profession_enchanting_enchantedvellum_blue inline=true][/icon]", source = "[color=q4][item=268233 bonus=12854][/color]", itemId = nil },
-            { slot = "Ring 1", item = "[icon name=inv_12_profession_enchanting_enchantedvellum_blue inline=true][/icon]", source = "[color=q4][item=268249 bonus=12854:10835][/color]", itemId = nil },
-            { slot = "Ring 2", item = "[icon name=inv_12_profession_enchanting_enchantedvellum_blue inline=true][/icon]", source = "[color=q4][item=252258 bonus=12854:10835][/color]", itemId = nil },
-            { slot = "Trinket 1", item = "[color=q4][item=270175 bonus=13848][/color]", source = "[url guide=34252][icon name=inv_121_raid_achievement_ulatek]Ula'tek[/icon]", itemId = nil },
-            { slot = "Trinket 2", item = "[color=q4][item=270173 bonus=13848][/color]", source = "[url guide=34251][icon name=inv_121_raid_achievement_zuljinmalacrass]The Coiled Altar[/icon]", itemId = nil },
-            { slot = "Priority", item = "Location", source = "Item/Notes", itemId = nil },
-            { slot = "[large][color=necrolord]1[/color][/large]", item = "[icon name=inv_121_raid_achievement_ulatek inline=true size=small type=round color=c7][/icon] [url guide=34252]Ula'tek", source = "[color=q6]Most Pieces[/color] [toggler id=\"voidcore-1\"][i]Click for Notes[/i][/toggler]", itemId = nil },
-            { slot = "[large][color=rogue]2[/color][/large]", item = "[icon name=inv_121_raid_achievement_zuljinmalacrass inline=true size=small type=round color=c7][/icon] [url guide=34251]Coiled Altar", source = "[color=q6]Weapon & Trinket[/color] [toggler id=\"voidcore-2\" hidden][i]Click for Notes[/i][/toggler]", itemId = nil },
-            { slot = "[large][color=druid]3[/color][/large]", item = "[icon name=8039569 inline=true size=small type=round color=c7][/icon] [url guide=34045] Early Mythic Bosses", source = "Depends [toggler id=\"voidcore-3\" hidden][i]Click for Notes[/i][/toggler]", itemId = nil },
+            { text = "[icon name=ui_profession_enchanting inline=true size=small tooltip=enchanting][/icon]", itemId = nil, slot = "Slot" },
+            { text = "[icon name=inv_12_profession_enchanting_enchantedvellum_purple inline=true][/icon]", itemId = nil, slot = "Main Hand" },
+            { text = "[icon name=inv_12_profession_enchanting_enchantedvellum_purple inline=true][/icon]", itemId = nil, slot = "Off Hand" },
+            { text = "[icon name=inv_12_profession_enchanting_enchantedvellum_blue inline=true][/icon][icon name=inv_potiond_4][/icon]", itemId = nil, slot = "Head" },
+            { text = "[color=q4][item=268265 bonus=13848:13708:10835][/color]", itemId = nil, slot = "Neck" },
+            { text = "[icon name=inv_12_profession_enchanting_enchantedvellum_blue inline=true][/icon]", itemId = nil, slot = "Shoulders" },
+            { text = "[color=q4][item=268253 bonus=13848][/color]", itemId = nil, slot = "Cloak" },
+            { text = "[icon name=inv_12_profession_enchanting_enchantedvellum_blue inline=true][/icon]", itemId = nil, slot = "Chest" },
+            { text = "[icon name=inv_potiond_4][/icon]", itemId = nil, slot = "Wrist" },
+            { text = "[color=q4][item=271484 bonus=12854 original-item=160213][/color] &ndash;", itemId = nil, slot = "Gloves" },
+            { text = "[icon name=inv_potiond_4][/icon]", itemId = nil, slot = "Belt" },
+            { text = "[icon name=inv_12_profession_leatherworking_amani_armor_kit inline=true][/icon]", itemId = nil, slot = "Legs" },
+            { text = "[icon name=inv_12_profession_enchanting_enchantedvellum_blue inline=true][/icon]", itemId = nil, slot = "Boots" },
+            { text = "[icon name=inv_12_profession_enchanting_enchantedvellum_blue inline=true][/icon]", itemId = nil, slot = "Ring 1" },
+            { text = "[icon name=inv_12_profession_enchanting_enchantedvellum_blue inline=true][/icon]", itemId = nil, slot = "Ring 2" },
+            { text = "[color=q4][item=270175 bonus=13848][/color]", itemId = nil, slot = "Trinket 1" },
+            { text = "[color=q4][item=270173 bonus=13848][/color]", itemId = nil, slot = "Trinket 2" },
+            { text = "Location", itemId = nil, slot = "Priority" },
+            { text = "[icon name=inv_121_raid_achievement_ulatek inline=true size=small type=round color=c7][/icon] [url guide=34252]Ula'tek", itemId = nil, slot = "[large][color=necrolord]1[/color][/large]" },
+            { text = "[icon name=inv_121_raid_achievement_zuljinmalacrass inline=true size=small type=round color=c7][/icon] [url guide=34251]Coiled Altar", itemId = nil, slot = "[large][color=rogue]2[/color][/large]" },
+            { text = "[icon name=8039569 inline=true size=small type=round color=c7][/icon] [url guide=34045] Early Mythic Bosses", itemId = nil, slot = "[large][color=druid]3[/color][/large]" },
         },
     },
     enchants = {
@@ -4259,6 +4249,10 @@ DragonSkillData["SHAMAN"][263] = {
     crafting = {
         wowhead = {
             embellishments = {
+                "[color=q4][icon name=inv_12_profession_blacksmithing_weightstone_green]Hunter's Ritual Stone[/icon][/color]",
+                "[color=q4][icon name=inv_12_tailoring_rare_cloth_violet_rare-cloth]Arcanoweave Lining[/icon][/color]",
+                "[color=q4][icon name=inv_knife_1h_ulatek_d_01]Adorned Fang[/icon][/color]",
+                "[item=251513 bonus=13751:12497:13836]",
             },
         },
     },
@@ -4335,39 +4329,33 @@ DragonSkillData["SHAMAN"][263] = {
 }
 
 DragonSkillData["SHAMAN"][264] = {
-    scrapedAt = "2026-08-16T09:45:38.689Z",
+    scrapedAt = "2026-08-16T10:01:02.208Z",
     statPriority = {
         wowhead = "Farseer: Intellect > Critical Strike > Haste > Versatility > Mastery | Totemic: Intellect > Critical Strike > Haste > Versatility > Mastery",
         archon = "Intellect > Crit > Haste > Vers > Mastery",
     },
-    statAverages = {
-        archon = {
-        },
-    },
     bisGear = {
         wowhead = {
-            { slot = "Slot", item = "Item", source = "Source", itemId = nil },
-            { slot = "Helm", item = "[color=q4][item=271483 original-item=251220][/color]", source = "[icon name=inv_achievement_dungeon_voidscararena][/icon][url guide=33183]Voidscar Arena & [icon name=inv_radientazeritematrix][/icon][url guide=33219] Catalyst", itemId = nil },
-            { slot = "Neck", item = "[color=q4][/color]", source = "[icon name=inv_121_raid_achievement_ulatek][/icon][url guide=34252]Ula'tek [i](Raid)[/i]", itemId = 268265 },
-            { slot = "Shoulders", item = "[color=q4][item=271481 original-item=268231][/color]", source = "[icon name=inv_121_raid_achievement_zuljinmalacrass][/icon][url guide=34251]The Coiled Alter [i](Raid)[/i] & [icon name=inv_radientazeritematrix][/icon][url guide=33219] Catalyst", itemId = nil },
-            { slot = "Cape", item = "[color=q4][/color]", source = "[icon name=inv_121_raid_achievement_zuljinmalacrass][/icon][url guide=34251]The Coiled Alter [i](Raid)[/i]", itemId = 268253 },
-            { slot = "Chest", item = "[color=q4][item=271486 original-item=271876][/color]", source = "[icon name=inv_121_raid_achievement_ulatek][/icon][url guide=34252]Ula'tek [i](Raid)[/i] & [icon name=inv_radientazeritematrix][/icon][url guide=33219] Catalyst", itemId = nil },
-            { slot = "Bracers", item = "[color=q4][/color]", source = "[icon name=inv_achievement_dungeon_lightbloom][/icon][url guide=33193]The Blinding Vale", itemId = 251200 },
-            { slot = "Gloves", item = "[color=q4][/color]", source = "[icon name=inv_121_raid_achievement_ulatek][/icon][url guide=33180]Raid | [icon name=ability_racial_packhobgoblin][/icon][url guide=17592]Vault", itemId = 271484 },
-            { slot = "Belt", item = "[color=q4][/color]", source = "[icon name=achievement_dungeon_kingsrest][/icon][url guide=33272]Kings Rest", itemId = 159369 },
-            { slot = "Legs", item = "[color=q4][item=271482 original-item=268237][/color]", source = "[icon name=inv_121_raid_achievement_zuljinmalacrass][/icon][url guide=34251]The Coiled Alter [i](Raid)[/i] & [icon name=inv_radientazeritematrix][/icon][url guide=33219] Catalyst", itemId = nil },
-            { slot = "Boots", item = "[color=q4][/color]", source = "[icon name=inv_achievement_dungeon_proveyourworth][/icon][url guide=33190]Den of Nalorakk", itemId = 251145 },
-            { slot = "Ring", item = "[color=q4][/color]", source = "[icon name=inv_achievement_dungeon_proveyourworth][/icon][url guide=33190]Den of Nalorakk", itemId = 251148 },
-            { slot = "Ring", item = "[color=q4][/color]", source = "[icon name=inv_achievement_dungeon_altaroffangs][/icon][url guide=33272]Alter of Fangs", itemId = 273792 },
-            { slot = "Trinkets", item = "[color=q4][/color]", source = "[icon name=inv_121_raid_achievement_priestess][/icon][url guide=34244]Nek'zali the Soulcoiler [i](Raid)[/i]", itemId = 270162 },
-            { slot = "Trinkets", item = "[color=q4][/color]", source = "[icon name=inv_achievement_dungeon_murderrow][/icon][url guide=33189]Murder Row", itemId = 250215 },
-            { slot = "1h Weapon", item = "[color=q4][/color]", source = "[icon name=inv_121_raid_achievement_ulatek][/icon][url guide=34252]Ula'tek [i](Raid)[/i]", itemId = 271092 },
-            { slot = "Shield", item = "[color=q4][/color]", source = "[icon name=inv_121_raid_achievement_tortollans][/icon][url guide=34247]The Lost Explorers [i](Raid)[/i]", itemId = 268196 },
-            { slot = "[icon-badge=268265 quality=4 tooltip=\"Raid_Cantrip_Tooltip\"]", item = "[icon-badge=271092 quality=4 tooltip=\"Raid_Cantrip_Tooltip\"]", source = "[icon-badge=271876 quality=4 tooltip=\"Raid_Cantrip_Tooltip\"]", itemId = nil },
-            { slot = "[icon-badge=250215 quality=3 tooltip=\"Bis_Trinket_Tooltip\"]", item = "[icon-badge=273792 quality=3 tooltip=\"Jewelry_Tooltip\"]", source = "[icon-badge=251148 quality=3 tooltip=\"Jewelry_Tooltip\"]", itemId = nil },
-            { slot = "Priority", item = "Boss", source = "Item/Notes", itemId = nil },
-            { slot = "1", item = "[url guide=34252 style='display: flex; align-items: center; text-align: left;'][icon name=inv_121_raid_achievement_ulatek inline=true size=small type=round][/icon]Heroic Ula'tek", source = "Ula'tek contains incredibly strong loot for Restoration Shamans. , , and  are all very strong pieces and you want to get all of them as soon as possible. Bonus rolls will allow you to get them at myth-track even on the heroic difficulty boss.", itemId = 268265 },
-            { slot = "2", item = "[url guide=34244 style='display: flex; align-items: center; text-align: left;'][icon name=inv_121_raid_achievement_priestess inline=true size=small type=round][/icon]Mythic Nek'zali", source = "Having the best trinket of the season in  Mythic Nek'zali is the next best place to use your bonus rolls after Heroic Ula'tek, as you can make good use of four out of the five items in its loot table. Being the very first boss of the raid means it is very accesible, and all the loot is very well itemized for us.", itemId = 270162 },
+            { text = "Item", itemId = nil, slot = "Slot" },
+            { text = "[color=q4][item=271483 original-item=251220][/color]", itemId = nil, slot = "Helm" },
+            { text = "[color=q4][/color]", itemId = 268265, slot = "Neck" },
+            { text = "[color=q4][item=271481 original-item=268231][/color]", itemId = nil, slot = "Shoulders" },
+            { text = "[color=q4][/color]", itemId = 268253, slot = "Cape" },
+            { text = "[color=q4][item=271486 original-item=271876][/color]", itemId = nil, slot = "Chest" },
+            { text = "[color=q4][/color]", itemId = 251200, slot = "Bracers" },
+            { text = "[color=q4][/color]", itemId = 271484, slot = "Gloves" },
+            { text = "[color=q4][/color]", itemId = 159369, slot = "Belt" },
+            { text = "[color=q4][item=271482 original-item=268237][/color]", itemId = nil, slot = "Legs" },
+            { text = "[color=q4][/color]", itemId = 251145, slot = "Boots" },
+            { text = "[color=q4][/color]", itemId = 251148, slot = "Ring" },
+            { text = "[color=q4][/color]", itemId = 273792, slot = "Ring" },
+            { text = "[color=q4][/color]", itemId = 270162, slot = "Trinkets" },
+            { text = "[color=q4][/color]", itemId = 250215, slot = "Trinkets" },
+            { text = "[color=q4][/color]", itemId = 271092, slot = "1h Weapon" },
+            { text = "[color=q4][/color]", itemId = 268196, slot = "Shield" },
+            { text = "Boss", itemId = nil, slot = "Priority" },
+            { text = "[url guide=34252 style='display: flex; align-items: center; text-align: left;'][icon name=inv_121_raid_achievement_ulatek inline=true size=small type=round][/icon]Heroic Ula'tek", itemId = 268265, slot = "1" },
+            { text = "[url guide=34244 style='display: flex; align-items: center; text-align: left;'][icon name=inv_121_raid_achievement_priestess inline=true size=small type=round][/icon]Mythic Nek'zali", itemId = 270162, slot = "2" },
         },
     },
     enchants = {
@@ -4390,6 +4378,13 @@ DragonSkillData["SHAMAN"][264] = {
     },
     rotation = {
         wowhead = {
+            { text = "Use all your  procs [span class=tip tooltip=StormstreamProcs][symbol=wow-atlas-quest-wrapper-turnin][/span]", spellId = "1267068" },
+            { text = "Keep  on cooldown [span class=tip tooltip=RiptideTargets][symbol=wow-atlas-quest-wrapper-turnin][/span]", spellId = "61295" },
+            { text = "Use  [span class=tip tooltip=SwiftnessCooldown][symbol=wow-atlas-quest-wrapper-turnin][/span]", spellId = "443454" },
+            { text = "Cast  [span class=tip tooltip=UnleashPrio][symbol=wow-atlas-quest-wrapper-turnin][/span]", spellId = "73685" },
+            { text = "Maintain  [span class=tip tooltip=FarseerRain][symbol=wow-atlas-quest-wrapper-turnin][/span]", spellId = "73920" },
+            { text = "Keep  on cooldown [span class=tip tooltip=FarseerHst][symbol=wow-atlas-quest-wrapper-turnin][/span]", spellId = "5394" },
+            { text = "Cast  or  [span class=tip tooltip=FillerSelection][symbol=wow-atlas-quest-wrapper-turnin][/span]", spellId = "1064" },
         },
     },
     trinkets = {
@@ -4462,37 +4457,33 @@ DragonSkillData["SHAMAN"][264] = {
 
 DragonSkillData["WARLOCK"] = DragonSkillData["WARLOCK"] or {}
 DragonSkillData["WARLOCK"][265] = {
-    scrapedAt = "2026-08-16T09:45:39.834Z",
+    scrapedAt = "2026-08-16T10:01:02.645Z",
     statPriority = {
         wowhead = "Hellcaller: Intellect > Haste > Critical Strike > Versatility > Mastery | Soul Harvester: Intellect > Haste > Critical Strike > Versatility > Mastery",
         archon = "Intellect > Crit > Haste > Mastery > Vers",
     },
-    statAverages = {
-        archon = {
-        },
-    },
     bisGear = {
         wowhead = {
-            { slot = "Slot", item = "Item", source = "Source", itemId = nil },
-            { slot = "Weapon", item = "[url guide=34252]Ula'tek", source = "Unknown", itemId = 271092 },
-            { slot = "Offhand", item = "[npc=259446]", source = "Unknown", itemId = 273779 },
-            { slot = "Head", item = "[url guide=34252]Ula'tek", source = "Unknown", itemId = 271874 },
-            { slot = "Neck", item = "[url guide=34252]Ula'tek", source = "Unknown", itemId = 268265 },
-            { slot = "Shoulders", item = "[url guide=34247]The Lost Explorers", source = "Unknown", itemId = 271544 },
-            { slot = "Cloak", item = "[url guide=34251]The Coiled Altar", source = "Unknown", itemId = 268253 },
-            { slot = "Chest", item = "[url guide=34248]Vashnik the Malignant", source = "Unknown", itemId = 271549 },
-            { slot = "Wrist", item = "[url guide=15942]Crafting", source = "Unknown", itemId = 239648 },
-            { slot = "Gloves", item = "[url guide=34245]Entombed Sentinels", source = "Unknown", itemId = 271547 },
-            { slot = "Belt", item = "[url guide=15942]Crafting", source = "Unknown", itemId = 239649 },
-            { slot = "Legs", item = "[url guide=34249]Sszorak", source = "Unknown", itemId = 271545 },
-            { slot = "Boots", item = "[url guide=34251]The Coiled Altar", source = "Unknown", itemId = 268255 },
-            { slot = "Ring", item = "[url guide=34249]Sszorak", source = "Unknown", itemId = 268252 },
-            { slot = "Ring", item = "[url guide=34251]The Coiled Altar", source = "Unknown", itemId = 273792 },
-            { slot = "Trinket", item = "[url guide=34247]The Lost Explorers", source = "Unknown", itemId = 270164 },
-            { slot = "Trinket", item = "[npc=136160]", source = "Unknown", itemId = 273649 },
-            { slot = "[center][large]1[/large][/center]", item = "[item=270164 bonus=13335]", source = "Unknown", itemId = nil },
-            { slot = "[center][large]2[/large][/center]", item = "[item=271092 bonus=13335]", source = "Unknown", itemId = nil },
-            { slot = "[center][large]3[/large][/center]", item = "[item=273649 bonus=13335]", source = "Unknown", itemId = nil },
+            { text = "Item", itemId = nil, slot = "Slot" },
+            { text = "[url guide=34252]Ula'tek", itemId = 271092, slot = "Weapon" },
+            { text = "[url guide=15942]Crafting", itemId = 245769, slot = "Offhand" },
+            { text = "[url guide=34252]Ula'tek", itemId = 271874, slot = "Head" },
+            { text = "[url guide=34252]Ula'tek", itemId = 268265, slot = "Neck" },
+            { text = "[url guide=34247]The Lost Explorers", itemId = 271544, slot = "Shoulders" },
+            { text = "[url guide=34251]The Coiled Altar", itemId = 268253, slot = "Cloak" },
+            { text = "[url guide=34248]Vashnik the Malignant", itemId = 271549, slot = "Chest" },
+            { text = "[url guide=15942]Crafting", itemId = 239648, slot = "Wrist" },
+            { text = "[url guide=34245]Entombed Sentinels", itemId = 271547, slot = "Gloves" },
+            { text = "[url guide=15942]Crafting", itemId = 239649, slot = "Belt" },
+            { text = "[url guide=34249]Sszorak", itemId = 271545, slot = "Legs" },
+            { text = "[url guide=34251]The Coiled Altar", itemId = 268255, slot = "Boots" },
+            { text = "[url guide=34249]Sszorak", itemId = 268252, slot = "Ring" },
+            { text = "[url guide=34251]The Coiled Altar", itemId = 273792, slot = "Ring" },
+            { text = "[url guide=34247]The Lost Explorers", itemId = 270164, slot = "Trinket" },
+            { text = "[npc=136160]", itemId = 273649, slot = "Trinket" },
+            { text = "[item=270164 bonus=13335]", itemId = nil, slot = "[center][large]1[/large][/center]" },
+            { text = "[item=271092 bonus=13335]", itemId = nil, slot = "[center][large]2[/large][/center]" },
+            { text = "[item=273649 bonus=13335]", itemId = nil, slot = "[center][large]3[/large][/center]" },
         },
     },
     enchants = {
@@ -4501,6 +4492,11 @@ DragonSkillData["WARLOCK"][265] = {
     },
     gems = {
         wowhead = {
+            { text = "Intellect", itemId = nil },
+            { text = "Haste", itemId = nil },
+            { text = "Critical Strike", itemId = nil },
+            { text = "Versatility", itemId = nil },
+            { text = "Mastery", itemId = nil },
         },
     },
     consumables = {
@@ -4510,6 +4506,8 @@ DragonSkillData["WARLOCK"][265] = {
     crafting = {
         wowhead = {
             embellishments = {
+                "[item=273060]",
+                "[item=240166]",
             },
         },
     },
@@ -4606,37 +4604,33 @@ DragonSkillData["WARLOCK"][265] = {
 }
 
 DragonSkillData["WARLOCK"][266] = {
-    scrapedAt = "2026-08-16T09:45:41.213Z",
+    scrapedAt = "2026-08-16T10:01:03.062Z",
     statPriority = {
         wowhead = "Diabolist: Intellect > Haste=Critical Strike > Mastery > Versatility | Soul Harvester: Intellect > Haste=Critical Strike > Mastery > Versatility",
         archon = "Intellect > Crit > Haste > Mastery > Vers",
     },
-    statAverages = {
-        archon = {
-        },
-    },
     bisGear = {
         wowhead = {
-            { slot = "Slot", item = "Item", source = "Source", itemId = nil },
-            { slot = "Weapon", item = "[url guide=34252]Ula'tek", source = "Unknown", itemId = 271092 },
-            { slot = "Offhand", item = "[url guide=34245]Entombed Sentinels", source = "Unknown", itemId = 268197 },
-            { slot = "Head", item = "[item=271874 original-item=34252]", source = "[url guide=34252]Ula'tek", itemId = nil },
-            { slot = "Neck", item = "[url guide=34252]Ula'tek", source = "Unknown", itemId = 268265 },
-            { slot = "Shoulders", item = "[item=271544 original-item=34262]", source = "[url guide=34247]The Lost Explorers", itemId = nil },
-            { slot = "Cloak", item = "[url guide=34251]The Coiled Altar", source = "Unknown", itemId = 268253 },
-            { slot = "Chest", item = "[item=271549 original-item=34264]", source = "[url guide=34248]Vashnik the Malignant", itemId = nil },
-            { slot = "Wrist", item = "[url guide=15942]Crafting", source = "Unknown", itemId = 239648 },
-            { slot = "Gloves", item = "[item=271547 original-item=34251]", source = "[url guide=34245]Entombed Sentinels", itemId = nil },
-            { slot = "Belt", item = "[url guide=15942]Crafting", source = "Unknown", itemId = 239649 },
-            { slot = "Legs", item = "[item=271545 original-item=34264]", source = "[url guide=34249]Sszorak", itemId = nil },
-            { slot = "Boots", item = "[url guide=34251]The Coiled Altar", source = "Unknown", itemId = 268255 },
-            { slot = "Ring", item = "[url guide=34249]Sszorak", source = "Unknown", itemId = 268252 },
-            { slot = "Ring", item = "[npc=133389]", source = "Unknown", itemId = 158366 },
-            { slot = "Trinket", item = "[url guide=34247]The Lost Explorers", source = "Unknown", itemId = 270164 },
-            { slot = "Trinket", item = "[npc=234649]", source = "Unknown", itemId = 250215 },
-            { slot = "[center][large]1[/large][/center]", item = "[item=270164 bonus=13335]", source = "Unknown", itemId = nil },
-            { slot = "[center][large]2[/large][/center]", item = "[item=271092 bonus=13335]", source = "Unknown", itemId = nil },
-            { slot = "[center][large]3[/large][/center]", item = "[item=250215 bonus=13335]", source = "Unknown", itemId = nil },
+            { text = "Item", itemId = nil, slot = "Slot" },
+            { text = "[url guide=34252]Ula'tek", itemId = 271092, slot = "Weapon" },
+            { text = "[url guide=34245]Entombed Sentinels", itemId = 268197, slot = "Offhand" },
+            { text = "[item=271874 original-item=34252]", itemId = nil, slot = "Head" },
+            { text = "[url guide=34252]Ula'tek", itemId = 268265, slot = "Neck" },
+            { text = "[item=271544 original-item=34262]", itemId = nil, slot = "Shoulders" },
+            { text = "[url guide=34251]The Coiled Altar", itemId = 268253, slot = "Cloak" },
+            { text = "[item=271549 original-item=34264]", itemId = nil, slot = "Chest" },
+            { text = "[url guide=15942]Crafting", itemId = 239648, slot = "Wrist" },
+            { text = "[item=271547 original-item=34251]", itemId = nil, slot = "Gloves" },
+            { text = "[url guide=15942]Crafting", itemId = 239649, slot = "Belt" },
+            { text = "[item=271545 original-item=34264]", itemId = nil, slot = "Legs" },
+            { text = "[url guide=34251]The Coiled Altar", itemId = 268255, slot = "Boots" },
+            { text = "[url guide=34249]Sszorak", itemId = 268252, slot = "Ring" },
+            { text = "[npc=133389]", itemId = 158366, slot = "Ring" },
+            { text = "[url guide=34247]The Lost Explorers", itemId = 270164, slot = "Trinket" },
+            { text = "[npc=234649]", itemId = 250215, slot = "Trinket" },
+            { text = "[item=270164 bonus=13335]", itemId = nil, slot = "[center][large]1[/large][/center]" },
+            { text = "[item=271092 bonus=13335]", itemId = nil, slot = "[center][large]2[/large][/center]" },
+            { text = "[item=250215 bonus=13335]", itemId = nil, slot = "[center][large]3[/large][/center]" },
         },
     },
     enchants = {
@@ -4645,6 +4639,10 @@ DragonSkillData["WARLOCK"][266] = {
     },
     gems = {
         wowhead = {
+            { text = "Intellect", itemId = nil },
+            { text = "Haste=Critical Strike", itemId = nil },
+            { text = "Mastery", itemId = nil },
+            { text = "Versatility", itemId = nil },
         },
     },
     consumables = {
@@ -4654,6 +4652,8 @@ DragonSkillData["WARLOCK"][266] = {
     crafting = {
         wowhead = {
             embellishments = {
+                "[item=240166]",
+                "[item=245875]",
             },
         },
     },
@@ -4750,34 +4750,30 @@ DragonSkillData["WARLOCK"][266] = {
 }
 
 DragonSkillData["WARLOCK"][267] = {
-    scrapedAt = "2026-08-16T09:45:41.685Z",
+    scrapedAt = "2026-08-16T10:01:03.436Z",
     statPriority = {
         wowhead = "Diabolist: Intellect > Haste > Mastery>=Critical Strike > Versatility | Hellcaller: Intellect > Haste > Mastery>=Critical Strike > Versatility",
         archon = "Intellect > Haste > Crit > Mastery > Vers",
     },
-    statAverages = {
-        archon = {
-        },
-    },
     bisGear = {
         wowhead = {
-            { slot = "Slot", item = "Item", source = "Source", itemId = nil },
-            { slot = "Weapon", item = "[url guide=34252]Ula'tek", source = "Unknown", itemId = 271092 },
-            { slot = "Offhand", item = "[npc=259446]", source = "Unknown", itemId = 273779 },
-            { slot = "Head", item = "[url guide=34252]Ula'tek", source = "Unknown", itemId = 271874 },
-            { slot = "Neck", item = "[url guide=34252]Ula'tek", source = "Unknown", itemId = 268265 },
-            { slot = "Shoulders", item = "[url guide=34247]The Lost Explorers", source = "Unknown", itemId = 271544 },
-            { slot = "Cloak", item = "[url guide=34251]The Coiled Altar", source = "Unknown", itemId = 268253 },
-            { slot = "Chest", item = "[url guide=34248]Vashnik the Malignant", source = "Unknown", itemId = 271549 },
-            { slot = "Wrist", item = "[url guide=15942]Crafting", source = "Unknown", itemId = 239648 },
-            { slot = "Gloves", item = "[url guide=34245]Entombed Sentinels", source = "Unknown", itemId = 271547 },
-            { slot = "Belt", item = "[url guide=15942]Crafting", source = "Unknown", itemId = 239649 },
-            { slot = "Legs", item = "[url guide=34249]Sszorak", source = "Unknown", itemId = 271545 },
-            { slot = "Boots", item = "[url guide=34251]The Coiled Altar", source = "Unknown", itemId = 268255 },
-            { slot = "Ring", item = "[url guide=34249]Sszorak", source = "Unknown", itemId = 268252 },
-            { slot = "Ring", item = "[url guide=34251]The Coiled Altar", source = "Unknown", itemId = 273792 },
-            { slot = "Trinket", item = "[url guide=34247]The Lost Explorers", source = "Unknown", itemId = 270164 },
-            { slot = "Trinket", item = "[url guide=34240]Nymrissa Wavecaller", source = "Unknown", itemId = 270167 },
+            { text = "Item", itemId = nil, slot = "Slot" },
+            { text = "[url guide=34252]Ula'tek", itemId = 271092, slot = "Weapon" },
+            { text = "[npc=259446]", itemId = 273779, slot = "Offhand" },
+            { text = "[url guide=34252]Ula'tek", itemId = 271874, slot = "Head" },
+            { text = "[url guide=34252]Ula'tek", itemId = 268265, slot = "Neck" },
+            { text = "[url guide=34247]The Lost Explorers", itemId = 271544, slot = "Shoulders" },
+            { text = "[url guide=34251]The Coiled Altar", itemId = 268253, slot = "Cloak" },
+            { text = "[url guide=34248]Vashnik the Malignant", itemId = 271549, slot = "Chest" },
+            { text = "[url guide=15942]Crafting", itemId = 239648, slot = "Wrist" },
+            { text = "[url guide=34245]Entombed Sentinels", itemId = 271547, slot = "Gloves" },
+            { text = "[url guide=15942]Crafting", itemId = 239649, slot = "Belt" },
+            { text = "[url guide=34249]Sszorak", itemId = 271545, slot = "Legs" },
+            { text = "[url guide=34251]The Coiled Altar", itemId = 268255, slot = "Boots" },
+            { text = "[url guide=34249]Sszorak", itemId = 268252, slot = "Ring" },
+            { text = "[url guide=34251]The Coiled Altar", itemId = 273792, slot = "Ring" },
+            { text = "[url guide=34247]The Lost Explorers", itemId = 270164, slot = "Trinket" },
+            { text = "[url guide=34240]Nymrissa Wavecaller", itemId = 270167, slot = "Trinket" },
         },
     },
     enchants = {
@@ -4795,6 +4791,8 @@ DragonSkillData["WARLOCK"][267] = {
     crafting = {
         wowhead = {
             embellishments = {
+                "[item=240166]",
+                "[item=245875]",
             },
         },
     },
@@ -4903,33 +4901,29 @@ DragonSkillData["WARLOCK"][267] = {
 
 DragonSkillData["WARRIOR"] = DragonSkillData["WARRIOR"] or {}
 DragonSkillData["WARRIOR"][71] = {
-    scrapedAt = "2026-08-16T09:45:42.169Z",
+    scrapedAt = "2026-08-16T10:01:03.837Z",
     statPriority = {
         wowhead = "Colossus: Strength > Critical Strike > Haste > Mastery > Versatility | Slayer: Strength > Critical Strike > Haste > Mastery > Versatility",
         archon = "Strength > Crit > Haste > Mastery > Vers",
     },
-    statAverages = {
-        archon = {
-        },
-    },
     bisGear = {
         wowhead = {
-            { slot = "Item Slot", item = "Name", source = "Source", itemId = nil },
-            { slot = "Helm", item = "[url guide=34250]The Twin Fangs", source = "Unknown", itemId = 271456 },
-            { slot = "Neck", item = "[url guide=34252]Ula'tek", source = "Unknown", itemId = 268265 },
-            { slot = "Shoulders", item = "[item=271454 original-item=271444]", source = "[url guide=34224]BoE Trash Drop", itemId = nil },
-            { slot = "Cloak", item = "[url guide=34251]The Coiled Altar", source = "Unknown", itemId = 268253 },
-            { slot = "Chest", item = "[item=271459 original-item=268222]", source = "[url guide=34251]The Coiled Altar", itemId = nil },
-            { slot = "Bracers", item = "[item=237834 bonus=12066:13622:9627:8791:8960:13767]", source = "[url guide=15942]Crafted", itemId = nil },
-            { slot = "Gloves", item = "[url guide=34245]Entombed Sentinels", source = "Unknown", itemId = 271457 },
-            { slot = "Belt", item = "[url guide=34251]The Coiled Altar", source = "Unknown", itemId = 268259 },
-            { slot = "Legs", item = "[item=271455 original-item=271878]", source = "[url guide=34252]Ula'tek", itemId = nil },
-            { slot = "Boots", item = "[item=237828 bonus=12066:13622:9627:8791:8960:13767]", source = "[url guide=15942]Crafted", itemId = nil },
-            { slot = "Ring", item = "[url guide=33183]Voidscar Arena", source = "Unknown", itemId = 252258 },
-            { slot = "Ring", item = "[url guide=34264]Altar of Fangs", source = "Unknown", itemId = 273792 },
-            { slot = "Trinket", item = "[url guide=34251]The Coiled Altar", source = "Unknown", itemId = 270173 },
-            { slot = "Trinket", item = "[url guide=34252]Ula'tek", source = "Unknown", itemId = 270175 },
-            { slot = "Mainhand", item = "[url guide=34251]The Coiled Altar", source = "Unknown", itemId = 268213 },
+            { text = "Name", itemId = nil, slot = "Item Slot" },
+            { text = "[url guide=34250]The Twin Fangs", itemId = 271456, slot = "Helm" },
+            { text = "[url guide=34252]Ula'tek", itemId = 268265, slot = "Neck" },
+            { text = "[item=271454 original-item=271444]", itemId = nil, slot = "Shoulders" },
+            { text = "[url guide=34251]The Coiled Altar", itemId = 268253, slot = "Cloak" },
+            { text = "[item=271459 original-item=268222]", itemId = nil, slot = "Chest" },
+            { text = "[item=237834 bonus=12066:13622:9627:8791:8960:13767]", itemId = nil, slot = "Bracers" },
+            { text = "[url guide=34245]Entombed Sentinels", itemId = 271457, slot = "Gloves" },
+            { text = "[url guide=34251]The Coiled Altar", itemId = 268259, slot = "Belt" },
+            { text = "[item=271455 original-item=271878]", itemId = nil, slot = "Legs" },
+            { text = "[item=237828 bonus=12066:13622:9627:8791:8960:13767]", itemId = nil, slot = "Boots" },
+            { text = "[url guide=33183]Voidscar Arena", itemId = 252258, slot = "Ring" },
+            { text = "[url guide=34264]Altar of Fangs", itemId = 273792, slot = "Ring" },
+            { text = "[url guide=34251]The Coiled Altar", itemId = 270173, slot = "Trinket" },
+            { text = "[url guide=34252]Ula'tek", itemId = 270175, slot = "Trinket" },
+            { text = "[url guide=34251]The Coiled Altar", itemId = 268213, slot = "Mainhand" },
         },
     },
     enchants = {
@@ -4947,6 +4941,9 @@ DragonSkillData["WARRIOR"][71] = {
     crafting = {
         wowhead = {
             embellishments = {
+                "[item=273069] is currently the strongest projected embellishment for dungeon and raid content.",
+                "[item=245876] is a competitive embellishment for crafted weapons, but can vary with target type.",
+                "[item=240167] is the previous best armor embellishment.",
             },
         },
     },
@@ -5035,34 +5032,30 @@ DragonSkillData["WARRIOR"][71] = {
 }
 
 DragonSkillData["WARRIOR"][72] = {
-    scrapedAt = "2026-08-16T09:45:42.674Z",
+    scrapedAt = "2026-08-16T10:01:04.261Z",
     statPriority = {
         wowhead = "Mountain Thane: Strength > Haste > Mastery > Critical Strike > Versatility | Slayer: Strength > Haste > Mastery > Critical Strike > Versatility",
         archon = "Strength > Haste > Mastery > Crit > Vers",
     },
-    statAverages = {
-        archon = {
-        },
-    },
     bisGear = {
         wowhead = {
-            { slot = "Item Slot", item = "Name", source = "Source", itemId = nil },
-            { slot = "Helm", item = "[item=271456 original-item=251126]", source = "[url guide=33189]Murder Row", itemId = nil },
-            { slot = "Neck", item = "[url guide=34252]Ula'tek", source = "Unknown", itemId = 268265 },
-            { slot = "Shoulders", item = "[item=271454 original-item=251138]", source = "[url guide=33189]Murder Row", itemId = nil },
-            { slot = "Cloak", item = "[url guide=34251]The Coiled Altar", source = "Unknown", itemId = 268253 },
-            { slot = "Chest", item = "[item=271459 original-item=268222]", source = "[url guide=34251]The Coiled Altar", itemId = nil },
-            { slot = "Bracers", item = "[item=237834 bonus=12066:13622:9627:8791:8960:13767]", source = "[url guide=15942]Crafted", itemId = nil },
-            { slot = "Gloves", item = "[item=271457 original-item=251214]", source = "[url guide=33190]Den of Nalorakk", itemId = nil },
-            { slot = "Belt", item = "[url guide=34251]The Coiled Altar", source = "Unknown", itemId = 268259 },
-            { slot = "Legs", item = "[item=271455 original-item=271878]", source = "[url guide=34252]Ula'tek", itemId = nil },
-            { slot = "Boots", item = "[item=237828 bonus=12066:13622:9627:8791:8960:13767]", source = "[url guide=15942]Crafted", itemId = nil },
-            { slot = "Ring", item = "[url guide=33183]Voidscar Arena", source = "Unknown", itemId = 252258 },
-            { slot = "Ring", item = "[url guide=34248]Vashnik the Malignant", source = "Unknown", itemId = 268249 },
-            { slot = "Trinket", item = "[url guide=34251]The Coiled Altar", source = "Unknown", itemId = 270173 },
-            { slot = "Trinket", item = "[url guide=34252]Ula'tek", source = "Unknown", itemId = 270175 },
-            { slot = "Mainhand", item = "[url guide=34251]The Coiled Altar", source = "Unknown", itemId = 268213 },
-            { slot = "Offhand", item = "[url guide=34248]Vashnik the Malignant", source = "Unknown", itemId = 268214 },
+            { text = "Name", itemId = nil, slot = "Item Slot" },
+            { text = "[item=271456 original-item=251126]", itemId = nil, slot = "Helm" },
+            { text = "[url guide=34252]Ula'tek", itemId = 268265, slot = "Neck" },
+            { text = "[item=271454 original-item=251138]", itemId = nil, slot = "Shoulders" },
+            { text = "[url guide=34251]The Coiled Altar", itemId = 268253, slot = "Cloak" },
+            { text = "[item=271459 original-item=268222]", itemId = nil, slot = "Chest" },
+            { text = "[item=237834 bonus=12066:13622:9627:8791:8960:13767]", itemId = nil, slot = "Bracers" },
+            { text = "[item=271457 original-item=251214]", itemId = nil, slot = "Gloves" },
+            { text = "[url guide=34251]The Coiled Altar", itemId = 268259, slot = "Belt" },
+            { text = "[item=271455 original-item=271878]", itemId = nil, slot = "Legs" },
+            { text = "[item=237828 bonus=12066:13622:9627:8791:8960:13767]", itemId = nil, slot = "Boots" },
+            { text = "[url guide=33183]Voidscar Arena", itemId = 252258, slot = "Ring" },
+            { text = "[url guide=34248]Vashnik the Malignant", itemId = 268249, slot = "Ring" },
+            { text = "[url guide=34251]The Coiled Altar", itemId = 270173, slot = "Trinket" },
+            { text = "[url guide=34252]Ula'tek", itemId = 270175, slot = "Trinket" },
+            { text = "[url guide=34251]The Coiled Altar", itemId = 268213, slot = "Mainhand" },
+            { text = "[url guide=34248]Vashnik the Malignant", itemId = 268214, slot = "Offhand" },
         },
     },
     enchants = {
@@ -5080,6 +5073,9 @@ DragonSkillData["WARRIOR"][72] = {
     crafting = {
         wowhead = {
             embellishments = {
+                "[item=273069] is currently the strongest projected embellishment for dungeon and raid content.",
+                "[item=245876] is a competitive embellishment for crafted weapons, but can vary with target type.",
+                "[item=240167] is the previous best armor embellishment.",
             },
         },
     },
@@ -5168,34 +5164,30 @@ DragonSkillData["WARRIOR"][72] = {
 }
 
 DragonSkillData["WARRIOR"][73] = {
-    scrapedAt = "2026-08-16T09:45:43.505Z",
+    scrapedAt = "2026-08-16T10:01:04.708Z",
     statPriority = {
         wowhead = "Survivability: Strength > Haste > Critical Strike > Versatility > Mastery | DPS: Strength > Haste > Critical Strike > Versatility > Mastery",
         archon = "Strength > Haste > Crit > Mastery > Vers",
     },
-    statAverages = {
-        archon = {
-        },
-    },
     bisGear = {
         wowhead = {
-            { slot = "Slot", item = "Item", source = "Source", itemId = nil },
-            { slot = "Weapon", item = "[url guide=34251]The Coiled Altar", source = "Unknown", itemId = 268209 },
-            { slot = "Shield", item = "[url guide=34247]The Lost Explorers", source = "Unknown", itemId = 268196 },
-            { slot = "Head", item = "[url guide=34180]Tier Set", source = "Unknown", itemId = 271456 },
-            { slot = "Neck", item = "[url guide=34252]Ula'tek", source = "Unknown", itemId = 268265 },
-            { slot = "Shoulders", item = "[url guide=34180]Tier Set", source = "Unknown", itemId = 271454 },
-            { slot = "Cloak", item = "[url guide=34251]The Coiled Altar", source = "Unknown", itemId = 268253 },
-            { slot = "Chest", item = "[url guide=34180]Tier Set", source = "Unknown", itemId = 271459 },
-            { slot = "Wrist", item = "[url guide=15942]Crafting Blacksmithing", source = "Unknown", itemId = 237834 },
-            { slot = "Gloves", item = "[url guide=34180]Tier Set", source = "Unknown", itemId = 271457 },
-            { slot = "Belt", item = "[url guide=34251]The Coiled Altar", source = "Unknown", itemId = 268259 },
-            { slot = "Legs", item = "[url guide=34252]Ula'tek", source = "Unknown", itemId = 271878 },
-            { slot = "Boots", item = "[url guide=15942]Crafting Blacksmithing", source = "Unknown", itemId = 237828 },
-            { slot = "Ring", item = "[url guide=34249]Sszorak", source = "Unknown", itemId = 268252 },
-            { slot = "Ring 2", item = "[url guide=34248]Vashnik the Malignant", source = "Unknown", itemId = 268249 },
-            { slot = "Trinket", item = "[url guide=34251]The Coiled Altar", source = "Unknown", itemId = 270173 },
-            { slot = "Trinket 2", item = "[url guide=34252]Ula'tek", source = "Unknown", itemId = 270175 },
+            { text = "Item", itemId = nil, slot = "Slot" },
+            { text = "[url guide=34251]The Coiled Altar", itemId = 268209, slot = "Weapon" },
+            { text = "[url guide=34247]The Lost Explorers", itemId = 268196, slot = "Shield" },
+            { text = "[url guide=34180]Tier Set", itemId = 271456, slot = "Head" },
+            { text = "[url guide=34252]Ula'tek", itemId = 268265, slot = "Neck" },
+            { text = "[url guide=34180]Tier Set", itemId = 271454, slot = "Shoulders" },
+            { text = "[url guide=34251]The Coiled Altar", itemId = 268253, slot = "Cloak" },
+            { text = "[url guide=34180]Tier Set", itemId = 271459, slot = "Chest" },
+            { text = "[url guide=15942]Crafting Blacksmithing", itemId = 237834, slot = "Wrist" },
+            { text = "[url guide=34180]Tier Set", itemId = 271457, slot = "Gloves" },
+            { text = "[url guide=34251]The Coiled Altar", itemId = 268259, slot = "Belt" },
+            { text = "[url guide=34252]Ula'tek", itemId = 271878, slot = "Legs" },
+            { text = "[url guide=15942]Crafting Blacksmithing", itemId = 237828, slot = "Boots" },
+            { text = "[url guide=34249]Sszorak", itemId = 268252, slot = "Ring" },
+            { text = "[url guide=34248]Vashnik the Malignant", itemId = 268249, slot = "Ring 2" },
+            { text = "[url guide=34251]The Coiled Altar", itemId = 270173, slot = "Trinket" },
+            { text = "[url guide=34252]Ula'tek", itemId = 270175, slot = "Trinket 2" },
         },
     },
     enchants = {
@@ -5213,6 +5205,8 @@ DragonSkillData["WARRIOR"][73] = {
     crafting = {
         wowhead = {
             embellishments = {
+                "[item=245876]",
+                "[item=240166]",
             },
         },
     },

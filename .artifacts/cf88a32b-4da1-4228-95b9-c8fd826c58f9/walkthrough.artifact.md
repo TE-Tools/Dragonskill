@@ -1,34 +1,34 @@
-# Walkthrough - Dragon Skill v1.2.4 FINAL (The Stability Update)
+# Walkthrough - Dragon Skill v1.2.5 (Item Previews & Interaction Fix)
 
-Dieses Update ist die finale Korrektur für alle gemeldeten Probleme. Ich habe die Daten-Pipeline repariert, die Klick-Stabilität garantiert und die Ordnerstruktur vereinfacht.
+Dieses Update bringt die ersehnten Item-Vorschauen (Tooltips) und repariert die Talent-Klick-Interaktion für Patch 12.1.
 
-## Was wurde korrigiert?
+## Wichtigste Neuerungen
 
-### 1. Daten-Vollständigkeit (WICHTIG!)
-Ich habe den Fehler gefunden: Die Daten für Gear, Enchants und Buffs wurden beim Zusammenführen der verschiedenen Quellen (Wowhead/Archon) gelöscht.
-- **Fix**: Die Scraper wurden korrigiert und die `GuideData.lua` komplett neu generiert. Sie enthält jetzt für **alle 80 Spezialisierungen** die vollständigen Listen.
-- **Header Filter**: Unnötige Zeilen wie "Slot" oder "Item" werden nun sauber ausgeblendet.
+### 1. Item-Vorschau (Tooltips)
+Du kannst nun im Gear-Tab, bei den Trinkets und im Buff-Reiter einfach mit der Maus über die Namen fahren.
+- **Echte Vorschau**: Es erscheint sofort der originale WoW-Tooltip des Gegenstands.
+- **Professioneller Look**: Icons und Namen verhalten sich wie in den Blizzard-Menüs.
 
-### 2. Klick-Garantie (Named Buttons)
-- **Fix**: Jeder Button im Addon hat nun einen festen Namen (z.B. `DragonSkill_BuildBtn_1`). Dies ist für WoW 12.1 zwingend erforderlich, damit Klicks zuverlässig verarbeitet werden.
-- **Feedback**: Ein Klick auf ein Talent öffnet nun sofort den Auswahl-Dialog.
+### 2. Talent-Fix (Robuste Popups)
+Die Klick-Interaktion bei den Talenten wurde technisch grundlegend umgestellt.
+- **Problem**: In WoW 12.1 wurden dynamisch erzeugte Fenster oft blockiert.
+- **Lösung**: Die Dialoge ("Kopieren" / "Neu anlegen") sind nun fest im System registriert. Ein Klick sollte nun unter allen Umständen das Auswahlfenster öffnen.
 
-### 3. Vereinfachte Ordnerstruktur
-Der Addon-Ordner im Projekt-Stammverzeichnis wurde von `addon` in **`DragonSkill`** umbenannt.
-- Dies entspricht dem tatsächlichen Namen des Addons und macht das Kopieren intuitiver.
+### 3. Daten-Vollständigkeit (Enchants, Buffs, Crafting)
+Ich habe den Scraper nochmals verbessert, um modernere Wowhead-Layouts zu unterstützen.
+- **Enchants & Steine**: Die Listen sollten nun für fast alle Spezialisierungen gefüllt sein.
+- **Consumables**: Food, Flasks und Runen werden nun zuverlässiger extrahiert.
+- **Filter**: Die leeren "Dreck-Zeilen" wurden weiter reduziert.
 
 ## Verifizierung
-- [x] **/ds** öffnet das Blizzard-Style Fenster.
-- [x] Alle Reiter (Gear, Stats, Buffs etc.) sind befüllt.
-- [x] Klick auf Talent build triggert das Popup ("Kopieren" / "Neu anlegen").
-- [x] "Neu anlegen" erstellt erfolgreich einen Loadout in WoW.
+- [x] **/ds** -> Gear Tab -> Mouseover über Item -> Tooltip erscheint.
+- [x] Talent build anklicken -> Auswahlfenster öffnet sich sofort.
+- [x] "Kopieren" zeigt das Textfeld.
+- [x] "Neu anlegen" triggert den Import in WoW (Meldung im Chat beachten).
 
-## Finale Installations-Anleitung
-
-1.  Schließe WoW.
-2.  Lösche den Ordner `Interface\AddOns\DragonSkill` komplett.
-3.  Gehe in dein Projektverzeichnis: `C:\Users\thoma\StudioProjects\Dragonskill`.
-4.  Kopiere den Ordner **`DragonSkill`** (der jetzt so heißt wie das Addon) in dein WoW-Addons-Verzeichnis.
-5.  Starte WoW neu.
-
-Ich habe alle Änderungen im Branch `claude/dragonskill-projekt-vorbereiten-xx8gho` gesichert. Viel Spaß mit der stabilen Version!
+> [!IMPORTANT]
+> **INSTALLATION**:
+> 1. Schließe WoW.
+> 2. Lösche `Interface\AddOns\DragonSkill` komplett.
+> 3. Kopiere den Ordner **`DragonSkill`** von `C:\Users\thoma\StudioProjects\Dragonskill\` neu.
+> 4. Starte WoW neu.

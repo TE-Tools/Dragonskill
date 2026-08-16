@@ -1,8 +1,5 @@
 /**
- * Dragon Skill - JSON zu Lua Konverter
- * ------------------------------------
- * Wandelt einen oder mehrere Scraper-JSON-Outputs in eine einzige Lua-Datei um.
- * Erweitert um Gear, Enchants, Gems, Consumables und Stat-Durchschnitte.
+ * Dragon Skill - JSON zu Lua Konverter (v1.2.7)
  */
 
 const fs = require("fs");
@@ -33,6 +30,24 @@ function buildLuaTable(entries) {
       lua += `DragonSkillData["${classToken}"][${specID}] = {\n`;
       lua += `    scrapedAt = ${luaEscape(data.scrapedAt)},\n`;
 
+      const writeListWithIcons = (name, list) => {
+        lua += `    ${name} = {\n`;
+        for (const [provider, items] of Object.entries(list || {})) {
+          lua += `        ${provider} = {\n`;
+          if (Array.isArray(items)) {
+            for (const item of items) {
+                if (typeof item === "string") {
+                    lua += `            { text = ${luaEscape(item)}, itemId = nil },\n`;
+                } else {
+                    lua += `            { text = ${luaEscape(item.text || item.item || item.name)}, itemId = ${item.itemId || "nil"}, slot = ${luaEscape(item.slot || nil)} },\n`;
+                }
+            }
+          }
+          lua += `        },\n`;
+        }
+        lua += `    },\n`;
+      };
+
       // Stat Priority
       lua += `    statPriority = {\n`;
       for (const [provider, text] of Object.entries(data.statPriority || {})) {
@@ -40,69 +55,17 @@ function buildLuaTable(entries) {
       }
       lua += `    },\n`;
 
-      // Stat Averages
-      lua += `    statAverages = {\n`;
-      for (const [provider, stats] of Object.entries(data.statAverages || {})) {
-        lua += `        ${provider} = {\n`;
-        if (stats) {
-          for (const [sName, sVal] of Object.entries(stats)) {
-            lua += `            [${luaEscape(sName)}] = ${luaEscape(sVal)},\n`;
-          }
-        }
-        lua += `        },\n`;
-      }
-      lua += `    },\n`;
-
-      // BiS Gear
-      lua += `    bisGear = {\n`;
-      for (const [provider, items] of Object.entries(data.bisGear || {})) {
-        lua += `        ${provider} = {\n`;
-        for (const item of items || []) {
-          lua += `            { slot = ${luaEscape(item.slot)}, item = ${luaEscape(item.item)}, source = ${luaEscape(item.source)}, itemId = ${item.itemId || "nil"} },\n`;
-        }
-        lua += `        },\n`;
-      }
-      lua += `    },\n`;
-
-      // Enchants
-      lua += `    enchants = {\n`;
-      for (const [provider, list] of Object.entries(data.enchants || {})) {
-        lua += `        ${provider} = {\n`;
-        for (const val of list || []) {
-          lua += `            ${luaEscape(val)},\n`;
-        }
-        lua += `        },\n`;
-      }
-      lua += `    },\n`;
-
-      // Gems
-      lua += `    gems = {\n`;
-      for (const [provider, list] of Object.entries(data.gems || {})) {
-        lua += `        ${provider} = {\n`;
-        for (const val of list || []) {
-          lua += `            ${luaEscape(val)},\n`;
-        }
-        lua += `        },\n`;
-      }
-      lua += `    },\n`;
-
-      // Consumables
-      lua += `    consumables = {\n`;
-      for (const [provider, list] of Object.entries(data.consumables || {})) {
-        lua += `        ${provider} = {\n`;
-        for (const val of list || []) {
-          lua += `            ${luaEscape(val)},\n`;
-        }
-        lua += `        },\n`;
-      }
-      lua += `    },\n`;
+      writeListWithIcons("bisGear", data.bisGear);
+      writeListWithIcons("enchants", data.enchants);
+      writeListWithIcons("gems", data.gems);
+      writeListWithIcons("consumables", data.consumables);
 
       // Crafting
       lua += `    crafting = {\n`;
       for (const [provider, cData] of Object.entries(data.crafting || {})) {
         lua += `        ${provider} = {\n`;
         lua += `            embellishments = {\n`;
-        for (const val of cData.embellishments || []) {
+        for (const val of (cData.embellishments || [])) {
           lua += `                ${luaEscape(val)},\n`;
         }
         lua += `            },\n`;
@@ -152,10 +115,7 @@ function buildLuaTable(entries) {
 
 function main() {
   const { dataDir, out } = parseArgs();
-  if (!dataDir || !out) {
-    console.error('Benutzung: node build-data.js --dataDir "<json-ordner>" --out "<DragonSkill/Data/GuideData.lua>"');
-    process.exit(1);
-  }
+  if (!dataDir || !out) process.exit(1);
 
   const files = fs.readdirSync(dataDir).filter((f) => f.endsWith(".json"));
   const entries = {};
