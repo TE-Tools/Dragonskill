@@ -1,44 +1,47 @@
-# Implementation Plan - UI Recovery & Interaction Fix (v1.2.1)
+# Implementation Plan - Dragon Skill Absolute Stability & Data Fix (v1.2.4)
 
-Dieses Update stellt das native Blizzard-Design wieder her, repariert die defekten Klick-Aktionen in den Dialogen und stellt sicher, dass alle 8 Tabs sauber befüllt werden.
+Dieses Update ist eine radikale Fehlerbehebung, um die Klickbarkeit der Buttons und die Vollständigkeit der Guide-Daten unter WoW 12.1 zu garantieren.
 
 ## User Review Required
 
 > [!IMPORTANT]
-> **Rückkehr zum Blizzard-Look**: Ich entferne das "selbstgemachte" Fenster und nutze wieder das offizielle `ButtonFrameTemplate`. Dies behebt die Anzeige-Probleme und sorgt für einen nativen Look.
+> **Klick-Garantie**: Ich verwende nun benannte Buttons und ein vereinfachtes Ereignis-System. Dies verhindert, dass Blizzard-Sicherheitsmechanismen (Tainting) die Buttons blockieren.
 > [!IMPORTANT]
-> **Dialog-Fix**: Die Buttons im Auswahl-Fenster ("Kopieren" / "Direkt anlegen") funktionieren nun wieder. Ich habe die internen Blizzard-Funktionsnamen (`OnAccept`, `OnCancel`, `OnAlt`) korrigiert.
+> **Daten-Audit**: Ich habe festgestellt, dass der Scraper in bestimmten Fällen die Daten zwar findet, aber nicht korrekt in die finale Lua-Datei schreibt. Ich korrigiere den `build-data.js` Prozess.
+> [!NOTE]
+> **Debug-Modus**: Wenn Daten fehlen, zeigt das Addon nun im Fenster exakt an, welche Tabelle (bisGear, rotation, enchants) leer ist.
 
 ## Proposed Changes
 
-### 1. UI Restoration (UI.lua)
+### 1. UI Robustness (UI.lua)
 
 #### [MODIFY] [UI.lua](file:///C:/Users/thoma/StudioProjects/Dragonskill/addon/Modules/TalentCompare/UI.lua)
-- **Template**: Umstellung zurück auf `ButtonFrameTemplate`.
-- **Layout**:
-    - Das `Inset` wird so verankert, dass die Tabs am unteren Rand Platz haben.
-    - Die 8 Tabs werden leicht verkleinert, damit sie nebeneinander passen.
-- **Data Check**: Hinzufügen von Debug-Meldungen, falls `GuideData` für die aktuelle Spec fehlt.
+- **Buttons**: Alle Buttons bekommen nun einen eindeutigen Namen (erforderlich für manche Templates in 12.1).
+- **Layering**: Explizite Erhöhung des `FrameLevel` für den Scroll-Inhalt.
+- **Error Handling**: Umwickeln des gesamten `Update`-Prozesses mit `pcall`, um lautlose Abstürze zu verhindern.
 
 ---
 
-### 2. Interaction Repair (UI.lua & TalentCompare.lua)
+### 2. Scraper & Data Pipeline Fix
 
-#### [MODIFY] [UI.lua](file:///C:/Users/thoma/StudioProjects/Dragonskill/addon/Modules/TalentCompare/UI.lua)
-- **StaticPopup Fix**:
-    - Button 1 ("Kopieren") -> `OnAccept`
-    - Button 2 ("Direkt anlegen") -> `OnCancel` (Blizzard Konvention für 2. Button)
-    - Button 3 ("Abbrechen") -> `OnAlt`
+#### [MODIFY] [scrape-wowhead.js](file:///C:/Users/thoma/StudioProjects/Dragonskill/scraper/scrape-wowhead.js)
+- Optimierung der BiS-Gear Extraktion (Wowhead hat das Markup leicht geändert).
+- Hinzufügen von Fallbacks für Rotationen.
+
+#### [MODIFY] [build-data.js](file:///C:/Users/thoma/StudioProjects/Dragonskill/scraper/build-data.js)
+- Fix der Logik beim Zusammenführen von Provider-Daten (Wowhead/Archon).
+
+---
+
+### 3. Talent Logic Stability
 
 #### [MODIFY] [TalentCompare.lua](file:///C:/Users/thoma/StudioProjects/Dragonskill/addon/Modules/TalentCompare/TalentCompare.lua)
-- Sicherstellung, dass `ImportToWoW` auch dann funktioniert, wenn das Talent-Fenster noch nie geöffnet wurde (explizites Laden).
+- Sicherstellung, dass `C_ClassTalents` APIs nur aufgerufen werden, wenn das entsprechende System bereit ist.
 
 ## Verification Plan
 
 ### Manual Verification
-1. **/ds** -> Blizzard-Fenster muss erscheinen.
-2. **Tab-Check** -> Alle 8 Reiter (Talente bis Buffs) müssen anklickbar sein.
-3. **Klick-Test** -> Talent anklicken -> "Was möchtest du tun?" Dialog muss erscheinen.
-4. **Action-Test**:
-    - Klick auf "Kopieren" -> Textfeld muss erscheinen.
-    - Klick auf "Direkt anlegen" -> "Import gestartet" im Chat und neuer Slot in Talenten.
+1. **/ds** -> Das Fenster **muss** erscheinen.
+2. **Klick-Test** -> Auf ein Talent klicken. Falls nichts passiert, schau in den Chat (Debug-Meldungen).
+3. **Tab-Test** -> Alle Reiter prüfen. Wenn ein Reiter leer ist, muss nun eine spezifische Meldung erscheinen (z.B. "Keine Gear-Daten in GuideData.lua").
+4. **Data-Check** -> Ich werde den Scraper für eine Spec (z.B. DEATKNIGHT 250) manuell prüfen.

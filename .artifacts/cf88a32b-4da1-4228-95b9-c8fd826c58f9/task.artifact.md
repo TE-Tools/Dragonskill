@@ -1,18 +1,18 @@
-# Task: Dragon Skill v1.2.1 - UI Restoration & Interaction Fix
+# Task: Dragon Skill v1.2.4 - Absolute Stability & Data Fix
 
-## UI Recovery
-- [x] Revert main window to `ButtonFrameTemplate` in `UI.lua`
-- [x] Adjust Inset to prevent tab overlap
-- [x] Optimize 8-tab positioning (PanelTabButtonTemplate)
+## Data Pipeline Fix
+- [ ] Fix BiS Gear extraction in `scraper/scrape-wowhead.js` (improved regex)
+- [ ] Fix data merging logic in `scraper/build-data.js` (ensure lists are not lost)
+- [ ] Run full scrape and regenerate `addon/Data/GuideData.lua`
 
-## Interaction Fix
-- [x] Correct `StaticPopupDialogs` keys (`OnAccept`, `OnCancel`)
-- [x] Ensure "Copy" and "Create Loadout" actions work correctly
+## UI & Interaction
+- [ ] Implement named buttons in `addon/Modules/TalentCompare/UI.lua`
+- [ ] Set explicit `FrameLevel` for scroll content and list rows
+- [ ] Wrap `UI:Update` and `OnClick` handlers in `pcall` for better error reporting
 
-## Data & Stability
-- [x] Double-check `GuideData` access for current spec
-- [x] Filter header rows in list views
+## Talent Logic
+- [ ] Verify `ImportToWoW` logic and add "Build applied" confirmation
 
 ## Finalization
-- [x] Commit & Push
-- [x] Final copy instructions
+- [ ] Push to Git
+- [ ] Final instructions for clean reinstall

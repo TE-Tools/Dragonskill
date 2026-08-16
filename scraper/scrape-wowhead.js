@@ -122,7 +122,6 @@ function extractStatPriority(markup) {
  */
 function extractBiSGear(markup) {
   const gear = [];
-  // Wowhead nutzt oft [table] oder [box] für BiS Listen.
   const tableRe = /\[(?:table|box)[^\]]*\]([\s\S]*?)\[\/(?:table|box)\]/gi;
   let m;
   while ((m = tableRe.exec(markup))) {
@@ -156,7 +155,6 @@ function extractBiSGear(markup) {
 
 function extractConsumables(markup) {
   const data = { enchants: [], gems: [], consumables: [] };
-  // Erweitertes Suchmuster für Überschriften
   const sectionRe = /\[b\]([^\]]+(?:Enchants|Gems|Consumables|Potions|Flasks|Food|Oil|Phials|Rune))\[\/b\][\s\S]{0,600}?\[(?:ol|ul)\]([\s\S]{0,1500}?)\[\/(?:ol|ul)\]/gi;
   let m;
   while ((m = sectionRe.exec(markup))) {

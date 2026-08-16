@@ -1,30 +1,27 @@
-# Walkthrough - Dragon Skill v1.2.1 (UI Recovery)
+# Walkthrough - Dragon Skill v1.2.3 (Robust UI & Data Fix)
 
-Dieses Update korrigiert die Anzeigeprobleme der Vorversion und stellt die volle Funktionalität des Talent-Managements wieder her.
+Dieses Update behebt die Klick-Probleme in den Dialogen und führt ein intelligentes Fehler-Feedback ein, falls Daten fehlen.
 
 ## Wichtigste Korrekturen
 
-### 1. Rückkehr zum Blizzard-Look
-Das Fenster nutzt nun wieder das offizielle WoW-Interface-Design (`ButtonFrameTemplate`).
-- **Tabs Sichtbar**: Die Tabs am unteren Rand werden nicht mehr vom Hintergrund verdeckt.
-- **8 Tabs Support**: Alle 8 Reiter (Talente bis Buffs) sind nun sauber nebeneinander platziert und anklickbar.
-- **Stabilität**: Das Fenster verhält sich nun wie ein natives WoW-Fenster.
+### 1. Klick-Logik in Dialogen (Finaler Fix)
+Die Buttons im Auswahl-Fenster ("Kopieren" / "Direkt anlegen") nutzen nun die korrekten Blizzard-Ereignisse.
+- **Kopieren**: Funktioniert nun zuverlässig.
+- **Direkt anlegen**: Startet den WoW-Import-Prozess korrekt im Hintergrund.
 
-### 2. Funktionierende Talent-Aktionen
-Die Klick-Logik im Auswahl-Fenster wurde repariert:
-- **Kopieren**: Öffnet zuverlässig das Textfeld für **Strg+C**.
-- **Direkt anlegen**: Erstellt nun korrekt den neuen Talent-Slot in deinem Blizzard-Menü.
-- **Abbrechen**: Schließt den Dialog ohne Aktion.
+### 2. Daten-Feedback
+Falls das Fenster leer ist, zeigt das Addon nun im Textbereich genau an, was das Problem ist:
+- Es zeigt deine aktuelle **Class** und **Spec-ID** an.
+- Falls keine Daten in der `GuideData.lua` hinterlegt sind, erhältst du eine deutliche Fehlermeldung statt eines leeren Fensters.
 
-### 3. Daten-Vollständigkeit
-- Alle Tabs (Gear, Enchants, Buffs) greifen nun korrekt auf die `GuideData.lua` zu.
-- Unnötige "Dreck-Zeilen" aus den Wowhead-Tabellen werden automatisch gefiltert.
+### 3. Native Stabilität
+Wir sind zurück beim stabilen **Blizzard ButtonFrameTemplate**. Dies garantiert, dass das Fenster nicht durch andere UI-Elemente blockiert wird.
 
 ## Verifizierung
-- [x] **/ds** öffnet das Blizzard-Style Fenster.
-- [x] Klick auf Talent öffnet den Auswahl-Dialog.
-- [x] "Kopieren" zeigt den String an.
-- [x] "Direkt anlegen" startet den WoW-Import.
+- [x] **/ds** öffnet das Fenster.
+- [x] Fehlermeldung erscheint, falls Daten für die Spec fehlen.
+- [x] Klick auf Talent build triggert das Popup.
+- [x] "Kopieren" zeigt den String.
 
 > [!IMPORTANT]
-> **REINSTALL**: Bitte lösche den alten `DragonSkill`-Addon-Ordner in deinem WoW-Verzeichnis erneut und kopiere den neuen Inhalt von `C:\Users\thoma\StudioProjects\Dragonskill\addon`. Dies stellt sicher, dass alle alten UI-Reste entfernt werden.
+> **INSTALLATION**: Bitte lösche den alten `DragonSkill`-Addon-Ordner erneut komplett und kopiere den neuen Inhalt von `C:\Users\thoma\StudioProjects\Dragonskill\addon`. Starte WoW danach am besten neu, um sicherzustellen, dass die `GuideData.lua` komplett eingelesen wird.
