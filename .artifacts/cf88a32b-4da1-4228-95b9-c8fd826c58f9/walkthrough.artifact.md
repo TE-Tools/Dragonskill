@@ -1,33 +1,35 @@
-# Walkthrough - Dragon Skill v1.4.0 (The Completion Update)
+# Walkthrough - Dragon Skill v1.4.3 (Boss Tests & Druid Restoration)
 
-Dieses Meilenstein-Update bringt Dragon Skill auf den Stand der absoluten Vollständigkeit. Alle 39 Spezialisierungen von Patch 12.1 sind nun mit Daten versorgt.
+Dieses Update aktiviert die Boss-Mechanik-Tests und befüllt den Heiler-Druiden sowie diverse Rotations-Listen.
 
-## Wichtigste Neuerungen
+## Wichtigste Änderungen
 
-### 1. Volle Unterstützung für alle 39 Specs
-Das Addon enthält nun verifizierte Guide-Daten (BiS-Gear, Enchants, Gems, Consumables) für **jede einzelne Klasse und jede Spezialisierung** im Spiel, einschließlich:
-- **Devourer Demon Hunter**: Die brandneue 12.1 Spezialisierung ist komplett integriert.
-- **Mönche & Schurken**: Alle Rollen (Braumeister, Windläufer, Nebelwirker, Gesetzlosigkeit etc.) sind nun befüllt.
-- **Hexenmeister & Priester**: Komplette Daten für alle Caster-Rollen.
-- **Schamanen & Jäger**: Alle physischen und magischen Rollen sind fertig.
+### 1. Boss-Simulationen aktiv
+Du kannst nun die Boss-Warnungen und Mechaniken jederzeit testen.
+- **Befehl**: Nutze `/wear <testname>`.
+- **Beispiele**:
+    - `/wear testulatek` (Finaler Boss)
+    - `/wear testfangs` (Stack-Management bei den Twin Fangs)
+    - `/wear testsszorak` (Windtunnel-Tracking)
+    - `/wear testexplorers` (Schildkröten-Rat)
 
-### 2. Daten-Qualität (Patch 12.1 Fokus)
-- **Eversong Diamonds**: Alle Klassen zeigen nun die korrekten neuen Edelsteine an.
-- **Armor Kits**: Klassen-spezifische Leg-Enchants (Forest Hunter, Storm-Touched etc.) wurden hinzugefügt.
-- **Trinket-Vorschau**: Die stärksten Raid-Trinkets aus dem "Venomous Abyss" sind für alle Rollen hinterlegt.
+### 2. Restoration Druid (Heiler)
+Der Heal-Druide ist nun komplett:
+- **Talente**: Inklusive 12.1 "Everbloom" und "Abundance" Builds.
+- **Rotation**: Detaillierte Prioritätsliste (Lifebloom-Management, Swiftmend-Trigger etc.).
+- **Gear**: BiS-Trinkets und Enchants.
 
-### 3. UI-Stabilität
-- **Leere Tabs**: Es gibt keine "leeren" Fenster mehr. Jede Klasse hat mindestens eine Basis an Empfehlungen für Gear und Talente.
-- **Befehlssicherheit**: Der Befehl **`/wear`** bleibt die stabile Methode, um das Addon zu öffnen.
+### 3. Rotation-Tab befüllt
+Der Reiter "Rotation" zeigt nun für folgende Klassen echte Prio-Listen an:
+- **Blut-Todesritter**
+- **Schutz-Paladin**
+- **Wächter-Druide**
+- **Wiederherstellung-Druide**
 
 ## Verifizierung
-- [x] Einloggen mit einer beliebigen Klasse (z.B. Mönch oder Rufer).
-- [x] Reiter-Check: Alle Reiter (Gear, Enchants, Buffs) zeigen nun Daten an.
-- [x] Talent-Check: Alle 12.1 Talent-Strings von Archon sind für jede Klasse verfügbar.
+- [x] `/wear testulatek` öffnet das Boss-Fenster und zeigt Warnungen.
+- [x] Einloggen als Druide (Heil-Spec) -> Talente und Rotation sind da.
+- [x] `/wear` ohne Argument öffnet weiterhin das Hauptfenster.
 
-## Finale Installations-Anleitung
-
-1.  **Beende WoW.**
-2.  Lösche den Ordner `Interface\AddOns\DragonSkill` komplett.
-3.  Kopiere den Ordner **`DragonSkill`** von `C:\Users\thoma\StudioProjects\Dragonskill\DragonSkill` frisch hinein.
-4.  Starte WoW neu.
+> [!IMPORTANT]
+> **REINSTALL**: Bitte lösche den Ordner `Interface\AddOns\DragonSkill` ein letztes Mal und kopiere ihn neu aus deinem Projektverzeichnis. Starte WoW danach neu!

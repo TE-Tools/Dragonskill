@@ -264,9 +264,20 @@ end
 SLASH_WEAR1 = "/wear"
 SLASH_WEAR2 = "/dragonskill"
 SlashCmdList["WEAR"] = function(msg)
-    if not UI.frame then UI:Init() end
-    if UI.frame:IsShown() then UI.frame:Hide()
-    else UI.frame:Show(); UI:Update() end
+    local BM = DragonSkill:GetModule("BossMechanics")
+    if msg == "testboss" then if BM then BM:SimulateEntombedSentinels() end
+    elseif msg == "testnekzali" then if BM then BM:SimulateNekzali() end
+    elseif msg == "testexplorers" then if BM then BM:SimulateLostExplorers() end
+    elseif msg == "testvashnik" then if BM then BM:SimulateVashnik() end
+    elseif msg == "testsszorak" then if BM then BM:SimulateSszorak() end
+    elseif msg == "testfangs" then if BM then BM:SimulateTwinFangs() end
+    elseif msg == "testaltar" then if BM then BM:SimulateCoiledAltar() end
+    elseif msg == "testulatek" then if BM then BM:SimulateUlatek() end
+    else
+        if not UI.frame then UI:Init() end
+        if UI.frame:IsShown() then UI.frame:Hide()
+        else UI.frame:Show(); UI:Update() end
+    end
 end
 
 print("|cff00ff00Dragon Skill v1.3.5 geladen!|r Nutze /wear")

@@ -1,40 +1,45 @@
-# Implementation Plan - Data Expansion (v1.3.5)
+# Implementation Plan - Boss Simulation & Restoration Druid Fix (v1.4.3)
 
-In diesem Update befüllen wir die Datenbank mit den restlichen Klassen des Venomous Abyss Raids. Da Wowhead den Scraper aktuell blockiert, füge ich die Daten für die gängigsten Klassen manuell auf Basis aktueller Raid-Guides hinzu.
+Dieses Update aktiviert die Boss-Tests über den neuen Befehl `/wear` und befüllt den Heilig-Druiden (Wiederherstellung) mit vollständigen Daten.
 
 ## User Review Required
 
 > [!IMPORTANT]
-> **Aktueller Stand**: In v1.3.4 sind aktuell nur **Todesritter**, **Paladine** und **Krieger** befüllt.
+> **Boss-Tests**: Du kannst die Boss-Mechaniken nun mit **`/wear <name>`** testen. Beispiel: `/wear testulatek`.
+> [!IMPORTANT]
+> **Heal-Druide Fix**: Ich füge die fehlenden Talente (Everbloom/Wildstalker) und die Rotation für den Wiederherstellung-Druiden hinzu.
 > [!NOTE]
-> **Nächster Schritt**: Ich füge nun die Daten für **Dämonenjäger**, **Druiden** und **Magier** hinzu. Damit decken wir die meisten Klassen in deiner Raid-Gruppe ab.
-> [!TIP]
-> **Langfristig**: Ich arbeite an einem Weg, den Scraper wieder zu entsperren, um alle 80 Spezialisierungen automatisch zu laden.
+> **Rotation & Prio**: Für DK, Paladin und Druide werden nun echte Prioritäts-Listen im Tab "Rotation" angezeigt.
 
 ## Proposed Changes
 
-### 1. Data Expansion (GuideData.lua)
+### 1. UI & Slash Commands (UI.lua)
 
-#### [MODIFY] [GuideData.lua](file:///C:/Users/thoma/StudioProjects/Dragonskill/DragonSkill/Data/GuideData.lua)
-- **Demon Hunter (577, 581)**:
-    - BiS Gear für Verwüstung und Rachsucht.
-    - Enchants & Buffs für 12.1.
-- **Druid (102, 103, 104, 105)**:
-    - Vollständige Listen für Gleichgewicht, Wildheit, Wächter und Wiederherstellung.
-- **Mage (62, 63, 64)**:
-    - Daten für Arkan, Feuer und Frost.
-- **Vorbereitung**: Talent-Builds (Archon) bleiben für alle Klassen erhalten, da diese bereits erfolgreich geladen wurden.
+#### [MODIFY] [UI.lua](file:///C:/Users/thoma/StudioProjects/Dragonskill/DragonSkill/Modules/TalentCompare/UI.lua)
+- Erweiterung des `/wear` Befehls um Parameter-Handling für Boss-Tests.
+- Liste der verfügbaren Tests:
+    - `testboss` (Entombed Sentinels)
+    - `testnekzali`
+    - `testexplorers`
+    - `testvashnik`
+    - `testsszorak`
+    - `testfangs`
+    - `testaltar`
+    - `testulatek` (Finale)
 
 ---
 
-### 2. UI Improvements
+### 2. Data Completion (GuideData.lua)
 
-#### [MODIFY] [UI.lua](file:///C:/Users/thoma/StudioProjects/Dragonskill/DragonSkill/Modules/TalentCompare/UI.lua)
-- **Platzhalter**: Falls für eine Spec nur die Talente, aber kein Gear vorhanden ist, zeigt das Addon nun eine hilfreiche Nachricht an ("Gear-Daten folgen im nächsten Update") statt einer harten Fehlermeldung.
+#### [MODIFY] [GuideData.lua](file:///C:/Users/thoma/StudioProjects/Dragonskill/DragonSkill/Data/GuideData.lua)
+- **Heal-Druide (105)**:
+    - Talent-Strings für 12.1 (Everbloom).
+    - Detaillierte Heil-Rotation (Swiftmend Prio etc.).
+- **Rotationen**: Hinzufügen von Prio-Listen für alle bereits befüllten Klassen (DK, Pala, Krieger, DH, Mage).
 
 ## Verification Plan
 
 ### Manual Verification
-1. **Spec-Test**: Logge auf einen Druiden oder Magier ein.
-2. **Reiter-Check**: Prüfe, ob Gear, Enchants und Buffs nun befüllt sind.
-3. **Talent-Check**: Klicke auf einen Magier-Build -> Prüfe, ob Kopieren funktioniert.
+1. **Boss-Test**: `/wear testulatek` eingeben -> Prüfen, ob die Warnungen erscheinen.
+2. **Heal-Druide**: Logge auf einen Druiden -> Prüfe, ob "Talente" und "Rotation" nun befüllt sind.
+3. **Kopier-Check**: Talent anklicken -> "Kopieren" -> Code prüfen.
