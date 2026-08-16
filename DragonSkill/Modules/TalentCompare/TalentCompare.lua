@@ -1,5 +1,5 @@
--- Dragon Skill - Modul: TalentCompare (v1.5.5)
--- Node-Diff mit robusteren Talentnamen
+-- Dragon Skill - Modul: TalentCompare (v1.5.6)
+-- Node-Match-% + Node-Diff mit Talentnamen
 
 local TalentCompare = {}
 
@@ -9,17 +9,46 @@ function TalentCompare:GetCurrentBuildString()
     return C_Traits.GenerateImportString(configID)
 end
 
+-- Byte-Vergleich (Fallback)
 function TalentCompare:Compare(guideString, currentString)
-    if not guideString or not currentString then return { similarity = 0 } end
-    if guideString == currentString then return { similarity = 100 } end
+    if not guideString or not currentString then return { similarity = 0, mode = "none" } end
+    if guideString == currentString then return { similarity = 100, mode = "exact" } end
     local a = { string.byte(guideString, 1, #guideString) }
     local b = { string.byte(currentString, 1, #currentString) }
     local diffs, maxLen = 0, math.max(#a, #b)
-    if maxLen == 0 then return { similarity = 0 } end
+    if maxLen == 0 then return { similarity = 0, mode = "bytes" } end
     for i = 1, maxLen do
         if a[i] ~= b[i] then diffs = diffs + 1 end
     end
-    return { similarity = math.floor(((maxLen - diffs) / maxLen) * 100) }
+    return {
+        similarity = math.floor(((maxLen - diffs) / maxLen) * 100),
+        mode = "bytes",
+    }
+end
+
+-- Primärer Vergleich: Node-Ränge wenn API verfügbar, sonst Bytes
+function TalentCompare:CompareBuild(importString)
+    if not importString or importString == "" then
+        return { similarity = 0, mode = "none" }
+    end
+    local current = self:GetCurrentBuildString()
+    if current and current == importString then
+        return { similarity = 100, mode = "exact" }
+    end
+
+    local detail = self:GetDetailedDiff(importString)
+    if detail and detail.total and detail.total > 0 then
+        local matched = detail.total - (detail.count or 0)
+        if matched < 0 then matched = 0 end
+        return {
+            similarity = math.floor((matched / detail.total) * 100),
+            mode = "nodes",
+            diffCount = detail.count or 0,
+            total = detail.total,
+        }
+    end
+
+    return self:Compare(importString, current)
 end
 
 local function SpellNameFromID(spellID)
@@ -53,25 +82,20 @@ local function NameFromEntry(configID, entryID)
         end
     end
 
-    -- SubTree / Choice Nodes
     if eInfo.subTreeID and C_Traits.GetSubTreeInfo then
         local st = C_Traits.GetSubTreeInfo(configID, eInfo.subTreeID)
-        if st and (st.name or st.atlasElementID) then
-            return st.name or ("SubTree " .. tostring(eInfo.subTreeID))
-        end
+        if st and st.name then return st.name end
     end
 
     return nil
 end
 
 local function ResolveNodeName(configID, nodeID, nInfo, preferredRank)
-    -- 1) Aktiver Entry
     if nInfo.activeEntry and nInfo.activeEntry.entryID then
         local n = NameFromEntry(configID, nInfo.activeEntry.entryID)
         if n then return n end
     end
 
-    -- 2) Entry anhand Ziel-Rank (Guide-Rank), sonst erster Entry
     local entryIDs = nInfo.entryIDs
     if entryIDs and #entryIDs > 0 then
         local idx = preferredRank and math.max(1, math.min(#entryIDs, preferredRank)) or 1
@@ -83,7 +107,6 @@ local function ResolveNodeName(configID, nodeID, nInfo, preferredRank)
         end
     end
 
-    -- 3) visibleEntryIDs (manche Builds)
     if nInfo.visibleEntryIDs then
         for _, eid in ipairs(nInfo.visibleEntryIDs) do
             local n = NameFromEntry(configID, eid)
@@ -95,7 +118,7 @@ local function ResolveNodeName(configID, nodeID, nInfo, preferredRank)
 end
 
 function TalentCompare:GetDetailedDiff(importString)
-    local empty = { diffs = {}, count = 0 }
+    local empty = { diffs = {}, count = 0, total = 0 }
     if not importString or importString == "" then return empty end
 
     local ok, result = pcall(function()
@@ -109,21 +132,27 @@ function TalentCompare:GetDetailedDiff(importString)
         if not treeID then return empty end
 
         local diffs = {}
+        local total = 0
         for _, nodeID in ipairs(C_Traits.GetTreeNodes(treeID)) do
             local nInfo = C_Traits.GetNodeInfo(configID, nodeID)
             if nInfo and not nInfo.isInvisible then
-                local imp = map[nodeID]
-                local importedRank = (imp and (imp.rank or imp.ranksGranted or 0)) or 0
-                local currentRank = nInfo.currentRank or 0
-                if currentRank ~= importedRank then
-                    local nameRank = importedRank > 0 and importedRank or currentRank
-                    table.insert(diffs, {
-                        nodeID = nodeID,
-                        name = ResolveNodeName(configID, nodeID, nInfo, nameRank),
-                        currentRank = currentRank,
-                        importedRank = importedRank,
-                        maxRank = nInfo.maxRanks or 0,
-                    })
+                -- Nur Nodes die spielbar / rankbar sind
+                local maxRanks = nInfo.maxRanks or 0
+                if maxRanks > 0 or (nInfo.entryIDs and #nInfo.entryIDs > 0) then
+                    total = total + 1
+                    local imp = map[nodeID]
+                    local importedRank = (imp and (imp.rank or imp.ranksGranted or 0)) or 0
+                    local currentRank = nInfo.currentRank or 0
+                    if currentRank ~= importedRank then
+                        local nameRank = importedRank > 0 and importedRank or currentRank
+                        table.insert(diffs, {
+                            nodeID = nodeID,
+                            name = ResolveNodeName(configID, nodeID, nInfo, nameRank),
+                            currentRank = currentRank,
+                            importedRank = importedRank,
+                            maxRank = maxRanks,
+                        })
+                    end
                 end
             end
         end
@@ -132,7 +161,7 @@ function TalentCompare:GetDetailedDiff(importString)
             return tostring(a.name) < tostring(b.name)
         end)
 
-        return { diffs = diffs, count = #diffs }
+        return { diffs = diffs, count = #diffs, total = total }
     end)
 
     if ok and result then return result end
@@ -143,11 +172,18 @@ function TalentCompare:FormatDiffSummary(importString, maxLines)
     maxLines = maxLines or 12
     local detail = self:GetDetailedDiff(importString)
     if not detail or detail.count == 0 then
+        if detail and detail.total and detail.total > 0 then
+            return "|cff00ff00Keine Node-Abweichungen – Build stimmt überein.|r"
+        end
         return "Keine Node-Abweichungen gefunden (oder API nicht verfügbar)."
     end
 
     local lines = {
-        string.format("|cffffd100%d Abweichung(en):|r", detail.count),
+        string.format(
+            "|cffffd100%d / %d Abweichung(en):|r",
+            detail.count,
+            detail.total or detail.count
+        ),
     }
     local shown = 0
     for _, d in ipairs(detail.diffs) do

@@ -1,23 +1,23 @@
--- Dragon Skill - Haupt UI (v1.5.5)
--- Spec-Refresh, Node-Diff, Match-%, /ds
+-- Dragon Skill - Haupt UI (v1.5.6)
+-- Gems-Tab, node-Match-%, Spec im Titel
 
 local UI = {}
 local currentTab = 1
-local tabs = {"Talente", "Stats", "Trinkets", "Crafting", "Rotation", "Gear", "Enchants", "Buffs"}
+local tabs = {"Talente", "Stats", "Trinkets", "Crafting", "Rotation", "Gear", "Enchants", "Gems", "Buffs"}
 
 local cachedBuildData = nil
 
-local CONTENT_WIDTH = 560
-local FRAME_WIDTH = 640
+local CONTENT_WIDTH = 600
+local FRAME_WIDTH = 680
 local FRAME_HEIGHT = 560
-local ROW_WIDTH = 540
+local ROW_WIDTH = 580
 
 ---------------------------------------------------------------------------
 -- Static Popups
 ---------------------------------------------------------------------------
 
 StaticPopupDialogs["DRAGONSKILL_ACTION"] = {
-    text = "Build: %s\nMatch: %d%%\n\nLinks: Kopieren / Anlegen\nRechtsklick auf Build: Node-Diff",
+    text = "Build: %s\nMatch: %d%%\n\nLinks: Kopieren / Anlegen\nRechtsklick: Node-Diff",
     button1 = "Kopieren",
     button2 = "Anlegen + Import",
     button3 = "Abbrechen",
@@ -134,6 +134,22 @@ StaticPopupDialogs["DRAGONSKILL_DIFF"] = {
     preferredIndex = 3,
 }
 
+local function MatchResult(TC, importString)
+    if not TC or not importString then return { similarity = 0 } end
+    if TC.CompareBuild then
+        return TC:CompareBuild(importString)
+    end
+    return TC:Compare(importString, TC:GetCurrentBuildString())
+end
+
+local function SpecTitleSuffix()
+    local specIndex = GetSpecialization()
+    if not specIndex then return "" end
+    local _, name = GetSpecializationInfo(specIndex)
+    if name and name ~= "" then return " — " .. name end
+    return ""
+end
+
 ---------------------------------------------------------------------------
 -- Frame Init
 ---------------------------------------------------------------------------
@@ -151,7 +167,9 @@ function UI:Init()
     f:SetScript("OnDragStart", f.StartMoving)
     f:SetScript("OnDragStop", f.StopMovingOrSizing)
 
-    if f.SetTitle then f:SetTitle("Dragon Skill v" .. (DragonSkill.version or "1.5.5")) end
+    if f.SetTitle then
+        f:SetTitle("Dragon Skill v" .. (DragonSkill.version or "1.5.6") .. SpecTitleSuffix())
+    end
     if f.portrait then f.portrait:SetTexture("Interface\\Icons\\Inv_misc_head_dragon_01") end
 
     if f.Inset then
@@ -182,9 +200,9 @@ function UI:Init()
         end)
         f.Tabs[i] = tab
         if i == 1 then
-            tab:SetPoint("TOPLEFT", f, "BOTTOMLEFT", 12, 1)
+            tab:SetPoint("TOPLEFT", f, "BOTTOMLEFT", 8, 1)
         else
-            tab:SetPoint("LEFT", f.Tabs[i - 1], "RIGHT", -15, 0)
+            tab:SetPoint("LEFT", f.Tabs[i - 1], "RIGHT", -16, 0)
         end
     end
     PanelTemplates_SetNumTabs(f, #tabs)
@@ -237,6 +255,11 @@ end
 
 function UI:Update()
     if not self.frame or not self.frame.Content then return end
+
+    if self.frame.SetTitle then
+        self.frame:SetTitle("Dragon Skill v" .. (DragonSkill.version or "1.5.6") .. SpecTitleSuffix())
+    end
+
     local content = self.frame.Content
     self:ClearContent(content)
     self:EnsureText(content)
@@ -270,6 +293,8 @@ function UI:Update()
     elseif currentTab == 7 then
         self:DrawEnchants(content, guideData)
     elseif currentTab == 8 then
+        self:DrawGems(content, guideData)
+    elseif currentTab == 9 then
         self:DrawBuffs(content, guideData)
     end
 end
@@ -295,9 +320,7 @@ function UI:DrawTalents(content, guideData)
     local yOffset = -10
     content.extraFS = content.extraFS or {}
 
-    local current = TC and TC:GetCurrentBuildString() or nil
-
-    content.text:SetText("|cffffff00=== Guide-Builds ===|r  |cff888888(Links: Aktionen · Rechts: Node-Diff)|r")
+    content.text:SetText("|cffffff00=== Guide-Builds ===|r  |cff888888(Links: Aktionen · Rechts: Node-Diff · Match = Nodes)|r")
     content.text:Show()
     yOffset = -28
 
@@ -320,7 +343,7 @@ function UI:DrawTalents(content, guideData)
             btn:ClearAllPoints()
             btn:SetPoint("TOPLEFT", 10, yOffset)
 
-            local result = TC and TC:Compare(build.importString, current) or { similarity = 0 }
+            local result = MatchResult(TC, build.importString)
             local sim = result.similarity or 0
             local simColor = sim >= 90 and "00ff00" or (sim >= 70 and "ffff00" or "ff6666")
             btn:SetText(string.format(
@@ -336,7 +359,7 @@ function UI:DrawTalents(content, guideData)
                 if mouseButton == "RightButton" then
                     ShowDiffForBuild(build, TC)
                 else
-                    local r = TC and TC:Compare(build.importString, current) or { similarity = 0 }
+                    local r = MatchResult(TC, build.importString)
                     StaticPopup_Show("DRAGONSKILL_ACTION", build.label or "Build", r.similarity or 0)
                 end
             end)
@@ -380,7 +403,7 @@ function UI:DrawTalents(content, guideData)
 
             local label = data.label or name
             local provider = data.provider and ("[" .. string.upper(tostring(data.provider)) .. "] ") or ""
-            local r = TC and TC:Compare(data.importString, current) or { similarity = 0 }
+            local r = MatchResult(TC, data.importString)
             local sim = r.similarity or 0
             btn:SetText(string.format("%s%s  (%d%%)", provider, tostring(label), sim))
 
@@ -558,9 +581,14 @@ function UI:DrawEnchants(content, guideData)
     self:Helper_DrawListWithIcons(content, items, "|cffffff00Verzauberungen (Wowhead):|r")
 end
 
+function UI:DrawGems(content, guideData)
+    local items = (guideData.gems and guideData.gems.wowhead) or {}
+    self:Helper_DrawListWithIcons(content, items, "|cffffff00Gems (Wowhead):|r")
+end
+
 function UI:DrawBuffs(content, guideData)
     local items = (guideData.consumables and guideData.consumables.wowhead) or {}
-    self:Helper_DrawListWithIcons(content, items, "|cffffff00Buffs (Wowhead):|r")
+    self:Helper_DrawListWithIcons(content, items, "|cffffff00Buffs / Consumables (Wowhead):|r")
 end
 
 ---------------------------------------------------------------------------
@@ -596,13 +624,12 @@ SlashCmdList["WEAR"] = function(msg)
     ToggleUI()
 end
 
-print("|cff00ff00Dragon Skill v" .. (DragonSkill.version or "1.5.5") .. " geladen!|r Nutze /wear, /ds oder /dragonskill")
+print("|cff00ff00Dragon Skill v" .. (DragonSkill.version or "1.5.6") .. " geladen!|r Nutze /wear, /ds oder /dragonskill")
 
 DragonSkill.Events:On("PLAYER_LOGIN", function()
     UI:Init()
 end)
 
--- Spec / Talente gewechselt → UI neu laden
 DragonSkill.Events:On("PLAYER_SPECIALIZATION_CHANGED", function()
     if C_Timer and C_Timer.After then
         C_Timer.After(0.15, RefreshIfShown)

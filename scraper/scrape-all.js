@@ -1,7 +1,10 @@
 /**
- * Dragon Skill - Scrape-All Orchestrator (v1.5.4)
+ * Dragon Skill - Scrape-All Orchestrator (v1.5.6)
  *
  *   node scrape-all.js --list spec-list.json --outDir data-raw
+ *
+ * Consumables-URLs werden NICHT mehr abgeleitet (Wowhead liefert oft 404).
+ * Consumables/Gems/Enchants kommen aus Gear- und Guide-Seiten via Keywords.
  */
 
 const fs = require("fs");
@@ -33,10 +36,8 @@ function runScraper(scriptName, args, outFile, label) {
   }
 }
 
-/** Ableitung fehlender Wowhead-URLs aus Talents-URL */
 function deriveUrls(spec) {
   const base = spec.wowheadTalentsUrl || "";
-  // .../talent-builds-pve-tank → role suffix
   const m = base.match(/\/talent-builds-(pve-[a-z]+)$/);
   const role = m ? m[1] : null;
   const classPath = base.replace(/\/talent-builds-.*$/, "");
@@ -51,9 +52,7 @@ function deriveUrls(spec) {
   if (!out.wowheadGearUrl && classPath) {
     out.wowheadGearUrl = `${classPath}/bis-gear`;
   }
-  if (!out.wowheadConsumablesUrl && classPath && role) {
-    out.wowheadConsumablesUrl = `${classPath}/consumables-${role}`;
-  }
+  // Keine auto-consumables-URL: oft 404; Daten aus gear/talents/stats Seiten
   return out;
 }
 
@@ -92,6 +91,7 @@ function main() {
       if (spec.wowheadRotationUrl)
         args.push("--rotationUrl", spec.wowheadRotationUrl);
       if (spec.wowheadGearUrl) args.push("--gearUrl", spec.wowheadGearUrl);
+      // Nur explizit in spec-list gesetzte Consumables-URL
       if (spec.wowheadConsumablesUrl)
         args.push("--consumablesUrl", spec.wowheadConsumablesUrl);
       const ok = runScraper("scrape-wowhead.js", args, outFile, "wowhead");
@@ -114,11 +114,6 @@ function main() {
   console.log(
     `\n✅ Fertig. Erfolgreich: ${successCount}, Fehlgeschlagen: ${failCount}`
   );
-  if (failCount > 0) {
-    console.log(
-      "Hinweis: Fehlgeschlagene Quellen behalten die zuletzt bekannten Daten."
-    );
-  }
 }
 
 main();

@@ -2,7 +2,7 @@
 ## Title: Dragon Skill
 ## Notes: Talent-Guides, Trinkets, Rotation und Crafting - by wear-alleria
 ## Author: wear-alleria
-## Version: 1.5.5
+## Version: 1.5.6
 ## SavedVariables: DragonSkillDB
 ## SavedVariablesPerCharacter: DragonSkillCharDB
 
