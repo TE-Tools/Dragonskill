@@ -21,7 +21,7 @@ local function ListHasItemId(list, itemId)
     return false
 end
 
-function Tooltips:InitItem(guideData, itemId)
+function Tooltips:ClassifyItem(guideData, itemId)
     local tags = {}
 
     if guideData.bisGear and ListHasItemId(guideData.bisGear.wowhead, itemId) then
