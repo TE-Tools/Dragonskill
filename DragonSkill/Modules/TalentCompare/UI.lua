@@ -1,10 +1,10 @@
--- Dragon Skill - Haupt UI (v1.3.1)
+-- Dragon Skill - Haupt UI (v1.3.2)
 -- Reparatur für Slash-Commands und Daten-Vollständigkeit.
 
--- Slash Commands (MÜSSEN ganz oben stehen!)
-SLASH_DS_MAIN1 = "/ds"
-SLASH_DS_MAIN2 = "/dragonskill"
-SlashCmdList["DS_MAIN"] = function(msg)
+-- Slash Commands (Sofort registrieren)
+SLASH_WEAR_MAIN1 = "/wear"
+SLASH_WEAR_MAIN2 = "/dragonskill"
+SlashCmdList["WEAR_MAIN"] = function(msg)
     if not DragonSkill.UI.frame then DragonSkill.UI:Init() end
     if DragonSkill.UI.frame:IsShown() then
         DragonSkill.UI.frame:Hide()
@@ -38,7 +38,7 @@ StaticPopupDialogs["DRAGONSKILL_ACTION"] = {
 }
 
 StaticPopupDialogs["DRAGONSKILL_COPY"] = {
-    text = "Markierten Text mit Strg+C kopieren:",
+    text = "Strg+C zum Kopieren drücken:",
     button1 = "Fertig",
     hasEditBox = 1,
     OnShow = function(self, data)
@@ -128,7 +128,7 @@ function UI:Update()
     local guideData = DragonSkill.Database:GetGuideData(class, specID)
 
     if not guideData then
-        content.text:SetText("|cffff0000DATEN-FEHLER:|r Keine Daten gefunden.\nBitte WoW neu starten und Ordner prüfen.")
+        content.text:SetText("|cffff0000DATEN-FEHLER:|r Keine Daten gefunden.\n\nSuche für:\n- Klasse: " .. tostring(class) .. "\n- Spec ID: " .. tostring(specID) .. "\n\nBitte WoW neu starten und Ordner prüfen.")
         return
     end
 
@@ -180,44 +180,45 @@ function UI:Helper_DrawListWithIcons(content, items, title)
     for _, row in ipairs(self.listRows) do row:Hide() end
 
     for i, item in ipairs(items) do
-        local row = self.listRows[i]
-        if not row then
-            row = CreateFrame("Button", "DragonSkillRow_"..currentTab.."_"..i, content)
-            row:SetSize(360, 26)
-            row:SetFrameLevel(content:GetFrameLevel() + 5)
-            row:EnableMouse(true)
-            row.icon = row:CreateTexture(nil, "ARTWORK")
-            row.icon:SetSize(22, 22)
-            row.icon:SetPoint("LEFT", 0, 0)
-            row.text = row:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
-            row.text:SetPoint("LEFT", row.icon, "RIGHT", 8, 0)
-            self.listRows[i] = row
-        end
-
-        row:SetPoint("TOPLEFT", 10, yOffset)
-        local texture = "Interface\\Icons\\Inv_misc_questionmark"
         local itemName = item.text or item.name or "Unbekannt"
 
-        if itemName:lower() == "slot" or itemName:lower() == "item" then goto next_item end
+        -- Filter Header (Ersetzt die goto-Logik)
+        if itemName:lower() ~= "slot" and itemName:lower() ~= "item" then
+            local row = self.listRows[i]
+            if not row then
+                row = CreateFrame("Button", "DragonSkillRow_"..currentTab.."_"..i, content)
+                row:SetSize(360, 26)
+                row:SetFrameLevel(content:GetFrameLevel() + 5)
+                row:EnableMouse(true)
+                row.icon = row:CreateTexture(nil, "ARTWORK")
+                row.icon:SetSize(22, 22)
+                row.icon:SetPoint("LEFT", 0, 0)
+                row.text = row:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+                row.text:SetPoint("LEFT", row.icon, "RIGHT", 8, 0)
+                self.listRows[i] = row
+            end
 
-        if item.itemId then texture = C_Item.GetItemIconByID(item.itemId) or texture
-        elseif item.spellId then texture = C_Spell.GetSpellTexture(item.spellId) or texture end
+            row:SetPoint("TOPLEFT", 10, yOffset)
+            local texture = "Interface\\Icons\\Inv_misc_questionmark"
 
-        row.icon:SetTexture(texture)
-        row.text:SetText((item.slot and "|cff00ff00"..item.slot..":|r " or "") .. itemName)
+            if item.itemId then texture = C_Item.GetItemIconByID(item.itemId) or texture
+            elseif item.spellId then texture = C_Spell.GetSpellTexture(item.spellId) or texture end
 
-        row:SetScript("OnEnter", function(self)
-            GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-            if item.itemId then GameTooltip:SetItemByID(item.itemId)
-            elseif item.spellId then GameTooltip:SetSpellByID(item.spellId)
-            else GameTooltip:SetText(itemName) end
-            GameTooltip:Show()
-        end)
-        row:SetScript("OnLeave", function() GameTooltip:Hide() end)
+            row.icon:SetTexture(texture)
+            row.text:SetText((item.slot and "|cff00ff00"..item.slot..":|r " or "") .. itemName)
 
-        row:Show()
-        yOffset = yOffset - 28
-        ::next_item::
+            row:SetScript("OnEnter", function(self)
+                GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+                if item.itemId then GameTooltip:SetItemByID(item.itemId)
+                elseif item.spellId then GameTooltip:SetSpellByID(item.spellId)
+                else GameTooltip:SetText(itemName) end
+                GameTooltip:Show()
+            end)
+            row:SetScript("OnLeave", function() GameTooltip:Hide() end)
+
+            row:Show()
+            yOffset = yOffset - 28
+        end
     end
 end
 
@@ -270,7 +271,7 @@ function UI:DrawBuffs(content, guideData)
     else content.text:SetText("Keine Buff-Daten gefunden.") end
 end
 
-print("|cff00ff00Dragon Skill v1.3.1 geladen!|r Nutze |cffffff00/ds|r")
+print("|cff00ff00Dragon Skill v1.3.2 geladen!|r Nutze |cffffff00/wear|r zum Öffnen.")
 
 DragonSkill.UI = UI
 DragonSkill.Events:On("PLAYER_LOGIN", function() UI:Init() end)

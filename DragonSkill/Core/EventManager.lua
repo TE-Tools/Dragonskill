@@ -1,10 +1,10 @@
 -- Dragon Skill - Event Manager
--- Zentrale Event-Registrierung, damit Module nicht jeweils eigene Frames erzeugen müssen.
-
-local ADDON_NAME = ...
+-- Zentrale Event-Registrierung über einen anonymen Frame zur Vermeidung von Blizzard-Blockaden.
 
 local EventManager = {}
-EventManager.frame = CreateFrame("Frame", "DragonSkillEventFrame")
+-- Wir nutzen einen anonymen Frame (kein Name als 2. Argument),
+-- das verhindert "ADDON_ACTION_FORBIDDEN" Fehler in WoW 12.1.
+EventManager.frame = CreateFrame("Frame")
 EventManager.listeners = {}
 
 function EventManager:On(event, callback)

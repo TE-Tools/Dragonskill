@@ -1,45 +1,42 @@
-# Implementation Plan - Emergency Slash Command & Data Fix (v1.3.1)
+# Implementation Plan - Emergency Repair & Slash Command Refactor (v1.3.2)
 
-Dieses Update behebt das Problem, dass `/ds` ein Emote auslöst statt das Addon zu öffnen, und stellt sicher, dass die Daten für Gear, Enchants und Buffs endlich im Spiel ankommen.
+Dieses Update behebt den kritischen LUA-Fehler, der das Addon blockiert, und stellt die Funktionalität des Slash-Commands unter dem neuen Namen `/wear` wieder her.
 
 ## User Review Required
 
 > [!IMPORTANT]
-> **Slash-Command Priorität**: Ich verschiebe die Registrierung des Befehls `/ds` an den Anfang des Addons. Das verhindert, dass WoW den Befehl mit `/danke` verwechselt oder ignoriert.
+> **Neuer Slash-Befehl**: Das Addon öffnet sich ab jetzt mit **`/wear`** (statt `/ds`). Dies verhindert Konflikte mit WoW-Standard-Emotes wie `/danke`.
 > [!IMPORTANT]
-> **Daten-Reparatur**: Ich habe festgestellt, dass die `GuideData.lua` tatsächlich leere Listen enthält. Ich befeuere den Scraper neu und erzwinge das Schreiben der Daten für alle Sektionen.
-> [!CAUTION]
-> **Ordner-Pflicht**: Bitte lösche vor der Installation UNBEDINGT alle alten `DragonSkill` und `addon` Ordner in deinem WoW-Verzeichnis.
+> **Forbidden Action Fix**: Die Fehlermeldung "Forbidden Action" wird behoben, indem wir für Events einen anonymen Frame nutzen. Blizzard erlaubt bei benannten Frames in 12.1 bestimmte Aktionen nicht mehr, wenn diese durch Addons modifiziert wurden.
+> [!NOTE]
+> **Syntax Fix**: Der Fehler `next_item` wird durch eine klassische Schleifen-Struktur ersetzt.
 
 ## Proposed Changes
 
-### 1. Slash Command Fix (UI.lua)
+### 1. Event System Fix (EventManager.lua)
+
+#### [MODIFY] [EventManager.lua](file:///C:/Users/thoma/StudioProjects/Dragonskill/DragonSkill/Core/EventManager.lua)
+- Wechsel von einem benannten Frame (`DragonSkillEventFrame`) zu einem **anonymen Frame**. Dies eliminiert die "ADDON_ACTION_FORBIDDEN" Fehler.
+
+---
+
+### 2. UI & Interaction (UI.lua)
 
 #### [MODIFY] [UI.lua](file:///C:/Users/thoma/StudioProjects/Dragonskill/DragonSkill/Modules/TalentCompare/UI.lua)
-- **Registrierung**: Slash-Befehle werden an den Zeilenanfang (Zeile 1) verschoben.
-- **Eindeutigkeit**: Umbenennung des internen Befehlshandlers von `DRAGONSKILL` zu `DS_MAIN`, um Konflikte zu vermeiden.
-- **Addon-Signal**: Das Addon schreibt nun eine fette, farbige Nachricht in den Chat, sobald es geladen ist.
+- **Slash Command**: Umstellung von `/ds` auf **`/wear`**.
+- **Syntax Repair**: Entfernen der `goto` Logik in `Helper_DrawListWithIcons`. Ersetzung durch eine saubere `if`-Bedingung.
+- **Initialization**: Der `/wear` Befehl wird absolut ausführungssicher gemacht.
 
 ---
 
-### 2. Daten-Pipeline Reparatur
+### 3. Data Integrity
 
-#### [MODIFY] [scrape-wowhead.js](file:///C:/Users/thoma/StudioProjects/Dragonskill/scraper/scrape-wowhead.js)
-- Optimierung der `extractConsumables` Funktion, um auch Listen zu finden, die nicht direkt unter einer fettgedruckten Überschrift stehen.
-
-#### [MODIFY] [build-data.js](file:///C:/Users/thoma/StudioProjects/Dragonskill/scraper/build-data.js)
-- Sicherstellung, dass Listen (Gear, Enchants etc.) beim Mergen von Wowhead- und Archon-Daten nicht überschrieben werden.
-
----
-
-### 3. Tooltip-Vorschau (UI.lua)
-
-- Implementierung von `GameTooltip:SetHyperlink` als Fallback, falls `SetItemByID` bei manchen Items in 12.1 Probleme macht.
+- Ich werde die `GuideData.lua` im Zuge dieses Updates noch einmal mit einer robusteren Version überschreiben, um sicherzustellen, dass die Daten für Gear und Enchants geladen werden.
 
 ## Verification Plan
 
 ### Manual Verification
-1. **Startup**: Steht beim Einloggen "Dragon Skill v1.3.1 - AKTIV!" im Chat?
-2. **/ds**: Öffnet sich das Fenster? (Erscheint kein Emote mehr?)
-3. **Daten-Check**: Sind die Tabs (Gear, Enchants) nun befüllt?
-4. **Talent-Klick**: Öffnet sich der Dialog zum Kopieren/Importieren?
+1. **Startup**: Steht "Dragon Skill v1.3.2 geladen!" im Chat?
+2. **Slash Command**: Öffnet **`/wear`** das Addon? (Kein Emote mehr!)
+3. **Error Check**: Erscheint die Fehlermeldung `forbidden action` noch? (Sollte weg sein).
+4. **Data Check**: Sind die Tabs (Gear, Enchants) nun befüllt?
