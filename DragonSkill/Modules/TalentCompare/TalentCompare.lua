@@ -1,4 +1,4 @@
--- Dragon Skill - Modul: TalentCompare (v1.5.0)
+-- Dragon Skill - Modul: TalentCompare (v1.5.1)
 -- Patch 12.1 Ready: Multi-System & Secure Import Logic.
 
 local TalentCompare = {}
@@ -23,12 +23,15 @@ function TalentCompare:GetDetailedDiff(importString)
         local map = C_ClassTalents.GetImportConfigSlotMap(importString)
         local configID = C_ClassTalents.GetActiveConfigID()
         if not map or not configID then return {} end
-        local treeID = C_Traits.GetConfigInfo(configID).treeIDs[1]
+        local configInfo = C_Traits.GetConfigInfo(configID)
+        local treeID = configInfo and configInfo.treeIDs and configInfo.treeIDs[1]
+        if not treeID then return {} end
+
         local diffs = {}
         for _, nodeID in ipairs(C_Traits.GetTreeNodes(treeID)) do
             local nInfo = C_Traits.GetNodeInfo(configID, nodeID)
             local imp = map[nodeID]
-            if nInfo.currentRank ~= (imp and imp.rank or 0) then
+            if nInfo and nInfo.currentRank ~= (imp and imp.rank or 0) then
                 table.insert(diffs, { name = "Talent "..nodeID, currentRank = nInfo.currentRank, importedRank = (imp and imp.rank or 0), maxRank = nInfo.maxRanks })
             end
         end
@@ -43,17 +46,18 @@ function TalentCompare:ImportToWoW(importString, name)
         return
     end
 
-    -- Sicherstellen, dass das UI geladen ist
+    -- Sicherstellen, dass das UI geladen ist (C_AddOns ist moderner)
     if not ClassTalentFrame then
-        UIParentLoadAddOn("Blizzard_ClassTalentUI")
+        if C_AddOns and C_AddOns.LoadAddOn then
+            C_AddOns.LoadAddOn("Blizzard_ClassTalentUI")
+        end
     end
 
-    -- Blizzard 12.1 API Check
+    -- Blizzard 12.1 API Check & Fallback
     local success = false
     if ClassTalentFrame then
-        -- 12.1 Syntax: ImportLoadout(string, [name], [systemID])
-        -- SystemID 1 = Class Talents
         if ClassTalentFrame.ImportLoadout then
+            -- Syntax: string, [name], [systemID=1 for class talents]
             ClassTalentFrame:ImportLoadout(importString, name or "DragonSkill", 1)
             success = true
         elseif ClassTalentFrame.TalentsTab and ClassTalentFrame.TalentsTab.ImportLoadout then
@@ -63,7 +67,7 @@ function TalentCompare:ImportToWoW(importString, name)
     end
 
     if success then
-        print("|cff00ff00Dragon Skill:|r Build '" .. (name or "Build") .. "' an Blizzard-Interface gesendet.")
+        print("|cff00ff00Dragon Skill:|r Build '" .. (name or "Build") .. "' wurde an Blizzard gesendet.")
         if not ClassTalentFrame:IsShown() then ToggleTalentFrame() end
     else
         print("|cffff0000Dragon Skill:|r Fehler - Blizzard Import API nicht gefunden. Öffne dein Talent-Fenster ('N') händisch.")
