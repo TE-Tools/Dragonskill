@@ -1,59 +1,44 @@
-# Implementation Plan - The Grand Finale (v1.2.0)
+# Implementation Plan - UI Recovery & Interaction Fix (v1.2.1)
 
-Dieses Update schließt den "Venomous Abyss" Raid ab, führt intelligente Tooltips ein und bereinigt die Datenanzeige für ein professionelles Erlebnis.
+Dieses Update stellt das native Blizzard-Design wieder her, repariert die defekten Klick-Aktionen in den Dialogen und stellt sicher, dass alle 8 Tabs sauber befüllt werden.
 
 ## User Review Required
 
 > [!IMPORTANT]
-> **Raid-Abschluss (Boss 7 & 8)**: Wir fügen die Module für "The Coiled Altar" und "Ula’tek" hinzu.
-> - **Ula’tek (Finaler Boss)**: Beinhaltet Tracking für Eier-Management (Devourer’s Spawn) und Plattform-Verlust.
-> - **Coiled Altar**: Beinhaltet Tracking für Gift-Orbs (Coalesced Venom) und Mind-Control-Shields.
-
+> **Rückkehr zum Blizzard-Look**: Ich entferne das "selbstgemachte" Fenster und nutze wieder das offizielle `ButtonFrameTemplate`. Dies behebt die Anzeige-Probleme und sorgt für einen nativen Look.
 > [!IMPORTANT]
-> **BiS-Tooltips**: Wenn du über ein Item fährst, das in deiner BiS-Liste (Wowhead) steht, zeigt das Addon nun automatisch einen goldenen Text: **"Dragon Skill: Best-in-Slot"**.
-
-> [!NOTE]
-> **Neuer Tab: Buffs**: Wir fügen einen 8. Reiter hinzu, der Food, Flasks, Potions und Runen übersichtlich auflistet.
+> **Dialog-Fix**: Die Buttons im Auswahl-Fenster ("Kopieren" / "Direkt anlegen") funktionieren nun wieder. Ich habe die internen Blizzard-Funktionsnamen (`OnAccept`, `OnCancel`, `OnAlt`) korrigiert.
 
 ## Proposed Changes
 
-### 1. Boss Mechanics (Finale)
-
-#### [NEW] [CoiledAltar.lua](file:///C:/Users/thoma/StudioProjects/Dragonskill/addon/Modules/BossMechanics/Bosses/CoiledAltar.lua)
-- Tracking von Gift-Orbs und deren Ablegeplätzen.
-- Warnung bei Mind Control (Dreadmarch).
-
-#### [NEW] [Ulatek.lua](file:///C:/Users/thoma/StudioProjects/Dragonskill/addon/Modules/BossMechanics/Bosses/Ulatek.lua)
-- Überwachung der Gift-Wellen (Caustic Waves).
-- Timer für den Plattform-Verlust in Phase 3.
-
-#### [MODIFY] [Core.lua](file:///C:/Users/thoma/StudioProjects/Dragonskill/addon/Modules/BossMechanics/Core.lua)
-- Hinzufügen der neuen Slash-Commands: `/ds testaltar` und `/ds testulatek`.
-
----
-
-### 2. UI & Features
+### 1. UI Restoration (UI.lua)
 
 #### [MODIFY] [UI.lua](file:///C:/Users/thoma/StudioProjects/Dragonskill/addon/Modules/TalentCompare/UI.lua)
-- **Buffs-Tab**: Integration der Consumables aus den Guide-Daten.
-- **Data Cleanup**: Automatisches Filtern von Header-Zeilen ("Slot", "Item") in der Gear-Liste.
-- **Scroll-Anpassung**: Der Scroll-Inhalt wird automatisch auf die richtige Höhe gesetzt.
-
-#### [MODIFY] [Tooltips.lua](file:///C:/Users/thoma/StudioProjects/Dragonskill/addon/Modules/Tooltips/Tooltips.lua)
-- Implementierung des BiS-Scanners: Gleicht die `itemId` des Tooltips mit der `bisGear` Liste deiner aktuellen Spec ab.
+- **Template**: Umstellung zurück auf `ButtonFrameTemplate`.
+- **Layout**:
+    - Das `Inset` wird so verankert, dass die Tabs am unteren Rand Platz haben.
+    - Die 8 Tabs werden leicht verkleinert, damit sie nebeneinander passen.
+- **Data Check**: Hinzufügen von Debug-Meldungen, falls `GuideData` für die aktuelle Spec fehlt.
 
 ---
 
-### 3. Metadata
+### 2. Interaction Repair (UI.lua & TalentCompare.lua)
 
-#### [MODIFY] [DragonSkill.toc](file:///C:/Users/thoma/StudioProjects/Dragonskill/addon/DragonSkill.toc)
-- Version auf `1.2.0` anheben.
-- Registrierung aller neuen Dateien.
+#### [MODIFY] [UI.lua](file:///C:/Users/thoma/StudioProjects/Dragonskill/addon/Modules/TalentCompare/UI.lua)
+- **StaticPopup Fix**:
+    - Button 1 ("Kopieren") -> `OnAccept`
+    - Button 2 ("Direkt anlegen") -> `OnCancel` (Blizzard Konvention für 2. Button)
+    - Button 3 ("Abbrechen") -> `OnAlt`
+
+#### [MODIFY] [TalentCompare.lua](file:///C:/Users/thoma/StudioProjects/Dragonskill/addon/Modules/TalentCompare/TalentCompare.lua)
+- Sicherstellung, dass `ImportToWoW` auch dann funktioniert, wenn das Talent-Fenster noch nie geöffnet wurde (explizites Laden).
 
 ## Verification Plan
 
 ### Manual Verification
-1. **/ds** -> Neuen Tab "Buffs" prüfen.
-2. **Gear-Tab** -> Prüfen, ob die Zeile "Slot | Item | Source" verschwunden ist.
-3. **Item-Hover** -> Im Abenteuerführer oder Inventar ein BiS-Item anschauen -> Goldener Text muss erscheinen.
-4. **/ds testulatek** -> Test der Final-Boss Logik.
+1. **/ds** -> Blizzard-Fenster muss erscheinen.
+2. **Tab-Check** -> Alle 8 Reiter (Talente bis Buffs) müssen anklickbar sein.
+3. **Klick-Test** -> Talent anklicken -> "Was möchtest du tun?" Dialog muss erscheinen.
+4. **Action-Test**:
+    - Klick auf "Kopieren" -> Textfeld muss erscheinen.
+    - Klick auf "Direkt anlegen" -> "Import gestartet" im Chat und neuer Slot in Talenten.

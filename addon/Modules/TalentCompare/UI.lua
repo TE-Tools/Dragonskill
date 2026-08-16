@@ -1,5 +1,5 @@
--- Dragon Skill - Haupt UI (v1.1.0)
--- Baut ein stabiles Fenster mit direktem Import-Support für WoW 12.1.
+-- Dragon Skill - Haupt UI (v1.2.1)
+-- Native Blizzard-Look UI mit reparierter Klick-Logik und 8-Tab Support.
 
 local UI = {}
 local currentTab = 1
@@ -8,72 +8,50 @@ local tabs = {"Talente", "Stats", "Trinkets", "Crafting", "Rotation", "Gear", "E
 function UI:Init()
     if DragonSkillMainFrame then return end
 
-    -- Hauptfenster
-    local f = CreateFrame("Frame", "DragonSkillMainFrame", UIParent, "BackdropTemplate")
+    -- Hauptfenster (Wieder zurück zum Blizzard Template)
+    local f = CreateFrame("Frame", "DragonSkillMainFrame", UIParent, "ButtonFrameTemplate")
     f:SetSize(450, 550)
     f:SetPoint("CENTER")
-    f:SetFrameStrata("DIALOG")
     f:SetMovable(true)
     f:EnableMouse(true)
     f:SetClampedToScreen(true)
     f:RegisterForDrag("LeftButton")
-    f:SetScript("OnDragStart", f.StartMoving)
-    f:SetScript("OnDragStop", f.StopMovingOrSizing)
+    f:SetScript("OnDragStart", function(self) self:StartMoving() end)
+    f:SetScript("OnDragStop", function(self) self:StopMovingOrSizing() end)
 
-    -- Hintergrund
-    f:SetBackdrop({
-        bgFile = "Interface\\ChatFrame\\ChatFrameBackground",
-        edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Border",
-        tile = true, tileSize = 32, edgeSize = 32,
-        insets = { left = 8, right = 8, top = 8, bottom = 8 }
-    })
-    f:SetBackdropColor(0, 0, 0, 0.95)
+    -- Titel & Portrait
+    if f.SetTitle then f:SetTitle("Dragon Skill") end
+    if f.portrait then f.portrait:SetTexture("Interface\\Icons\\Inv_misc_head_dragon_01") end
 
-    -- Header
-    f.Header = f:CreateTexture(nil, "ARTWORK")
-    f.Header:SetTexture("Interface\\DialogFrame\\UI-DialogBox-Header")
-    f.Header:SetSize(256, 64)
-    f.Header:SetPoint("TOP", 0, 12)
-    f.Title = f:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-    f.Title:SetPoint("TOP", f.Header, "TOP", 0, -14)
-    f.Title:SetText("Dragon Skill v1.1.0")
+    -- Inset (Hintergrund-Bereich)
+    if f.Inset then
+        f.Inset:ClearAllPoints()
+        f.Inset:SetPoint("TOPLEFT", 4, -60)
+        f.Inset:SetPoint("BOTTOMRIGHT", -6, 28) -- Platz für Tabs unten
+    end
 
-    f.Close = CreateFrame("Button", nil, f, "UIPanelCloseButton")
-    f.Close:SetPoint("TOPRIGHT", -5, -5)
-    f.Close:SetScript("OnClick", function() f:Hide() end)
-
-    -- Content Area
-    local contentBg = CreateFrame("Frame", nil, f, "BackdropTemplate")
-    contentBg:SetPoint("TOPLEFT", 15, -45)
-    contentBg:SetPoint("BOTTOMRIGHT", -15, 65)
-    contentBg:SetBackdrop({
-        bgFile = "Interface\\Tooltips\\UI-Tooltip-Background",
-        edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
-        tile = true, tileSize = 16, edgeSize = 16,
-        insets = { left = 4, right = 4, top = 4, bottom = 4 }
-    })
-    contentBg:SetBackdropColor(0.1, 0.1, 0.1, 0.8)
-
-    local scrollFrame = CreateFrame("ScrollFrame", "DragonSkillScrollFrame", contentBg, "UIPanelScrollFrameTemplate")
+    -- ScrollFrame im Inset
+    local scrollFrame = CreateFrame("ScrollFrame", "DragonSkillScrollFrame", f.Inset, "UIPanelScrollFrameTemplate")
     scrollFrame:SetPoint("TOPLEFT", 8, -8)
     scrollFrame:SetPoint("BOTTOMRIGHT", -25, 8)
-    scrollFrame:SetFrameLevel(contentBg:GetFrameLevel() + 5)
+    scrollFrame:EnableMouse(true)
 
+    -- Inhalts-Container
     local content = CreateFrame("Frame", "DragonSkillContentFrame", scrollFrame)
     content:SetSize(380, 1500)
     scrollFrame:SetScrollChild(content)
     f.Content = content
 
-    -- Tabs (CharFrame Style)
+    -- Tab-System (Schmaler für 8 Tabs)
     f.Tabs = {}
     for i, name in ipairs(tabs) do
-        local tab = CreateFrame("Button", "$parentTab"..i, f, "CharacterFrameTabButtonTemplate")
+        local tab = CreateFrame("Button", "$parentTab"..i, f, "PanelTabButtonTemplate")
         tab:SetID(i)
         tab:SetText(name)
         tab:SetScript("OnClick", function(self) UI:SelectTab(self:GetID()) end)
         f.Tabs[i] = tab
         if i == 1 then
-            tab:SetPoint("TOPLEFT", contentBg, "BOTTOMLEFT", 0, -2)
+            tab:SetPoint("TOPLEFT", f, "BOTTOMLEFT", 15, 2)
         else
             tab:SetPoint("LEFT", f.Tabs[i-1], "RIGHT", -16, 0)
         end
@@ -119,6 +97,7 @@ function UI:Update()
         content.text:SetPoint("TOPLEFT", 10, -10)
         content.text:SetWidth(360)
         content.text:SetJustifyH("LEFT")
+        content.text:SetSpacing(3)
     end
     content.text:SetText("")
     content.text:Show()
@@ -137,11 +116,13 @@ end
 function UI:DrawTalents(content)
     local TC = DragonSkill:GetModule("TalentCompare")
     local _, class = UnitClass("player")
-    local specID = GetSpecializationInfo(GetSpecialization() or 0)
+    local specIndex = GetSpecialization()
+    if not specIndex then return end
+    local specID = GetSpecializationInfo(specIndex)
     local guideData = DragonSkill.Database:GetGuideData(class, specID)
 
     if not guideData or not guideData.talentBuilds then
-        content.text:SetText("Keine Guide-Daten gefunden.")
+        content.text:SetText("Keine Guide-Daten für diese Spezialisierung gefunden.")
         return
     end
 
@@ -154,7 +135,7 @@ function UI:DrawTalents(content)
         if not btn then
             btn = CreateFrame("Button", nil, content, "UIPanelButtonTemplate")
             btn:SetSize(360, 32)
-            btn:SetFrameLevel(content:GetFrameLevel() + 20)
+            btn:SetFrameLevel(content:GetFrameLevel() + 5)
             self.talentBtns[i] = btn
         end
         btn:SetPoint("TOPLEFT", 10, yOffset)
@@ -181,28 +162,33 @@ function UI:ShowImportDialog(build, result)
             diffText = diffText .. string.format("\n- %s (%d/%d -> %d/%d)", d.name, d.currentRank, d.maxRank, d.importedRank, d.maxRank)
         end
     else
-        diffText = "\n\n|cff00ff00Build ist identisch!|r"
+        diffText = "\n\n|cff00ff00Dein Build ist identisch!|r"
     end
 
-    StaticPopupDialogs["DRAGONSKILL_ACTION"] = {
-        text = "Build: " .. build.label .. " (" .. (result.similarity or 0) .. "% Match)" .. diffText .. "\n\nWas möchtest du tun?",
+    -- WICHTIG: Blizzard Popups nutzen OnAccept (Button 1) und OnCancel (Button 2)
+    StaticPopupDialogs["DRAGONSKILL_CHOICE"] = {
+        text = "Build: " .. build.label .. " (" .. (result.similarity or 0) .. "% Übereinstimmung)" .. diffText .. "\n\nWas möchtest du tun?",
         button1 = "Kopieren (Strg+C)",
         button2 = "Direkt in WoW anlegen",
         button3 = "Abbrechen",
-        OnButton1 = function()
-            StaticPopup_Show("DRAGONSKILL_COPY_STRG", nil, nil, build.importString)
+        OnAccept = function()
+            -- Button 1: Kopieren
+            StaticPopup_Show("DRAGONSKILL_STRG_C", nil, nil, build.importString)
         end,
-        OnButton2 = function()
-            local name = build.label .. " (DragonSkill)"
-            TC:ImportToWoW(build.importString, name)
+        OnCancel = function(_, _, reason)
+            -- Button 2: Direkt anlegen (Blizzard nutzt OnCancel für Button 2 bei button3-Popups)
+            if reason == "clicked" then
+                local name = build.label .. " (DragonSkill)"
+                TC:ImportToWoW(build.importString, name)
+            end
         end,
         timeout = 0,
         whileDead = true,
         hideOnEscape = true,
     }
 
-    StaticPopupDialogs["DRAGONSKILL_COPY_STRG"] = {
-        text = "Kopiere den String mit Strg+C:",
+    StaticPopupDialogs["DRAGONSKILL_STRG_C"] = {
+        text = "Markierten Text mit Strg+C kopieren:",
         button1 = "Fertig",
         hasEditBox = 1,
         OnShow = function(self, data)
@@ -215,7 +201,7 @@ function UI:ShowImportDialog(build, result)
         hideOnEscape = true,
     }
 
-    StaticPopup_Show("DRAGONSKILL_ACTION")
+    StaticPopup_Show("DRAGONSKILL_CHOICE")
 end
 
 function UI:DrawStats(content)
@@ -253,7 +239,7 @@ function UI:Helper_DrawListWithIcons(content, items, title)
         if not row then
             row = CreateFrame("Button", nil, content)
             row:SetSize(360, 26)
-            row:SetFrameLevel(content:GetFrameLevel() + 15)
+            row:SetFrameLevel(content:GetFrameLevel() + 10)
             row.icon = row:CreateTexture(nil, "ARTWORK")
             row.icon:SetSize(22, 22)
             row.icon:SetPoint("LEFT", 0, 0)
@@ -266,7 +252,7 @@ function UI:Helper_DrawListWithIcons(content, items, title)
         local texture = "Interface\\Icons\\Inv_misc_questionmark"
         local itemName = item.text or item.name or "Unbekannt"
 
-        -- BBCode Bereinigung (Wowhead Guide Reste)
+        -- Cleanup Wowhead leftovers
         itemName = itemName:gsub("%[url[^%]]*%]", ""):gsub("%[/url%]", "")
         itemName = itemName:gsub("%[item=%d+[^%]]*%]", ""):gsub("%[/item%]", "")
         itemName = itemName:gsub("%[b%]", ""):gsub("%[/b%]", "")
@@ -320,7 +306,6 @@ function UI:DrawGear(content)
     if guideData and guideData.bisGear and guideData.bisGear.wowhead and #guideData.bisGear.wowhead > 0 then
         local list = {}
         for _, g in ipairs(guideData.bisGear.wowhead) do
-            -- Filter Header Rows
             if g.slot:lower() ~= "slot" then
                 table.insert(list, { text = string.format("|cff00ff00%s:|r %s", g.slot, g.item), itemId = g.itemId })
             end

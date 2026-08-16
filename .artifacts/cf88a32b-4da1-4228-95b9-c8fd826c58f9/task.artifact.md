@@ -1,21 +1,18 @@
-# Task: Dragon Skill v1.2.0 - The Grand Finale
+# Task: Dragon Skill v1.2.1 - UI Restoration & Interaction Fix
 
-## Metadata & Core
-- [ ] Update `DragonSkill.toc` to v1.2.0 and register new files
-- [ ] Update `Modules/BossMechanics/Core.lua` with finale simulation commands
+## UI Recovery
+- [x] Revert main window to `ButtonFrameTemplate` in `UI.lua`
+- [x] Adjust Inset to prevent tab overlap
+- [x] Optimize 8-tab positioning (PanelTabButtonTemplate)
 
-## Final Boss Modules
-- [ ] Create `Modules/BossMechanics/Bosses/CoiledAltar.lua`
-- [ ] Create `Modules/BossMechanics/Bosses/Ulatek.lua`
+## Interaction Fix
+- [x] Correct `StaticPopupDialogs` keys (`OnAccept`, `OnCancel`)
+- [x] Ensure "Copy" and "Create Loadout" actions work correctly
 
-## UI Enhancements
-- [ ] Add "Buffs" tab to `UI.lua`
-- [ ] Implement Gear data cleanup (filter headers)
-- [ ] Expand tab system to 8 tabs in `UI.lua`
-
-## Tooltip Pro-Features
-- [ ] Implement BiS detection in `Modules/Tooltips/Tooltips.lua`
+## Data & Stability
+- [x] Double-check `GuideData` access for current spec
+- [x] Filter header rows in list views
 
 ## Finalization
-- [ ] Commit & Push
-- [ ] Final instructions
+- [x] Commit & Push
+- [x] Final copy instructions
