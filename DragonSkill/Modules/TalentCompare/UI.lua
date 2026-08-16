@@ -1,5 +1,5 @@
 -- Dragon Skill - Haupt UI (v1.3.5)
--- Ultimative Reparatur für Talent-Import, Dialoge und Daten-Anzeige.
+-- Ultimative Reparatur für Talent-Import, Dialoge und Daten-Vollständigkeit.
 
 local UI = {}
 local currentTab = 1
@@ -15,9 +15,11 @@ StaticPopupDialogs["DRAGONSKILL_ACTION"] = {
     button2 = "Neu anlegen",
     button3 = "Abbrechen",
     OnAccept = function(self)
+        -- Button 1: Kopieren (Übergabe via lastClickedBuild)
         StaticPopup_Show("DRAGONSKILL_COPY", nil, nil, lastClickedBuild.importString)
     end,
     OnCancel = function(self, data, reason)
+        -- Button 2: Neu anlegen
         if reason == "clicked" and lastClickedBuild.importString ~= "" then
             local TC = DragonSkill:GetModule("TalentCompare")
             if TC then TC:ImportToWoW(lastClickedBuild.importString, lastClickedBuild.label) end
@@ -27,10 +29,11 @@ StaticPopupDialogs["DRAGONSKILL_ACTION"] = {
 }
 
 StaticPopupDialogs["DRAGONSKILL_COPY"] = {
-    text = "Markierten Text mit Strg+C kopieren:",
+    text = "Strg+C zum Kopieren drücken:",
     button1 = "Fertig",
     hasEditBox = 1,
     OnShow = function(self, data)
+        -- Wir nutzen hier direkt die übergebene data ODER den Cache
         local code = data or lastClickedBuild.importString
         self.editBox:SetText(code or "")
         self.editBox:SetFocus()
@@ -117,7 +120,7 @@ function UI:Update()
     local guideData = DragonSkill.Database:GetGuideData(class, specID)
 
     if not guideData then
-        content.text:SetText("|cffff0000INFO:|r Keine Daten für " .. tostring(class) .. " (Spec " .. tostring(specID) .. ") gefunden.\n\nDaten für diese Klasse werden im nächsten Update nachgereicht!")
+        content.text:SetText("|cffff0000INFO:|r Keine Daten für " .. tostring(class) .. " (Spec " .. tostring(specID) .. ") gefunden.\n\nDaten für diese Klasse werden in Kürze nachgereicht!")
         return
     end
 
