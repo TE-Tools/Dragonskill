@@ -9,6 +9,8 @@ function Database:Init()
         favorites = {},
         history = {}
     }
+    DragonSkillDB.favorites = DragonSkillDB.favorites or {}
+    DragonSkillDB.history = DragonSkillDB.history or {}
     DragonSkillCharDB = DragonSkillCharDB or {
         lastComparedBuild = nil
     }
@@ -16,8 +18,6 @@ function Database:Init()
     self.char = DragonSkillCharDB
 end
 
--- Guide-Daten sind separate Lua-Dateien, die vom Scraper-Output generiert werden,
--- z.B. Data/warrior_protection.lua mit: DragonSkillData = DragonSkillData or {}; DragonSkillData["WARRIOR"]["PROTECTION"] = {...}
 function Database:GetGuideData(class, spec)
     if not DragonSkillData then return nil end
     local classData = DragonSkillData[class]
@@ -26,32 +26,74 @@ function Database:GetGuideData(class, spec)
 end
 
 -- Erstelle ein neues "Skilling"-Eintrag in den SavedVariables (favorites).
--- name: string, data: table (z.B. { importString = "...", provider=..., label=... })
+-- name: string|nil, data: table (z.B. { importString = "...", provider=..., label=... })
 function Database:CreateSkilling(name, data)
+    data = data or {}
     if not name or name == "" then
-        -- Fallback: generiere einen Auto-Namen
-        name = self:GenerateAutoSkillingName()
+        name = self:GenerateAutoSkillingName(data)
+    end
+    self.account = self.account or DragonSkillDB
+    if not self.account then
+        self:Init()
     end
     self.account.favorites = self.account.favorites or {}
-    -- Falls Name bereits existiert, füge einen Zähler an
+
     local finalName = name
     local i = 1
     while self.account.favorites[finalName] do
         i = i + 1
         finalName = string.format("%s-%d", name, i)
     end
-    data = data or {}
-    data.createdAt = date("!%Y-%m-%dT%H:%M:%SZ")
-    self.account.favorites[finalName] = data
+
+    -- Kopie, damit das Original-Build-Objekt nicht mutiert wird
+    local stored = {
+        importString = data.importString,
+        provider = data.provider or "Manual",
+        label = data.label or "Build",
+        createdAt = date("!%Y-%m-%dT%H:%M:%SZ"),
+    }
+    self.account.favorites[finalName] = stored
     return finalName
 end
 
--- Generiert einen autonamen im Format: <Provider>_<Label>_<YYYY-MM-DD>_<HH:MM>
 function Database:GenerateAutoSkillingName(data)
     local provider = data and data.provider or "Manual"
     local label = data and data.label or "Build"
     local ts = date("%Y-%m-%d %H:%M")
-    return string.format("%s: %s (%s)", provider, label, ts)
+    return string.format("%s: %s (%s)", tostring(provider):upper(), tostring(label), ts)
+end
+
+-- Sortierte Liste { { name = "...", data = {...} }, ... }
+function Database:GetSkillings()
+    if not self.account then self:Init() end
+    local list = {}
+    local favs = (self.account and self.account.favorites) or {}
+    for name, data in pairs(favs) do
+        if type(data) == "table" and data.importString then
+            table.insert(list, { name = name, data = data })
+        end
+    end
+    table.sort(list, function(a, b)
+        local ca = a.data.createdAt or ""
+        local cb = b.data.createdAt or ""
+        if ca ~= cb then return ca > cb end
+        return a.name < b.name
+    end)
+    return list
+end
+
+function Database:DeleteSkilling(name)
+    if not self.account then self:Init() end
+    if self.account.favorites and name then
+        self.account.favorites[name] = nil
+        return true
+    end
+    return false
+end
+
+function Database:GetSkilling(name)
+    if not self.account then self:Init() end
+    return self.account.favorites and self.account.favorites[name]
 end
 
 DragonSkill = DragonSkill or {}
