@@ -1,6 +1,6 @@
 /**
- * Dragon Skill - Wowhead Scraper (v1.5.4)
- * Talente, Stats, BiS-Gear, Enchants, Gems, Consumables, Rotation
+ * Dragon Skill - Wowhead Scraper (v1.5.7)
+ * + Junk-Filter für Navigations-Listeneinträge
  */
 
 const fs = require("fs");
@@ -27,10 +27,6 @@ async function fetchPage(url) {
           "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
         "Accept-Language": "en-US,en;q=0.9",
         Referer: "https://www.wowhead.com/",
-        "Sec-Fetch-Dest": "document",
-        "Sec-Fetch-Mode": "navigate",
-        "Sec-Fetch-Site": "same-origin",
-        "Upgrade-Insecure-Requests": "1",
       },
       timeout: 30000,
     });
@@ -54,6 +50,16 @@ function unescapeWowheadMarkup(html) {
     .replace(/\\\//g, "/");
 }
 
+const JUNK_TEXT =
+  /^(cheat sheet|talent builds?|rotation|bis gear|consumables?|overview|basics?|abilities|guide|introduction|macros?|weak auras?|faq|table of contents|toc)$/i;
+
+function isJunkText(text) {
+  if (!text || text.length < 3) return true;
+  if (JUNK_TEXT.test(text.trim())) return true;
+  if (text.length < 8 && !/\d/.test(text)) return true;
+  return false;
+}
+
 function extractTalents(markup) {
   const builds = [];
   const re = /\[copy="([^"]+)"\]([A-Za-z0-9+/=_-]{20,})\[\/copy\]/g;
@@ -61,7 +67,6 @@ function extractTalents(markup) {
   while ((m = re.exec(markup))) {
     builds.push({ label: m[1], importString: m[2], provider: "wowhead" });
   }
-  // dedupe by importString
   const seen = new Set();
   return builds.filter((b) => {
     if (seen.has(b.importString)) return false;
@@ -81,23 +86,19 @@ function extractStatPriority(markup) {
   const matches = [];
   let m;
   while ((m = re.exec(markup))) {
-    const chain = m[1].replace(/\s*[>≥]\s*/g, " > ").replace(/\bCrit\b/gi, "Critical Strike");
+    const chain = m[1]
+      .replace(/\s*[>≥]\s*/g, " > ")
+      .replace(/\bCrit\b/gi, "Critical Strike");
     if (chain.length > 8) matches.push(chain);
   }
   if (matches.length === 0) return null;
-  // prefer longest reasonable chain
   matches.sort((a, b) => b.length - a.length);
   return matches[0];
 }
 
-/**
- * BiS-Tabellen im BBCode-Markup:
- * [tr][td]Weapon[/td][td][item=268209][/td][td][url ...]Name[/url][/td][/tr]
- */
 function extractBisGear(markup) {
   const results = [];
   const seen = new Set();
-
   const rowRe =
     /\[tr\]\s*\[td\]([^\[]+?)\[\/td\]\s*\[td\]\[item=(\d+)\]\[\/td\](?:\s*\[td\](?:\[url[^\]]*\])?([^\[\]]*?)(?:\[\/url\])?\[\/td\])?/gi;
   let m;
@@ -107,13 +108,10 @@ function extractBisGear(markup) {
     const text = (m[3] || "").replace(/\s+/g, " ").trim() || `Item ${itemId}`;
     const key = `${slot}|${itemId}`;
     if (seen.has(key)) continue;
-    // skip header rows
     if (/^(slot|item|source)$/i.test(slot)) continue;
     seen.add(key);
     results.push({ slot, text, itemId });
   }
-
-  // Fallback: Listen mit Keywords
   if (results.length === 0) {
     for (const item of extractListByKeywords(markup, [
       "best gear",
@@ -133,20 +131,23 @@ function extractListByKeywords(markup, keywords) {
   let m;
   while ((m = listRe.exec(markup))) {
     const body = m[1];
-    const preText = markup.slice(Math.max(0, m.index - 600), m.index).toLowerCase();
+    const preText = markup
+      .slice(Math.max(0, m.index - 600), m.index)
+      .toLowerCase();
     if (!keywords.some((k) => preText.includes(k))) continue;
     const lis = body.match(/\[li\]([\s\S]*?)\[\/li\]/gi) || [];
     for (const li of lis) {
       const itemID = (li.match(/\[item=(\d+)/i) || [])[1];
       const spellID = (li.match(/\[spell=(\d+)/i) || [])[1];
       const text = li.replace(/\[[^\]]+\]/g, "").replace(/\s+/g, " ").trim();
-      if (text.length > 2) {
-        results.push({
-          text,
-          itemId: itemID ? parseInt(itemID, 10) : null,
-          spellId: spellID ? parseInt(spellID, 10) : null,
-        });
-      }
+      if (isJunkText(text)) continue;
+      // Navigationslisten haben meist weder item noch spell
+      if (!itemID && !spellID && text.length < 20) continue;
+      results.push({
+        text,
+        itemId: itemID ? parseInt(itemID, 10) : null,
+        spellId: spellID ? parseInt(spellID, 10) : null,
+      });
     }
   }
   return results;
@@ -155,14 +156,14 @@ function extractListByKeywords(markup, keywords) {
 function extractRotation(markup) {
   const results = [];
   const seen = new Set();
-
-  // ordered lists that contain spells near "priority" / "rotation"
   const listRe = /\[(?:ol|ul)\]([\s\S]*?)\[\/(?:ol|ul)\]/gi;
   let m;
   while ((m = listRe.exec(markup))) {
     const body = m[1];
     if (!/\[spell=\d+/i.test(body)) continue;
-    const preText = markup.slice(Math.max(0, m.index - 800), m.index).toLowerCase();
+    const preText = markup
+      .slice(Math.max(0, m.index - 800), m.index)
+      .toLowerCase();
     const relevant =
       preText.includes("priority") ||
       preText.includes("rotation") ||
@@ -175,7 +176,7 @@ function extractRotation(markup) {
     for (const li of lis) {
       const spellID = (li.match(/\[spell=(\d+)/i) || [])[1];
       const text = li.replace(/\[[^\]]+\]/g, "").replace(/\s+/g, " ").trim();
-      if (!text || text.length < 2) continue;
+      if (!text || isJunkText(text)) continue;
       const key = `${spellID || ""}|${text}`;
       if (seen.has(key)) continue;
       seen.add(key);
@@ -195,10 +196,7 @@ function extractEnchants(markup) {
     "mana oil",
     "embellish",
     "rune of",
-  ]).map((x) => ({
-    text: x.text,
-    itemId: x.itemId,
-  }));
+  ]).map((x) => ({ text: x.text, itemId: x.itemId }));
 }
 
 function extractGems(markup) {
@@ -209,10 +207,7 @@ function extractGems(markup) {
     "ruby",
     "sapphire",
     "socket",
-  ]).map((x) => ({
-    text: x.text,
-    itemId: x.itemId,
-  }));
+  ]).map((x) => ({ text: x.text, itemId: x.itemId }));
 }
 
 function extractConsumables(markup) {
@@ -224,15 +219,13 @@ function extractConsumables(markup) {
     "rune",
     "consumable",
     "combat potion",
-  ]).map((x) => ({
-    text: x.text,
-    itemId: x.itemId,
-  }));
+  ]).map((x) => ({ text: x.text, itemId: x.itemId }));
 }
 
 function extractEmbellishments(markup) {
-  const list = extractListByKeywords(markup, ["embellish"]);
-  return list.map((x) => x.text).filter(Boolean);
+  return extractListByKeywords(markup, ["embellish"])
+    .map((x) => x.text)
+    .filter(Boolean);
 }
 
 function keepIfEmpty(newArr, oldArr) {
@@ -241,14 +234,8 @@ function keepIfEmpty(newArr, oldArr) {
 }
 
 async function main() {
-  const {
-    talentsUrl,
-    statsUrl,
-    gearUrl,
-    rotationUrl,
-    consumablesUrl,
-    out,
-  } = parseArgs();
+  const { talentsUrl, statsUrl, gearUrl, rotationUrl, consumablesUrl, out } =
+    parseArgs();
   if (!out) {
     console.error("--out erforderlich");
     process.exit(1);
@@ -269,7 +256,6 @@ async function main() {
     const html = await fetchPage(url);
     if (html) {
       allMarkup += "\n" + unescapeWowheadMarkup(html);
-      // höfliche Pause gegen Rate-Limits
       await new Promise((r) => setTimeout(r, 400));
     }
   }
