@@ -1,11 +1,6 @@
 /**
- * Dragon Skill - Scrape-All Orchestrator
- * ---------------------------------------
- * Liest eine Liste von Specs (spec-list.json) und ruft für jede sowohl
- * scrape-wowhead.js als auch scrape-archon.js auf. Wird lokal manuell oder
- * automatisiert per GitHub Actions ausgeführt (siehe .github/workflows/scrape.yml).
+ * Dragon Skill - Scrape-All Orchestrator (v1.5.4)
  *
- * Benutzung:
  *   node scrape-all.js --list spec-list.json --outDir data-raw
  */
 
@@ -22,10 +17,14 @@ function parseArgs() {
   return out;
 }
 
+function sleep(ms) {
+  Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, ms);
+}
+
 function runScraper(scriptName, args, outFile, label) {
   try {
     execFileSync("node", [scriptName, ...args, "--out", outFile], {
-      stdio: "inherit"
+      stdio: "inherit",
     });
     return true;
   } catch (err) {
@@ -34,10 +33,36 @@ function runScraper(scriptName, args, outFile, label) {
   }
 }
 
+/** Ableitung fehlender Wowhead-URLs aus Talents-URL */
+function deriveUrls(spec) {
+  const base = spec.wowheadTalentsUrl || "";
+  // .../talent-builds-pve-tank → role suffix
+  const m = base.match(/\/talent-builds-(pve-[a-z]+)$/);
+  const role = m ? m[1] : null;
+  const classPath = base.replace(/\/talent-builds-.*$/, "");
+
+  const out = { ...spec };
+  if (!out.wowheadStatsUrl && classPath && role) {
+    out.wowheadStatsUrl = `${classPath}/stat-priority-${role}`;
+  }
+  if (!out.wowheadRotationUrl && classPath && role) {
+    out.wowheadRotationUrl = `${classPath}/rotation-cooldowns-${role}`;
+  }
+  if (!out.wowheadGearUrl && classPath) {
+    out.wowheadGearUrl = `${classPath}/bis-gear`;
+  }
+  if (!out.wowheadConsumablesUrl && classPath && role) {
+    out.wowheadConsumablesUrl = `${classPath}/consumables-${role}`;
+  }
+  return out;
+}
+
 function main() {
   const { list, outDir } = parseArgs();
   if (!list || !outDir) {
-    console.error('Benutzung: node scrape-all.js --list "<spec-list.json>" --outDir "<data-raw>"');
+    console.error(
+      'Benutzung: node scrape-all.js --list "spec-list.json" --outDir "data-raw"'
+    );
     process.exit(1);
   }
 
@@ -47,28 +72,52 @@ function main() {
   let successCount = 0;
   let failCount = 0;
 
-  for (const spec of specs) {
+  for (const raw of specs) {
+    const spec = deriveUrls(raw);
     const outFile = path.join(outDir, `${spec.classToken}_${spec.specID}.json`);
     console.log(`\n=== ${spec.classToken} (Spec ${spec.specID}) ===`);
 
-    if (spec.wowheadTalentsUrl || spec.wowheadStatsUrl || spec.wowheadRotationUrl || spec.wowheadGearUrl) {
+    const hasWh =
+      spec.wowheadTalentsUrl ||
+      spec.wowheadStatsUrl ||
+      spec.wowheadRotationUrl ||
+      spec.wowheadGearUrl ||
+      spec.wowheadConsumablesUrl;
+
+    if (hasWh) {
       const args = [];
-      if (spec.wowheadTalentsUrl) args.push("--talentsUrl", spec.wowheadTalentsUrl);
+      if (spec.wowheadTalentsUrl)
+        args.push("--talentsUrl", spec.wowheadTalentsUrl);
       if (spec.wowheadStatsUrl) args.push("--statsUrl", spec.wowheadStatsUrl);
-      if (spec.wowheadRotationUrl) args.push("--rotationUrl", spec.wowheadRotationUrl);
+      if (spec.wowheadRotationUrl)
+        args.push("--rotationUrl", spec.wowheadRotationUrl);
       if (spec.wowheadGearUrl) args.push("--gearUrl", spec.wowheadGearUrl);
+      if (spec.wowheadConsumablesUrl)
+        args.push("--consumablesUrl", spec.wowheadConsumablesUrl);
       const ok = runScraper("scrape-wowhead.js", args, outFile, "wowhead");
       ok ? successCount++ : failCount++;
+      sleep(800);
     }
+
     if (spec.archonUrl) {
-      const ok = runScraper("scrape-archon.js", ["--url", spec.archonUrl], outFile, spec.archonUrl);
+      const ok = runScraper(
+        "scrape-archon.js",
+        ["--url", spec.archonUrl],
+        outFile,
+        "archon"
+      );
       ok ? successCount++ : failCount++;
+      sleep(800);
     }
   }
 
-  console.log(`\n✅ Fertig. Erfolgreich: ${successCount}, Fehlgeschlagen: ${failCount}`);
+  console.log(
+    `\n✅ Fertig. Erfolgreich: ${successCount}, Fehlgeschlagen: ${failCount}`
+  );
   if (failCount > 0) {
-    console.log("Hinweis: Fehlgeschlagene Quellen behalten die zuletzt bekannten Daten (kein Datenverlust).");
+    console.log(
+      "Hinweis: Fehlgeschlagene Quellen behalten die zuletzt bekannten Daten."
+    );
   }
 }
 
