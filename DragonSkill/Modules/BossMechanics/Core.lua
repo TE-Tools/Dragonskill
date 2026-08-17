@@ -1,4 +1,4 @@
--- Dragon Skill - Boss Mechanics Core (v1.5.9)
+-- Dragon Skill - Boss Mechanics Core (v1.6.3)
 -- Venomous Abyss + Tidebound Grotto Lair
 
 local BossMechanics = DragonSkill:RegisterModule("BossMechanics", {
@@ -15,7 +15,6 @@ function BossMechanics:RegisterBoss(id, bossTable)
     self.Bosses[id] = bossTable
     if bossTable.Name then
         self.BossesByName[string.lower(bossTable.Name)] = bossTable
-        -- kurze Aliase
         local short = bossTable.Name:match("^([^%s,]+)")
         if short then
             self.BossesByName[string.lower(short)] = bossTable
@@ -62,7 +61,12 @@ function BossMechanics:RegisterEvents()
 
     DragonSkill.Events:On("COMBAT_LOG_EVENT_UNFILTERED", function()
         if self.CurrentBoss and self.CurrentBoss.OnCombatLogEvent then
-            self.CurrentBoss:OnCombatLogEvent()
+            local ok, err = pcall(function()
+                self.CurrentBoss:OnCombatLogEvent()
+            end)
+            if not ok then
+                -- still und leise: kein Spam bei kaputten Boss-Handlern
+            end
         end
     end)
 end
@@ -74,6 +78,7 @@ function BossMechanics:Simulate(idOrName)
     end
     if not boss then
         print("|cffff0000Dragon Skill:|r Boss nicht gefunden: " .. tostring(idOrName))
+        self:ListBosses()
         return
     end
     print("|cff00ff00Dragon Skill:|r Test → " .. (boss.Name or tostring(idOrName)))
@@ -90,7 +95,7 @@ function BossMechanics:Simulate(idOrName)
     end
 end
 
--- Kompatibilität zu alten Slash-Tests
+-- Kompatibilitaet zu alten Slash-Tests
 function BossMechanics:SimulateEntombedSentinels() self:Simulate(3010) end
 function BossMechanics:SimulateNekzali() self:Simulate(3011) end
 function BossMechanics:SimulateLostExplorers() self:Simulate(3012) end
@@ -103,14 +108,24 @@ function BossMechanics:SimulateNymrissa() self:Simulate(3101) end
 
 function BossMechanics:ListBosses()
     print("|cff00ff00Dragon Skill – Bosses (Venomous Abyss + Lair):|r")
-    local ordered = {
-        3011, 3010, 3013, 3012, 3014, 3015, 3016, 3017, 3101,
-    }
+    local ordered = { 3011, 3010, 3013, 3012, 3014, 3015, 3016, 3017, 3101 }
+    local count = 0
     for _, id in ipairs(ordered) do
         local b = self.Bosses[id]
         if b then
-            print(string.format("  %d  %s", id, b.Name or "?"))
+            print(string.format("  |cffffd100%d|r  %s", id, b.Name or "?"))
+            count = count + 1
         end
+    end
+    -- Fallback: alle registrierten
+    if count == 0 then
+        for id, b in pairs(self.Bosses) do
+            print(string.format("  |cffffd100%s|r  %s", tostring(id), b.Name or "?"))
+            count = count + 1
+        end
+    end
+    if count == 0 then
+        print("  |cffffaa00Keine Bosse geladen (Boss-Dateien pruefen).|r")
     end
     print("  /ds boss <name|id>   ·  /ds boss list")
 end
