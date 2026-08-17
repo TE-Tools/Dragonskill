@@ -1,12 +1,12 @@
 name: Auto-Scrape Guide Data
 
-# Läuft automatisch mehrmals pro Woche + manuell auslösbar.
-# Scraped alle konfigurierten Specs (siehe scraper/spec-list.json), baut GuideData.lua
-# und committed die Änderung, falls sich etwas geändert hat.
 on:
   schedule:
-    - cron: "0 6 * * 1,4"   # Montag + Donnerstag, 06:00 UTC
-  workflow_dispatch: {}       # manuell über GitHub UI startbar
+    - cron: "0 6 * * 1,4"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
 
 jobs:
   scrape:
@@ -14,6 +14,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Node.js einrichten
         uses: actions/setup-node@v4
@@ -30,16 +32,16 @@ jobs:
 
       - name: JSON zu Lua konvertieren
         working-directory: scraper
-        run: node build-data.js --dataDir data-raw --out ../addon/Data/GuideData.lua
+        run: node build-data.js --dataDir data-raw --out ../DragonSkill/Data/GuideData.lua
 
       - name: Änderungen committen (falls vorhanden)
         run: |
           git config user.name "dragon-skill-bot"
           git config user.email "actions@github.com"
-          git add addon/Data/GuideData.lua scraper/data-raw
+          git add DragonSkill/Data/GuideData.lua scraper/data-raw || true
           if git diff --cached --quiet; then
             echo "Keine Änderungen an den Guide-Daten."
           else
             git commit -m "chore: automatischer Guide-Daten Scrape ($(date -u +%Y-%m-%d))"
-            git push
+            git push origin HEAD:main
           fi
