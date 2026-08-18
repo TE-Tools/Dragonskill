@@ -87,7 +87,6 @@ function UI:CreateFrame()
     close:RegisterForClicks("AnyUp")
     close:SetScript("OnClick", function()
         frame:Hide()
-        -- Overlay manuell zu: Simulation beenden, damit es nicht wieder aufpoppt
         if activeBoss then
             activeBoss = nil
         end
@@ -208,7 +207,6 @@ function UI:Toggle()
     end
 end
 
--- Slash-Hilfe Erweiterung
 DragonSkill.Events:On("PLAYER_LOGIN", function()
     UI:CreateFrame()
 end)
