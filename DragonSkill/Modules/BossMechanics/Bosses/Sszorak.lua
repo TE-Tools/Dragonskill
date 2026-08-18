@@ -1,58 +1,30 @@
--- Dragon Skill - Boss: Sszorak (Wind Tunnel & Cysts)
-local BossMechanics = DragonSkill:GetModule("BossMechanics")
+-- Sszorak – Boss 5 Venomous Abyss (Encounter 3014)
+-- Platform-Push-Fight. Rings / Edge-Management.
 
 local Boss = {
-    Name = "Sszorak",
     ID = 3014,
-    CystSpellID = 458000, -- Placeholder
-    players = {},
-    windOrder = {}
+    Name = "Sszorak",
+    Aliases = { "sszorak", "ssz" },
+    Phase = "Platform – Edge Control",
+    Tip = "Boss versucht die Raid von der Plattform zu schieben. Ringe springen (Achievement). Nicht am Rand stehen, wenn Knockback kommt.",
+    Timers = {
+        { key = "push", name = "Platform Push", duration = 30, r = 0.3, g = 0.6, b = 1 },
+        { key = "rings", name = "Rings", duration = 45, r = 1, g = 0.8, b = 0.2 },
+    },
 }
 
 function Boss:OnStart()
-    self.players = {}
-    self.windOrder = {}
-end
-
-function Boss:OnCombatLogEvent(...)
-    local _, event, _, _, sourceName, _, _, _, destName, _, _, spellID = CombatLogGetCurrentEventInfo()
-
-    if spellID == self.CystSpellID then
-        if event == "SPELL_AURA_APPLIED" then
-            self:AssignCyst(destName)
-        end
-    end
-end
-
-function Boss:AssignCyst(name)
-    -- Logik: Weise Spieler einem Tunnel zu (1, 2 oder 3 Orbs)
-    local tunnel = #self.players % 3 + 1
-    self.players[name] = tunnel
-    self:UpdateUI()
-end
-
-function Boss:UpdateUI()
-    local list = {}
-    for name, tunnel in pairs(self.players) do
-        table.insert(list, { name = name .. " -> TUNNEL " .. tunnel, stacks = tunnel })
-    end
-
     if DragonSkill.BossMechanicsUI then
-        DragonSkill.BossMechanicsUI:UpdatePairs({}, list)
+        DragonSkill.BossMechanicsUI:SetPhase(self.Phase)
+        DragonSkill.BossMechanicsUI:SetTip(self.Tip)
     end
 end
+
+function Boss:OnEnd() end
+function Boss:OnCombatLogEvent() end
 
 function Boss:SimulateStart()
-    self.players = {
-        ["Player1"] = 1,
-        ["Player2"] = 2,
-        ["Player3"] = 3
-    }
-    self:UpdateUI()
-    if DragonSkill.BossMechanicsUI then
-        DragonSkill.BossMechanicsUI:ShowBigWarning("SSZORAK: DROP CYSTS OPPOSITE WIND!", 5)
-        BossMechanics:PlaySound("INTERMISSION")
-    end
+    print("|cff00ff00DS BossSim:|r Sszorak – Plattform-Push, Ringe springen.")
 end
 
-BossMechanics:RegisterBoss(Boss.ID, Boss)
+DragonSkill.BossMechanics:RegisterBoss(3014, Boss)

@@ -1,70 +1,62 @@
--- Dragon Skill - Boss: Nek'zali the Soulcoiler
-local BossMechanics = DragonSkill:GetModule("BossMechanics")
+-- Nek'zali the Soulcoiler – Boss 1 Venomous Abyss (Encounter 3011)
 
 local Boss = {
-    Name = "Nek'zali the Soulcoiler",
     ID = 3011,
-    EnergySpellID = 456000, -- Placeholder
-    adds = {}
+    Name = "Nek'zali the Soulcoiler",
+    Aliases = { "nekzali", "nek", "soulcoiler" },
+    Phase = "Stufe 1 – Soulcoiler",
+    Tip = "Restless Amani NICHT zum Soulcoil Well laufen lassen. Bei 50% Intermission: Echoes of Jawae killen → Tethers trennen.",
+    Timers = {
+        { key = "rite", name = "Soulcoil Rite", duration = 28, r = 0.6, g = 0.2, b = 0.9 },
+        { key = "adds", name = "Restless Amani", duration = 35, r = 0.9, g = 0.4, b = 0.2 },
+    },
 }
 
 function Boss:OnStart()
-    self.adds = {}
-    self:StartEnergyTracking()
-end
-
-function Boss:StartEnergyTracking()
-    C_Timer.NewTicker(1, function()
-        if BossMechanics.CurrentBoss ~= self then return end
-
-        -- In Midnight raids, energy is often tracked via UnitPower("boss1", 10)
-        local power = UnitPower("boss1", 10)
-        if power == 0 and self.simulatedPower then
-            power = self.simulatedPower
-            self.simulatedPower = math.min(100, self.simulatedPower + 2)
-        end
-
-        if DragonSkill.BossMechanicsUI then
-            DragonSkill.BossMechanicsUI:UpdateStatus(string.format("Soulcoil Well: %d%%", power))
-            if power >= 90 then
-                DragonSkill.BossMechanicsUI:ShowBigWarning("|cffff0000WARNING: SOULCOIL WELL FULL!|r", 2)
-                BossMechanics:PlaySound("WARNING")
-            end
-        end
-    end)
-end
-
-function Boss:OnCombatLogEvent(...)
-    local _, event, _, _, sourceName, _, _, _, destName, _, _, spellID = CombatLogGetCurrentEventInfo()
-
-    -- Example: Tracking raised adds
-    if event == "SPELL_SUMMON" then
-        self.adds[destName] = true
-        self:UpdateUI()
-    elseif event == "UNIT_DIED" then
-        self.adds[destName] = nil
-        self:UpdateUI()
-    end
-end
-
-function Boss:UpdateUI()
-    local addList = {}
-    for name, _ in pairs(self.adds) do
-        table.insert(addList, {name = name, stacks = 0})
-    end
-
+    self.Phase = "Stufe 1 – Soulcoiler"
     if DragonSkill.BossMechanicsUI then
-        DragonSkill.BossMechanicsUI:UpdatePairs({}, addList) -- Use open list for adds
+        DragonSkill.BossMechanicsUI:SetPhase(self.Phase)
+        DragonSkill.BossMechanicsUI:SetTip(self.Tip)
+    end
+end
+
+function Boss:OnEnd() end
+
+function Boss:OnCombatLogEvent()
+    local _, subEvent, _, _, _, _, _, _, destName, _, _, spellId, spellName = CombatLogGetCurrentEventInfo()
+    if subEvent == "SPELL_CAST_SUCCESS" or subEvent == "SPELL_CAST_START" then
+        if spellId == 1284033 or (spellName and spellName:find("Soulcoil Rite")) then
+            if DragonSkill.BossMechanicsUI then
+                DragonSkill.BossMechanicsUI:StartTimer("rite", "Soulcoil Rite", 28, 0.6, 0.2, 0.9)
+            end
+            DragonSkill.BossMechanics:PlaySound("WARNING")
+        elseif spellId == 1284034 or (spellName and spellName:find("Uncoiled Rage")) then
+            self.Phase = "Stufe 2 – Uncoiling (BURN)"
+            if DragonSkill.BossMechanicsUI then
+                DragonSkill.BossMechanicsUI:SetPhase(self.Phase)
+                DragonSkill.BossMechanicsUI:SetTip("Uncoiled Rage aktiv – maximaler DPS, Taunt-Immunitaet beachten!")
+            end
+            DragonSkill.BossMechanics:PlaySound("CRITICAL")
+        end
     end
 end
 
 function Boss:SimulateStart()
-    self.adds = { ["Amani Brute"] = true, ["Amani Shaman"] = true }
-    self.simulatedPower = 40
-    self:UpdateUI()
+    print("|cff00ff00DS BossSim:|r Nek'zali – Stufe 1. Amani vom Well fernhalten.")
     if DragonSkill.BossMechanicsUI then
-        DragonSkill.BossMechanicsUI:ShowBigWarning("NEK'ZALI: PROTECT THE WELL!", 5)
+        DragonSkill.BossMechanicsUI:StartTimer("rite", "Soulcoil Rite", 28, 0.6, 0.2, 0.9)
+        DragonSkill.BossMechanicsUI:StartTimer("adds", "Restless Amani", 35, 0.9, 0.4, 0.2)
     end
 end
 
-BossMechanics:RegisterBoss(Boss.ID, Boss)
+function Boss:SimulateIntermission()
+    self.Phase = "Intermission – Ritual of Awakening"
+    if DragonSkill.BossMechanicsUI then
+        DragonSkill.BossMechanicsUI:SetPhase(self.Phase)
+        DragonSkill.BossMechanicsUI:SetTip("Echoes of Jawae toeten → Tethers of Awakening trennen. Hungering Pyre soaken.")
+        DragonSkill.BossMechanicsUI:StartTimer("inter", "Ritual of Awakening", 45, 1, 0.3, 0.3)
+    end
+    DragonSkill.BossMechanics:PlaySound("INTERMISSION")
+end
+
+DragonSkill.BossMechanics:RegisterBoss(3011, Boss)

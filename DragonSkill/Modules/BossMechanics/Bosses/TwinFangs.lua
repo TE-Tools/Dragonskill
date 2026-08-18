@@ -1,71 +1,30 @@
--- Dragon Skill - Boss: Twin Fangs (Stack Management)
-local BossMechanics = DragonSkill:GetModule("BossMechanics")
+-- The Twin Fangs – Boss 6 Venomous Abyss (Encounter 3015)
+-- Zwei Bosse, Debuff-Management, Group-Soak, Add das stärker wird.
 
 local Boss = {
-    Name = "Twin Fangs",
     ID = 3015,
-    VenomSpellID = 459000, -- Placeholder for Eternal Venom
-    stacks = {}
+    Name = "The Twin Fangs",
+    Aliases = { "twin", "fangs", "twins" },
+    Phase = "Twin – Debuff + Soak",
+    Tip = "Debuffs tracken. Group-Soak rechtzeitig. Add wird stärker je mehr Debuffs entfernt werden – timing beachten. Stationärer Fight.",
+    Timers = {
+        { key = "soak", name = "Group Soak", duration = 25, r = 0.9, g = 0.2, b = 0.5 },
+        { key = "debuff", name = "Debuff Cycle", duration = 18, r = 0.6, g = 0.9, b = 0.2 },
+    },
 }
 
 function Boss:OnStart()
-    self.stacks = {}
-    self:StartStackScanner()
-end
-
-function Boss:StartStackScanner()
-    C_Timer.NewTicker(2, function()
-        if BossMechanics.CurrentBoss ~= self then return end
-
-        local unitPrefix = IsInRaid() and "raid" or "party"
-        local num = GetNumGroupMembers()
-
-        for i = 1, num do
-            local unit = unitPrefix .. i
-            local name = GetUnitName(unit, true)
-            if name then
-                local aura = C_UnitAuras.GetAuraDataBySpellID(unit, self.VenomSpellID)
-                if aura then
-                    self.stacks[name] = aura.applications or 0
-                else
-                    self.stacks[name] = 0
-                end
-            end
-        end
-        self:UpdateUI()
-    end)
-end
-
-function Boss:UpdateUI()
-    local highStacks = {}
-    for name, count in pairs(self.stacks) do
-        if count >= 7 then
-            table.insert(highStacks, { name = name, stacks = count })
-        end
-    end
-
-    table.sort(highStacks, function(a, b) return a.stacks > b.stacks end)
-
     if DragonSkill.BossMechanicsUI then
-        DragonSkill.BossMechanicsUI:UpdatePairs({}, highStacks)
-        if #highStacks > 0 and highStacks[1].stacks >= 9 then
-            DragonSkill.BossMechanicsUI:ShowBigWarning("CRITICAL STACKS: " .. highStacks[1].name:upper(), 2)
-            BossMechanics:PlaySound("CRITICAL")
-        end
+        DragonSkill.BossMechanicsUI:SetPhase(self.Phase)
+        DragonSkill.BossMechanicsUI:SetTip(self.Tip)
     end
 end
+
+function Boss:OnEnd() end
+function Boss:OnCombatLogEvent() end
 
 function Boss:SimulateStart()
-    self.stacks = {
-        ["Thomas"] = 9,
-        ["Lisa"] = 4,
-        ["Kevin"] = 7,
-        ["Anna"] = 2
-    }
-    self:UpdateUI()
-    if DragonSkill.BossMechanicsUI then
-        DragonSkill.BossMechanicsUI:ShowBigWarning("TWIN FANGS: WATCH YOUR STACKS!", 5)
-    end
+    print("|cff00ff00DS BossSim:|r Twin Fangs – Debuffs + Group-Soak, Add-Stärke beobachten.")
 end
 
-BossMechanics:RegisterBoss(Boss.ID, Boss)
+DragonSkill.BossMechanics:RegisterBoss(3015, Boss)
