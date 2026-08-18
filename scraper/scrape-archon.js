@@ -1,5 +1,6 @@
 /**
- * Dragon Skill - Archon.gg Scraper (v1.6.2)
+ * Dragon Skill - Archon.gg Scraper (v1.6.3)
+ * Overview (Gear/Talents/Stats) + Consumables-Seite
  */
 const fs = require("fs");
 const path = require("path");
@@ -63,7 +64,7 @@ function extractStatPriority(page) {
 function parseGearIcon(iconStr) {
   if (!iconStr || typeof iconStr !== "string") return null;
   const idMatch = iconStr.match(/id=\{(\d+)\}/);
-  const nameMatch = iconStr.match(/>([^<]+)<\/GearIcon>/);
+  const nameMatch = iconStr.match(/>([^<]+)<\/GearIcon>/) || iconStr.match(/>([^<]+)<\/ItemIcon>/);
   const itemId = idMatch ? parseInt(idMatch[1], 10) : null;
   const name = nameMatch ? nameMatch[1].trim() : null;
   if (!itemId && !name) return null;
@@ -99,7 +100,14 @@ function extractBiS(page) {
         if (entry.isPlaceholder) continue;
         const parsed = parseGearIcon(entry.icon);
         if (!parsed) continue;
-        target.push({ text: parsed.text, name: parsed.name, itemId: parsed.itemId, slot: defaultSlot || null, popularity: entry.topLabel || null });
+        target.push({
+          text: parsed.text,
+          name: parsed.name,
+          itemId: parsed.itemId,
+          slot: defaultSlot || null,
+          popularity: entry.topLabel || null,
+          rank: entry.topLabel || null,
+        });
         for (const e of parsed.enchants || []) {
           const key = e.itemId || e.text;
           if (key && !enchantsMap.has(key)) enchantsMap.set(key, e);
@@ -118,37 +126,153 @@ function extractBiS(page) {
   return { gear: combinedGear, weapons, trinkets, enchants: [...enchantsMap.values()], gems: [...gemsMap.values()] };
 }
 
+/** Consumables aus BuildsBestConsumablesSection (+ optional Tables) */
+function extractConsumables(page) {
+  const out = [];
+  const seen = new Set();
+  const push = (itemId, name, slot, rank) => {
+    const key = String(itemId || "") + "|" + String(name || "");
+    if (key === "|" || seen.has(key)) return;
+    seen.add(key);
+    out.push({
+      text: name,
+      name: name,
+      itemId: itemId || null,
+      spellId: null,
+      slot: slot || null,
+      rank: rank || null,
+    });
+  };
+
+  for (const section of (page && page.sections) || []) {
+    if (section.component === "BuildsBestConsumablesSection") {
+      for (const entry of (section.props && section.props.itemBreakdowns) || []) {
+        const md = entry.itemMarkdown || "";
+        const parsed = parseGearIcon(md);
+        const slot = entry.slotLabel || null;
+        const rank = (entry.popularityMarkdown || "").replace(/<[^>]+>/g, "").trim() || null;
+        if (parsed) push(parsed.itemId, parsed.name || parsed.text, slot, rank);
+      }
+    }
+    if (section.component === "BuildsConsumableTablesSection") {
+      for (const table of (section.props && section.props.tables) || []) {
+        let slot = null;
+        const itemCol = table.columns && table.columns.item;
+        if (itemCol && itemCol.header) {
+          const hm = String(itemCol.header).match(/>([^<]+)<\/ImageIcon>/) || String(itemCol.header).match(/>([^<]+)</);
+          if (hm) slot = hm[1].trim();
+        }
+        for (const row of table.data || []) {
+          const itemMd = row.item || "";
+          const idMatch = itemMd.match(/id=\{(\d+)\}/);
+          const nameMatch = itemMd.match(/>([^<]+)<\/ItemIcon>/) || itemMd.match(/>([^<]+)<\/GearIcon>/);
+          const itemId = idMatch ? parseInt(idMatch[1], 10) : null;
+          const name = nameMatch ? nameMatch[1].trim() : null;
+          let rank = null;
+          if (row.popularity) rank = String(row.popularity).replace(/<[^>]+>/g, "").trim();
+          if (name || itemId) push(itemId, name, slot, rank);
+        }
+      }
+    }
+  }
+  return out;
+}
+
+function deriveConsumablesUrl(overviewUrl) {
+  if (!overviewUrl) return null;
+  return overviewUrl.replace(/\/overview\//, "/consumables/");
+}
+
 async function main() {
   const { url, out } = parseArgs();
-  if (!url || !out) { console.error('Usage: node scrape-archon.js --url "..." --out "..."'); process.exit(1); }
+  if (!url || !out) {
+    console.error('Usage: node scrape-archon.js --url "..." --out "..."');
+    process.exit(1);
+  }
   console.log(`Lade ${url} ...`);
   const html = await fetchPage(url);
   const nextData = extractNextData(html);
   if (!nextData) throw new Error("Konnte __NEXT_DATA__ nicht finden");
   const page = getPage(nextData);
+
   let builds = extractTalentBuilds(page);
   const seen = new Set();
-  builds = builds.filter((b) => { if (seen.has(b.importString)) return false; seen.add(b.importString); return true; }).map((b) => ({ ...b, provider: "archon" }));
+  builds = builds
+    .filter((b) => {
+      if (seen.has(b.importString)) return false;
+      seen.add(b.importString);
+      return true;
+    })
+    .map((b) => ({ ...b, provider: "archon" }));
+
   const statPrio = extractStatPriority(page);
   const bis = extractBiS(page);
-  let trinkets = bis.trinkets.map((t) => ({ name: t.name || t.text, text: t.text || t.name, rank: t.rank || t.popularity || null, itemId: t.itemId || null, popularity: t.popularity || null }));
-  console.log(`✅ ${builds.length} Builds, ${bis.gear.length} Gear, ${trinkets.length} Trinkets, ${bis.enchants.length} Enchants, ${bis.gems.length} Gems`);
+  let trinkets = bis.trinkets.map((t) => ({
+    name: t.name || t.text,
+    text: t.text || t.name,
+    rank: t.rank || t.popularity || null,
+    itemId: t.itemId || null,
+    popularity: t.popularity || null,
+  }));
+
+  let consumables = [];
+  const consUrl = deriveConsumablesUrl(url);
+  if (consUrl && consUrl !== url) {
+    try {
+      console.log(`Lade Consumables ${consUrl} ...`);
+      const consHtml = await fetchPage(consUrl);
+      const consNext = extractNextData(consHtml);
+      const consPage = getPage(consNext);
+      consumables = extractConsumables(consPage);
+    } catch (e) {
+      console.warn("Consumables-Seite fehlgeschlagen:", e.message);
+    }
+  }
+
+  console.log(
+    `✅ ${builds.length} Builds, ${bis.gear.length} Gear, ${trinkets.length} Trinkets, ${bis.enchants.length} Enchants, ${bis.gems.length} Gems, ${consumables.length} Consumables`
+  );
+
   const outPath = path.resolve(out);
   const existing = fs.existsSync(outPath) ? JSON.parse(fs.readFileSync(outPath, "utf-8")) : { talentBuilds: [] };
   const keptBuilds = (existing.talentBuilds || []).filter((b) => b.provider !== "archon");
+
   const data = {
     ...existing,
     scrapedAt: new Date().toISOString(),
-    statPriority: { ...(existing.statPriority || {}), archon: statPrio || (existing.statPriority && existing.statPriority.archon) || null },
-    bisGear: { ...(existing.bisGear || {}), archon: bis.gear.length > 0 ? bis.gear : (existing.bisGear && existing.bisGear.archon) || [] },
-    enchants: { ...(existing.enchants || {}), archon: bis.enchants.length > 0 ? bis.enchants : (existing.enchants && existing.enchants.archon) || [] },
-    gems: { ...(existing.gems || {}), archon: bis.gems.length > 0 ? bis.gems : (existing.gems && existing.gems.archon) || [] },
-    trinkets: { ...(existing.trinkets || {}), archon: trinkets.length > 0 ? trinkets : (existing.trinkets && existing.trinkets.archon) || [] },
-    consumables: { ...(existing.consumables || {}), archon: (existing.consumables && existing.consumables.archon) || [] },
+    statPriority: {
+      ...(existing.statPriority || {}),
+      archon: statPrio || (existing.statPriority && existing.statPriority.archon) || null,
+    },
+    bisGear: {
+      ...(existing.bisGear || {}),
+      archon: bis.gear.length > 0 ? bis.gear : (existing.bisGear && existing.bisGear.archon) || [],
+    },
+    enchants: {
+      ...(existing.enchants || {}),
+      archon: bis.enchants.length > 0 ? bis.enchants : (existing.enchants && existing.enchants.archon) || [],
+    },
+    gems: {
+      ...(existing.gems || {}),
+      archon: bis.gems.length > 0 ? bis.gems : (existing.gems && existing.gems.archon) || [],
+    },
+    trinkets: {
+      ...(existing.trinkets || {}),
+      archon: trinkets.length > 0 ? trinkets : (existing.trinkets && existing.trinkets.archon) || [],
+    },
+    consumables: {
+      ...(existing.consumables || {}),
+      archon: consumables.length > 0 ? consumables : (existing.consumables && existing.consumables.archon) || [],
+    },
     talentBuilds: [...keptBuilds, ...builds],
   };
+
   fs.mkdirSync(path.dirname(outPath), { recursive: true });
   fs.writeFileSync(outPath, JSON.stringify(data, null, 2), "utf-8");
   console.log(`Gespeichert: ${outPath}`);
 }
-main().catch((err) => { console.error("Fehler:", err.message); process.exit(1); });
+
+main().catch((err) => {
+  console.error("Fehler:", err.message);
+  process.exit(1);
+});

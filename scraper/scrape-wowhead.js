@@ -22,7 +22,7 @@ async function fetchPage(url) {
     const res = await fetch(url, {
       headers: {
         "User-Agent":
-          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36",
+          "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
         Accept:
           "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
         "Accept-Language": "en-US,en;q=0.9",
@@ -141,7 +141,6 @@ function extractListByKeywords(markup, keywords) {
       const spellID = (li.match(/\[spell=(\d+)/i) || [])[1];
       const text = li.replace(/\[[^\]]+\]/g, "").replace(/\s+/g, " ").trim();
       if (isJunkText(text)) continue;
-      // Navigationslisten haben meist weder item noch spell
       if (!itemID && !spellID && text.length < 20) continue;
       results.push({
         text,
