@@ -1,64 +1,41 @@
--- Dragon Skill - Boss: Vashnik the Malignant
-local BossMechanics = DragonSkill:GetModule("BossMechanics")
+-- Vashnik the Malignant – Boss 4 Venomous Abyss (Encounter 3013)
+-- Altäre (Fire/Shadow/Blood). Position entscheidet, welche empowered werden.
 
 local Boss = {
+    ID = 3013,
     Name = "Vashnik the Malignant",
-    ID = 3013, -- Placeholder for Patch 12.1
-    quadrants = {
-        ["TOPLEFT"] = "Clear",
-        ["TOPRIGHT"] = "Clear",
-        ["BOTTOMLEFT"] = "Clear",
-        ["BOTTOMRIGHT"] = "Clear"
-    }
+    Aliases = { "vashnik", "malignant" },
+    Phase = "Altäre – Position steuern",
+    Tip = "Boss zu den zwei gewünschten Altären positionieren. Nie denselben Altar 2x hintereinander. Adds vom Altar nicht ins Zentrum lassen.",
+    Timers = {
+        { key = "imbibe", name = "Imbibe / Empower", duration = 35, r = 0.9, g = 0.3, b = 0.1 },
+        { key = "adds", name = "Altar-Adds", duration = 22, r = 0.7, g = 0.2, b = 0.8 },
+    },
 }
 
 function Boss:OnStart()
-    self.quadrants = {
-        ["TOPLEFT"] = "Clear",
-        ["TOPRIGHT"] = "Clear",
-        ["BOTTOMLEFT"] = "Clear",
-        ["BOTTOMRIGHT"] = "Clear"
-    }
-end
-
-function Boss:OnCombatLogEvent(...)
-    local _, event, _, _, sourceName, _, _, _, destName, _, _, spellID = CombatLogGetCurrentEventInfo()
-
-    -- "Toxic Distillation" logic (Example SpellIDs)
-    if spellID == 457001 then -- Acid Distillation
-        self:UpdateQuadrant("TOPLEFT", "Acid")
-    elseif spellID == 457002 then -- Blood Distillation
-        self:UpdateQuadrant("TOPRIGHT", "Blood")
-    end
-end
-
-function Boss:UpdateQuadrant(name, type)
-    self.quadrants[name] = type
-    self:UpdateUI()
-end
-
-function Boss:UpdateUI()
-    local list = {}
-    for q, t in pairs(self.quadrants) do
-        local color = "|cffffffff"
-        if t == "Acid" then color = "|cff00ff00"
-        elseif t == "Blood" then color = "|cffff0000" end
-        table.insert(list, { name = q .. ": " .. color .. t .. "|r", stacks = 0 })
-    end
-
     if DragonSkill.BossMechanicsUI then
-        DragonSkill.BossMechanicsUI:UpdatePairs({}, list)
+        DragonSkill.BossMechanicsUI:SetPhase(self.Phase)
+        DragonSkill.BossMechanicsUI:SetTip(self.Tip)
+    end
+end
+
+function Boss:OnEnd() end
+
+function Boss:OnCombatLogEvent()
+    local _, subEvent, _, _, _, _, _, _, _, _, _, spellId, spellName = CombatLogGetCurrentEventInfo()
+    if subEvent == "SPELL_CAST_SUCCESS" or subEvent == "SPELL_CAST_START" then
+        if spellName and (spellName:find("Imbibe") or spellName:find("Empower")) then
+            if DragonSkill.BossMechanicsUI then
+                DragonSkill.BossMechanicsUI:StartTimer("imbibe", "Imbibe", 35, 0.9, 0.3, 0.1)
+            end
+            DragonSkill.BossMechanics:PlaySound("WARNING")
+        end
     end
 end
 
 function Boss:SimulateStart()
-    self.quadrants["TOPLEFT"] = "Acid"
-    self.quadrants["BOTTOMRIGHT"] = "Blood"
-    self:UpdateUI()
-    if DragonSkill.BossMechanicsUI then
-        DragonSkill.BossMechanicsUI:ShowBigWarning("VASHNIK: WATCH THE QUADRANTS!", 5)
-        BossMechanics:PlaySound("INTERMISSION")
-    end
+    print("|cff00ff00DS BossSim:|r Vashnik – Altäre wechseln, Adds cleaven.")
 end
 
-BossMechanics:RegisterBoss(Boss.ID, Boss)
+DragonSkill.BossMechanics:RegisterBoss(3013, Boss)
