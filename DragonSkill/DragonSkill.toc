@@ -10,6 +10,7 @@ Core\Namespace.lua
 Core\EventManager.lua
 Core\Database.lua
 Data\GuideData.lua
+Data\TalentOverrides.lua
 Modules\TalentCompare\TalentCompare.lua
 Modules\StatPriority\StatPriority.lua
 Modules\Trinkets\Trinkets.lua
