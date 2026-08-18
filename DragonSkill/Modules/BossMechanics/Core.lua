@@ -8,7 +8,6 @@ local BossMechanics = DragonSkill:RegisterModule("BossMechanics", {
     BossesByName = {},
     CurrentBoss = nil,
 })
--- Globale Referenz fuer Boss-Dateien (RegisterBoss) und UI
 DragonSkill.BossMechanics = BossMechanics
 
 function BossMechanics:Init()
@@ -35,8 +34,16 @@ function BossMechanics:FindBoss(encounterID, encounterName)
     if encounterID and self.Bosses[encounterID] then
         return self.Bosses[encounterID]
     end
-    if encounterName and self.BossesByName[string.lower(encounterName)] then
-        return self.BossesByName[string.lower(encounterName)]
+    if encounterName then
+        local key = string.lower(encounterName)
+        if self.BossesByName[key] then
+            return self.BossesByName[key]
+        end
+        for name, boss in pairs(self.BossesByName) do
+            if key:find(name, 1, true) or name:find(key, 1, true) then
+                return boss
+            end
+        end
     end
     return nil
 end
@@ -65,11 +72,7 @@ function BossMechanics:RegisterEvents()
 
     DragonSkill.Events:On("COMBAT_LOG_EVENT_UNFILTERED", function()
         if self.CurrentBoss and self.CurrentBoss.OnCombatLogEvent then
-            local ok, err = pcall(function()
-                self.CurrentBoss:OnCombatLogEvent()
-            end)
-            if not ok then
-            end
+            pcall(function() self.CurrentBoss:OnCombatLogEvent() end)
         end
     end)
 end
@@ -77,7 +80,7 @@ end
 function BossMechanics:Simulate(idOrName)
     local boss = self.Bosses[idOrName]
     if not boss and type(idOrName) == "string" then
-        boss = self.BossesByName[string.lower(idOrName)]
+        boss = self:FindBoss(nil, idOrName)
     end
     if not boss then
         print("|cffff0000Dragon Skill:|r " .. string.format(L.BOSS_NOT_FOUND or "Boss nicht gefunden: %s", tostring(idOrName)))
@@ -97,16 +100,6 @@ function BossMechanics:Simulate(idOrName)
         boss:SimulateIntermission()
     end
 end
-
-function BossMechanics:SimulateEntombedSentinels() self:Simulate(3010) end
-function BossMechanics:SimulateNekzali() self:Simulate(3011) end
-function BossMechanics:SimulateLostExplorers() self:Simulate(3012) end
-function BossMechanics:SimulateVashnik() self:Simulate(3013) end
-function BossMechanics:SimulateSszorak() self:Simulate(3014) end
-function BossMechanics:SimulateTwinFangs() self:Simulate(3015) end
-function BossMechanics:SimulateCoiledAltar() self:Simulate(3016) end
-function BossMechanics:SimulateUlatek() self:Simulate(3017) end
-function BossMechanics:SimulateNymrissa() self:Simulate(3101) end
 
 function BossMechanics:ListBosses()
     print("|cff00ff00" .. (L.BOSS_LIST_TITLE or "Dragon Skill – Bosse:") .. "|r")
