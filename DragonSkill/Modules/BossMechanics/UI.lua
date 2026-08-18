@@ -1,7 +1,9 @@
 -- Dragon Skill - Boss Mechanics UI (v1.6.3)
+-- LOCALE-WIRE deDE/enUS
 -- Overlay: Timer + Helical-Toxins-Paare (1+3 / 2+2) mit farbigen Zeichen
 
 local UI = {}
+local L = DragonSkill.L or {}
 DragonSkill.BossMechanicsUI = UI
 
 local frame, title, phaseText, tipText
@@ -33,20 +35,16 @@ local function CreateTimerBar(parent, index)
     bar:SetValue(0)
     bar:SetPoint("TOPLEFT", parent, "TOPLEFT", 12, -55 - (index - 1) * 20)
     bar:Hide()
-
     local bg = bar:CreateTexture(nil, "BACKGROUND")
     bg:SetAllPoints()
     bg:SetColorTexture(0.1, 0.1, 0.1, 0.7)
-
     local label = bar:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
     label:SetPoint("LEFT", bar, "LEFT", 4, 0)
     label:SetJustifyH("LEFT")
     bar.label = label
-
     local timeLabel = bar:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
     timeLabel:SetPoint("RIGHT", bar, "RIGHT", -4, 0)
     bar.timeLabel = timeLabel
-
     bar.duration = 0
     bar.expires = 0
     bar.key = nil
@@ -55,7 +53,6 @@ end
 
 function UI:CreateFrame()
     if frame then return end
-
     frame = CreateFrame("Frame", "DragonSkillBossFrame", UIParent, "BackdropTemplate")
     frame:SetSize(360, 420)
     frame:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", -40, -160)
@@ -76,7 +73,6 @@ function UI:CreateFrame()
     title = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
     title:SetPoint("TOP", frame, "TOP", 0, -12)
     title:SetTextColor(1, 0.82, 0)
-
     phaseText = frame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
     phaseText:SetPoint("TOP", title, "BOTTOM", 0, -4)
     phaseText:SetTextColor(0.6, 0.9, 1)
@@ -87,7 +83,7 @@ function UI:CreateFrame()
 
     pairsTitle = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
     pairsTitle:SetPoint("TOPLEFT", frame, "TOPLEFT", 14, -175)
-    pairsTitle:SetText("|cffffd100Paare (1+3 / 2+2)|r")
+    pairsTitle:SetText("|cffffd100" .. (L.PAIRS or "Paare (1+3 / 2+2)") .. "|r")
     pairsTitle:Hide()
 
     pairsContainer = CreateFrame("Frame", nil, frame)
@@ -96,7 +92,7 @@ function UI:CreateFrame()
 
     openTitle = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
     openTitle:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -18, -175)
-    openTitle:SetText("|cffaaaaaaOffen|r")
+    openTitle:SetText("|cffaaaaaa" .. (L.OPEN or "Offen") .. "|r")
     openTitle:Hide()
 
     openContainer = CreateFrame("Frame", nil, frame)
@@ -124,15 +120,14 @@ function UI:CreateFrame()
     end)
     close:SetScript("OnEnter", function(self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        GameTooltip:SetText("Schliessen", 1, 1, 1)
-        GameTooltip:AddLine("ESC oder X", 0.7, 0.7, 0.7)
+        GameTooltip:SetText(L.CLOSE or "Schliessen", 1, 1, 1)
+        GameTooltip:AddLine(L.CLOSE_HINT or "ESC oder X", 0.7, 0.7, 0.7)
         GameTooltip:Show()
     end)
     close:SetScript("OnLeave", function() GameTooltip:Hide() end)
     frame.closeButton = close
 
     tinsert(UISpecialFrames, "DragonSkillBossFrame")
-
     frame:SetScript("OnUpdate", function(self, elapsed)
         UI:OnUpdate(elapsed)
     end)
@@ -195,17 +190,11 @@ function UI:StartTimer(key, name, duration, r, g, b)
     if not frame or not frame:IsShown() then return end
     local bar
     for i = 1, MAX_TIMERS do
-        if timerBars[i].key == key then
-            bar = timerBars[i]
-            break
-        end
+        if timerBars[i].key == key then bar = timerBars[i]; break end
     end
     if not bar then
         for i = 1, MAX_TIMERS do
-            if not timerBars[i]:IsShown() then
-                bar = timerBars[i]
-                break
-            end
+            if not timerBars[i]:IsShown() then bar = timerBars[i]; break end
         end
     end
     if not bar then return end
@@ -227,8 +216,7 @@ function UI:OnUpdate(elapsed)
         if bar:IsShown() and bar.expires then
             local remaining = bar.expires - now
             if remaining <= 0 then
-                bar:Hide()
-                bar.key = nil
+                bar:Hide(); bar.key = nil
             else
                 bar:SetValue(remaining)
                 bar.timeLabel:SetText(string.format("%.1f", remaining))
@@ -247,13 +235,10 @@ end
 function UI:UpdatePairs(pairs, openPlayers)
     self:CreateFrame()
     if not frame:IsShown() then frame:Show() end
-
     pairs = pairs or {}
     openPlayers = openPlayers or {}
-
     pairsTitle:Show()
     openTitle:Show()
-
     for _, row in ipairs(pairFrames) do row:Hide() end
     for _, fs in ipairs(openFrames) do fs:Hide() end
 
@@ -263,39 +248,30 @@ function UI:UpdatePairs(pairs, openPlayers)
         if not row then
             row = CreateFrame("Frame", nil, pairsContainer)
             row:SetSize(220, 28)
-
             row.symbol = row:CreateTexture(nil, "ARTWORK")
             row.symbol:SetSize(14, 14)
             row.symbol:SetPoint("LEFT", 0, 0)
             row.symbol:SetColorTexture(1, 1, 1)
-
             row.iconText = row:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
             row.iconText:SetPoint("LEFT", 18, 0)
-
             row.p1Text = row:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
             row.p1Text:SetPoint("LEFT", 36, 0)
             row.p1Text:SetWidth(85)
             row.p1Text:SetJustifyH("LEFT")
-
             row.arrow = row:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
             row.arrow:SetPoint("LEFT", 120, 0)
             row.arrow:SetText("|cff66ff66+|r")
-
             row.p2Text = row:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
             row.p2Text:SetPoint("LEFT", 135, 0)
             row.p2Text:SetWidth(85)
             row.p2Text:SetJustifyH("LEFT")
-
             pairFrames[i] = row
         end
-
         row:ClearAllPoints()
         row:SetPoint("TOPLEFT", pairsContainer, "TOPLEFT", 0, y)
-
         local c = symbolColors[i] or { r = 1, g = 1, b = 1 }
         row.symbol:SetColorTexture(c.r, c.g, c.b, 1)
         row.iconText:SetText(tostring(i))
-
         local n1 = pair.p1 and pair.p1.name or "?"
         local s1 = pair.p1 and pair.p1.stacks or "?"
         local n2 = pair.p2 and pair.p2.name or "?"
@@ -304,7 +280,6 @@ function UI:UpdatePairs(pairs, openPlayers)
         n2 = tostring(n2):match("^([^-]+)") or n2
         row.p1Text:SetText(string.format("%s |cffaaaaaa(%s)|r", n1, tostring(s1)))
         row.p2Text:SetText(string.format("%s |cffaaaaaa(%s)|r", n2, tostring(s2)))
-
         if pair.done then
             row.p1Text:SetTextColor(0.5, 0.5, 0.5)
             row.p2Text:SetTextColor(0.5, 0.5, 0.5)
@@ -314,7 +289,6 @@ function UI:UpdatePairs(pairs, openPlayers)
             row.p2Text:SetTextColor(1, 1, 1)
             row.symbol:SetAlpha(1)
         end
-
         row:Show()
         y = y - 30
     end
@@ -361,7 +335,7 @@ function UI:Toggle()
         if activeBoss then
             frame:Show()
         else
-            print("|cff00ff00Dragon Skill:|r Kein aktiver Boss. /ds boss list")
+            print("|cff00ff00Dragon Skill:|r " .. (L.NO_ACTIVE_BOSS or "Kein aktiver Boss."))
         end
     end
 end
