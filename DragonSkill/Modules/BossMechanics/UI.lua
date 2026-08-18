@@ -1,173 +1,214 @@
--- Dragon Skill - Boss Mechanics UI
+-- Dragon Skill - Boss Mechanics UI (v1.6.3)
+-- Leichtes Overlay: Boss-Name, Phase, Ability-Liste, Timer-Bars, Tips
+
 local UI = {}
 DragonSkill.BossMechanicsUI = UI
 
-local symbolColors = {
-    [1] = {r=0, g=1, b=0},    -- Green
-    [2] = {r=0.5, g=0, b=0.5}, -- Purple
-    [3] = {r=0, g=0, b=1},    -- Blue
-    [4] = {r=1, g=0.5, b=0},  -- Orange
-    [5] = {r=1, g=1, b=0},    -- Yellow
-    [6] = {r=0, g=1, b=1},    -- Cyan
-    [7] = {r=1, g=0, b=0}     -- Red
-}
+local frame, title, phaseText, abilityScroll, tipText
+local timerBars = {}
+local MAX_TIMERS = 6
+local activeBoss = nil
 
-function UI:Init()
-    if self.frame then return end
+local function CreateTimerBar(parent, index)
+    local bar = CreateFrame("StatusBar", nil, parent, "BackdropTemplate")
+    bar:SetSize(260, 18)
+    bar:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar")
+    bar:SetStatusBarColor(0.2, 0.7, 1.0)
+    bar:SetMinMaxValues(0, 1)
+    bar:SetValue(0)
+    bar:SetPoint("TOPLEFT", parent, "TOPLEFT", 12, -70 - (index - 1) * 24)
+    bar:Hide()
 
-    local f = CreateFrame("Frame", "DragonSkillBossMechanicsFrame", UIParent, "BackdropTemplate")
-    f:SetSize(400, 300)
-    f:SetPoint("CENTER", 300, 0)
-    f:SetFrameStrata("FULLSCREEN_DIALOG") -- Höchste Ebene
-    f:SetBackdrop({
-        bgFile = "Interface\\ChatFrame\\ChatFrameBackground",
+    local bg = bar:CreateTexture(nil, "BACKGROUND")
+    bg:SetAllPoints()
+    bg:SetColorTexture(0.1, 0.1, 0.1, 0.7)
+
+    local label = bar:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+    label:SetPoint("LEFT", bar, "LEFT", 4, 0)
+    label:SetJustifyH("LEFT")
+    bar.label = label
+
+    local timeLabel = bar:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+    timeLabel:SetPoint("RIGHT", bar, "RIGHT", -4, 0)
+    bar.timeLabel = timeLabel
+
+    bar.duration = 0
+    bar.expires = 0
+    bar.key = nil
+    return bar
+end
+
+function UI:CreateFrame()
+    if frame then return end
+
+    frame = CreateFrame("Frame", "DragonSkillBossFrame", UIParent, "BackdropTemplate")
+    frame:SetSize(300, 280)
+    frame:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", -40, -180)
+    frame:SetBackdrop({
+        bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background-Dark",
         edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
-        tile = true, tileSize = 16, edgeSize = 16,
-        insets = { left = 4, right = 4, top = 4, bottom = 4 }
+        tile = true, tileSize = 16, edgeSize = 14,
+        insets = { left = 3, right = 3, top = 3, bottom = 3 },
     })
-    f:SetBackdropColor(0, 0, 0, 0.8)
-    f:SetMovable(true)
-    f:EnableMouse(true)
-    f:RegisterForDrag("LeftButton")
-    f:SetScript("OnDragStart", function(self) self:StartMoving() end)
-    f:SetScript("OnDragStop", function(self) self:StopMovingOrSizing() end)
-    f:Hide()
+    frame:SetBackdropColor(0.05, 0.05, 0.1, 0.92)
+    frame:SetMovable(true)
+    frame:EnableMouse(true)
+    frame:RegisterForDrag("LeftButton")
+    frame:SetScript("OnDragStart", frame.StartMoving)
+    frame:SetScript("OnDragStop", frame.StopMovingOrSizing)
+    frame:Hide()
 
-    self.frame = f
+    title = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+    title:SetPoint("TOP", frame, "TOP", 0, -12)
+    title:SetTextColor(1, 0.82, 0)
 
-    f.Title = f:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
-    f.Title:SetPoint("TOP", 0, -10)
-    f.Title:SetText("Boss Mechanics - RaidLead Assistant")
+    phaseText = frame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+    phaseText:SetPoint("TOP", title, "BOTTOM", 0, -4)
+    phaseText:SetTextColor(0.6, 0.9, 1)
 
-    f.PairsContainer = CreateFrame("Frame", nil, f)
-    f.PairsContainer:SetPoint("TOPLEFT", 10, -40)
-    f.PairsContainer:SetPoint("BOTTOMRIGHT", -120, 10)
+    for i = 1, MAX_TIMERS do
+        timerBars[i] = CreateTimerBar(frame, i)
+    end
 
-    f.OpenPlayersContainer = CreateFrame("Frame", nil, f)
-    f.OpenPlayersContainer:SetPoint("TOPRIGHT", -10, -40)
-    f.OpenPlayersContainer:SetSize(100, 250)
+    tipText = frame:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+    tipText:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", 12, 14)
+    tipText:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -12, 14)
+    tipText:SetJustifyH("LEFT")
+    tipText:SetJustifyV("BOTTOM")
+    tipText:SetWordWrap(true)
+    tipText:SetTextColor(0.85, 0.85, 0.7)
 
-    f.OpenPlayersTitle = f.OpenPlayersContainer:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-    f.OpenPlayersTitle:SetPoint("TOP", 0, 0)
-    f.OpenPlayersTitle:SetText("Offen")
+    -- Schliessen-X (explizit sichtbar, ueber Inhalt)
+    local close = CreateFrame("Button", "DragonSkillBossCloseBtn", frame, "UIPanelCloseButton")
+    close:SetSize(24, 24)
+    close:SetPoint("TOPRIGHT", frame, "TOPRIGHT", 2, 2)
+    close:SetFrameLevel(frame:GetFrameLevel() + 10)
+    close:EnableMouse(true)
+    close:RegisterForClicks("AnyUp")
+    close:SetScript("OnClick", function()
+        frame:Hide()
+        -- Overlay manuell zu: Simulation beenden, damit es nicht wieder aufpoppt
+        if activeBoss then
+            activeBoss = nil
+        end
+    end)
+    close:SetScript("OnEnter", function(self)
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:SetText("Schliessen", 1, 1, 1)
+        GameTooltip:AddLine("ESC oder X", 0.7, 0.7, 0.7)
+        GameTooltip:Show()
+    end)
+    close:SetScript("OnLeave", function() GameTooltip:Hide() end)
+    frame.closeButton = close
 
-    -- Center warning
-    local w = CreateFrame("Frame", "DragonSkillBossWarning", UIParent)
-    w:SetSize(600, 100)
-    w:SetPoint("TOP", 0, -150)
-    w.Text = w:CreateFontString(nil, "OVERLAY", "GameFontNormalHuge")
-    w.Text:SetPoint("CENTER")
-    w:Hide()
-    self.warningFrame = w
+    -- ESC schliesst das Boss-Fenster
+    tinsert(UISpecialFrames, "DragonSkillBossFrame")
+
+    frame:SetScript("OnUpdate", function(self, elapsed)
+        UI:OnUpdate(elapsed)
+    end)
 end
 
 function UI:OnBossStart(boss)
-    self:Init()
-    self.frame:Show()
-    self.frame.Title:SetText("Boss: " .. (boss.Name or "Unknown"))
+    self:CreateFrame()
+    activeBoss = boss
+    title:SetText(boss.Name or "Boss")
+    phaseText:SetText(boss.Phase or "Phase 1")
+    tipText:SetText(boss.Tip or "")
+    for i = 1, MAX_TIMERS do
+        timerBars[i]:Hide()
+        timerBars[i].key = nil
+    end
+    if boss.Timers then
+        for i, t in ipairs(boss.Timers) do
+            if i > MAX_TIMERS then break end
+            local bar = timerBars[i]
+            bar.key = t.key or t.name
+            bar.duration = t.duration or 30
+            bar.expires = GetTime() + bar.duration
+            bar.label:SetText(t.name or "?")
+            bar:SetStatusBarColor(t.r or 0.2, t.g or 0.7, t.b or 1)
+            bar:SetMinMaxValues(0, bar.duration)
+            bar:SetValue(bar.duration)
+            bar:Show()
+        end
+    end
+    frame:Show()
 end
 
 function UI:OnBossEnd()
-    if self.frame then self.frame:Hide() end
-    if self.warningFrame then self.warningFrame:Hide() end
+    activeBoss = nil
+    if frame then frame:Hide() end
 end
 
-function UI:UpdatePairs(pairs, openPlayers)
-    if not self.frame then self:Init() end
+function UI:SetPhase(text)
+    if phaseText then phaseText:SetText(text or "") end
+end
 
-    -- Clear previous
-    if not self.pairFrames then self.pairFrames = {} end
-    for _, rf in ipairs(self.pairFrames) do rf:Hide() end
+function UI:SetTip(text)
+    if tipText then tipText:SetText(text or "") end
+end
 
-    if not self.openFrames then self.openFrames = {} end
-    for _, of in ipairs(self.openFrames) do of:Hide() end
-
-    local yOffset = 0
-    for i, pair in ipairs(pairs) do
-        local row = self.pairFrames[i]
-        if not row then
-            row = CreateFrame("Frame", nil, self.frame.PairsContainer)
-            row:SetSize(270, 30)
-
-            row.symbol = row:CreateTexture(nil, "ARTWORK")
-            row.symbol:SetSize(16, 16)
-            row.symbol:SetPoint("LEFT", 0, 0)
-            row.symbol:SetColorTexture(1, 1, 1)
-
-            row.p1Text = row:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
-            row.p1Text:SetPoint("LEFT", 25, 0)
-
-            row.p2Text = row:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
-            row.p2Text:SetPoint("LEFT", 140, 0)
-
-            row.check = row:CreateTexture(nil, "OVERLAY")
-            row.check:SetSize(16, 16)
-            row.check:SetPoint("RIGHT", -10, 0)
-            row.check:SetTexture("Interface\\RaidFrame\\ReadyCheck-Ready")
-
-            self.pairFrames[i] = row
+function UI:StartTimer(key, name, duration, r, g, b)
+    if not frame or not frame:IsShown() then return end
+    local bar
+    for i = 1, MAX_TIMERS do
+        if timerBars[i].key == key then
+            bar = timerBars[i]
+            break
         end
+    end
+    if not bar then
+        for i = 1, MAX_TIMERS do
+            if not timerBars[i]:IsShown() then
+                bar = timerBars[i]
+                break
+            end
+        end
+    end
+    if not bar then return end
+    bar.key = key
+    bar.duration = duration or 10
+    bar.expires = GetTime() + bar.duration
+    bar.label:SetText(name or key)
+    bar:SetStatusBarColor(r or 0.2, g or 0.7, b or 1)
+    bar:SetMinMaxValues(0, bar.duration)
+    bar:SetValue(bar.duration)
+    bar:Show()
+end
 
-        row:SetPoint("TOPLEFT", 0, yOffset)
-        local c = symbolColors[i] or {r=1, g=1, b=1}
-        row.symbol:SetVertexColor(c.r, c.g, c.b)
+function UI:OnUpdate(elapsed)
+    if not activeBoss then return end
+    local now = GetTime()
+    for i = 1, MAX_TIMERS do
+        local bar = timerBars[i]
+        if bar:IsShown() and bar.expires then
+            local remaining = bar.expires - now
+            if remaining <= 0 then
+                bar:Hide()
+                bar.key = nil
+            else
+                bar:SetValue(remaining)
+                bar.timeLabel:SetText(string.format("%.1f", remaining))
+            end
+        end
+    end
+end
 
-        row.p1Text:SetText(pair.p1.name .. " (" .. pair.p1.stacks .. ")")
-        row.p2Text:SetText(pair.p2.name .. " (" .. pair.p2.stacks .. ")")
-
-        -- Glow-Effekt bei kritischen Stacks
-        if pair.p1.stacks >= 9 or pair.p2.stacks >= 9 then
-            row.p1Text:SetTextColor(1, 0, 0)
-            row.p2Text:SetTextColor(1, 0, 0)
-        elseif pair.done then
-            row.p1Text:SetTextColor(0.5, 0.5, 0.5)
-            row.p2Text:SetTextColor(0.5, 0.5, 0.5)
-            row.symbol:SetAlpha(0.3)
-            row.check:Show()
+function UI:Toggle()
+    self:CreateFrame()
+    if frame:IsShown() then
+        frame:Hide()
+    else
+        if activeBoss then
+            frame:Show()
         else
-            row.p1Text:SetTextColor(1, 1, 1)
-            row.p2Text:SetTextColor(1, 1, 1)
-            row.symbol:SetAlpha(1)
-            row.check:Hide()
+            print("|cff00ff00Dragon Skill:|r Kein aktiver Boss. /ds boss list")
         end
-
-        row:Show()
-        yOffset = yOffset - 35
-    end
-
-    yOffset = -20
-    for i, player in ipairs(openPlayers) do
-        local pText = self.openFrames[i]
-        if not pText then
-            pText = self.frame.OpenPlayersContainer:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-            self.openFrames[i] = pText
-        end
-        pText:SetPoint("TOPLEFT", 0, yOffset)
-
-        -- Farbcodierung für Stacks in der Liste
-        local color = "|cffffffff"
-        if player.stacks >= 9 then color = "|cffff0000"
-        elseif player.stacks >= 7 then color = "|cffffa500" end
-
-        pText:SetText(player.name .. " (" .. color .. player.stacks .. "|r)")
-        pText:Show()
-        yOffset = yOffset - 15
     end
 end
 
-function UI:UpdateStatus(text)
-    if self.frame and self.frame.Title then
-        self.frame.Title:SetText(text)
-    end
-end
-
-function UI:ShowBigWarning(text, duration)
-    if not self.warningFrame then self:Init() end
-    self.warningFrame.Text:SetText(text)
-    self.warningFrame:Show()
-    C_Timer.After(duration or 3, function() self.warningFrame:Hide() end)
-end
-
+-- Slash-Hilfe Erweiterung
 DragonSkill.Events:On("PLAYER_LOGIN", function()
-    UI:Init()
+    UI:CreateFrame()
 end)
