@@ -1,6 +1,8 @@
 -- Dragon Skill - Boss Mechanics Core (v1.6.3)
 -- Venomous Abyss + Tidebound Grotto Lair
 
+local L = DragonSkill.L or {}
+
 local BossMechanics = DragonSkill:RegisterModule("BossMechanics", {
     Bosses = {},
     BossesByName = {},
@@ -67,7 +69,6 @@ function BossMechanics:RegisterEvents()
                 self.CurrentBoss:OnCombatLogEvent()
             end)
             if not ok then
-                -- still und leise: kein Spam bei kaputten Boss-Handlern
             end
         end
     end)
@@ -79,11 +80,11 @@ function BossMechanics:Simulate(idOrName)
         boss = self.BossesByName[string.lower(idOrName)]
     end
     if not boss then
-        print("|cffff0000Dragon Skill:|r Boss nicht gefunden: " .. tostring(idOrName))
+        print("|cffff0000Dragon Skill:|r " .. string.format(L.BOSS_NOT_FOUND or "Boss nicht gefunden: %s", tostring(idOrName)))
         self:ListBosses()
         return
     end
-    print("|cff00ff00Dragon Skill:|r Test → " .. (boss.Name or tostring(idOrName)))
+    print("|cff00ff00Dragon Skill:|r " .. (L.TEST_PREFIX or "Test → ") .. (boss.Name or tostring(idOrName)))
     self.CurrentBoss = boss
     if boss.OnStart then boss:OnStart() end
     if DragonSkill.BossMechanicsUI then
@@ -97,7 +98,6 @@ function BossMechanics:Simulate(idOrName)
     end
 end
 
--- Kompatibilitaet zu alten Slash-Tests
 function BossMechanics:SimulateEntombedSentinels() self:Simulate(3010) end
 function BossMechanics:SimulateNekzali() self:Simulate(3011) end
 function BossMechanics:SimulateLostExplorers() self:Simulate(3012) end
@@ -109,7 +109,7 @@ function BossMechanics:SimulateUlatek() self:Simulate(3017) end
 function BossMechanics:SimulateNymrissa() self:Simulate(3101) end
 
 function BossMechanics:ListBosses()
-    print("|cff00ff00Dragon Skill – Bosses (Venomous Abyss + Lair):|r")
+    print("|cff00ff00" .. (L.BOSS_LIST_TITLE or "Dragon Skill – Bosse:") .. "|r")
     local ordered = { 3011, 3010, 3013, 3012, 3014, 3015, 3016, 3017, 3101 }
     local count = 0
     for _, id in ipairs(ordered) do
@@ -119,7 +119,6 @@ function BossMechanics:ListBosses()
             count = count + 1
         end
     end
-    -- Fallback: alle registrierten
     if count == 0 then
         for id, b in pairs(self.Bosses) do
             print(string.format("  |cffffd100%s|r  %s", tostring(id), b.Name or "?"))
@@ -127,7 +126,7 @@ function BossMechanics:ListBosses()
         end
     end
     if count == 0 then
-        print("  |cffffaa00Keine Bosse geladen (Boss-Dateien pruefen).|r")
+        print("  |cffffaa00" .. (L.NO_BOSSES_LOADED or "Keine Bosse geladen.") .. "|r")
     end
     print("  /ds boss <name|id>   ·  /ds boss list")
 end
