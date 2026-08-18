@@ -9,6 +9,7 @@
 Core\Namespace.lua
 Core\EventManager.lua
 Core\Database.lua
+Core\Locale.lua
 Data\GuideData.lua
 Data\TalentOverrides.lua
 Modules\TalentCompare\TalentCompare.lua
