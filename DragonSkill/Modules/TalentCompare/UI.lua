@@ -1,4 +1,5 @@
 -- Dragon Skill - Haupt UI (v1.6.3) Minimap + Archon/Wowhead Merge + Sort/Empty
+-- RESYNC main 2026-08-18 09:17 UTC
 
 local UI = {}
 local currentTab = 1
@@ -16,7 +17,6 @@ local JUNK_NAMES = {
     ["weak auras"] = true, ["faq"] = true,
 }
 
--- Slot-Reihenfolge fuer BiS-Gruppierung
 local SLOT_ORDER = {
     Head = 1, Neck = 2, Shoulder = 3, Back = 4, Chest = 5,
     Wrist = 6, Hands = 7, Waist = 8, Legs = 9, Feet = 10,
@@ -153,7 +153,6 @@ function UI:Toggle()
     if self.frame:IsShown() then self.frame:Hide() else self:Open(currentTab) end
 end
 
--- Minimap
 local minimapBtn
 local minimapMenuFrame
 
@@ -388,7 +387,6 @@ function UI:DrawTalents(content, guideData)
         local lab = tostring(build.label or ""):lower()
         if key ~= "" and not seen[key] then
             if hasFull and lab:find("class tree", 1, true) then
-                -- skip incomplete class-only trees
             else
                 seen[key] = true
                 local r = MatchResult(TC, build.importString)
