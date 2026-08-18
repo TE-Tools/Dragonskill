@@ -1,102 +1,46 @@
--- Dragon Skill - Boss: Entombed Sentinels
-local BossMechanics = DragonSkill:GetModule("BossMechanics")
+-- Entombed Sentinels – Boss 2 Venomous Abyss (Encounter 3010)
+-- Zwei Golems: Breath of Ula'tek + Blood of Ula'tek. 40y Abstand halten!
 
 local Boss = {
+    ID = 3010,
     Name = "Entombed Sentinels",
-    ID = 3010, -- Placeholder
-    ToxinSpellID = 456789, -- Placeholder
-    players = {}
+    Aliases = { "sentinels", "entombed", "golems" },
+    Phase = "Split – 40y Abstand",
+    Tip = "Raid halbieren. Bosse >40y auseinander halten (sonst 99% DR). Helical Toxins: Stacks auf genau 4 bringen (1+3 oder 2+2).",
+    Timers = {
+        { key = "stasis", name = "Vitriolic Stasis", duration = 55, r = 0.2, g = 0.9, b = 0.3 },
+        { key = "marks", name = "Mark of Acid/Blood", duration = 20, r = 0.9, g = 0.6, b = 0.1 },
+    },
 }
 
 function Boss:OnStart()
-    self.players = {}
-end
-
-function Boss:OnCombatLogEvent(...)
-    local timestamp, event, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags, spellID, spellName, spellSchool, amount = CombatLogGetCurrentEventInfo()
-
-    if spellID == self.ToxinSpellID then
-        if event == "SPELL_AURA_APPLIED" or event == "SPELL_AURA_APPLIED_DOSE" then
-            self:UpdatePlayer(destName, amount or 1)
-        elseif event == "SPELL_AURA_REMOVED" then
-            self:UpdatePlayer(destName, 0)
-        end
-    end
-end
-
-function Boss:UpdatePlayer(name, stacks)
-    if stacks > 0 then
-        self.players[name] = stacks
-    else
-        self.players[name] = nil
-    end
-    self:CalculatePairs()
-end
-
-function Boss:CalculatePairs()
-    local s1, s2, s3 = {}, {}, {}
-    for name, stacks in pairs(self.players) do
-        local p = {name = name, stacks = stacks}
-        if stacks == 1 then table.insert(s1, p)
-        elseif stacks == 2 then table.insert(s2, p)
-        elseif stacks == 3 then table.insert(s3, p)
-        end
-    end
-
-    local pairsList = {}
-    local open = {}
-
-    -- Pair 1 + 3
-    while #s1 > 0 and #s3 > 0 do
-        local p1 = table.remove(s1, 1)
-        local p3 = table.remove(s3, 1)
-        table.insert(pairsList, {p1 = p1, p2 = p3, done = false})
-    end
-
-    -- Pair 2 + 2
-    while #s2 >= 2 do
-        local p2a = table.remove(s2, 1)
-        local p2b = table.remove(s2, 1)
-        table.insert(pairsList, {p1 = p2a, p2 = p2b, done = false})
-    end
-
-    -- Remaining
-    for _, p in ipairs(s1) do table.insert(open, p) end
-    for _, p in ipairs(s2) do table.insert(open, p) end
-    for _, p in ipairs(s3) do table.insert(open, p) end
-
+    self.Phase = "Split – 40y Abstand"
     if DragonSkill.BossMechanicsUI then
-        DragonSkill.BossMechanicsUI:UpdatePairs(pairsList, open)
+        DragonSkill.BossMechanicsUI:SetPhase(self.Phase)
+        DragonSkill.BossMechanicsUI:SetTip(self.Tip)
     end
 end
 
-function Boss:SimulateIntermission()
-    local dummyPlayers = {}
-    local num = GetNumGroupMembers()
+function Boss:OnEnd() end
 
-    if num > 0 then
-        -- Nutze echte Gruppennamen
-        local unitPrefix = IsInRaid() and "raid" or "party"
-        for i = 1, num do
-            local name = GetUnitName(unitPrefix..i, true)
-            if name then
-                dummyPlayers[name] = math.random(1, 3)
+function Boss:OnCombatLogEvent()
+    local _, subEvent, _, _, _, _, _, _, _, _, _, spellId, spellName = CombatLogGetCurrentEventInfo()
+    if subEvent == "SPELL_CAST_SUCCESS" or subEvent == "SPELL_CAST_START" then
+        if spellName and (spellName:find("Vitriolic Stasis") or spellName:find("Stasis")) then
+            if DragonSkill.BossMechanicsUI then
+                DragonSkill.BossMechanicsUI:StartTimer("stasis", "Vitriolic Stasis", 30, 0.2, 0.9, 0.3)
+                DragonSkill.BossMechanicsUI:SetTip("Stasis aktiv – schwaecheren Golem heilen lassen, Helical Toxins auf 4 Stacks bringen!")
             end
-            if i >= 10 then break end -- Max 10 für den Test
+            DragonSkill.BossMechanics:PlaySound("INTERMISSION")
         end
-    else
-        -- Fallback Dummy Spieler
-        dummyPlayers = {
-            ["Player1"] = 1, ["Player2"] = 3, ["Player3"] = 2,
-            ["Player4"] = 2, ["Player5"] = 1, ["Player6"] = 1, ["Player7"] = 3
-        }
-    end
-
-    self.players = dummyPlayers
-    self:CalculatePairs()
-    if DragonSkill.BossMechanicsUI then
-        DragonSkill.BossMechanicsUI:ShowBigWarning("TEST: HELICAL TOXINS!", 5)
     end
 end
 
-BossMechanics:RegisterBoss(Boss.ID, Boss)
+function Boss:SimulateStart()
+    print("|cff00ff00DS BossSim:|r Entombed Sentinels – Split-Raid, 40y Abstand.")
+    if DragonSkill.BossMechanicsUI then
+        DragonSkill.BossMechanicsUI:StartTimer("stasis", "Vitriolic Stasis", 55, 0.2, 0.9, 0.3)
+    end
+end
+
+DragonSkill.BossMechanics:RegisterBoss(3010, Boss)

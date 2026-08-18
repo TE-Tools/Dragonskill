@@ -1,66 +1,52 @@
--- Dragon Skill - Boss: The Coiled Altar
-local BossMechanics = DragonSkill:GetModule("BossMechanics")
+-- The Coiled Altar – Boss 7 Venomous Abyss (Encounter 3016)
+-- 3 Phasen + Intermission. Raumkontrolle + Heiler-Mana.
 
 local Boss = {
+    ID = 3016,
     Name = "The Coiled Altar",
-    ID = 3016, -- Placeholder for Penalultimate Boss
-    orbs = 0,
-    mcPlayers = {}
+    Aliases = { "coiled", "altar", "zuljan" },
+    Phase = "Stufe 1 – Serpent's Bargain",
+    Tip = "Toxic Deluge → Coalesced Venom. Guillotine/Sever beobachten. Phase 3 kombiniert alles – Raum und Mana managen. Unnerving Fixation fuer Achievement.",
+    Timers = {
+        { key = "deluge", name = "Toxic Deluge", duration = 32, r = 0.2, g = 0.9, b = 0.4 },
+        { key = "guillotine", name = "Guillotine", duration = 20, r = 0.9, g = 0.1, b = 0.1 },
+    },
 }
 
 function Boss:OnStart()
-    self.orbs = 0
-    self.mcPlayers = {}
-end
-
-function Boss:OnCombatLogEvent(...)
-    local _, event, _, _, sourceName, _, _, _, destName, _, _, spellID = CombatLogGetCurrentEventInfo()
-
-    -- "Coalesced Venom" (Green Orbs)
-    if event == "SPELL_SUMMON" and spellID == 460001 then
-        self.orbs = self.orbs + 1
-        self:UpdateUI()
-    elseif event == "UNIT_DIED" and sourceName == "Coalesced Venom" then
-        self.orbs = math.max(0, self.orbs - 1)
-        self:UpdateUI()
-    end
-
-    -- "Dreadmarch" (Mind Control)
-    if spellID == 460002 then
-        if event == "SPELL_AURA_APPLIED" then
-            self.mcPlayers[destName] = true
-            self:UpdateUI()
-        elseif event == "SPELL_AURA_REMOVED" then
-            self.mcPlayers[destName] = nil
-            self:UpdateUI()
-        end
-    end
-end
-
-function Boss:UpdateUI()
-    local mcList = {}
-    for name, _ in pairs(self.mcPlayers) do
-        table.insert(mcList, { name = "|cffff0000MC:|r " .. name, stacks = 0 })
-    end
-
+    self.Phase = "Stufe 1 – Serpent's Bargain"
     if DragonSkill.BossMechanicsUI then
-        DragonSkill.BossMechanicsUI:UpdateStatus(string.format("Aktive Gift-Orbs: %d", self.orbs))
-        DragonSkill.BossMechanicsUI:UpdatePairs({}, mcList)
+        DragonSkill.BossMechanicsUI:SetPhase(self.Phase)
+        DragonSkill.BossMechanicsUI:SetTip(self.Tip)
+    end
+end
 
-        if self.orbs >= 5 then
-            DragonSkill.BossMechanicsUI:ShowBigWarning("ZU VIELE ORBS! DURCH DIE STACKS CLEAVEN!", 2)
-            BossMechanics:PlaySound("WARNING")
+function Boss:OnEnd() end
+
+function Boss:OnCombatLogEvent()
+    local _, subEvent, _, _, _, _, _, _, _, _, _, spellId, spellName = CombatLogGetCurrentEventInfo()
+    if subEvent == "SPELL_CAST_SUCCESS" or subEvent == "SPELL_CAST_START" then
+        if spellName and spellName:find("Soulbinding") then
+            self.Phase = "Intermission – Soulbinding"
+            if DragonSkill.BossMechanicsUI then
+                DragonSkill.BossMechanicsUI:SetPhase(self.Phase)
+                DragonSkill.BossMechanicsUI:SetTip("Malacrass Soulbinding – Zul'jan wird wiederbelebt. Burn-Phase vorbereiten.")
+            end
+            DragonSkill.BossMechanics:PlaySound("INTERMISSION")
         end
     end
 end
 
 function Boss:SimulateStart()
-    self.orbs = 3
-    self.mcPlayers = { ["Player1"] = true }
-    self:UpdateUI()
+    print("|cff00ff00DS BossSim:|r Coiled Altar – 3 Phasen, Raumkontrolle + Heiler-Mana.")
+end
+
+function Boss:SimulateIntermission()
+    self.Phase = "Intermission – Soulbinding"
     if DragonSkill.BossMechanicsUI then
-        DragonSkill.BossMechanicsUI:ShowBigWarning("COILED ALTAR: HANDLE THE ORBS!", 5)
+        DragonSkill.BossMechanicsUI:SetPhase(self.Phase)
+        DragonSkill.BossMechanicsUI:StartTimer("soulbind", "Soulbinding", 40, 0.8, 0.2, 0.8)
     end
 end
 
-BossMechanics:RegisterBoss(Boss.ID, Boss)
+DragonSkill.BossMechanics:RegisterBoss(3016, Boss)
