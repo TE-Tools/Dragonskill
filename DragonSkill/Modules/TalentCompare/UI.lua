@@ -1,9 +1,21 @@
 -- Dragon Skill - Haupt UI (v1.6.3) Minimap + Archon/Wowhead Merge + Sort/Empty
--- RESYNC main 2026-08-18 09:17 UTC
+-- LOCALE-WIRE deDE/enUS
 
+local L = DragonSkill.L or {}
 local UI = {}
 local currentTab = 1
-local tabs = {"Talente", "Stats", "Trinkets", "Crafting", "Rotation", "Gear", "Enchants", "Gems", "Buffs", "Bosses"}
+local tabs = {
+    L.TAB_TALENTS or "Talente",
+    L.TAB_STATS or "Werte",
+    L.TAB_TRINKETS or "Schmuck",
+    L.TAB_CRAFTING or "Handwerk",
+    L.TAB_ROTATION or "Rotation",
+    L.TAB_GEAR or "Ausruestung",
+    L.TAB_ENCHANTS or "Verzauberungen",
+    L.TAB_GEMS or "Edelsteine",
+    L.TAB_BUFFS or "Buffs",
+    L.TAB_BOSSES or "Bosse",
+}
 local TAB_GEAR = 6
 local TAB_BOSSES = 10
 local cachedBuildData = nil
@@ -87,18 +99,14 @@ local function MatchResult(TC, importString)
     if not TC or not importString then return { similarity = 0 } end
     if TC.CompareBuild then return TC:CompareBuild(importString) end
     local current = ""
-    if TC.GetCurrentBuildString then
-        current = TC:GetCurrentBuildString() or ""
-    end
-    if TC.Compare then
-        return TC:Compare(importString, current)
-    end
+    if TC.GetCurrentBuildString then current = TC:GetCurrentBuildString() or "" end
+    if TC.Compare then return TC:Compare(importString, current) end
     return { similarity = 0 }
 end
 
 StaticPopupDialogs["DRAGONSKILL_ACTION"] = {
-    text = "Build: %s\nMatch: %d%%\n\nLinks: Kopieren / Anlegen",
-    button1 = "Kopieren", button2 = "Anlegen + Import", button3 = "Abbrechen",
+    text = L.BUILD_MATCH or "Build: %s\nMatch: %d%%\n\nAktion: Kopieren / Anlegen",
+    button1 = L.COPY or "Kopieren", button2 = L.CREATE_IMPORT or "Anlegen + Import", button3 = L.CANCEL or "Abbrechen",
     OnAccept = function()
         if cachedBuildData then StaticPopup_Show("DRAGONSKILL_COPY", nil, nil, cachedBuildData) end
     end,
@@ -121,7 +129,7 @@ StaticPopupDialogs["DRAGONSKILL_ACTION"] = {
 }
 
 StaticPopupDialogs["DRAGONSKILL_COPY"] = {
-    text = "Strg+C zum Kopieren:", button1 = "Fertig", hasEditBox = 1, editBoxWidth = 320,
+    text = L.COPY_HINT or "Strg+C zum Kopieren:", button1 = L.DONE or "Fertig", hasEditBox = 1, editBoxWidth = 320,
     OnShow = function(self, data)
         local build = data or cachedBuildData
         local code = type(build) == "table" and (build.importString or "") or tostring(build or "")
@@ -132,7 +140,7 @@ StaticPopupDialogs["DRAGONSKILL_COPY"] = {
 }
 
 StaticPopupDialogs["DRAGONSKILL_DELETE"] = {
-    text = "Skilling '%s' wirklich loeschen?", button1 = "Loeschen", button2 = "Abbrechen",
+    text = L.DELETE_SKILLING or "Skilling '%s' wirklich loeschen?", button1 = L.DELETE or "Loeschen", button2 = L.CANCEL or "Abbrechen",
     OnAccept = function(_, data)
         if data and DragonSkill.Database:DeleteSkilling(data) then
             print("|cff00ff00Dragon Skill:|r '" .. tostring(data) .. "' geloescht.")
@@ -169,15 +177,15 @@ local function ShowMinimapMenu()
     end
     local menu = {
         { text = "Dragon Skill", isTitle = true, notCheckable = true },
-        { text = "|cffffd100BiS Gear|r", notCheckable = true, func = function() UI:OpenBiS() end },
-        { text = "Talente", notCheckable = true, func = function() UI:Open(1) end },
-        { text = "Bosses", notCheckable = true, func = function() UI:OpenBosses() end },
-        { text = "Trinkets", notCheckable = true, func = function() UI:Open(3) end },
-        { text = "Enchants", notCheckable = true, func = function() UI:Open(7) end },
-        { text = "Gems", notCheckable = true, func = function() UI:Open(8) end },
-        { text = "Buffs", notCheckable = true, func = function() UI:Open(9) end },
-        { text = "Stats", notCheckable = true, func = function() UI:Open(2) end },
-        { text = "Minimap ausblenden", notCheckable = true, func = function() UI:ToggleMinimap() end },
+        { text = "|cffffd100" .. (L.BIS_GEAR or "BiS") .. "|r", notCheckable = true, func = function() UI:OpenBiS() end },
+        { text = L.TAB_TALENTS or "Talente", notCheckable = true, func = function() UI:Open(1) end },
+        { text = L.TAB_BOSSES or "Bosse", notCheckable = true, func = function() UI:OpenBosses() end },
+        { text = L.TAB_TRINKETS or "Schmuck", notCheckable = true, func = function() UI:Open(3) end },
+        { text = L.TAB_ENCHANTS or "Verzauberungen", notCheckable = true, func = function() UI:Open(7) end },
+        { text = L.TAB_GEMS or "Edelsteine", notCheckable = true, func = function() UI:Open(8) end },
+        { text = L.TAB_BUFFS or "Buffs", notCheckable = true, func = function() UI:Open(9) end },
+        { text = L.TAB_STATS or "Werte", notCheckable = true, func = function() UI:Open(2) end },
+        { text = L.MINIMAP_HIDE or "Minimap ausblenden", notCheckable = true, func = function() UI:ToggleMinimap() end },
     }
     EasyMenu(menu, minimapMenuFrame, "cursor", 0, 0, "MENU")
 end
@@ -202,14 +210,8 @@ local function CreateMinimapButton()
     btn:RegisterForDrag("LeftButton")
     btn:SetScript("OnClick", function(_, button)
         if button == "LeftButton" then
-            if UI.frame and UI.frame:IsShown() and currentTab == TAB_GEAR then
-                UI.frame:Hide()
-            else
-                UI:OpenBiS()
-            end
-        elseif button == "RightButton" then
-            ShowMinimapMenu()
-        end
+            if UI.frame and UI.frame:IsShown() and currentTab == TAB_GEAR then UI.frame:Hide() else UI:OpenBiS() end
+        elseif button == "RightButton" then ShowMinimapMenu() end
     end)
     btn:SetScript("OnDragStart", function(self)
         self:SetScript("OnUpdate", function()
@@ -226,18 +228,14 @@ local function CreateMinimapButton()
     btn:SetScript("OnEnter", function(self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:AddLine("|cffffd100Dragon Skill|r")
-        GameTooltip:AddLine("Linksklick: BiS", 1, 1, 1)
-        GameTooltip:AddLine("Rechtsklick: Menue", 1, 1, 1)
+        GameTooltip:AddLine(L.LEFT_CLICK_BIS or "Linksklick: BiS", 1, 1, 1)
+        GameTooltip:AddLine(L.RIGHT_CLICK_MENU or "Rechtsklick: Menue", 1, 1, 1)
         GameTooltip:Show()
     end)
     btn:SetScript("OnLeave", function() GameTooltip:Hide() end)
     minimapBtn = btn
     UpdateMinimapPosition()
-    if DragonSkillDB and DragonSkillDB.minimap and DragonSkillDB.minimap.hide then
-        btn:Hide()
-    else
-        btn:Show()
-    end
+    if DragonSkillDB and DragonSkillDB.minimap and DragonSkillDB.minimap.hide then btn:Hide() else btn:Show() end
 end
 
 function UI:ToggleMinimap()
@@ -247,10 +245,10 @@ function UI:ToggleMinimap()
     if not minimapBtn then CreateMinimapButton() end
     if DragonSkillDB.minimap.hide then
         minimapBtn:Hide()
-        print("|cff00ff00Dragon Skill:|r Minimap aus - wieder an mit /ds minimap")
+        print("|cff00ff00Dragon Skill:|r " .. (L.MINIMAP_OFF or "Minimap aus"))
     else
         minimapBtn:Show()
-        print("|cff00ff00Dragon Skill:|r Minimap an")
+        print("|cff00ff00Dragon Skill:|r " .. (L.MINIMAP_ON or "Minimap an"))
     end
 end
 
@@ -287,11 +285,8 @@ function UI:Init()
         tab:SetText(name)
         tab:SetScript("OnClick", function(selfBtn) UI:SelectTab(selfBtn:GetID()) end)
         f.Tabs[i] = tab
-        if i == 1 then
-            tab:SetPoint("TOPLEFT", f, "BOTTOMLEFT", 8, 1)
-        else
-            tab:SetPoint("LEFT", f.Tabs[i - 1], "RIGHT", -16, 0)
-        end
+        if i == 1 then tab:SetPoint("TOPLEFT", f, "BOTTOMLEFT", 8, 1)
+        else tab:SetPoint("LEFT", f.Tabs[i - 1], "RIGHT", -16, 0) end
     end
     PanelTemplates_SetNumTabs(f, #tabs)
     PanelTemplates_SetTab(f, 1)
@@ -337,18 +332,13 @@ function UI:Update()
     self:ClearContent(content)
     self:EnsureText(content)
     if self.frame.ScrollFrame then self.frame.ScrollFrame:SetVerticalScroll(0) end
-
-    if currentTab == TAB_BOSSES then
-        self:DrawBosses(content)
-        return
-    end
-
+    if currentTab == TAB_BOSSES then self:DrawBosses(content); return end
     local _, class = UnitClass("player")
     local specIndex = GetSpecialization()
     local specID = specIndex and select(1, GetSpecializationInfo(specIndex)) or 0
     local guideData = DragonSkill.Database:GetGuideData(class, specID)
     if not guideData then
-        content.text:SetText("|cffff0000DATEN-FEHLER:|r Keine Guide-Daten fuer diese Spec.")
+        content.text:SetText(L.NO_GUIDE_DATA or "|cffff0000DATEN-FEHLER:|r Keine Guide-Daten.")
         return
     end
     if currentTab == 1 then self:DrawTalents(content, guideData)
@@ -366,42 +356,33 @@ end
 function UI:DrawTalents(content, guideData)
     local TC = DragonSkill:GetModule("TalentCompare")
     content.extraFS = content.extraFS or {}
-    content.text:SetText("|cffffff00=== Guide-Builds ===|r")
+    content.text:SetText("|cffffff00" .. (L.GUIDE_BUILDS or "=== Guide-Builds ===") .. "|r")
     content.text:Show()
     local yOffset = -28
     for _, btn in pairs(self.talentBtns) do btn:Hide() end
     for _, btn in pairs(self.favBtns) do btn:Hide() end
-
     local raw = guideData.talentBuilds or {}
     local builds, seen = {}, {}
     local hasFull = false
     for _, build in ipairs(raw) do
         local lab = tostring(build.label or ""):lower()
-        if not lab:find("class tree", 1, true) then
-            hasFull = true
-            break
-        end
+        if not lab:find("class tree", 1, true) then hasFull = true; break end
     end
     for _, build in ipairs(raw) do
         local key = build.importString or ""
         local lab = tostring(build.label or ""):lower()
         if key ~= "" and not seen[key] then
-            if hasFull and lab:find("class tree", 1, true) then
-            else
+            if not (hasFull and lab:find("class tree", 1, true)) then
                 seen[key] = true
                 local r = MatchResult(TC, build.importString)
                 local prio = 0
                 local p = tostring(build.provider or ""):lower()
                 if p == "method" or p == "icyveins" then prio = 3
                 elseif p == "wowhead" then prio = 2
-                elseif p == "archon" then prio = 1
-                end
+                elseif p == "archon" then prio = 1 end
                 table.insert(builds, {
-                    importString = build.importString,
-                    provider = build.provider,
-                    label = build.label,
-                    _sim = r.similarity or 0,
-                    _prio = prio,
+                    importString = build.importString, provider = build.provider, label = build.label,
+                    _sim = r.similarity or 0, _prio = prio,
                 })
             end
         end
@@ -411,9 +392,8 @@ function UI:DrawTalents(content, guideData)
         if (a._prio or 0) ~= (b._prio or 0) then return (a._prio or 0) > (b._prio or 0) end
         return tostring(a.label or "") < tostring(b.label or "")
     end)
-
     if #builds == 0 then
-        content.text:SetText("|cffffff00=== Guide-Builds ===|r\n\n|cffffaa00Keine Guide-Talente.|r")
+        content.text:SetText("|cffffff00" .. (L.GUIDE_BUILDS or "=== Guide-Builds ===") .. "|r\n\n|cffffaa00" .. (L.NO_GUIDE_TALENTS or "Keine Guide-Talente.") .. "|r")
     else
         for i, build in ipairs(builds) do
             local btn = self.talentBtns[i]
@@ -445,16 +425,12 @@ function UI:Helper_DrawListWithIcons(content, items, title)
     local yOffset = -10
     self:EnsureText(content)
     items = FilterItems(items)
-    if title then
-        content.text:SetText(title)
-        content.text:Show()
-        yOffset = -30
-    end
+    if title then content.text:SetText(title); content.text:Show(); yOffset = -30 end
     self.listRowsByTab[currentTab] = self.listRowsByTab[currentTab] or {}
     local rows = self.listRowsByTab[currentTab]
     for _, row in ipairs(rows) do row:Hide() end
     if not items or #items == 0 then
-        content.text:SetText((title or "") .. "\n\n|cffffaa00Keine Daten verfuegbar.|r")
+        content.text:SetText((title or "") .. "\n\n|cffffaa00" .. (L.NO_DATA or "Keine Daten verfuegbar.") .. "|r")
         return
     end
     for i, item in ipairs(items) do
@@ -485,8 +461,7 @@ function UI:Helper_DrawListWithIcons(content, items, title)
         local captured, capturedName = item, itemName
         row:SetScript("OnEnter", function(selfRow)
             GameTooltip:SetOwner(selfRow, "ANCHOR_RIGHT")
-            if captured.itemId then GameTooltip:SetItemByID(captured.itemId)
-            else GameTooltip:SetText(capturedName) end
+            if captured.itemId then GameTooltip:SetItemByID(captured.itemId) else GameTooltip:SetText(capturedName) end
             GameTooltip:Show()
         end)
         row:SetScript("OnLeave", function() GameTooltip:Hide() end)
@@ -497,13 +472,13 @@ function UI:Helper_DrawListWithIcons(content, items, title)
 end
 
 function UI:DrawStats(content, guideData)
-    local txt = "|cffffff00=== Deine Werte ===|r\n" .. string.format(
-        "Tempo: %.1f%%\nKritisch: %.1f%%\nMeisterschaft: %.1f%%\nVielseitigkeit: %.1f%%\n",
+    local txt = "|cffffff00" .. (L.YOUR_STATS or "=== Deine Werte ===") .. "|r\n" .. string.format(
+        (L.HASTE or "Tempo") .. ": %.1f%%\n" .. (L.CRIT or "Kritisch") .. ": %.1f%%\n" .. (L.MASTERY or "Meisterschaft") .. ": %.1f%%\n" .. (L.VERS or "Vielseitigkeit") .. ": %.1f%%\n",
         GetHaste(), GetCritChance(), GetMasteryEffect(),
         GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_DONE))
     local prio = guideData.statPriority
     if prio then
-        txt = txt .. "\n|cffffff00=== Empfehlung ===|r\n"
+        txt = txt .. "\n|cffffff00" .. (L.RECOMMENDATION or "=== Empfehlung ===") .. "|r\n"
         txt = txt .. "|cffffd100Wowhead:|r " .. (prio.wowhead or "N/A") .. "\n"
         if prio.archon then txt = txt .. "|cffffd100Archon:|r " .. prio.archon .. "\n" end
     end
@@ -513,49 +488,45 @@ end
 function UI:DrawTrinkets(content, guideData)
     local mod = DragonSkill:GetModule("Trinkets")
     local items = (mod and mod.GetList and mod:GetList(guideData)) or {}
-    if not items or #items == 0 then
-        items = MergeProviderLists(guideData.trinkets)
-    end
-    self:Helper_DrawListWithIcons(content, items, "|cffffff00Top Trinkets (Archon + Wowhead):|r")
+    if not items or #items == 0 then items = MergeProviderLists(guideData.trinkets) end
+    self:Helper_DrawListWithIcons(content, items, "|cffffff00" .. (L.TOP_TRINKETS or "Top Schmuck:") .. "|r")
 end
 
 function UI:DrawCrafting(content, guideData)
     local mod = DragonSkill:GetModule("Crafting")
-    content.text:SetText((mod and mod.FormatText and mod:FormatText(guideData)) or "Keine Crafting-Daten.")
+    content.text:SetText((mod and mod.FormatText and mod:FormatText(guideData)) or (L.NO_CRAFTING or "Keine Handwerks-Daten."))
 end
 
 function UI:DrawRotation(content, guideData)
     local mod = DragonSkill:GetModule("Rotation")
     local items = (mod and mod.GetList and mod:GetList(guideData)) or {}
-    if not items or #items == 0 then
-        items = (guideData.rotation and guideData.rotation.wowhead) or {}
-    end
-    self:Helper_DrawListWithIcons(content, items, "|cffffff00Prioritaet (Wowhead):|r")
+    if not items or #items == 0 then items = (guideData.rotation and guideData.rotation.wowhead) or {} end
+    self:Helper_DrawListWithIcons(content, items, "|cffffff00" .. (L.PRIORITY or "Prioritaet:") .. "|r")
 end
 
 function UI:DrawGear(content, guideData)
     local items = MergeProviderLists(guideData.bisGear)
     local n = #FilterItems(items)
     local header = string.format(
-        "|cffffd100=== BiS (Archon + Wowhead) ===|r\n|cff888888%d Empfehlungen · Hover = Tooltip|r", n)
+        "|cffffd100" .. (L.BIS_HEADER or "=== BiS ===") .. "|r\n|cff888888" .. (L.BIS_SUB or "%d Empfehlungen") .. "|r", n)
     self:Helper_DrawListWithIcons(content, items, header)
 end
 
 function UI:DrawEnchants(content, guideData)
     self:Helper_DrawListWithIcons(content, MergeProviderLists(guideData.enchants),
-        "|cffffff00Verzauberungen (Archon + Wowhead):|r")
+        "|cffffff00" .. (L.ENCHANTS_HEADER or "Verzauberungen:") .. "|r")
 end
 
 function UI:DrawGems(content, guideData)
     self:Helper_DrawListWithIcons(content, MergeProviderLists(guideData.gems),
-        "|cffffff00Gems (Archon + Wowhead):|r")
+        "|cffffff00" .. (L.GEMS_HEADER or "Edelsteine:") .. "|r")
 end
 
 function UI:DrawBuffs(content, guideData)
     local items = MergeProviderLists(guideData.consumables)
     local n = #FilterItems(items)
     local header = string.format(
-        "|cffffd100=== Consumables / Buffs (Archon) ===|r\n|cff888888%d Eintraege · Flask · Food · Potion · Weapon Oil|r", n)
+        "|cffffd100" .. (L.BUFFS_HEADER or "=== Buffs ===") .. "|r\n|cff888888" .. (L.BUFFS_SUB or "%d Eintraege") .. "|r", n)
     self:Helper_DrawListWithIcons(content, items, header)
 end
 
@@ -564,16 +535,13 @@ local BOSS_ORDER = { 3011, 3010, 3013, 3012, 3014, 3015, 3016, 3017, 3101 }
 function UI:DrawBosses(content)
     for _, btn in pairs(self.talentBtns) do btn:Hide() end
     for _, btn in pairs(self.favBtns) do btn:Hide() end
-
     local BM = DragonSkill:GetModule("BossMechanics") or DragonSkill.BossMechanics
-    content.text:SetText("|cffffff00=== Boss Guides ===|r\n|cff888888Venomous Abyss + Tidebound Grotto · Klick = Simulieren|r")
+    content.text:SetText("|cffffff00" .. (L.BOSS_GUIDES or "=== Boss-Guides ===") .. "|r\n|cff888888" .. (L.BOSS_GUIDES_SUB or "") .. "|r")
     content.text:Show()
-
     if not BM or not BM.Bosses then
-        content.text:SetText("|cffffff00=== Boss Guides ===|r\n\n|cffff0000BossMechanics-Modul nicht geladen.|r\nPruefe TOC + Modules/BossMechanics/.")
+        content.text:SetText("|cffffff00" .. (L.BOSS_GUIDES or "=== Boss-Guides ===") .. "|r\n\n|cffff0000" .. (L.BOSS_MODULE_MISSING or "Modul fehlt.") .. "|r")
         return
     end
-
     local yOffset = -42
     local index = 0
     local function addBossRow(id, boss)
@@ -590,46 +558,36 @@ function UI:DrawBosses(content)
         local phase = boss.Phase and ("  |cff66ccff" .. tostring(boss.Phase) .. "|r") or ""
         btn:SetText(string.format("|cffffd100%d|r  %s%s", id, boss.Name or "?", phase))
         btn:SetScript("OnClick", function()
-            if BM.Simulate then
-                BM:Simulate(id)
+            if BM.Simulate then BM:Simulate(id)
             elseif DragonSkill.BossMechanicsUI and DragonSkill.BossMechanicsUI.OnBossStart then
                 DragonSkill.BossMechanicsUI:OnBossStart(boss)
             end
-            print("|cff00ff00Dragon Skill:|r Boss-Guide: |cffffd100" .. tostring(boss.Name or id) .. "|r")
-            if boss.Tip and boss.Tip ~= "" then
-                print("|cffaaaaaaTip:|r " .. boss.Tip)
-            end
+            print("|cff00ff00Dragon Skill:|r " .. string.format(L.BOSS_GUIDE_PRINT or "Boss-Guide: %s", tostring(boss.Name or id)))
+            if boss.Tip and boss.Tip ~= "" then print("|cffaaaaaaTip:|r " .. boss.Tip) end
         end)
         btn:SetScript("OnEnter", function(selfBtn)
             GameTooltip:SetOwner(selfBtn, "ANCHOR_RIGHT")
             GameTooltip:SetText(boss.Name or ("Boss " .. tostring(id)), 1, 0.82, 0)
-            if boss.Phase then GameTooltip:AddLine("Phase: " .. tostring(boss.Phase), 0.6, 0.9, 1, true) end
+            if boss.Phase then GameTooltip:AddLine((L.PHASE or "Phase: ") .. tostring(boss.Phase), 0.6, 0.9, 1, true) end
             if boss.Tip then GameTooltip:AddLine(boss.Tip, 0.9, 0.9, 0.8, true) end
             GameTooltip:AddLine(" ", 1, 1, 1)
-            GameTooltip:AddLine("Klick: Overlay + Timer starten (Simulate)", 0.5, 0.8, 0.5)
+            GameTooltip:AddLine(L.CLICK_OVERLAY or "Klick: Overlay und Timer starten", 0.5, 0.8, 0.5)
             GameTooltip:Show()
         end)
         btn:SetScript("OnLeave", function() GameTooltip:Hide() end)
         btn:Show()
         yOffset = yOffset - 36
     end
-
     local shown = {}
     for _, id in ipairs(BOSS_ORDER) do
         local boss = BM.Bosses[id]
-        if boss then
-            addBossRow(id, boss)
-            shown[id] = true
-        end
+        if boss then addBossRow(id, boss); shown[id] = true end
     end
     for id, boss in pairs(BM.Bosses) do
-        if not shown[id] then
-            addBossRow(id, boss)
-        end
+        if not shown[id] then addBossRow(id, boss) end
     end
-
     if index == 0 then
-        content.text:SetText("|cffffff00=== Boss Guides ===|r\n\n|cffffaa00Keine Bosse registriert.|r\nBoss-Dateien in Modules/BossMechanics/Bosses/ pruefen.")
+        content.text:SetText("|cffffff00" .. (L.BOSS_GUIDES or "=== Boss-Guides ===") .. "|r\n\n|cffffaa00" .. (L.NO_BOSSES or "Keine Bosse.") .. "|r")
     end
 end
 
@@ -643,32 +601,23 @@ SlashCmdList["WEAR"] = function(msg)
     local lower = msg:lower()
     if lower == "help" or lower == "?" then
         print("|cff00ff00Dragon Skill v1.6.3|r")
-        print("  /ds | /wear     - Fenster")
-        print("  /ds bis         - BiS-Uebersicht")
-        print("  /ds minimap     - Minimap an/aus")
-        print("  /ds boss | bosses - Boss-Guides Tab")
-        print("  /ds boss list     - BossMechanics Liste (Chat)")
-        print("  /ds boss <name>   - Boss simulieren")
+        print(L.HELP_WINDOW or "  /ds | /wear     - Fenster")
+        print(L.HELP_BIS or "  /ds bis         - BiS")
+        print(L.HELP_MINIMAP or "  /ds minimap     - Minimap")
+        print(L.HELP_BOSS_TAB or "  /ds boss | bosses - Boss-Guides")
+        print(L.HELP_BOSS_LIST or "  /ds boss list")
+        print(L.HELP_BOSS_SIM or "  /ds boss <name>")
         return
     end
     if lower == "minimap" then UI:ToggleMinimap(); return end
     if lower == "bis" or lower == "gear" or lower == "bisgear" then UI:OpenBiS(); return end
-    if lower == "bosses" or lower == "bossguide" or lower == "bossguides" then
-        UI:OpenBosses()
-        return
-    end
+    if lower == "bosses" or lower == "bossguide" or lower == "bossguides" then UI:OpenBosses(); return end
     local bossArg = lower:match("^boss%s*(.*)$")
     if bossArg ~= nil then
         local BM = DragonSkill:GetModule("BossMechanics") or DragonSkill.BossMechanics
-        if not BM then print("|cffff0000Dragon Skill:|r BossMechanics fehlt."); return end
-        if bossArg == "" then
-            UI:OpenBosses()
-            return
-        end
-        if bossArg == "list" then
-            if BM.ListBosses then BM:ListBosses() end
-            return
-        end
+        if not BM then print("|cffff0000Dragon Skill:|r " .. (L.BOSS_MECH_MISSING or "BossMechanics fehlt.")); return end
+        if bossArg == "" then UI:OpenBosses(); return end
+        if bossArg == "list" then if BM.ListBosses then BM:ListBosses() end; return end
         local asNum = tonumber(bossArg)
         if BM.Simulate then BM:Simulate(asNum or bossArg) end
         return
@@ -676,7 +625,7 @@ SlashCmdList["WEAR"] = function(msg)
     UI:Toggle()
 end
 
-print("|cff00ff00Dragon Skill v1.6.3 geladen!|r  Minimap = BiS · /ds help")
+print("|cff00ff00" .. (L.LOADED or "Dragon Skill v1.6.3 geladen!") .. "|r")
 
 DragonSkill.Events:On("PLAYER_LOGIN", function()
     UI:Init()
