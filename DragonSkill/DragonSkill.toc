@@ -28,3 +28,4 @@ Modules\BossMechanics\Bosses\Sszorak.lua
 Modules\BossMechanics\Bosses\TwinFangs.lua
 Modules\BossMechanics\Bosses\CoiledAltar.lua
 Modules\BossMechanics\Bosses\Ulatek.lua
+Modules\BossMechanics\Bosses\Nymrissa.lua

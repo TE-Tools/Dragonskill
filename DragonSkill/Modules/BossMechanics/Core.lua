@@ -6,6 +6,8 @@ local BossMechanics = DragonSkill:RegisterModule("BossMechanics", {
     BossesByName = {},
     CurrentBoss = nil,
 })
+-- Globale Referenz fuer Boss-Dateien (RegisterBoss) und UI
+DragonSkill.BossMechanics = BossMechanics
 
 function BossMechanics:Init()
     self:RegisterEvents()
