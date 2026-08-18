@@ -6,25 +6,41 @@ local Boss = {
     Name = "Entombed Sentinels",
     Aliases = { "sentinels", "entombed", "golems" },
     Phase = "Split – 40y Abstand",
-    Tip = "Raid halbieren, Bosse >40y. Helical Toxins: Paare 1+3 oder 2+2. Addon zeigt wer zusammengehoert.",
+    Tip = "Raid halbieren, Bosse >40y (sonst Ula'teks Dominanz 99% DR). Helical Toxins: genau 4 Stacks (1+3 / 2+2). Spell 1284590.",
+    -- Offizielle Spell-IDs (warcraft.wiki.gg / Wowhead 12.1)
     ToxinSpellIDs = {
+        [1284590] = true, -- Helical Toxins (Debuff)
+        [1284588] = true, -- Vitriolic Stasis
+        [1284941] = true, -- Cultivated Burst
+    },
+    SpellIDs = {
+        helicalToxins = 1284590,
+        vitriolicStasis = 1284588,
+        cultivatedBurst = 1284941,
+        ulateksDominance = 1290193,
+        markOfAcid = 1284494,
+        markOfBlood = 1284503,
+    },
+    NpcIDs = {
+        breath = 258557, -- Breath of Ula'tek
+        blood = 258558,  -- Blood of Ula'tek
     },
     Timers = {
-        { key = "stasis", name = "Vitriolic Stasis", duration = 55, r = 0.2, g = 0.9, b = 0.3 },
-        { key = "marks", name = "Helical Toxins", duration = 20, r = 0.9, g = 0.6, b = 0.1 },
+        { key = "stasis", name = "Vitriolic Stasis", duration = 30, r = 0.2, g = 0.9, b = 0.3 },
+        { key = "marks", name = "Helical Toxins", duration = 28, r = 0.9, g = 0.6, b = 0.1 },
     },
     players = {},
 }
 
 local function IsToxinSpell(spellId, spellName)
+    if spellId and Boss.ToxinSpellIDs[spellId] then
+        return true
+    end
     if spellName then
         local n = spellName:lower()
         if n:find("helical") or n:find("toxin") or n:find("helikale") then
             return true
         end
-    end
-    if spellId and Boss.ToxinSpellIDs[spellId] then
-        return true
     end
     return false
 end
@@ -144,7 +160,7 @@ function Boss:OnCombatLogEvent()
 
     if not IsToxinSpell(spellId, spellName) then
         if subEvent == "SPELL_CAST_SUCCESS" or subEvent == "SPELL_CAST_START" then
-            if spellName and (spellName:find("Vitriolic Stasis") or spellName:find("Stasis")) then
+            if spellId == 1284588 or (spellName and (spellName:find("Vitriolic Stasis") or spellName:find("Stasis"))) then
                 if DragonSkill.BossMechanicsUI then
                     DragonSkill.BossMechanicsUI:StartTimer("stasis", "Vitriolic Stasis", 30, 0.2, 0.9, 0.3)
                     DragonSkill.BossMechanicsUI:SetTip("Stasis – schwaecheren Golem heilen, Toxins auf 4 Stacks!")
@@ -157,6 +173,7 @@ function Boss:OnCombatLogEvent()
         return
     end
 
+    -- Helical Toxins stacks (1284590)
     if subEvent == "SPELL_AURA_APPLIED" or subEvent == "SPELL_AURA_APPLIED_DOSE" then
         local stacks = amount or 1
         if subEvent == "SPELL_AURA_APPLIED_DOSE" and amount then
@@ -176,7 +193,7 @@ end
 function Boss:SimulateStart()
     print("|cff00ff00DS BossSim:|r Entombed Sentinels – Helical Toxins Paar-Test.")
     if DragonSkill.BossMechanicsUI then
-        DragonSkill.BossMechanicsUI:StartTimer("stasis", "Vitriolic Stasis", 55, 0.2, 0.9, 0.3)
+        DragonSkill.BossMechanicsUI:StartTimer("stasis", "Vitriolic Stasis", 30, 0.2, 0.9, 0.3)
         DragonSkill.BossMechanicsUI:SetTip(self.Tip)
     end
     self:SimulateIntermission()
@@ -192,9 +209,7 @@ function Boss:SimulateIntermission()
         if me then dummy[me] = math.random(1, 3) end
         for i = 1, maxI do
             local name = GetUnitName(prefix .. i, true)
-            if name then
-                dummy[name] = math.random(1, 3)
-            end
+            if name then dummy[name] = math.random(1, 3) end
             if i >= 10 then break end
         end
     else
