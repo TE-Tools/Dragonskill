@@ -1,230 +1,138 @@
--- Entombed Sentinels – Boss 2 Venomous Abyss (Encounter 3010)
--- Zwei Golems. Helical Toxins: Stacks 1+3 oder 2+2 zusammenlaufen.
+-- Dragon Skill - Boss: Entombed Sentinels (Eingeschlossene Wächter)
+-- Update v1.6.4: Vollständiger 12.1 Support (Heroic & Mythic)
+-- IDs: Helical Toxins (1284590), Protogift (1296880), Miasma (1288260)
+
+local BossMechanics = DragonSkill:GetModule("BossMechanics")
 
 local Boss = {
     ID = 3010,
     Name = "Entombed Sentinels",
     Aliases = { "sentinels", "entombed", "golems" },
     Phase = "Split – 40y Abstand",
-    Tip = "Raid halbieren, Bosse >40y (sonst Ula'teks Dominanz 99% DR). Helical Toxins: genau 4 Stacks (1+3 / 2+2). Spell 1284590.",
-    -- Offizielle Spell-IDs (warcraft.wiki.gg / Wowhead 12.1)
-    ToxinSpellIDs = {
-        [1284590] = true, -- Helical Toxins (Debuff)
-        [1284588] = true, -- Vitriolic Stasis
-        [1284941] = true, -- Cultivated Burst
-    },
-    SpellIDs = {
-        helicalToxins = 1284590,
-        vitriolicStasis = 1284588,
-        cultivatedBurst = 1284941,
-        ulateksDominance = 1290193,
-        markOfAcid = 1284494,
-        markOfBlood = 1284503,
-    },
-    NpcIDs = {
-        breath = 258557, -- Breath of Ula'tek
-        blood = 258558,  -- Blood of Ula'tek
-    },
-    Timers = {
-        { key = "stasis", name = "Vitriolic Stasis", duration = 30, r = 0.2, g = 0.9, b = 0.3 },
-        { key = "marks", name = "Helical Toxins", duration = 28, r = 0.9, g = 0.6, b = 0.1 },
-    },
-    players = {},
+    Tip = "Heroic: Helical Toxins (1+3 / 2+2). Mythic: Unstetes Protogift – Partner finden!",
+
+    -- Spell-IDs aus Patch 12.1
+    ToxinID = 1284590,     -- Helical Toxins (Heroic)
+    PrototoxinID = 1296880, -- Unstetes Protogift (Mythic)
+    MiasmaID = 1288260,     -- Instabiles Miasma (Soak)
+
+    helicalPlayers = {},    -- [Name] = Stacks (1-3)
+    protoPlayers = {},      -- [Name] = Timestamp
+    miasmaPlayers = {}      -- [Name] = true
 }
 
-local function IsToxinSpell(spellId, spellName)
-    if spellId and Boss.ToxinSpellIDs[spellId] then
-        return true
-    end
-    if spellName then
-        local n = spellName:lower()
-        if n:find("helical") or n:find("toxin") or n:find("helikale") then
-            return true
-        end
-    end
-    return false
-end
-
-local function UnitTokenByName(playerName)
-    if not playerName then return nil end
-    local short = playerName:match("^([^-]+)") or playerName
-    if UnitName("player") == short or UnitName("player") == playerName then
-        return "player"
-    end
-    if IsInRaid() then
-        for i = 1, 40 do
-            local u = "raid" .. i
-            local n = GetUnitName(u, true)
-            if n == playerName or n == short or (n and (n:match("^([^-]+)") == short)) then
-                return u
-            end
-        end
-    elseif IsInGroup() then
-        for i = 1, 4 do
-            local u = "party" .. i
-            local n = GetUnitName(u, true)
-            if n == playerName or n == short or (n and (n:match("^([^-]+)") == short)) then
-                return u
-            end
-        end
-    end
-    return nil
-end
-
 function Boss:OnStart()
-    self.players = {}
-    self.Phase = "Split – 40y Abstand"
+    self.helicalPlayers = {}
+    self.protoPlayers = {}
+    self.miasmaPlayers = {}
     if DragonSkill.BossMechanicsUI then
         DragonSkill.BossMechanicsUI:SetPhase(self.Phase)
         DragonSkill.BossMechanicsUI:SetTip(self.Tip)
-        if DragonSkill.BossMechanicsUI.ClearPairs then
-            DragonSkill.BossMechanicsUI:ClearPairs()
+    end
+end
+
+function Boss:OnCombatLogEvent(...)
+    local _, event, _, _, _, _, _, _, destName, _, _, spellID, _, _, amount = CombatLogGetCurrentEventInfo()
+
+    -- 1. Helical Toxins (Heroic)
+    if spellID == self.ToxinID then
+        if event == "SPELL_AURA_APPLIED" or event == "SPELL_AURA_APPLIED_DOSE" then
+            self.helicalPlayers[destName] = amount or 1
+            self:UpdateUI()
+        elseif event == "SPELL_AURA_REMOVED" then
+            self.helicalPlayers[destName] = nil
+            self:UpdateUI()
+        end
+    end
+
+    -- 2. Unstetes Protogift (Mythic)
+    if spellID == self.PrototoxinID then
+        if event == "SPELL_AURA_APPLIED" then
+            self.protoPlayers[destName] = GetTime()
+            self:UpdateUI()
+        elseif event == "SPELL_AURA_REMOVED" then
+            self.protoPlayers[destName] = nil
+            self:UpdateUI()
+        end
+    end
+
+    -- 3. Instabiles Miasma (Soak)
+    if spellID == self.MiasmaID then
+        if event == "SPELL_AURA_APPLIED" then
+            self.miasmaPlayers[destName] = true
+            if destName == GetUnitName("player", true) then
+                DragonSkill.BossMechanicsUI:ShowBigWarning("|cffff0000MIASMA AUF DIR! SOAKEN!|r", 5)
+                BossMechanics:PlaySound("CRITICAL")
+            end
+            self:UpdateUI()
+        elseif event == "SPELL_AURA_REMOVED" then
+            self.miasmaPlayers[destName] = nil
+            self:UpdateUI()
         end
     end
 end
 
-function Boss:OnEnd()
-    self.players = {}
-    if DragonSkill.BossMechanicsUI and DragonSkill.BossMechanicsUI.ClearPairs then
-        DragonSkill.BossMechanicsUI:ClearPairs()
-    end
-end
-
-function Boss:UpdatePlayer(name, stacks)
-    if not name then return end
-    if stacks and stacks > 0 then
-        self.players[name] = stacks
-    else
-        self.players[name] = nil
-    end
-    self:CalculatePairs()
-end
-
-function Boss:CalculatePairs()
-    local s1, s2, s3 = {}, {}, {}
-    for name, stacks in pairs(self.players) do
-        local p = { name = name, stacks = stacks }
-        if stacks == 1 then table.insert(s1, p)
-        elseif stacks == 2 then table.insert(s2, p)
-        elseif stacks == 3 then table.insert(s3, p)
-        end
-    end
-
+function Boss:UpdateUI()
     local pairsList = {}
     local open = {}
 
+    -- A. Helical Pairing (1+3 / 2+2)
+    local s1, s2, s3 = {}, {}, {}
+    for name, stacks in pairs(self.helicalPlayers) do
+        local p = { name = name, stacks = stacks }
+        if stacks == 1 then table.insert(s1, p)
+        elseif stacks == 2 then table.insert(s2, p)
+        elseif stacks == 3 then table.insert(s3, p) end
+    end
     while #s1 > 0 and #s3 > 0 do
-        local p1 = table.remove(s1, 1)
-        local p3 = table.remove(s3, 1)
-        table.insert(pairsList, { p1 = p1, p2 = p3, done = false, sum = 4 })
+        table.insert(pairsList, { p1 = table.remove(s1, 1), p2 = table.remove(s3, 1) })
     end
-
     while #s2 >= 2 do
-        local a = table.remove(s2, 1)
-        local b = table.remove(s2, 1)
-        table.insert(pairsList, { p1 = a, p2 = b, done = false, sum = 4 })
+        table.insert(pairsList, { p1 = table.remove(s2, 1), p2 = table.remove(s2, 1) })
     end
 
+    -- B. Mythic Prototoxin Pairing (Zeit-basiert)
+    local sortedProto = {}
+    for name, t in pairs(self.protoPlayers) do
+        table.insert(sortedProto, {name = name, time = t})
+    end
+    table.sort(sortedProto, function(a, b) return a.time < b.time end)
+    while #sortedProto >= 2 do
+        local p1 = table.remove(sortedProto, 1)
+        local p2 = table.remove(sortedProto, 1)
+        table.insert(pairsList, {
+            p1 = { name = p1.name, stacks = "GIFT" },
+            p2 = { name = p2.name, stacks = "GIFT" }
+        })
+    end
+
+    -- C. Offene Listen & Miasma
     for _, p in ipairs(s1) do table.insert(open, p) end
     for _, p in ipairs(s2) do table.insert(open, p) end
     for _, p in ipairs(s3) do table.insert(open, p) end
+    for _, p in ipairs(sortedProto) do table.insert(open, { name = p.name, stacks = "GIFT" }) end
+    for name, _ in pairs(self.miasmaPlayers) do
+        table.insert(open, { name = "|cffff8000SOAK:|r " .. name, stacks = "MIASMA" })
+    end
 
-    if DragonSkill.BossMechanicsUI and DragonSkill.BossMechanicsUI.UpdatePairs then
+    if DragonSkill.BossMechanicsUI then
         DragonSkill.BossMechanicsUI:UpdatePairs(pairsList, open)
-    end
-
-    self:ApplyRaidMarkers(pairsList)
-end
-
-function Boss:ApplyRaidMarkers(pairsList)
-    if not IsInGroup() then return end
-    if not (UnitIsGroupLeader("player") or UnitIsGroupAssistant("player")) then
-        return
-    end
-    for name in pairs(self.players) do
-        local u = UnitTokenByName(name)
-        if u then SetRaidTarget(u, 0) end
-    end
-    for i, pair in ipairs(pairsList) do
-        local icon = ((i - 1) % 8) + 1
-        for _, side in ipairs({ pair.p1, pair.p2 }) do
-            local u = UnitTokenByName(side.name)
-            if u then SetRaidTarget(u, icon) end
-        end
-    end
-end
-
-function Boss:OnCombatLogEvent()
-    local _, subEvent, _, _, _, _, _, _, destName, _, _, spellId, spellName, _, amount =
-        CombatLogGetCurrentEventInfo()
-
-    if not IsToxinSpell(spellId, spellName) then
-        if subEvent == "SPELL_CAST_SUCCESS" or subEvent == "SPELL_CAST_START" then
-            if spellId == 1284588 or (spellName and (spellName:find("Vitriolic Stasis") or spellName:find("Stasis"))) then
-                if DragonSkill.BossMechanicsUI then
-                    DragonSkill.BossMechanicsUI:StartTimer("stasis", "Vitriolic Stasis", 30, 0.2, 0.9, 0.3)
-                    DragonSkill.BossMechanicsUI:SetTip("Stasis – schwaecheren Golem heilen, Toxins auf 4 Stacks!")
-                end
-                if DragonSkill.BossMechanics and DragonSkill.BossMechanics.PlaySound then
-                    DragonSkill.BossMechanics:PlaySound("INTERMISSION")
-                end
-            end
-        end
-        return
-    end
-
-    -- Helical Toxins stacks (1284590)
-    if subEvent == "SPELL_AURA_APPLIED" or subEvent == "SPELL_AURA_APPLIED_DOSE" then
-        local stacks = amount or 1
-        if subEvent == "SPELL_AURA_APPLIED_DOSE" and amount then
-            stacks = amount
-        end
-        self:UpdatePlayer(destName, stacks)
-        if DragonSkill.BossMechanicsUI and DragonSkill.BossMechanicsUI.ShowBigWarning then
-            DragonSkill.BossMechanicsUI:ShowBigWarning("Helical Toxins – Paare checken!", 2)
-        end
-    elseif subEvent == "SPELL_AURA_REMOVED" then
-        self:UpdatePlayer(destName, 0)
-    elseif subEvent == "SPELL_AURA_REMOVED_DOSE" and amount then
-        self:UpdatePlayer(destName, amount)
     end
 end
 
 function Boss:SimulateStart()
-    print("|cff00ff00DS BossSim:|r Entombed Sentinels – Helical Toxins Paar-Test.")
+    self:OnStart()
+    self.protoPlayers = {
+        ["Thomas"] = GetTime(),
+        ["Lisa"] = GetTime() + 0.1,
+        ["Kevin"] = GetTime() + 0.2,
+        ["Anna"] = GetTime() + 0.3
+    }
+    self.miasmaPlayers = { ["Markus"] = true }
+    self:UpdateUI()
     if DragonSkill.BossMechanicsUI then
-        DragonSkill.BossMechanicsUI:StartTimer("stasis", "Vitriolic Stasis", 30, 0.2, 0.9, 0.3)
-        DragonSkill.BossMechanicsUI:SetTip(self.Tip)
+        DragonSkill.BossMechanicsUI:ShowBigWarning("TEST: ENCHANTED SENTINELS PAARE!", 5)
     end
-    self:SimulateIntermission()
 end
 
-function Boss:SimulateIntermission()
-    local dummy = {}
-    local num = GetNumGroupMembers() or 0
-    if num > 0 then
-        local prefix = IsInRaid() and "raid" or "party"
-        local maxI = IsInRaid() and num or math.min(num, 4)
-        local me = GetUnitName("player", true)
-        if me then dummy[me] = math.random(1, 3) end
-        for i = 1, maxI do
-            local name = GetUnitName(prefix .. i, true)
-            if name then dummy[name] = math.random(1, 3) end
-            if i >= 10 then break end
-        end
-    else
-        dummy = {
-            ["Spieler1"] = 1, ["Spieler2"] = 3, ["Spieler3"] = 2,
-            ["Spieler4"] = 2, ["Spieler5"] = 1, ["Spieler6"] = 3,
-            ["Spieler7"] = 1, ["Spieler8"] = 3,
-        }
-    end
-    self.players = dummy
-    self:CalculatePairs()
-    if DragonSkill.BossMechanicsUI and DragonSkill.BossMechanicsUI.ShowBigWarning then
-        DragonSkill.BossMechanicsUI:ShowBigWarning("TEST: HELICAL TOXINS – Paare!", 4)
-    end
-    print("|cff00ff00DS BossSim:|r Paare berechnet (1+3 / 2+2). Siehe Overlay.")
-end
-
-DragonSkill.BossMechanics:RegisterBoss(3010, Boss)
+BossMechanics:RegisterBoss(Boss.ID, Boss)

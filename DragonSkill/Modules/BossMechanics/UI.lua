@@ -280,7 +280,11 @@ function UI:UpdatePairs(pairs, openPlayers)
         n2 = tostring(n2):match("^([^-]+)") or n2
         row.p1Text:SetText(string.format("%s |cffaaaaaa(%s)|r", n1, tostring(s1)))
         row.p2Text:SetText(string.format("%s |cffaaaaaa(%s)|r", n2, tostring(s2)))
-        if pair.done then
+
+        if s1 == "GIFT" or s2 == "GIFT" then
+            row.p1Text:SetTextColor(1, 0.4, 0.4)
+            row.p2Text:SetTextColor(1, 0.4, 0.4)
+        elseif pair.done then
             row.p1Text:SetTextColor(0.5, 0.5, 0.5)
             row.p2Text:SetTextColor(0.5, 0.5, 0.5)
             row.symbol:SetAlpha(0.35)
