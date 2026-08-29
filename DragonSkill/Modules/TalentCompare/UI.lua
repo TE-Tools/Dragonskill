@@ -1,6 +1,5 @@
--- Dragon Skill - Main UI (v1.7.2)
--- Finalized Gear Assistant & Farm Planner for WoW 12.1.
--- Restored Minimap Button and Fixed Slash Commands.
+-- Dragon Skill - Main UI (v1.7.3)
+-- Comprehensive Dashboard & Gear Assistant with Full Tooltip Support.
 
 local L = DragonSkill.L or {}
 local UI = {}
@@ -26,111 +25,6 @@ local TAB_BOSSES = 7
 local TAB_ASSISTANT = 8
 
 local CONTENT_WIDTH, FRAME_WIDTH, FRAME_HEIGHT, ROW_WIDTH = 600, 750, 600, 580
-local cachedBuildData = nil
-
--- Minimap logic
-local minimapBtn
-local minimapMenuFrame
-
-local function UpdateMinimapPosition()
-    if not minimapBtn or not DragonSkillDB then return end
-    local angle = (DragonSkillDB.minimap and DragonSkillDB.minimap.angle) or 220
-    local rad = math.rad(angle)
-    minimapBtn:SetPoint("CENTER", Minimap, "CENTER", math.cos(rad) * 80, math.sin(rad) * 80)
-end
-
-local function ShowMinimapMenu()
-    if not minimapMenuFrame then
-        minimapMenuFrame = CreateFrame("Frame", "DragonSkillMinimapMenu", UIParent, "UIDropDownMenuTemplate")
-    end
-
-    local menu = {
-        { text = "Dragon Skill", isTitle = true, notCheckable = true },
-        { text = "Dashboard", notCheckable = true, func = function() UI:Open(TAB_DASHBOARD) end },
-        { text = "BiS Gear", notCheckable = true, func = function() UI:Open(TAB_BIS) end },
-        { text = "Farm Plan", notCheckable = true, func = function() UI:Open(TAB_FARM) end },
-        { text = "Minimap ausblenden", notCheckable = true, func = function() UI:ToggleMinimap() end },
-    }
-    EasyMenu(menu, minimapMenuFrame, "cursor", 0, 0, "MENU")
-end
-
-local function CreateMinimapButton()
-    if minimapBtn then return end
-
-    local btn = CreateFrame("Button", "DragonSkillMinimapButton", Minimap)
-    btn:SetSize(32, 32)
-    btn:SetFrameStrata("MEDIUM")
-    btn:SetFrameLevel(8)
-    btn:SetHighlightTexture("Interface\\Minimap\\UI-Minimap-ZoomButton-Highlight")
-
-    local icon = btn:CreateTexture(nil, "ARTWORK")
-    icon:SetSize(20, 20)
-    icon:SetPoint("CENTER", 0, 1)
-    icon:SetTexture("Interface\\Icons\\Inv_misc_head_dragon_01")
-    btn.icon = icon
-
-    local border = btn:CreateTexture(nil, "OVERLAY")
-    border:SetSize(54, 54)
-    border:SetPoint("TOPLEFT")
-    border:SetTexture("Interface\\Minimap\\MiniMap-TrackingBorder")
-
-    btn:RegisterForClicks("LeftButtonUp", "RightButtonUp")
-    btn:RegisterForDrag("LeftButton")
-
-    btn:SetScript("OnClick", function(_, button)
-        if button == "LeftButton" then
-            UI:Toggle()
-        elseif button == "RightButton" then
-            ShowMinimapMenu()
-        end
-    end)
-
-    btn:SetScript("OnDragStart", function(self)
-        self:SetScript("OnUpdate", function()
-            local mx, my = Minimap:GetCenter()
-            local cx, cy = GetCursorPosition()
-            local scale = Minimap:GetEffectiveScale()
-            cx, cy = cx / scale, cy / scale
-            if not DragonSkillDB.minimap then DragonSkillDB.minimap = {} end
-            DragonSkillDB.minimap.angle = math.deg(math.atan2(cy - my, cx - mx))
-            UpdateMinimapPosition()
-        end)
-    end)
-    btn:SetScript("OnDragStop", function(self)
-        self:SetScript("OnUpdate", nil)
-    end)
-
-    btn:SetScript("OnEnter", function(self)
-        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        GameTooltip:AddLine("|cffffd100Dragon Skill|r")
-        GameTooltip:AddLine("Linksklick: Fenster oeffnen", 1, 1, 1)
-        GameTooltip:AddLine("Rechtsklick: Menue", 1, 1, 1)
-        GameTooltip:Show()
-    end)
-    btn:SetScript("OnLeave", function() GameTooltip:Hide() end)
-
-    minimapBtn = btn
-    UpdateMinimapPosition()
-    if DragonSkillDB and DragonSkillDB.minimap and DragonSkillDB.minimap.hide then
-        btn:Hide()
-    else
-        btn:Show()
-    end
-end
-
-function UI:ToggleMinimap()
-    if not DragonSkillDB then return end
-    DragonSkillDB.minimap = DragonSkillDB.minimap or {}
-    DragonSkillDB.minimap.hide = not DragonSkillDB.minimap.hide
-    if not minimapBtn then CreateMinimapButton() end
-    if DragonSkillDB.minimap.hide then
-        minimapBtn:Hide()
-        print("|cff00ff00Dragon Skill:|r Minimap aus - /ds minimap zum Einblenden")
-    else
-        minimapBtn:Show()
-        print("|cff00ff00Dragon Skill:|r Minimap an")
-    end
-end
 
 function UI:Init()
     if self.frame then return end
@@ -145,7 +39,7 @@ function UI:Init()
     f:SetScript("OnDragStart", f.StartMoving)
     f:SetScript("OnDragStop", f.StopMovingOrSizing)
 
-    if f.SetTitle then f:SetTitle("Dragon Skill v1.7.2") end
+    if f.SetTitle then f:SetTitle("Dragon Skill v1.7.3") end
     if f.portrait then f.portrait:SetTexture("Interface\\Icons\\Inv_misc_head_dragon_01") end
 
     local scrollFrame = CreateFrame("ScrollFrame", "DragonSkillScrollFrame", f.Inset, "UIPanelScrollFrameTemplate")
@@ -174,25 +68,36 @@ function UI:Init()
     tinsert(UISpecialFrames, "DragonSkillMainFrame")
     f:Hide()
     self.frame = f
-    self.listRows = {}
-    self.talentBtns = {}
-end
-
-function UI:Open(tabId)
-    self:Init()
-    self.frame:Show()
-    if tabId then self:SelectTab(tabId) else self:Update() end
-end
-
-function UI:Toggle()
-    self:Init()
-    if self.frame:IsShown() then self.frame:Hide() else self.frame:Show(); self:Update() end
+    self.rows = {} -- Global rows pool for all interactive lists
 end
 
 function UI:SelectTab(id)
     currentTab = id
     PanelTemplates_SetTab(self.frame, id)
     self:Update()
+end
+
+function UI:GetRow(index)
+    if not self.rows[index] then
+        local row = CreateFrame("Button", nil, self.frame.Content)
+        row:SetSize(ROW_WIDTH, 26)
+        row.icon = row:CreateTexture(nil, "ARTWORK")
+        row.icon:SetSize(22, 22)
+        row.icon:SetPoint("LEFT", 0, 0)
+        row.text = row:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+        row.text:SetPoint("LEFT", row.icon, "RIGHT", 8, 0)
+        row.text:SetJustifyH("LEFT")
+        self.rows[index] = row
+    end
+    return self.rows[index]
+end
+
+function UI:ClearRows()
+    for _, row in pairs(self.rows) do
+        row:Hide()
+        row:SetScript("OnEnter", nil)
+        row:SetScript("OnClick", nil)
+    end
 end
 
 function UI:EnsureText(content)
@@ -209,12 +114,16 @@ end
 function UI:Update()
     if not self.frame or not self.frame.Content then return end
     local content = self.frame.Content
-    for _, child in ipairs({ content:GetChildren() }) do child:Hide() end
-    if not self.text then
-        self.text = self:EnsureText(content)
+    for _, child in ipairs({ content:GetChildren() }) do
+        if child ~= self.text and child ~= self.searchBox and child ~= self.answerText then
+            child:Hide()
+        end
     end
-    self.text:SetText("")
-    self.text:Show()
+    self:ClearRows()
+
+    local text = self:EnsureText(content)
+    text:SetText("")
+    text:Show()
     if self.frame.ScrollFrame then self.frame.ScrollFrame:SetVerticalScroll(0) end
 
     local _, class = UnitClass("player")
@@ -228,124 +137,221 @@ function UI:Update()
     elseif currentTab == TAB_BOSSES then self:DrawBosses(content)
     else
         local guideData = DragonSkill.Database:GetGuideData(class, specID)
-        if not guideData then self.text:SetText("No guide data found."); return end
+        if not guideData then text:SetText("No guide data found."); return end
 
         if currentTab == TAB_TALENTS then self:DrawTalents(content, guideData)
-        elseif currentTab == TAB_BIS then self:Helper_DrawListWithIcons(content, guideData.bisGear and guideData.bisGear.wowhead, "BiS List (Wowhead)")
-        elseif currentTab == TAB_TRINKETS then self:Helper_DrawListWithIcons(content, guideData.trinkets and guideData.trinkets.archon, "Top Trinkets (Archon)")
+        elseif currentTab == TAB_BIS then self:DrawBiSList(content, guideData.bisGear and guideData.bisGear.wowhead)
+        elseif currentTab == TAB_TRINKETS then self:DrawBiSList(content, guideData.trinkets and guideData.trinkets.archon, "Top Trinkets")
         end
     end
+end
+
+function UI:AddInteractiveRow(index, itemData, yOffset, labelPrefix)
+    local row = self:GetRow(index)
+    row:SetParent(self.frame.Content)
+    row:ClearAllPoints()
+    row:SetPoint("TOPLEFT", 15, yOffset)
+
+    local name = itemData.name or itemData.text or "Unknown Item"
+    local slot = itemData.slot or ""
+    local prefix = labelPrefix or (slot ~= "" and "|cff00ff00"..slot..":|r " or "")
+
+    local texture = "Interface\\Icons\\Inv_misc_questionmark"
+    if itemData.itemId then
+        local tex = C_Item.GetItemIconByID(itemData.itemId)
+        if tex then texture = tex end
+    end
+
+    row.icon:SetTexture(texture)
+    row.text:SetText(prefix .. name .. (itemData.priority and " |cff00ff00(Prio "..itemData.priority..")|r" or ""))
+
+    row:SetScript("OnEnter", function(s)
+        GameTooltip:SetOwner(s, "ANCHOR_RIGHT")
+        if itemData.itemId then
+            GameTooltip:SetItemByID(itemData.itemId)
+        else
+            GameTooltip:SetText(name)
+        end
+        GameTooltip:Show()
+    end)
+    row:SetScript("OnLeave", function() GameTooltip:Hide() end)
+    row:Show()
+    return index + 1
 end
 
 function UI:DrawDashboard(content, class, specID)
     local GM = DragonSkill:GetModule("GearManager")
     local specName = select(2, GetSpecializationInfo(GetSpecialization() or 0)) or "Spec"
-    local txt = "|cffffff00" .. class .. ": " .. specName .. " Dashboard|r\n\n"
 
+    local titleTxt = "|cffffff00" .. class .. ": " .. specName .. " Dashboard|r\n\n"
     local avgIlvl = select(2, GetAverageItemLevel())
-    txt = txt .. string.format("Item Level: |cffffffff%.1f|r\n", avgIlvl)
+    titleTxt = titleTxt .. string.format("Gegenstandsstufe: |cffffffff%.1f|r\n\n", avgIlvl)
+    titleTxt = titleTxt .. "|cffffd100NÄCHSTE BESTE UPGRADES:|r"
+    self.text:SetText(titleTxt)
 
     local upgrades = GM:GetBestUpgrades()
-    txt = txt .. "\n|cffffd100NEXT UPGRADES:|r\n"
-    for i=1, math.min(3, #upgrades) do
-        local item = upgrades[i]
-        txt = txt .. string.format("%d. %s (%s) - Prio: %d/10\n", i, item.name, item.slot, item.priority)
+    local yOffset = -85
+    local rowIndex = 1
+
+    if #upgrades > 0 then
+        for i=1, math.min(3, #upgrades) do
+            rowIndex = self:AddInteractiveRow(rowIndex, upgrades[i], yOffset)
+            yOffset = yOffset - 28
+        end
+    else
+        yOffset = yOffset - 20
+        -- (Optional: Add text saying no upgrades)
     end
+
+    yOffset = yOffset - 20
+    local farmTitle = content:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    farmTitle:SetPoint("TOPLEFT", 15, yOffset)
+    farmTitle:SetText("|cffffff00WAS SOLL ICH HEUTE FARMEN?|r")
+    farmTitle:Show()
+    yOffset = yOffset - 25
 
     local plan = GM:GetFarmPlan()
-    txt = txt .. "\n|cffffff00FARM PRIORITY:|r\n"
     if #plan > 0 then
-        txt = txt .. "1. " .. plan[1].name .. " (Score: " .. plan[1].score .. ")\n"
+        local dungeonTxt = content:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+        dungeonTxt:SetPoint("TOPLEFT", 15, yOffset)
+        dungeonTxt:SetText("1. |cffffffff" .. plan[1].name .. "|r (Score: " .. plan[1].score .. ")")
+        dungeonTxt:Show()
+        yOffset = yOffset - 30
     end
 
-    self.text:SetText(txt)
+    local catTitle = content:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    catTitle:SetPoint("TOPLEFT", 15, yOffset)
+    catTitle:SetText("|cffffd100CATALYST EMPFEHLUNG:|r")
+    catTitle:Show()
+    yOffset = yOffset - 25
+
+    local catTxt = content:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+    catTxt:SetPoint("TOPLEFT", 15, yOffset)
+    catTxt:SetWidth(CONTENT_WIDTH - 40)
+    catTxt:SetJustifyH("LEFT")
+    catTxt:SetText(GM:GetCatalystRecommendation and GM:GetCatalystRecommendation() or "Brust oder Beine")
+    catTxt:Show()
 end
 
 function UI:DrawFarm(content)
     local GM = DragonSkill:GetModule("GearManager")
     local plan = GM:GetFarmPlan()
-    local txt = "|cffffff00OPTIMAL FARM ROUTE|r\n\n"
+    self.text:SetText("|cffffff00OPTIMALE FARM-ROUTE (Dungeons)|r")
+
+    local yOffset = -45
+    local rowIndex = 1
+
     for i, d in ipairs(plan) do
-        txt = txt .. string.format("|cffffd100%d. %s|r (Score: %d)\n", i, d.name, d.score)
+        local dTitle = content:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+        dTitle:SetPoint("TOPLEFT", 15, yOffset)
+        dTitle:SetText(string.format("|cffffd100%d. %s|r (Score: %d)", i, d.name, d.score))
+        dTitle:Show()
+        yOffset = yOffset - 20
+
+        local dData = DragonSkillGearData.dungeons[d.name]
+        for _, boss in ipairs(dData.bosses) do
+            for _, itemId in ipairs(boss.loot) do
+                local item = DragonSkillGearData.items[itemId]
+                if item and GM:GetUpgradeScore(item.slot, itemId) > 0 then
+                    rowIndex = self:AddInteractiveRow(rowIndex, item, yOffset, "   - ")
+                    yOffset = yOffset - 26
+                end
+            end
+        end
+        yOffset = yOffset - 10
     end
-    self.text:SetText(txt)
 end
 
 function UI:DrawUpgrades(content)
     local GM = DragonSkill:GetModule("GearManager")
-    local items = GM:GetBestUpgrades()
-    self:Helper_DrawListWithIcons(content, items, "BEST UPGRADES")
+    local upgrades = GM:GetBestUpgrades()
+    self:DrawBiSList(content, upgrades, "DEINE NÄCHSTEN UPGRADES (Priority 1-10)")
 end
 
-function UI:Helper_DrawListWithIcons(content, items, title)
+function UI:DrawBiSList(content, items, title)
+    self.text:SetText(title or "Best-in-Slot Gear")
     local yOffset = -45
-    self.text:SetText(title)
-    if not self.listRows then self.listRows = {} end
-    for _, row in ipairs(self.listRows) do row:Hide() end
+    local rowIndex = 1
     if not items or #items == 0 then return end
-    for i, item in ipairs(items) do
-        local row = self.listRows[i]
-        if not row then
-            row = CreateFrame("Button", nil, content)
-            row:SetSize(ROW_WIDTH, 26)
-            row.icon = row:CreateTexture(nil, "ARTWORK")
-            row.icon:SetSize(22, 22); row.icon:SetPoint("LEFT", 0, 0)
-            row.text = row:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
-            row.text:SetPoint("LEFT", row.icon, "RIGHT", 8, 0)
-            self.listRows[i] = row
-        end
-        row:SetPoint("TOPLEFT", 15, yOffset)
-        local tex = "Interface\\Icons\\Inv_misc_questionmark"
-        if item.itemId then tex = C_Item.GetItemIconByID(item.itemId) or tex end
-        row.icon:SetTexture(tex)
-        row.text:SetText((item.slot and "|cff00ff00"..item.slot..":|r " or "") .. (item.name or item.text or "Item"))
-        row:Show()
+    for _, item in ipairs(items) do
+        rowIndex = self:AddInteractiveRow(rowIndex, item, yOffset)
         yOffset = yOffset - 28
     end
 end
 
 function UI:DrawTalents(content, guideData)
     local yOffset = -45
+    self.text:SetText("Talent Builds (Patch 12.1)")
     for i, build in ipairs(guideData.talentBuilds or {}) do
-        local btn = self.talentBtns[i]
-        if not btn then
-            btn = CreateFrame("Button", nil, content, "UIPanelButtonTemplate")
-            btn:SetSize(ROW_WIDTH, 30)
-            self.talentBtns[i] = btn
-        end
+        local btn = CreateFrame("Button", nil, content, "UIPanelButtonTemplate")
+        btn:SetSize(ROW_WIDTH, 30)
         btn:SetPoint("TOPLEFT", 15, yOffset)
-        btn:SetText(build.label)
+        btn:SetText(string.format("[%s] %s", build.provider:upper(), build.label))
+        btn:SetScript("OnClick", function()
+            StaticPopup_Show("DRAGONSKILL_COPY", nil, nil, { importString = build.importString })
+        end)
         btn:Show()
         yOffset = yOffset - 35
     end
 end
 
-function UI:DrawAssistant(content)
-    self.text:SetText("|cffffff00AI Assistant|r\n\nAsk me about gear or farm targets.")
-end
-
 function UI:DrawBosses(content)
     local BM = DragonSkill:GetModule("BossMechanics")
     if not BM then return end
+    self.text:SetText("Raid Boss Simulator")
     local yOffset = -45
+    local idx = 1
     for id, boss in pairs(BM.Bosses) do
-        -- Button Logic
+        local btn = CreateFrame("Button", nil, content, "UIPanelButtonTemplate")
+        btn:SetSize(ROW_WIDTH, 30)
+        btn:SetPoint("TOPLEFT", 15, yOffset)
+        btn:SetText(boss.Name .. " (Test)")
+        btn:SetScript("OnClick", function() BM:Simulate(id) end)
+        btn:Show()
+        yOffset = yOffset - 35
+        idx = idx + 1
     end
 end
 
+function UI:DrawAssistant(content)
+    self.text:SetText("|cffffff00AI Assistant|r\n\nFrag mich nach 'Farmen' oder 'Upgrades'.")
+end
+
+function UI:Toggle()
+    self:Init()
+    if self.frame:IsShown() then self.frame:Hide() else self.frame:Show(); self:Update() end
+end
+
+function UI:Open(tabId)
+    self:Init()
+    self.frame:Show()
+    self:SelectTab(tabId)
+end
+
+-- Slash Commands
 SLASH_DS1 = "/ds"
 SLASH_WEAR1 = "/wear"
 SlashCmdList["DS"] = function(msg)
     local low = msg:lower()
-    if low == "minimap" then
-        UI:ToggleMinimap()
-    elseif low == "bis" then
-        UI:Open(TAB_BIS)
-    elseif low == "farm" then
-        UI:Open(TAB_FARM)
-    else
-        UI:Toggle()
-    end
+    if low == "bis" then UI:Open(TAB_BIS)
+    elseif low == "farm" then UI:Open(TAB_FARM)
+    else UI:Toggle() end
+end
+
+-- Minimap
+local minimapBtn
+local function CreateMinimapButton()
+    if minimapBtn then return end
+    local btn = CreateFrame("Button", "DragonSkillMinimapButton", Minimap)
+    btn:SetSize(32, 32); btn:SetFrameStrata("MEDIUM"); btn:SetFrameLevel(8)
+    btn:SetHighlightTexture("Interface\\Minimap\\UI-Minimap-ZoomButton-Highlight")
+    local icon = btn:CreateTexture(nil, "ARTWORK")
+    icon:SetSize(20, 20); icon:SetPoint("CENTER", 0, 1); icon:SetTexture("Interface\\Icons\\Inv_misc_head_dragon_01")
+    local border = btn:CreateTexture(nil, "OVERLAY")
+    border:SetSize(54, 54); border:SetPoint("TOPLEFT"); border:SetTexture("Interface\\Minimap\\MiniMap-TrackingBorder")
+    btn:SetScript("OnClick", function() UI:Toggle() end)
+    btn:SetPoint("CENTER", Minimap, "CENTER", -70, -70)
+    minimapBtn = btn
 end
 
 DragonSkill.Events:On("PLAYER_LOGIN", function()

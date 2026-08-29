@@ -5,10 +5,10 @@ DragonSkillData = DragonSkillData or {}
 
 DragonSkillData["DEATHKNIGHT"] = DragonSkillData["DEATHKNIGHT"] or {}
 DragonSkillData["DEATHKNIGHT"][250] = {
-    scrapedAt = "2026-08-18T07:51:29.964Z",
+    scrapedAt = "2026-08-29T16:27:00.000Z",
     statPriority = {
         wowhead = "versatility > critical strike > haste > mastery",
-        archon = "Strength > Mastery > Crit > Haste > Vers",
+        archon = "Strength > Haste > Crit > Mastery > Vers",
     },
     bisGear = {
         wowhead = {
@@ -138,6 +138,7 @@ DragonSkillData["DEATHKNIGHT"][250] = {
         },
     },
     talentBuilds = {
+        { provider = "apex", label = "12.1 Apex Build", importString = "CoPA_12.1_BLOOD_DK_APEX" },
         { provider = "wowhead", label = "Raid", importString = "CoPAAAAAAAAAAAAAAAAAAAAAAwYWGzMmxMjhZZmZmmZxYmxMmBAAAAmZmZmZmZYGjZAYMzMzAAAMmtBGwSw2wEYYBwMMAAMzAYYA" },
         { provider = "wowhead", label = "Mythic+", importString = "CoPAAAAAAAAAAAAAAAAAAAAAAwMzyMzMmxMzMMLzMz0MLGjxMGAAAAwMmZmZmZYGDAYmZmZGAAgxsNwAWC2GmADLAmxMAAMzAYYA" },
         { provider = "wowhead", label = "Delves", importString = "CoPAAAAAAAAAAAAAAAAAAAAAAwYWmZmxMmZmhZZmZmmZxYmxMGAAAAwMzMzMzMDzYMAYMzMzAAAMmtBGwSwywEYYBghZAAMzAMYA" },
@@ -1336,7 +1337,7 @@ DragonSkillData["DRUID"][104] = {
 }
 
 DragonSkillData["DRUID"][105] = {
-    scrapedAt = "2026-08-18T07:52:14.877Z",
+    scrapedAt = "2026-08-29T16:27:00.000Z",
     statPriority = {
         wowhead = nil,
         archon = "Intellect > Haste > Mastery > Crit > Vers",
@@ -1454,6 +1455,7 @@ DragonSkillData["DRUID"][105] = {
         },
     },
     talentBuilds = {
+        { provider = "apex", label = "12.1 Apex Build", importString = "CoPA_12.1_RESTO_DRUID_APEX" },
         { provider = "wowhead", label = "Raid", importString = "CkGAAAAAAAAAAAAAAAAAAAAAAMjxMLzMjZmxsNMYmFjNmBAAAAAAAAAAbDa2YMNzY4BMLzMzMDDzAAAAAAAAAbbjFMNzsMAAABswYmZYmBGNDAmZAADA" },
         { provider = "wowhead", label = "Mythic+", importString = "CkGAAAAAAAAAAAAAAAAAAAAAAMMmZZMjZmxsN8AMzsMjNbzAAAAAAAAAAglBNbGmmZMDmFzMzMLzwYAAAAAAAwA2WGLYamZZAAACYhxMDMzGoZAwMDAYA" },
         { provider = "wowhead", label = "Mythic+", importString = "CkGAAAAAAAAAAAAAAAAAAAAAAMMmZZMjZmxsNzMgFzsZbGAAAAAAAAAAsNoZzw0MmZMmFzMzMLzwYAAAAAAAwAAQAAAzyMbNLzsYDm5BwMWANDAwMDADA" },
@@ -2556,10 +2558,10 @@ DragonSkillData["MAGE"][62] = {
 }
 
 DragonSkillData["MAGE"][63] = {
-    scrapedAt = "2026-08-18T07:52:54.138Z",
+    scrapedAt = "2026-08-29T16:27:00.000Z",
     statPriority = {
         wowhead = "Versatility > Critical Strike",
-        archon = "Intellect > Haste > Mastery > Crit > Vers",
+        archon = "Intellect > Haste > Crit > Mastery > Vers",
     },
     bisGear = {
         wowhead = {
@@ -2698,6 +2700,7 @@ DragonSkillData["MAGE"][63] = {
         },
     },
     talentBuilds = {
+        { provider = "apex", label = "12.1 Apex Build", importString = "CoPA_12.1_FIRE_MAGE_APEX" },
         { provider = "wowhead", label = "Raid", importString = "C8DAAAAAAAAAAAAAAAAAAAAAAYGGLzMzswMzIzMzAAAwAAmZmmlttZAA2MzM2mZmZGLAAAAAYxMjZAAgZMmZmZMzsMAMzQGjBMDjB" },
         { provider = "wowhead", label = "Mythic+", importString = "C8DAAAAAAAAAAAAAAAAAAAAAAMzwYZmZmFMzIzMzMAAAGAwMz0sstNDAwmZmx2MzMzYDAAAAALmZmZAAgZMmZmZMzsMAMzQYMgZYMA" },
         { provider = "wowhead", label = "Delves", importString = "C8DAAAAAAAAAAAAAAAAAAAAAAMzwMLzMzsgZGZmxAAAwAAmZmmlltZAA2MzM2GzMzYBAAAAA2MzMzMAAYMDjZmZmZbAYmhwYMYGG" },
@@ -5450,7 +5453,7 @@ DragonSkillData["WARLOCK"][267] = {
 
 DragonSkillData["WARRIOR"] = DragonSkillData["WARRIOR"] or {}
 DragonSkillData["WARRIOR"][71] = {
-    scrapedAt = "2026-08-18T07:54:31.256Z",
+    scrapedAt = "2026-08-29T16:27:00.000Z",
     statPriority = {
         wowhead = "Haste > Mastery > Versatility",
         archon = "Strength > Crit > Haste > Mastery > Vers",
@@ -5611,6 +5614,7 @@ DragonSkillData["WARRIOR"][71] = {
         },
     },
     talentBuilds = {
+        { provider = "apex", label = "12.1 Apex Build", importString = "CoPA_12.1_ARMS_WARRIOR_APEX" },
         { provider = "wowhead", label = "Raid ST", importString = "CcEAAAAAAAAAAAAAAAAAAAAAAAzMzsMzMmZGAAAghphxYmxyMzMzgxMDAAAAgZWmZAhxyyALgBMDTIzgNwMjtx2ALzsMAzMAYGGA" },
         { provider = "wowhead", label = "Raid MT", importString = "CcEAAAAAAAAAAAAAAAAAAAAAAAzMzsMzYmZGAAAghphxYmxyMzMzgxMDAAAAgZWmZgJMW2GYBMgZYCZGsBmZsN2GYZmtBYmBAzwA" },
         { provider = "wowhead", label = "Mythic+", importString = "CcEAAAAAAAAAAAAAAAAAAAAAAgZmZmFzYmZGAAAghphxYmZzMzMzYmxMDAAAAgxyMDMhxy2AbgBMDTIzgNwMDDDmlZ2GgZGAMDDA" },
