@@ -1,6 +1,6 @@
--- Dragon Skill - Main UI (v1.7.5)
+-- Dragon Skill - Main UI (v1.7.7)
 -- Optimized Gear Assistant & Farm Planner for WoW 12.1.
--- High Stability Fix: Enhanced error handling and robust Minimap/Slash registration.
+-- Fix for UI Content Leak: Properly clearing old tab content and pooling regions.
 
 local L = DragonSkill.L or {}
 local UI = {}
@@ -29,7 +29,7 @@ local CONTENT_WIDTH, FRAME_WIDTH, FRAME_HEIGHT, ROW_WIDTH = 600, 750, 600, 580
 local cachedBuildData = nil
 
 ---------------------------------------------------------------------------
--- Minimap & Menu logic (Robust)
+-- Minimap & Menu logic
 ---------------------------------------------------------------------------
 
 local minimapBtn
@@ -153,7 +153,7 @@ function UI:Init()
     f:SetScript("OnDragStart", f.StartMoving)
     f:SetScript("OnDragStop", f.StopMovingOrSizing)
 
-    if f.SetTitle then f:SetTitle("Dragon Skill v1.7.5") end
+    if f.SetTitle then f:SetTitle("Dragon Skill v1.7.7") end
     if f.portrait then f.portrait:SetTexture("Interface\\Icons\\Inv_misc_head_dragon_01") end
 
     local scrollFrame = CreateFrame("ScrollFrame", "DragonSkillScrollFrame", f.Inset, "UIPanelScrollFrameTemplate")
@@ -184,6 +184,7 @@ function UI:Init()
     self.frame = f
     self.rows = {}
     self.talentBtns = {}
+    self.extraFS = {} -- Pool for extra fontstrings
 end
 
 function UI:SelectTab(id)
@@ -207,11 +208,37 @@ function UI:GetRow(index)
     return self.rows[index]
 end
 
-function UI:ClearRows()
+function UI:GetExtraFS(index, font)
+    if not self.extraFS[index] then
+        self.extraFS[index] = self.frame.Content:CreateFontString(nil, "OVERLAY", font or "GameFontHighlight")
+    end
+    self.extraFS[index]:SetFontObject(font or "GameFontHighlight")
+    return self.extraFS[index]
+end
+
+function UI:ClearContent()
+    if not self.frame or not self.frame.Content then return end
+    local content = self.frame.Content
+
+    -- Hide all children (Frames like Buttons, EditBoxes)
+    for _, child in ipairs({ content:GetChildren() }) do
+        if child ~= self.text and child ~= self.searchBox then child:Hide() end
+    end
+
+    -- Hide all regions (FontStrings created on content)
+    for _, region in ipairs({ content:GetRegions() }) do
+        if region ~= self.text then region:Hide() end
+    end
+
+    -- Hide Pooled rows
     for _, row in pairs(self.rows) do
         row:Hide()
         row:SetScript("OnEnter", nil)
-        row:SetScript("OnClick", nil)
+    end
+
+    -- HidePooled Extra FontStrings
+    for _, fs in pairs(self.extraFS) do
+        fs:Hide()
     end
 end
 
@@ -230,14 +257,9 @@ function UI:Update()
     if not self.frame or not self.frame.Content then return end
     local content = self.frame.Content
 
+    self:ClearContent()
+
     self.text = self:EnsureText(content)
-
-    -- Hide all children (buttons etc)
-    for _, child in ipairs({ content:GetChildren() }) do
-        if child ~= self.text then child:Hide() end
-    end
-    self:ClearRows()
-
     self.text:SetText("")
     self.text:Show()
     if self.frame.ScrollFrame then self.frame.ScrollFrame:SetVerticalScroll(0) end
@@ -254,7 +276,7 @@ function UI:Update()
         elseif currentTab == TAB_BOSSES then self:DrawBosses(content)
         else
             local guideData = DragonSkill.Database:GetGuideData(class, specID)
-            if not guideData then text:SetText("Keine Guide-Daten fuer diese Spezialisierung gefunden."); return end
+            if not guideData then self.text:SetText("Keine Guide-Daten fuer diese Spezialisierung gefunden."); return end
 
             if currentTab == TAB_TALENTS then self:DrawTalents(content, guideData)
             elseif currentTab == TAB_BIS then self:DrawBiSList(content, guideData.bisGear and guideData.bisGear.wowhead, "BiS List (Wowhead)")
@@ -264,7 +286,7 @@ function UI:Update()
     end)
 
     if not ok then
-        text:SetText("|cffff0000UI Fehler:|r " .. tostring(err))
+        self.text:SetText("|cffff0000UI Fehler:|r " .. tostring(err))
     end
 end
 
@@ -290,11 +312,7 @@ function UI:AddInteractiveRow(index, itemData, yOffset, labelPrefix)
 
     row:SetScript("OnEnter", function(s)
         GameTooltip:SetOwner(s, "ANCHOR_RIGHT")
-        if itemData.itemId then
-            GameTooltip:SetItemByID(itemData.itemId)
-        else
-            GameTooltip:SetText(name)
-        end
+        if itemData.itemId then GameTooltip:SetItemByID(itemData.itemId) else GameTooltip:SetText(name) end
         GameTooltip:Show()
     end)
     row:SetScript("OnLeave", function() GameTooltip:Hide() end)
@@ -326,7 +344,7 @@ function UI:DrawDashboard(content, class, specID)
     end
 
     yOffset = yOffset - 20
-    local farmTitle = content:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    local farmTitle = self:GetExtraFS(1, "GameFontNormal")
     farmTitle:SetPoint("TOPLEFT", 15, yOffset)
     farmTitle:SetText("|cffffff00WAS SOLL ICH HEUTE FARMEN?|r")
     farmTitle:Show()
@@ -334,20 +352,20 @@ function UI:DrawDashboard(content, class, specID)
 
     local plan = GM:GetFarmPlan()
     if plan and #plan > 0 then
-        local dungeonTxt = content:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+        local dungeonTxt = self:GetExtraFS(2, "GameFontHighlight")
         dungeonTxt:SetPoint("TOPLEFT", 15, yOffset)
         dungeonTxt:SetText("1. |cffffffff" .. plan[1].name .. "|r (Score: " .. plan[1].score .. ")")
         dungeonTxt:Show()
         yOffset = yOffset - 30
     end
 
-    local catTitle = content:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    local catTitle = self:GetExtraFS(3, "GameFontNormal")
     catTitle:SetPoint("TOPLEFT", 15, yOffset)
     catTitle:SetText("|cffffd100CATALYST EMPFEHLUNG:|r")
     catTitle:Show()
     yOffset = yOffset - 25
 
-    local catTxt = content:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+    local catTxt = self:GetExtraFS(4, "GameFontHighlight")
     catTxt:SetPoint("TOPLEFT", 15, yOffset)
     catTxt:SetWidth(CONTENT_WIDTH - 40)
     catTxt:SetJustifyH("LEFT")
@@ -362,14 +380,16 @@ function UI:DrawFarm(content)
 
     local yOffset = -45
     local rowIndex = 1
+    local fsIndex = 10 -- Start index for pooled fontstrings in this view
 
     if plan then
         for i, d in ipairs(plan) do
-            local dTitle = content:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+            local dTitle = self:GetExtraFS(fsIndex, "GameFontNormal")
             dTitle:SetPoint("TOPLEFT", 15, yOffset)
             dTitle:SetText(string.format("|cffffd100%d. %s|r (Score: %d)", i, d.name, d.score))
             dTitle:Show()
             yOffset = yOffset - 20
+            fsIndex = fsIndex + 1
 
             local dData = DragonSkillGearData.dungeons[d.name]
             if dData then
@@ -499,7 +519,6 @@ DragonSkill.Events:On("PLAYER_LOGIN", function()
     CreateMinimapButton()
 end)
 
--- Falls der Login bereits vorbei ist (Manual Reload)
 if IsLoggedIn() then
     UI:Init()
     CreateMinimapButton()
