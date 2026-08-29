@@ -230,15 +230,16 @@ function UI:Update()
     if not self.frame or not self.frame.Content then return end
     local content = self.frame.Content
 
+    self.text = self:EnsureText(content)
+
     -- Hide all children (buttons etc)
     for _, child in ipairs({ content:GetChildren() }) do
         if child ~= self.text then child:Hide() end
     end
     self:ClearRows()
 
-    local text = self:EnsureText(content)
-    text:SetText("")
-    text:Show()
+    self.text:SetText("")
+    self.text:Show()
     if self.frame.ScrollFrame then self.frame.ScrollFrame:SetVerticalScroll(0) end
 
     local _, class = UnitClass("player")

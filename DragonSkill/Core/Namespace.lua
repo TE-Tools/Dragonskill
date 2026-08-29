@@ -3,7 +3,7 @@ local ADDON_NAME = ...
 
 DragonSkill = DragonSkill or {}
 DragonSkill.Modules = {}
-DragonSkill.version = "1.7.2"
+DragonSkill.version = "1.7.6"
 DragonSkill.author = "wear-alleria"
 
 local ns = select(2, ...) or {}
