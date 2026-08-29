@@ -1,8 +1,8 @@
 ## Interface: 120100
 ## Title: Dragon Skill
-## Notes: Talent-Guides, Trinkets, Rotation, BiS (Archon+Wowhead) und Crafting - by wear-alleria
+## Notes: Talent-Guides, Trinkets, Rotation, BiS-Farm-Upgrade Assistant - by wear-alleria
 ## Author: wear-alleria
-## Version: 1.6.3
+## Version: 1.7.0
 ## SavedVariables: DragonSkillDB
 ## SavedVariablesPerCharacter: DragonSkillCharDB
 
@@ -10,8 +10,13 @@ Core\Namespace.lua
 Core\EventManager.lua
 Core\Database.lua
 Core\Locale.lua
+Core\GearManager.lua
+Core\Character.lua
+
 Data\GuideData.lua
+Data\GearDatabase.lua
 Data\TalentOverrides.lua
+
 Modules\TalentCompare\TalentCompare.lua
 Modules\StatPriority\StatPriority.lua
 Modules\Trinkets\Trinkets.lua

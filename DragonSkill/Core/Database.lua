@@ -28,6 +28,22 @@ function Database:GetGuideData(class, spec)
     return classData[spec]
 end
 
+function Database:GetBiSData(class, spec)
+    -- Try new structured GearData first
+    if DragonSkillGearData and DragonSkillGearData.specs[class] and DragonSkillGearData.specs[class][spec] then
+        return DragonSkillGearData.specs[class][spec]
+    end
+    -- Fallback to legacy GuideData format
+    local legacy = self:GetGuideData(class, spec)
+    if legacy and legacy.bisGear then
+        return {
+            items = legacy.bisGear.wowhead or {},
+            legacy = true
+        }
+    end
+    return nil
+end
+
 function Database:CreateSkilling(name, data)
     if not self.account then self:Init() end
     data = data or {}

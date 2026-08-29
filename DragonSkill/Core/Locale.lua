@@ -78,6 +78,13 @@ local de = {
     HELP_BOSS_TAB = "  /ds boss | bosses - Boss-Guides",
     HELP_BOSS_LIST = "  /ds boss list     - Bossliste (Chat)",
     HELP_BOSS_SIM = "  /ds boss <name>   - Boss simulieren",
+    TAB_DASHBOARD = "Dashboard",
+    TAB_FARM = "Farm",
+    TAB_UPGRADES = "Upgrades",
+    TAB_CATALYST = "Catalyst",
+    NEXT_UPGRADES = "Beste Upgrades (Priority 8+):",
+    FARM_ROUTE_TITLE = "Optimale Farm-Route (Dungeons):",
+    CATALYST_REC = "Catalyst Empfehlung:",
 }
 
 local en = {
@@ -150,6 +157,13 @@ local en = {
     HELP_BOSS_TAB = "  /ds boss | bosses - Boss guides",
     HELP_BOSS_LIST = "  /ds boss list     - Boss list (chat)",
     HELP_BOSS_SIM = "  /ds boss <name>   - Simulate boss",
+    TAB_DASHBOARD = "Dashboard",
+    TAB_FARM = "Farm",
+    TAB_UPGRADES = "Upgrades",
+    TAB_CATALYST = "Catalyst",
+    NEXT_UPGRADES = "Best Upgrades (Priority 8+):",
+    FARM_ROUTE_TITLE = "Optimal Farm Route (Dungeons):",
+    CATALYST_REC = "Catalyst Recommendation:",
 }
 
 local src = isDE and de or en
