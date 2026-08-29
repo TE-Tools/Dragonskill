@@ -1,5 +1,5 @@
--- Dragon Skill - Main UI (v1.7.3)
--- Comprehensive Dashboard & Gear Assistant with Full Tooltip Support.
+-- Dragon Skill - Main UI (v1.7.4)
+-- Comprehensive Dashboard & Gear Assistant with Restored Minimap & Slash Commands.
 
 local L = DragonSkill.L or {}
 local UI = {}
@@ -25,6 +25,119 @@ local TAB_BOSSES = 7
 local TAB_ASSISTANT = 8
 
 local CONTENT_WIDTH, FRAME_WIDTH, FRAME_HEIGHT, ROW_WIDTH = 600, 750, 600, 580
+local cachedBuildData = nil
+
+---------------------------------------------------------------------------
+-- Minimap & Menu
+---------------------------------------------------------------------------
+
+local minimapBtn
+local minimapMenuFrame
+
+local function UpdateMinimapPosition()
+    if not minimapBtn or not DragonSkillDB then return end
+    local angle = (DragonSkillDB.minimap and DragonSkillDB.minimap.angle) or 220
+    local rad = math.rad(angle)
+    minimapBtn:SetPoint("CENTER", Minimap, "CENTER", math.cos(rad) * 80, math.sin(rad) * 80)
+end
+
+local function ShowMinimapMenu()
+    if not minimapMenuFrame then
+        minimapMenuFrame = CreateFrame("Frame", "DragonSkillMinimapMenu", UIParent, "UIDropDownMenuTemplate")
+    end
+
+    local menu = {
+        { text = "Dragon Skill", isTitle = true, notCheckable = true },
+        { text = "Dashboard", notCheckable = true, func = function() UI:Open(TAB_DASHBOARD) end },
+        { text = "Farm Plan", notCheckable = true, func = function() UI:Open(TAB_FARM) end },
+        { text = "BiS List", notCheckable = true, func = function() UI:Open(TAB_BIS) end },
+        { text = "Upgrades", notCheckable = true, func = function() UI:Open(TAB_UPGRADES) end },
+        { text = "Minimap ausblenden", notCheckable = true, func = function() UI:ToggleMinimap() end },
+    }
+    EasyMenu(menu, minimapMenuFrame, "cursor", 0, 0, "MENU")
+end
+
+local function CreateMinimapButton()
+    if minimapBtn then return end
+
+    local btn = CreateFrame("Button", "DragonSkillMinimapButton", Minimap)
+    btn:SetSize(32, 32)
+    btn:SetFrameStrata("MEDIUM")
+    btn:SetFrameLevel(8)
+    btn:SetHighlightTexture("Interface\\Minimap\\UI-Minimap-ZoomButton-Highlight")
+
+    local icon = btn:CreateTexture(nil, "ARTWORK")
+    icon:SetSize(20, 20)
+    icon:SetPoint("CENTER", 0, 1)
+    icon:SetTexture("Interface\\Icons\\Inv_misc_head_dragon_01")
+    btn.icon = icon
+
+    local border = btn:CreateTexture(nil, "OVERLAY")
+    border:SetSize(54, 54)
+    border:SetPoint("TOPLEFT")
+    border:SetTexture("Interface\\Minimap\\MiniMap-TrackingBorder")
+
+    btn:RegisterForClicks("LeftButtonUp", "RightButtonUp")
+    btn:RegisterForDrag("LeftButton")
+
+    btn:SetScript("OnClick", function(_, button)
+        if button == "LeftButton" then
+            UI:Toggle()
+        elseif button == "RightButton" then
+            ShowMinimapMenu()
+        end
+    end)
+
+    btn:SetScript("OnDragStart", function(self)
+        self:SetScript("OnUpdate", function()
+            local mx, my = Minimap:GetCenter()
+            local cx, cy = GetCursorPosition()
+            local scale = Minimap:GetEffectiveScale()
+            cx, cy = cx / scale, cy / scale
+            if not DragonSkillDB.minimap then DragonSkillDB.minimap = {} end
+            DragonSkillDB.minimap.angle = math.deg(math.atan2(cy - my, cx - mx))
+            UpdateMinimapPosition()
+        end)
+    end)
+    btn:SetScript("OnDragStop", function(self)
+        self:SetScript("OnUpdate", nil)
+    end)
+
+    btn:SetScript("OnEnter", function(self)
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:AddLine("|cffffd100Dragon Skill|r")
+        GameTooltip:AddLine("Linksklick: Fenster oeffnen", 1, 1, 1)
+        GameTooltip:AddLine("Rechtsklick: Menue", 1, 1, 1)
+        GameTooltip:Show()
+    end)
+    btn:SetScript("OnLeave", function() GameTooltip:Hide() end)
+
+    minimapBtn = btn
+    UpdateMinimapPosition()
+    if DragonSkillDB and DragonSkillDB.minimap and DragonSkillDB.minimap.hide then
+        btn:Hide()
+    else
+        btn:Show()
+    end
+end
+
+function UI:ToggleMinimap()
+    if not DragonSkillDB then return end
+    DragonSkillDB.minimap = DragonSkillDB.minimap or {}
+    DragonSkillDB.minimap.hide = not DragonSkillDB.minimap.hide
+    if not minimapBtn then CreateMinimapButton() end
+    if DragonSkillDB.minimap.hide then
+        minimapBtn:Hide()
+        print("|cff00ff00Dragon Skill:|r Minimap aus - /ds minimap zum Einblenden")
+    else
+        minimapBtn:Show()
+        print("|cff00ff00Dragon Skill:|r Minimap an")
+    end
+end
+
+---------------------------------------------------------------------------
+-- Core UI logic
+---------------------------------------------------------------------------
 
 function UI:Init()
     if self.frame then return end
@@ -39,7 +152,7 @@ function UI:Init()
     f:SetScript("OnDragStart", f.StartMoving)
     f:SetScript("OnDragStop", f.StopMovingOrSizing)
 
-    if f.SetTitle then f:SetTitle("Dragon Skill v1.7.3") end
+    if f.SetTitle then f:SetTitle("Dragon Skill v1.7.4") end
     if f.portrait then f.portrait:SetTexture("Interface\\Icons\\Inv_misc_head_dragon_01") end
 
     local scrollFrame = CreateFrame("ScrollFrame", "DragonSkillScrollFrame", f.Inset, "UIPanelScrollFrameTemplate")
@@ -68,7 +181,8 @@ function UI:Init()
     tinsert(UISpecialFrames, "DragonSkillMainFrame")
     f:Hide()
     self.frame = f
-    self.rows = {} -- Global rows pool for all interactive lists
+    self.rows = {}
+    self.talentBtns = {}
 end
 
 function UI:SelectTab(id)
@@ -200,7 +314,6 @@ function UI:DrawDashboard(content, class, specID)
         end
     else
         yOffset = yOffset - 20
-        -- (Optional: Add text saying no upgrades)
     end
 
     yOffset = yOffset - 20
@@ -264,8 +377,8 @@ end
 
 function UI:DrawUpgrades(content)
     local GM = DragonSkill:GetModule("GearManager")
-    local upgrades = GM:GetBestUpgrades()
-    self:DrawBiSList(content, upgrades, "DEINE NÄCHSTEN UPGRADES (Priority 1-10)")
+    local items = GM:GetBestUpgrades()
+    self:DrawBiSList(content, items, "DEINE NÄCHSTEN UPGRADES (Priority 1-10)")
 end
 
 function UI:DrawBiSList(content, items, title)
@@ -288,7 +401,7 @@ function UI:DrawTalents(content, guideData)
         btn:SetPoint("TOPLEFT", 15, yOffset)
         btn:SetText(string.format("[%s] %s", build.provider:upper(), build.label))
         btn:SetScript("OnClick", function()
-            StaticPopup_Show("DRAGONSKILL_COPY", nil, nil, { importString = build.importString })
+            StaticPopup_Show("DRAGONSKILL_COPY", nil, nil, build.importString)
         end)
         btn:Show()
         yOffset = yOffset - 35
@@ -297,7 +410,7 @@ end
 
 function UI:DrawBosses(content)
     local BM = DragonSkill:GetModule("BossMechanics")
-    if not BM then return end
+    if not BM or not BM.Bosses then return end
     self.text:SetText("Raid Boss Simulator")
     local yOffset = -45
     local idx = 1
@@ -328,31 +441,30 @@ function UI:Open(tabId)
     self:SelectTab(tabId)
 end
 
+---------------------------------------------------------------------------
 -- Slash Commands
+---------------------------------------------------------------------------
+
 SLASH_DS1 = "/ds"
 SLASH_WEAR1 = "/wear"
 SlashCmdList["DS"] = function(msg)
     local low = msg:lower()
-    if low == "bis" then UI:Open(TAB_BIS)
-    elseif low == "farm" then UI:Open(TAB_FARM)
-    else UI:Toggle() end
+    if low == "minimap" then
+        UI:ToggleMinimap()
+    elseif low == "bis" then
+        UI:Open(TAB_BIS)
+    elseif low == "farm" then
+        UI:Open(TAB_FARM)
+    elseif low == "today" then
+        UI:Open(TAB_DASHBOARD)
+    else
+        UI:Toggle()
+    end
 end
 
--- Minimap
-local minimapBtn
-local function CreateMinimapButton()
-    if minimapBtn then return end
-    local btn = CreateFrame("Button", "DragonSkillMinimapButton", Minimap)
-    btn:SetSize(32, 32); btn:SetFrameStrata("MEDIUM"); btn:SetFrameLevel(8)
-    btn:SetHighlightTexture("Interface\\Minimap\\UI-Minimap-ZoomButton-Highlight")
-    local icon = btn:CreateTexture(nil, "ARTWORK")
-    icon:SetSize(20, 20); icon:SetPoint("CENTER", 0, 1); icon:SetTexture("Interface\\Icons\\Inv_misc_head_dragon_01")
-    local border = btn:CreateTexture(nil, "OVERLAY")
-    border:SetSize(54, 54); border:SetPoint("TOPLEFT"); border:SetTexture("Interface\\Minimap\\MiniMap-TrackingBorder")
-    btn:SetScript("OnClick", function() UI:Toggle() end)
-    btn:SetPoint("CENTER", Minimap, "CENTER", -70, -70)
-    minimapBtn = btn
-end
+---------------------------------------------------------------------------
+-- Events
+---------------------------------------------------------------------------
 
 DragonSkill.Events:On("PLAYER_LOGIN", function()
     UI:Init()
