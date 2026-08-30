@@ -104,6 +104,7 @@ StaticPopupDialogs["DRAGONSKILL_AI_KEY"] = {
     end,
     OnCancel = function(self, data, reason)
         if reason == "clicked" then
+            DragonSkillDB.ai = DragonSkillDB.ai or { provider = "openai" }
             local ai = DragonSkillDB.ai
             ai.provider = (ai.provider == "openai") and "claude" or "openai"
             StaticPopup_Show("DRAGONSKILL_AI_KEY")

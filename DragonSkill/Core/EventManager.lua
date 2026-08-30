@@ -6,8 +6,8 @@ local EventManager = {}
 DragonSkill = DragonSkill or {}
 DragonSkill.Events = EventManager
 
--- Wir nutzen einen benannten Frame, um Blizzard-Blockaden zu minimieren.
-local frame = CreateFrame("Frame", "DragonSkillEventFrame")
+-- Wir nutzen einen anonymen Frame, um Blizzard-Blockaden in 12.1 zu vermeiden.
+local frame = CreateFrame("Frame")
 EventManager.listeners = {}
 
 function EventManager:On(event, callback)
