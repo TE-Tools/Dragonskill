@@ -144,5 +144,6 @@ function AICoach:GetExternalReply(msg)
     }
 
     local pName = (DragonSkillDB.ai.provider == "claude") and "Claude" or "OpenAI"
-    return "|cff888888(Anfrage an " .. pName .. " gesendet... Warte auf Bridge-Antwort. Nutze '/reload' nach der Antwort.)|r"
+    print("|cffaaaaaa[Info]:|r Bridge-Pfad in 'DragonSkillBridge.js' muss korrekt sein!")
+    return "|cff00ccff(Anfrage an " .. pName .. " gesendet...)|r\n|cff888888Warte auf Bridge. Sobald dein Desktop-Programm 'Fertig' anzeigt, musst du in WoW '/reload' eingeben.|r"
 end

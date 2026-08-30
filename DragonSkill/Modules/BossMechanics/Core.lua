@@ -138,8 +138,10 @@ function BossMechanics:PlaySound(kind)
     if id then PlaySound(id, "Master") end
 end
 
--- Registrierung der Events sofort beim Laden der Datei (WoW 12.1 Sicherheit)
-BossMechanics:RegisterEvents()
+-- Registrierung der Events mit minimaler Verzögerung (WoW 12.1 Stabilität)
+C_Timer.After(0.5, function()
+    BossMechanics:RegisterEvents()
+end)
 
 DragonSkill.Events:On("PLAYER_LOGIN", function()
     BossMechanics:Init()

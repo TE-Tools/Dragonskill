@@ -11,8 +11,8 @@ const fs = require('fs');
 const path = require('path');
 const https = require('https');
 
-// CONFIG: Path to your WoW retail SavedVariables
-// Example: 'C:/Program Files (x86)/World of Warcraft/_retail_/WTF/Account/12345678#1/SavedVariables/DragonSkill.lua'
+// KONFIGURATION: Pfad zu deiner WoW retail SavedVariables Datei
+// WICHTIG: Ersetze 'YOUR_ACCOUNT' durch deinen Account-Namen (z.B. '12345678#1')
 const WOW_PATH = 'C:/Program Files (x86)/World of Warcraft/_retail_/WTF/Account/YOUR_ACCOUNT/SavedVariables/DragonSkill.lua';
 
 console.log("--- Dragon Skill AI Bridge v1.1.0 gestartet ---");
