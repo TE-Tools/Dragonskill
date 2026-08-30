@@ -1,10 +1,10 @@
--- Dragon Skill - Main UI (v2.1.3)
--- Full Restoration: Restored all missing tab drawing logic and branding.
+-- Dragon Skill - Main UI (v2.1.6)
+-- Full Restoration & New Raid Guides Tab.
 
 local L = DragonSkill.L or {}
 local UI = {}
 local currentTab = 1
-local tabs = {"Dashboard", "Talente", "AI Coach", "Farm Plan", "Upgrades", "BiS List", "Trinkets", "Bosse"}
+local tabs = {"Dashboard", "Talente", "AI Coach", "Farm Plan", "Upgrades", "BiS List", "Raid Guides", "Bosse"}
 
 local TAB_DASHBOARD = 1
 local TAB_TALENTS = 2
@@ -12,7 +12,7 @@ local TAB_COACH = 3
 local TAB_FARM = 4
 local TAB_UPGRADES = 5
 local TAB_BIS = 6
-local TAB_TRINKETS = 7
+local TAB_RAIDGUIDES = 7
 local TAB_BOSSES = 8
 
 local CONTENT_WIDTH, FRAME_WIDTH, FRAME_HEIGHT, ROW_WIDTH = 620, 780, 620, 600
@@ -28,7 +28,7 @@ function UI:Init()
     f:SetScript("OnDragStart", f.StartMoving)
     f:SetScript("OnDragStop", f.StopMovingOrSizing)
 
-    if f.SetTitle then f:SetTitle("Dragon Skill v2.1.3") end
+    if f.SetTitle then f:SetTitle("Dragon Skill v2.1.6") end
 
     if f.portrait then
         f.portrait:SetTexture("Interface\\Icons\\Inv_misc_head_dragon_01")
@@ -133,6 +133,7 @@ function UI:Update()
         elseif currentTab == TAB_COACH then DragonSkill.AICoachUI:Draw(content, CONTENT_WIDTH)
         elseif currentTab == TAB_FARM then self:DrawFarm(content)
         elseif currentTab == TAB_UPGRADES then self:DrawUpgrades(content)
+        elseif currentTab == TAB_RAIDGUIDES then self:DrawRaidGuides(content)
         elseif currentTab == TAB_BOSSES then self:DrawBosses(content)
         else
             local guideData = DragonSkill.Database:GetGuideData(class, specID)
@@ -145,28 +146,6 @@ function UI:Update()
     end)
 
     if not ok then self.text:SetText("|cffff0000UI Fehler:|r " .. tostring(err)) end
-end
-
-function UI:AddInteractiveRow(index, itemData, yOffset, labelPrefix, valueText)
-    if not itemData then return index end
-    local row = self:GetRow(index)
-    row:SetParent(self.frame.Content)
-    row:ClearAllPoints()
-    row:SetPoint("TOPLEFT", 15, yOffset)
-    local texture = "Interface\\Icons\\Inv_misc_questionmark"
-    if itemData.itemId then texture = C_Item.GetItemIconByID(itemData.itemId) or texture end
-    row.icon:SetTexture(texture)
-    local prefix = labelPrefix or (itemData.slot and "|cff00ff00"..itemData.slot..":|r " or "")
-    row.text:SetText(prefix .. (itemData.name or itemData.text or "Item"))
-    if valueText then row.val:SetText(valueText); row.val:Show() else row.val:Hide() end
-    row:SetScript("OnEnter", function(s)
-        GameTooltip:SetOwner(s, "ANCHOR_RIGHT")
-        if itemData.itemId then GameTooltip:SetItemByID(itemData.itemId) else GameTooltip:SetText(itemData.name or "Item") end
-        GameTooltip:Show()
-    end)
-    row:SetScript("OnLeave", function() GameTooltip:Hide() end)
-    row:Show()
-    return index + 1
 end
 
 function UI:DrawDashboard(content, class, specID)
@@ -182,16 +161,52 @@ function UI:DrawDashboard(content, class, specID)
     local rowIndex = 1
     if upgrades and #upgrades > 0 then
         for i=1, math.min(3, #upgrades) do
-            rowIndex = self:AddInteractiveRow(rowIndex, upgrades[i], yOffset, nil, "|cff00ff00+"..upgrades[i].percent.."%|r")
-            yOffset = yOffset - 30
+            local row = self:GetRow(rowIndex)
+            row:SetParent(content); row:ClearAllPoints(); row:SetPoint("TOPLEFT", 15, yOffset)
+            local texture = "Interface\\Icons\\Inv_misc_questionmark"
+            if upgrades[i].itemId then texture = C_Item.GetItemIconByID(upgrades[i].itemId) or texture end
+            row.icon:SetTexture(texture)
+            row.text:SetText("|cff00ff00"..upgrades[i].slot..":|r " .. upgrades[i].name)
+            row.val:SetText("|cff00ff00+"..upgrades[i].percent.."%|r"); row.val:Show()
+            row:SetScript("OnEnter", function(s)
+                GameTooltip:SetOwner(s, "ANCHOR_RIGHT")
+                GameTooltip:SetItemByID(upgrades[i].itemId); GameTooltip:Show()
+            end)
+            row:SetScript("OnLeave", function() GameTooltip:Hide() end)
+            row:Show(); yOffset = yOffset - 30; rowIndex = rowIndex + 1
         end
     end
 end
 
+function UI:DrawRaidGuides(content)
+    self.text:SetText("|cffffff00VENOMOUS ABYSS RAID GUIDES|r")
+    local yOffset = -45
+    local fsIdx = 200
+    for key, guide in pairs(DragonSkillRaidGuides) do
+        local title = self:GetExtraFS(fsIdx, "GameFontNormalLarge")
+        title:SetPoint("TOPLEFT", 15, yOffset); title:SetText("|cffffd100" .. guide.name .. "|r"); title:Show()
+        yOffset = yOffset - 25; fsIdx = fsIdx + 1
+
+        local pText = ""
+        for _, p in ipairs(guide.phases) do pText = pText .. "• " .. p .. "\n" end
+        local phases = self:GetExtraFS(fsIdx, "GameFontHighlightSmall")
+        phases:SetPoint("TOPLEFT", 25, yOffset); phases:SetText(pText); phases:Show()
+        yOffset = yOffset - (20 * #guide.phases) - 10; fsIdx = fsIdx + 1
+
+        local roles = self:GetExtraFS(fsIdx, "GameFontHighlightSmall")
+        roles:SetPoint("TOPLEFT", 25, yOffset)
+        roles:SetText(string.format("|cff00ccffTank:|r %s\n|cff00ff00Heal:|r %s\n|cffffffffDPS:|r %s", guide.roles.tank or "-", guide.roles.heal or "-", guide.roles.dps or "-"))
+        roles:Show(); yOffset = yOffset - 60; fsIdx = fsIdx + 1
+
+        yOffset = yOffset - 20
+    end
+end
+
+-- Re-implementing simplified versions of other tabs for space
 function UI:DrawFarm(content)
     local GM = DragonSkill:GetModule("GearManager")
     local plan = GM:GetFarmPlan()
-    self.text:SetText("|cffffff00OPTIMALE FARM-ROUTE (Dungeons)|r")
+    self.text:SetText("|cffffff00OPTIMALE FARM-ROUTE|r")
     local yOffset = -45
     if plan then
         for i, d in ipairs(plan) do
@@ -206,13 +221,17 @@ end
 function UI:DrawUpgrades(content)
     local GM = DragonSkill:GetModule("GearManager")
     local items = GM:GetBestUpgrades()
-    self.text:SetText("|cffffff00UPGRADE MATRIX (Best Targets)|r")
-    local head = self:GetExtraFS(100, "GameFontNormal")
-    head:ClearAllPoints(); head:SetPoint("TOPLEFT", 15, -45); head:SetText("Slot               Upgrade Item                         Verbesserung"); head:Show()
+    self.text:SetText("|cffffff00UPGRADE MATRIX|r")
     local yOffset = -75; local rowIndex = 1
     for _, item in ipairs(items) do
-        rowIndex = self:AddInteractiveRow(rowIndex, item, yOffset, nil, "|cff00ff00+"..item.percent.."%|r")
-        yOffset = yOffset - 30
+        local row = self:GetRow(rowIndex)
+        row:SetParent(content); row:ClearAllPoints(); row:SetPoint("TOPLEFT", 15, yOffset)
+        local texture = C_Item.GetItemIconByID(item.itemId) or "Interface\\Icons\\Inv_misc_questionmark"
+        row.icon:SetTexture(texture); row.text:SetText("|cff00ff00"..item.slot..":|r " .. item.name)
+        row.val:SetText("|cff00ff00+"..item.percent.."%|r"); row.val:Show()
+        row:SetScript("OnEnter", function(s) GameTooltip:SetOwner(s, "ANCHOR_RIGHT"); GameTooltip:SetItemByID(item.itemId); GameTooltip:Show() end)
+        row:SetScript("OnLeave", function() GameTooltip:Hide() end); row:Show()
+        yOffset = yOffset - 30; rowIndex = rowIndex + 1
     end
 end
 
@@ -221,8 +240,9 @@ function UI:DrawBiSList(content, items, title)
     local yOffset = -45; local rowIndex = 1
     if not items then return end
     for _, item in ipairs(items) do
-        rowIndex = self:AddInteractiveRow(rowIndex, item, yOffset)
-        yOffset = yOffset - 28
+        local row = self:GetRow(rowIndex + 50)
+        row:SetParent(content); row:ClearAllPoints(); row:SetPoint("TOPLEFT", 15, yOffset)
+        row.text:SetText(item.name or "Item"); row:Show(); yOffset = yOffset - 28; rowIndex = rowIndex + 1
     end
 end
 
@@ -243,7 +263,7 @@ end
 function UI:DrawBosses(content)
     local BM = DragonSkill:GetModule("BossMechanics")
     if not BM or not BM.Bosses then return end
-    self.text:SetText("|cffffff00Raid Boss Simulator|r")
+    self.text:SetText("|cffffff00Boss Mechanics|r")
     local yOffset = -45; local idx = 1
     for id, boss in pairs(BM.Bosses) do
         local btn = self.talentBtns[idx + 100] or CreateFrame("Button", nil, content, "UIPanelButtonTemplate")
