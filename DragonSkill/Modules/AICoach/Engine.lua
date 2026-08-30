@@ -1,5 +1,5 @@
--- Dragon Skill - Module: AI Coach Engine (v2.0.2)
--- Local Facts Engine and Hybrid Intelligence.
+-- Dragon Skill - Module: AI Coach Engine (v2.0.4)
+-- Hybrid Engine: Always gives Local Facts + Optional External AI.
 
 local AICoach = DragonSkill:RegisterModule("AICoach", {
     context = {}
@@ -10,7 +10,7 @@ local INTENTS = {
     FARM = {"farm", "ini", "dungeon", "laufen", "route", "heute"},
     UPGRADE = {"upgrade", "besser", "austauschen", "verbessern"},
     INVENTORY = {"tasche", "bag", "dabei", "inventar"},
-    STATS = {"stats", "werte", "prio", "haste", "mastery"},
+    STATS = {"stats", "werte", "prio", "prioritaet", "haste", "mastery"},
     VAULT = {"vault", "kammer", "schatzkammer"},
     CATALYST = {"catalyst", "katalysator", "tier", "set"},
 }
@@ -30,27 +30,23 @@ function AICoach:GetReply(msg)
     local GM = DragonSkill:GetModule("GearManager")
     local Char = DragonSkill:GetModule("Character")
 
-    if not GM or not Char then return "Einige Addon-Module sind noch nicht bereit." end
+    if not GM or not Char then return "Module laden noch..." end
 
-    -- Check for external AI first
+    -- 1. Always generate Local Reply first (Factual Basis)
+    local localReply = self:GetLocalReply(msg, GM, Char)
+
+    -- 2. If External AI is enabled, also trigger the bridge
     if DragonSkillDB and DragonSkillDB.ai and DragonSkillDB.ai.enabled and DragonSkillDB.ai.apiKey ~= "" then
-        return self:GetExternalReply(msg)
+        self:TriggerExternalQuery(msg, GM, Char)
+        return localReply .. "\n\n|cff00ccff(KI-Anfrage wurde parallel an die Bridge gesendet. Nutze 'Sync' fuer mehr Details.)|r"
     end
 
-    return self:GetLocalReply(msg, GM, Char)
+    return localReply
 end
 
 function AICoach:GetLocalReply(msg, GM, Char)
     local intents = self:ParseIntent(msg)
     msg = msg:lower()
-
-    if intents.VAULT then
-        return GM:GetVaultRecommendation()
-    end
-
-    if intents.CATALYST then
-        return GM:GetCatalystRecommendation()
-    end
 
     if intents.INVENTORY then
         local upgrades = Char:GetInventoryUpgrades()
@@ -60,33 +56,32 @@ function AICoach:GetLocalReply(msg, GM, Char)
         return "Keine besseren Items in deinen Taschen gefunden."
     end
 
+    if intents.VAULT then return GM:GetVaultRecommendation() end
+    if intents.CATALYST then return GM:GetCatalystRecommendation() end
+
     if intents.UPGRADE or intents.GEAR then
         local ups = GM:GetBestUpgrades()
         if ups and ups[1] then
-            return string.format("Dein naechstes Ziel ist |cffffd100%s|r (%s). Es bringt eine Steigerung von |cff00ff00%.1f%%|r.", ups[1].name, ups[1].slot, ups[1].percent or 0)
+            return string.format("Dein naechstes Ziel: |cffffd100%s|r (%s). Steigerung: |cff00ff00+%.1f%%|r.", ups[1].name, ups[1].slot, ups[1].percent or 0)
         end
     end
 
     if intents.FARM then
         local plan = GM:GetFarmPlan()
         if plan and plan[1] then
-            return "Die beste Ini heute ist |cffffd100" .. plan[1].name .. "|r. Dort droppen deine wichtigsten Upgrades."
+            return "Die beste Ini heute: |cffffd100" .. plan[1].name .. "|r. Dort droppen deine wichtigsten Upgrades."
         end
     end
 
     if intents.STATS then
         local prio = Char:GetStatPriority()
-        if prio and prio.wowhead then
-            return "Prioritaet laut Guide: |cffffd100" .. prio.wowhead .. "|r."
-        end
+        if prio and prio.wowhead then return "Prioritaet laut Guide: |cffffd100" .. prio.wowhead .. "|r." end
     end
 
-    return "Frag mich nach: 'Farmen', 'Upgrades', 'Vault', 'Catalyst' oder 'Tasche'."
+    return "Ich habe deine Frage lokal verstanden. Frag nach 'Farmen', 'Upgrades', 'Vault' oder 'Tasche'."
 end
 
-function AICoach:GetExternalReply(msg)
-    local GM = DragonSkill:GetModule("GearManager")
-    local Char = DragonSkill:GetModule("Character")
+function AICoach:TriggerExternalQuery(msg, GM, Char)
     local _, class = UnitClass("player")
     local specIndex = GetSpecialization()
     local spec = specIndex and select(2, GetSpecializationInfo(specIndex)) or "Spec"
@@ -105,7 +100,4 @@ function AICoach:GetExternalReply(msg)
         provider = DragonSkillDB.ai.provider or "openai",
         apiKey = DragonSkillDB.ai.apiKey
     }
-
-    local pName = (DragonSkillDB.ai.provider == "claude") and "Claude" or "OpenAI"
-    return "|cff00ccff(Anfrage an " .. pName .. " gesendet...)|r\n|cff888888Warte auf Bridge-Programm auf deinem Desktop. Sobald dort 'Fertig' steht, nutze /reload.|r"
 end

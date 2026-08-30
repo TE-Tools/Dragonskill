@@ -1,5 +1,5 @@
--- Dragon Skill - Module: AI Coach Chat UI (v2.0.3)
--- High Stability Fix: Fixed scope, added branding and credit.
+-- Dragon Skill - Module: AI Coach Chat UI (v2.0.4)
+-- Hybrid Chat: Local Response + Sync for External AI.
 
 local AICoachUI = {}
 local messages = {}
@@ -9,7 +9,7 @@ function AICoachUI:Draw(content, width)
     local Engine = DragonSkill:GetModule("AICoach")
     if not Engine then return end
 
-    -- Check for Bridge response
+    -- Check for Bridge response (Mode 2/3)
     if DragonSkillDB and DragonSkillDB.ai and DragonSkillDB.ai.pendingQuery and DragonSkillDB.ai.pendingQuery.status == "DONE" then
         if DragonSkillDB.ai.lastResponse and DragonSkillDB.ai.lastResponse ~= self.prevResponse then
             self:AddMessage("AI", DragonSkillDB.ai.lastResponse)
@@ -27,12 +27,11 @@ function AICoachUI:Draw(content, width)
 
         self.historyText = h:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
         self.historyText:SetPoint("TOPLEFT", 10, -10); self.historyText:SetWidth(width - 70); self.historyText:SetJustifyH("LEFT"); self.historyText:SetSpacing(4)
-        self.historyText:SetText("|cffaaaaaaWillkommen beim Dragon Skill Coach. Frag mich nach Gear oder Inis!|r")
+        self.historyText:SetText("|cffaaaaaaWillkommen beim Dragon Skill Coach. Frag mich nach deinem Gear oder Inis!|r")
         self.historyFrame = h
     end
     self.historyFrame:Show()
 
-    -- Sync history
     self:RefreshHistory()
 
     -- Input Box
@@ -45,10 +44,10 @@ function AICoachUI:Draw(content, width)
                 selfEb:SetText("")
                 AICoachUI:AddMessage("User", msg)
 
-                -- Fast Local Response
+                -- Local Engine Response (Instant)
                 local reply = Engine:GetReply(msg)
                 if reply then
-                    C_Timer.After(0.1, function() AICoachUI:AddMessage("Coach", reply) end)
+                    AICoachUI:AddMessage("Coach", reply)
                 end
             end
             selfEb:ClearFocus()
@@ -62,27 +61,45 @@ function AICoachUI:Draw(content, width)
     end
     self.inputBox:Show(); self.sendBtn:Show()
 
-    -- Reload / Sync Button
+    -- Sync Button (Manual Refresh for External AI)
     if not self.syncBtn then
         local btn = CreateFrame("Button", nil, content, "UIPanelButtonTemplate")
         btn:SetSize(130, 22); btn:SetPoint("BOTTOMLEFT", self.historyFrame, "TOPLEFT", 0, 5)
-        btn:SetText("Antwort abholen")
+        btn:SetText("Antwort synchronisieren")
         btn:SetScript("OnClick", function() ReloadUI() end)
         btn:SetScript("OnEnter", function(s)
             GameTooltip:SetOwner(s, "ANCHOR_RIGHT")
-            GameTooltip:SetText("Klick hier, sobald das Bridge-Programm auf deinem PC 'Fertig' anzeigt.")
+            GameTooltip:SetText("Wenn das Bridge-Programm auf deinem PC 'Fertig' anzeigt, klicke hier zum Synchronisieren.")
             GameTooltip:Show()
         end)
         btn:SetScript("OnLeave", function() GameTooltip:Hide() end)
         self.syncBtn = btn
     end
     self.syncBtn:Show()
+
+    -- Live Hub Info
+    if not self.hubInfo then
+        local fs = content:CreateFontString(nil, "OVERLAY", "GameFontDisableSmall")
+        fs:SetPoint("BOTTOMLEFT", content, "BOTTOMLEFT", 15, 20)
+        fs:SetText("|cffaaaaaaLive-Chat ohne Reload? Nutze den Live-Hub: |cffffffffhttp://localhost:3000|r")
+        self.hubInfo = fs
+    end
+    self.hubInfo:Show()
+
+    -- Settings
+    if not self.settingsBtn then
+        local btn = CreateFrame("Button", nil, content, "UIPanelButtonTemplate")
+        btn:SetSize(130, 22); btn:SetPoint("TOPRIGHT", content, "TOPRIGHT", -15, -15); btn:SetText("KI-Key setzen")
+        btn:SetScript("OnClick", function() StaticPopup_Show("DRAGONSKILL_AI_KEY") end)
+        self.settingsBtn = btn
+    end
+    self.settingsBtn:Show()
 end
 
 function AICoachUI:AddMessage(sender, text)
-    local prefix = (sender == "User") and "|cffffffffDu: |r" or (sender == "AI") and "|cff00ccffReal-AI: |r" or "|cff00ff00Coach: |r"
-    table.insert(messages, prefix .. text)
-    if #messages > 10 then table.remove(messages, 1) end
+    local color = (sender == "User") and "|cffffffffDu: |r" or (sender == "AI") and "|cff00ccffReal-AI: |r" or "|cff00ff00Coach: |r"
+    table.insert(messages, color .. text)
+    if #messages > 8 then table.remove(messages, 1) end
     self:RefreshHistory()
 end
 
@@ -93,30 +110,3 @@ function AICoachUI:RefreshHistory()
     if full == "" then full = "|cffaaaaaaWillkommen beim Dragon Skill Coach. Frag mich nach Gear oder Inis!|r" end
     self.historyText:SetText(full)
 end
-
--- Shared Key Popup (Fixed)
-StaticPopupDialogs["DRAGONSKILL_AI_KEY"] = {
-    text = "KI-Einstellungen (Mode 2):",
-    button1 = "Speichern", button2 = "Anbieter wechseln", button3 = "Abbrechen", hasEditBox = 1,
-    OnShow = function(self)
-        local ai = DragonSkillDB and DragonSkillDB.ai or { provider = "openai" }
-        local providerName = (ai.provider or "openai"):upper()
-        if self.Text then self.Text:SetText(string.format("KI-Einstellungen (Mode 2):\nAnbieter: |cffffd100%s|r\n\nKey eingeben:", providerName)) end
-        if self.EditBox and ai.apiKey then self.EditBox:SetText(ai.apiKey) end
-    end,
-    OnAccept = function(self)
-        local key = self.EditBox:GetText() or ""
-        DragonSkillDB.ai = DragonSkillDB.ai or {}
-        DragonSkillDB.ai.apiKey = key
-        DragonSkillDB.ai.enabled = (key ~= "")
-        print("|cff00ff00Dragon Skill:|r Key gespeichert.")
-    end,
-    OnCancel = function(self, data, reason)
-        if reason == "clicked" then
-            DragonSkillDB.ai = DragonSkillDB.ai or { provider = "openai" }
-            DragonSkillDB.ai.provider = (DragonSkillDB.ai.provider == "openai") and "claude" or "openai"
-            C_Timer.After(0.1, function() StaticPopup_Show("DRAGONSKILL_AI_KEY") end)
-        end
-    end,
-    timeout = 0, whileDead = true, hideOnEscape = true,
-}
