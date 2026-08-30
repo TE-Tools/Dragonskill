@@ -75,7 +75,7 @@ DragonSkill.AICoachUI = AICoachUI
 
 -- Popup for API Key & Provider
 StaticPopupDialogs["DRAGONSKILL_AI_KEY"] = {
-    text = "KI-Einstellungen (Mode 2):\nAnbieter: |cffffd100%s|r\n\nKey eingeben:",
+    text = "KI-Einstellungen (Mode 2):",
     button1 = "Speichern",
     button2 = "Anbieter wechseln",
     button3 = "Abbrechen",
@@ -83,13 +83,20 @@ StaticPopupDialogs["DRAGONSKILL_AI_KEY"] = {
     OnShow = function(self)
         local ai = DragonSkillDB and DragonSkillDB.ai or { provider = "openai" }
         local providerName = (ai.provider or "openai"):upper()
-        self.text:SetText(string.format("KI-Einstellungen (Mode 2):\nAnbieter: |cffffd100%s|r\n\nKey eingeben:", providerName))
-        if ai.apiKey then
-            self.editBox:SetText(ai.apiKey)
+        local eb = self.EditBox or self.editBox
+        local txt = self.Text or self.text
+
+        if txt then
+            txt:SetText(string.format("KI-Einstellungen (Mode 2):\nAktueller Anbieter: |cffffd100%s|r\n\nAPI-Key eingeben:", providerName))
+        end
+
+        if eb and ai.apiKey then
+            eb:SetText(ai.apiKey)
         end
     end,
     OnAccept = function(self)
-        local key = self.editBox:GetText()
+        local eb = self.EditBox or self.editBox
+        local key = eb and eb:GetText() or ""
         DragonSkillDB.ai = DragonSkillDB.ai or {}
         DragonSkillDB.ai.apiKey = key
         DragonSkillDB.ai.enabled = (key ~= "")
@@ -99,7 +106,7 @@ StaticPopupDialogs["DRAGONSKILL_AI_KEY"] = {
         if reason == "clicked" then
             local ai = DragonSkillDB.ai
             ai.provider = (ai.provider == "openai") and "claude" or "openai"
-            StaticPopup_Show("DRAGONSKILL_AI_KEY") -- Neu laden
+            StaticPopup_Show("DRAGONSKILL_AI_KEY")
         end
     end,
     timeout = 0, whileDead = true, hideOnEscape = true,
