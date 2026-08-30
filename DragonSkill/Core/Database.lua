@@ -8,7 +8,7 @@ function Database:Init()
         favorites = {},
         history = {},
         minimap = { hide = false },
-        ai = { enabled = false, apiKey = "", lastResponse = "", pendingQuery = nil },
+        ai = { enabled = false, provider = "openai", apiKey = "", lastResponse = "", pendingQuery = nil },
     }
     DragonSkillCharDB = DragonSkillCharDB or {
         lastComparedBuild = nil,

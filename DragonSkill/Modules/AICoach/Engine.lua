@@ -138,8 +138,11 @@ function AICoach:GetExternalReply(msg)
         question = msg,
         context = contextStr,
         timestamp = GetTime(),
-        status = "SENT"
+        status = "SENT",
+        provider = DragonSkillDB.ai.provider or "openai",
+        apiKey = DragonSkillDB.ai.apiKey
     }
 
-    return "|cff888888(Anfrage an OpenAI gesendet... Warte auf Bridge-Antwort. Nutze '/reload' nach der Antwort.)|r"
+    local pName = (DragonSkillDB.ai.provider == "claude") and "Claude" or "OpenAI"
+    return "|cff888888(Anfrage an " .. pName .. " gesendet... Warte auf Bridge-Antwort. Nutze '/reload' nach der Antwort.)|r"
 end

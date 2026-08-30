@@ -72,3 +72,34 @@ function AICoachUI:AddMessage(sender, text)
 end
 
 DragonSkill.AICoachUI = AICoachUI
+
+-- Popup for API Key & Provider
+StaticPopupDialogs["DRAGONSKILL_AI_KEY"] = {
+    text = "KI-Einstellungen (Mode 2):\nAnbieter: |cffffd100%s|r\n\nKey eingeben:",
+    button1 = "Speichern",
+    button2 = "Anbieter wechseln",
+    button3 = "Abbrechen",
+    hasEditBox = 1,
+    OnShow = function(self)
+        local ai = DragonSkillDB.ai
+        self.text:SetFormattedText(StaticPopupDialogs["DRAGONSKILL_AI_KEY"].text, (ai.provider or "OpenAI"):upper())
+        if ai.apiKey then
+            self.editBox:SetText(ai.apiKey)
+        end
+    end,
+    OnAccept = function(self)
+        local key = self.editBox:GetText()
+        DragonSkillDB.ai = DragonSkillDB.ai or {}
+        DragonSkillDB.ai.apiKey = key
+        DragonSkillDB.ai.enabled = (key ~= "")
+        print("|cff00ff00Dragon Skill:|r KI-Schluessel gespeichert.")
+    end,
+    OnCancel = function(self, data, reason)
+        if reason == "clicked" then
+            local ai = DragonSkillDB.ai
+            ai.provider = (ai.provider == "openai") and "claude" or "openai"
+            StaticPopup_Show("DRAGONSKILL_AI_KEY") -- Neu laden
+        end
+    end,
+    timeout = 0, whileDead = true, hideOnEscape = true,
+}
