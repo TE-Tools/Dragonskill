@@ -1,31 +1,37 @@
--- Dragon Skill - Module: AI Coach Engine (v2.1.1)
--- Enhanced Expert Engine with Boss Loot lookup and Talent Audit.
+-- Dragon Skill - Module: AI Coach Engine (v2.1.2)
+-- Master Knowledge Base with Raid/Dungeon Tactics and Crafting expertise.
 
 local AICoach = DragonSkill:RegisterModule("AICoach", {
     context = {}
 })
 
 local INTENTS = {
-    GEAR = {"gear", "ausruestung", "item", "trinket", "schmuck", "brust", "ring", "waffe", "neck", "hals", "back", "rücken"},
-    FARM = {"farm", "ini", "dungeon", "laufen", "route", "heute", "ziel", "wohin"},
-    UPGRADE = {"upgrade", "besser", "austauschen", "verbessern", "optimieren"},
-    INVENTORY = {"tasche", "bag", "dabei", "inventar", "rucksack"},
-    STATS = {"stats", "werte", "prio", "prioritaet", "haste", "mastery", "tempo", "meisterschaft", "crit", "krit"},
-    VAULT = {"vault", "kammer", "schatzkammer", "wöchentlich", "weekly"},
-    CATALYST = {"catalyst", "katalysator", "tier", "set", "boni", "bonus"},
-    TALENTS = {"talent", "skillung", "build", "baum", "pve", "raid", "falsch", "korrekt"},
-    CONSUMABLES = {"essen", "food", "fläschchen", "flask", "trank", "potion", "buff", "verzuberung", "enchant", "edelstein", "gem"},
-    PROFESSIONS = {"beruf", "craft", "herstellen", "auftrag", "funke", "spark"},
-    BOSS = {"boss", "sszorak", "nekzali", "sentinels", "ulatek", "droppt", "beute", "loot"}
+    GEAR = {"gear", "ausruestung", "item", "trinket", "brust", "ring", "waffe"},
+    FARM = {"farm", "ini", "dungeon", "laufen", "route", "heute"},
+    UPGRADE = {"upgrade", "besser", "austauschen", "verbessern"},
+    INVENTORY = {"tasche", "bag", "dabei", "inventar"},
+    STATS = {"stats", "werte", "prio", "prioritaet"},
+    VAULT = {"vault", "kammer", "schatzkammer"},
+    CATALYST = {"catalyst", "katalysator", "tier", "set"},
+    TALENTS = {"talent", "skillung", "build", "falsch", "korrekt"},
+    CRAFTING = {"craft", "herstellen", "beruf", "funke", "spark", "auftrag"},
+    BOSS = {"boss", "droppt", "beute", "loot", "taktik", "wie geht", "tipp"}
 }
 
 local KNOWLEDGE = {
-    GENERAL = "Ich bin dein lokaler Dragon Skill Experte. Frag mich nach Gear, Farm-Routen, Stats oder deinen Taschen!",
-    SPARK = "Nutze deine 'Funken der Erneuerung' fuer schwache Slots wie Waffe oder Trinket.",
-    CONSUMABLES = {
-        dps = "Nutze 'Speise der Leere' und 'Flaeschchen der unbaendigen Wut'.",
-        tank = "Nutze 'Eiserner Kuchen' und 'Flaeschchen der Standhaftigkeit'.",
-        healer = "Nutze 'Manatee' und 'Flaeschchen der klaren Sicht'.",
+    SPARK = "Nutze deine 'Funken der Erneuerung' fuer schwache Slots. Das 'Omen-Forged Greatsword' oder der 'Abyssal Signet' Ring sind exzellente Craft-Ziele.",
+    CRAFT_TIP = "Craft-Items koennen mit Wappen aufgewertet werden. Spare deine Wappen fuer Items mit hohem Itemlevel-Potenzial.",
+    BOSS_TACTICS = {
+        -- RAIDS
+        ["entombed sentinels"] = "Heroic: Achtung bei Helical Toxins (1+3 / 2+2 Kombinationen). Mythic: Unstetes Protogift - Partner finden!",
+        ["nekzali"] = "Weiche den Sandwirbeln aus und klicke die Portale nur, wenn der Debuff abgelaufen ist.",
+        ["sszorak"] = "Plattform-Kampf! Springe ueber die Ringe und bleibe bei Push-Phasen nicht am Rand stehen.",
+        ["ulatek"] = "Fokusse das Herz von Ula'tek, sobald es erscheint. Heiler muessen den Gruppen-Dot gegenheilen.",
+        ["nymrissa"] = "Endboss! Weiche den Leeren-Strahlen aus und achte auf die Positionierung der Adds.",
+        -- DUNGEONS
+        ["kystia manaheart"] = "Unterbrich die Manamanifestation sofort, sonst explodiert sie.",
+        ["zul'jan"] = "Toete die Gift-Adds zuerst. Wenn der Boss 'Zorn' wirkt, muessen Tanks Cooldowns ziehen.",
+        ["taz'rah"] = "Kickt 'Nichts-Schlag'. Wenn Taz'Rah springt, lauft sofort aus dem Einschlagsradius.",
     }
 }
 
@@ -43,18 +49,18 @@ end
 function AICoach:GetReply(msg)
     local GM = DragonSkill:GetModule("GearManager")
     local Char = DragonSkill:GetModule("Character")
-    if not GM or not Char then return "Daten-Module laden noch..." end
+    if not GM or not Char then return "Module laden noch..." end
 
-    local localReply = self:GetLocalReply(msg, GM, Char)
+    local reply = self:GetLocalReply(msg, GM, Char)
 
     if DragonSkillDB and DragonSkillDB.ai and DragonSkillDB.ai.enabled and DragonSkillDB.ai.apiKey ~= "" then
         self:TriggerExternalQuery(msg, GM, Char)
-        if not localReply:find("Anfrage") then
-            localReply = localReply .. "\n\n|cff00ccff(Parallel wurde Claude gefragt. Klick auf 'KI-Antwort abholen' fuer Details.)|r"
+        if not reply:find("Anfrage") then
+            reply = reply .. "\n\n|cff00ccff(Hybrid: Claude wurde parallel fuer eine detaillierte Taktik-Analyse gefragt.)|r"
         end
     end
 
-    return localReply
+    return reply
 end
 
 function AICoach:GetLocalReply(msg, GM, Char)
@@ -62,74 +68,76 @@ function AICoach:GetLocalReply(msg, GM, Char)
     msg = msg:lower()
     local _, class = UnitClass("player")
     local specID = select(1, GetSpecializationInfo(GetSpecialization() or 0)) or 0
-    local role = (specID > 0) and DragonSkillGearData.specs[specID] and DragonSkillGearData.specs[specID].role or "dps"
 
-    -- 1. BOSS LOOT LOOKUP
+    -- 1. CRAFTING & SPARKS
+    if intents.CRAFTING then
+        local craftList = ""
+        for _, item in ipairs(DragonSkillGearData.crafted) do
+            craftList = craftList .. "\n  - |cffffffff" .. item.name .. "|r (" .. item.profession .. ")"
+        end
+        return KNOWLEDGE.SPARK .. "\n\n|cffffd100Crafting-Ziele:|r" .. craftList
+    end
+
+    -- 2. BOSS LOOT & TACTICS
     if intents.BOSS then
+        -- Search for Tactic first
+        for name, tip in pairs(KNOWLEDGE.BOSS_TACTICS) do
+            if msg:find(name) then
+                return "|cffffd100Taktik-Tipp fuer " .. name:upper() .. ":|r " .. tip
+            end
+        end
+        -- Fallback to Loot
         for dName, dData in pairs(DragonSkillGearData.dungeons) do
             for _, boss in ipairs(dData.bosses) do
-                if msg:find(boss.name:lower()) or (boss.loot and msg:find("loot")) then
+                if msg:find(boss.name:lower()) then
                     local lootList = ""
                     for _, itemId in ipairs(boss.loot) do
                         local item = DragonSkillGearData.items[itemId]
                         if item then
                             local upgrade = GM:GetUpgradeScore(item.slot, itemId)
                             local color = (upgrade > 0) and "|cff00ff00" or "|cffffffff"
-                            lootList = lootList .. "\n  - " .. color .. item.name .. "|r (" .. item.slot .. ")"
+                            lootList = lootList .. "\n  - " .. color .. item.name .. "|r (" .. (item.slot or "Item") .. ")"
                         end
                     end
-                    if lootList ~= "" then
-                        return "|cffffd100Beute bei " .. boss.name .. ":|r" .. lootList
-                    end
+                    return "|cffffd100Loot von " .. boss.name .. ":|r" .. lootList
                 end
             end
         end
     end
 
-    -- 2. TALENT AUDIT
+    -- 3. TALENT AUDIT
     if intents.TALENTS then
         local inInstance, instanceType = IsInInstance()
-        local guide = DragonSkill.Database:GetGuideData(class, specID)
-        local currentBuild = "Unbekannt" -- In real, use C_Traits to get active build name
-
-        if msg:find("falsch") or msg:find("korrekt") or msg:find("raid") then
-            if instanceType == "raid" then
-                return "Du bist im Raid. Ich empfehle hierfuer den |cffffffffRaid-Build|r aus meinen Guides. Pruefe im Reiter 'Talente', ob du ihn geladen hast."
-            elseif instanceType == "party" then
-                return "Fuer Dungeons solltest du den |cffffffffM+ Build|r nutzen. Schau im Talente-Tab nach dem passenden Import-String."
-            else
-                return "Deine Skillung sieht gut aus. Achte darauf, fuer Raids auf den dedizierten Raid-Build zu wechseln."
-            end
+        if instanceType == "raid" then
+            return "Du bist im Raid. Pruefe im Reiter 'Talente', ob du den dedizierten |cffffffffRaid-Build|r nutzt!"
+        elseif instanceType == "party" then
+            return "Fuer Dungeons empfehle ich den |cffffffffM+ Build|r. Import-Strings findest du im Talente-Tab."
         end
-        if guide and guide.talentBuilds and guide.talentBuilds[1] then
-            return "Empfohlene Skillung: |cffffffff" .. guide.talentBuilds[1].label .. "|r. Import-Code ist im Reiter 'Talente' hinterlegt."
-        end
+        return "Deine Skillung sieht gut aus. Vergiss nicht, fuer Raids den Build zu wechseln."
     end
 
-    -- 3. INVENTORY & UPGRADES
+    -- 4. STANDARD GEAR & PROGRESS
     if intents.INVENTORY then
         local upgrades = Char:GetInventoryUpgrades()
-        return (#upgrades > 0) and "Ich habe |cff00ff00" .. #upgrades .. " Upgrades|r in deinen Taschen gefunden!" or "Keine Taschen-Upgrades gefunden."
+        return (#upgrades > 0) and "Upgrades in deinen Taschen gefunden! Schau in den Upgrades-Tab." or "Keine Taschen-Upgrades."
     end
 
-    -- 4. VAULT & CATALYST
     if intents.VAULT then return GM:GetVaultRecommendation() end
     if intents.CATALYST then return GM:GetCatalystRecommendation() end
 
-    -- 5. GEAR & STATS
     if intents.UPGRADE or intents.GEAR then
         local ups = GM:GetBestUpgrades()
         if ups[1] then
-            return string.format("Top-Ziel: |cffffd100%s|r (%s). Steigerung: |cff00ff00+%.1f%%|r.", ups[1].name, ups[1].slot, ups[1].percent or 0)
+            return string.format("Naechstes Ziel: |cffffd100%s|r (+%.1f%%). Droppt in %s.", ups[1].name, ups[1].percent or 0, (ups[1].dungeonName or "Dungeon"))
         end
     end
 
-    if intents.STATS then
-        local prio = Char:GetStatPriority()
-        return prio and ("Deine Prio: |cffffd100" .. prio.wowhead .. "|r.") or "Stat-Prioritaet wird geladen..."
+    if intents.FARM then
+        local plan = GM:GetFarmPlan()
+        if plan and plan[1] then return "Beste Ini heute: |cffffd100" .. plan[1].name .. "|r." end
     end
 
-    return KNOWLEDGE.GENERAL
+    return "Frag mich nach: 'Taktik [Bossname]', 'Loot [Bossname]', 'Herstellen' oder 'Was mache ich mit dem Funken?'."
 end
 
 function AICoach:TriggerExternalQuery(msg, GM, Char)
