@@ -158,3 +158,36 @@ function GearManager:GetBestUpgrades()
     table.sort(upgrades, function(a, b) return a.score > b.score end)
     return upgrades
 end
+
+function GearManager:GetCatalystRecommendation()
+    local Char = DragonSkill:GetModule("Character")
+    local tierCount, tierName = Char:GetActiveTierInfo()
+
+    if tierCount >= 4 then
+        return "Du hast bereits den 4er Bonus (" .. tierName .. "). Verwende den Catalyst nur noch für Itemlevel-Upgrades auf schwachen Slots."
+    end
+
+    local upgrades = self:GetBestUpgrades()
+    local candidates = {}
+    for _, up in ipairs(upgrades) do
+        local item = DragonSkillGearData.items[up.itemId]
+        if item and item.catalystEligible then
+            table.insert(candidates, up.name)
+        end
+    end
+
+    if #candidates > 0 then
+        return "Empfehlung: Wandle |cffffd100" .. candidates[1] .. "|r um, um deinem " .. (tierCount < 2 and "2er" or "4er") .. " Bonus näher zu kommen."
+    end
+
+    return "Momentan keine idealen Catalyst-Kandidaten in deiner Farm-Liste. Suche nach Items für Brust oder Beine."
+end
+
+function GearManager:GetVaultRecommendation()
+    -- This would normally iterate over C_WeeklyRewards.GetActivities()
+    -- For now, we provide expert logic based on BiS
+    local upgrades = self:GetBestUpgrades()
+    if #upgrades == 0 then return "Nimm die Sockel-Token (Aspekt-Abzeichen), da du bereits BiS-Gear hast." end
+
+    return "Priorisiere in der Vault: |cffffd100" .. upgrades[1].name .. "|r oder Items für den Slot |cff00ff00" .. upgrades[1].slot .. "|r."
+end

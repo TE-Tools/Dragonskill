@@ -66,3 +66,26 @@ function Character:GetInventoryUpgrades()
     end
     return upgrades
 end
+
+function Character:GetActiveTierInfo()
+    local gear = self:GetCurrentGear()
+    local specIndex = GetSpecialization()
+    local specID = specIndex and select(1, GetSpecializationInfo(specIndex)) or 0
+    local specData = DragonSkillGearData.specs[specID]
+
+    if not specData or not specData.tierSet then return 0, "None" end
+
+    local count = 0
+    local setPieces = {}
+    for _, id in ipairs(specData.tierSet.pieces) do
+        setPieces[id] = true
+    end
+
+    for _, item in pairs(gear) do
+        if setPieces[item.itemId] then
+            count = count + 1
+        end
+    end
+
+    return count, specData.tierSet.name
+end
