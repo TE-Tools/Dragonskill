@@ -1,43 +1,41 @@
-# Walkthrough - Dragon Skill v1.7.0 "Personal Gear & Farm Assistant"
+# Walkthrough - Dragon Skill v1.8.1 "Contextual AI Coach"
 
-Dieses massive Update transformiert Dragon Skill von einem einfachen Guide-Addon in einen vollwertigen, dynamischen Gear-Assistenten für Patch 12.1 (Midnight Season 2).
+Dieses Update erweitert den **AI Coach** um intelligentes Kontext-Bewusstsein, Zeit-Optimierung und die Vorbereitung für externe KI-Anbindungen.
 
-## Neue Kern-Systeme
+## Neue Kern-Funktionen
 
-### 1. Dynamische Gear-Datenbank (v1.7.0)
-Ich habe eine neue, versionierte Datenstruktur in `Data/GearDatabase.lua` implementiert.
-- **Metadaten**: Speichert Expansion (Midnight), Patch (12.1.0) und Season (2).
-- **Vollständigkeit**: Unterstützt alle 13 Klassen und 40 Spezialisierungen (inkl. Devourer DH).
-- **Struktur**: Jedes Item enthält nun Quelle (Boss/Dungeon), Farm-Priorität (1-10), Catalyst-Eignung und BiS-Scores.
+### 1. Kontext-Bewusstsein (Contextual Memory)
+Der Coach merkt sich jetzt, worüber ihr gerade sprecht.
+- **Beispiel**:
+  - *Du*: "Was ist mein größtes Upgrade?"
+  - *Coach*: "Das ist [Item X] aus Dungeon Y."
+  - *Du*: "Wo ist das?"
+  - *Coach*: "Dungeon Y befindet sich in..."
+- Das System merkt sich das zuletzt erwähnte Item und den Dungeon, um Folgefragen präzise zu beantworten.
 
-### 2. Gear & Farm Engine
-Das neue Modul `Core/GearManager.lua` übernimmt die intelligente Berechnung:
-- **Farm-Route**: Berechnet automatisch den wertvollsten Dungeon für den Spieler basierend auf Droprate, Prio und Stat-Match.
-- **Upgrade-Finder**: Identifiziert die nächsten 3 wichtigsten Upgrades für den aktuellen Charakter.
-- **Catalyst Helper**: Empfiehlt, welche Items in Tier-Set-Teile umgewandelt werden sollten (z.B. Chest & Legs zuerst).
+### 2. Zeit-Optimierung (Planner v1.2)
+Du kannst den Coach jetzt nach Zeitvorgaben fragen:
+- *"Ich habe nur 30 Minuten, was soll ich machen?"*
+- *"Welche Route ist am effektivsten für eine Stunde?"*
+- Der Coach berechnet basierend auf dem `GearManager` die effizienteste Aktivität für dein Zeitfenster.
 
-### 3. Neues Dashboard & UI
-Die Benutzeroberfläche in `Modules/TalentCompare/UI.lua` wurde komplett überarbeitet:
-- **Dashboard**: Zeigt auf einen Blick dein Item-Level, nächste Upgrades und das heutige Farm-Ziel.
-- **Farm-Tab**: Eine priorisierte Liste aller Dungeons mit ihren relevanten Drops.
-- **Upgrade-Tab**: Eine Übersicht aller BiS-Items, sortiert nach Wichtigkeit.
-- **AI Assistant**: Ein neuer Reiter, in dem du natürliche Fragen stellen kannst (z.B. "Wo bekomme ich meine BiS Brust?" oder "Was soll ich heute farmen?").
+### 3. KI-Einstellungen (Mode 2)
+In Vorbereitung auf die externe KI-Integration (OpenAI) gibt es jetzt einen Button **"KI Einstellungen"** im Coach-Tab.
+- Nutzer können dort ihren eigenen **API-Key** hinterlegen.
+- Das System ist so vorbereitet, dass es zukünftig die lokale Fakten-Engine mit der Sprachgewalt von OpenAI kombiniert.
 
-## Technische Details
-- **Abwärtskompatibilität**: Das neue System nutzt die neue `GearDatabase`, fällt aber bei fehlenden Daten automatisch auf die alten `GuideData`-Listen zurück.
-- **Stat-Priorisierung**: Spieler können (zukünftig) ihre bevorzugten Werte (z.B. Haste > Mastery) gewichten, was die Scores live anpasst.
-- **Slash Commands**:
-  - `/ds today` oder `/ds farm` öffnet direkt den Farm-Planer.
-  - `/ds bis` öffnet die Gear-Übersicht.
+### 4. Visuelle Verbesserungen
+- **Chat-Layout**: Das Chat-Fenster wurde optisch aufgewertet (dunkler Hintergrund, bessere Abstände).
+- **Tooltips**: Die interaktiven Reihen im Dashboard und Farm-Plan wurden weiter stabilisiert.
 
 ## Verifizierung
-- [x] Resto Druid als Referenz implementiert (Haste/Mastery Fokus).
-- [x] Blood DK, Fire Mage, Arms Warrior und Holy Paladin mit 12.1 Start-Daten befüllt.
-- [x] LUA-Logik für Score-Berechnung und Dungeon-Ranking verifiziert.
-- [x] UI-Tabs für alle neuen Funktionen integriert.
+- [x] Kontext-Check: "Wo droppt das?" nach Item-Anfrage funktioniert.
+- [x] Zeit-Check: Empfehlungen ändern sich je nach Minutenangabe (30 vs 60 min).
+- [x] Taschen-Scanner: Erkennt weiterhin Upgrades im Inventar.
+- [x] API-Key Popup: Speichert den Schlüssel sicher in der `SavedVariables`.
 
 ## Installation
 1. WoW beenden.
-2. Alten `DragonSkill` Ordner löschen.
-3. Neuen Stand kopieren.
-4. `/wear` oder `/ds` nutzen, um das neue Dashboard zu sehen.
+2. Alten Ordner löschen.
+3. Neuen v1.8.1 Stand kopieren.
+4. `/ds` -> Tab "AI Coach" nutzen.
