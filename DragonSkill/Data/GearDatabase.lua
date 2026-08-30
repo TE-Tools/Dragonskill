@@ -76,6 +76,13 @@ AddDungeon("Ruby Life Pools", {
     { name = "Kyrakka and Erkhart Stormvein", loot = { 193764, 193765 } }
 })
 
+AddDungeon("Venomous Abyss", {
+    { name = "Entombed Sentinels", loot = { 271528, 271529 } },
+    { name = "Nekzali", loot = { 271530, 271531 } },
+    { name = "Sszorak", loot = { 270173, 271532, 271533, 271534 } },
+    { name = "Ulatek", loot = { 271535, 271536 } }
+})
+
 -- ==========================================
 -- ITEM DATA (REFERENCE LIST)
 -- ==========================================
@@ -86,6 +93,9 @@ AddItem(270175, { name = "Living Spore Pod", slot = "Trinket", effect = "Nature 
 AddItem(268213, { name = "Maze-roa, Warlord's Fury", slot = "Two-Hand", primary = "strength", secondary = { criticalStrike = true, haste = true }, farmPriority = 8 })
 AddItem(271528, { name = "Gaze of the Coiled Watcher", slot = "Head", tierItem = true, catalystEligible = true })
 AddItem(271519, { name = "War Trial Vestments", slot = "Chest", catalystEligible = true })
+AddItem(271532, { name = "Sszorak's Shimmering Scale", slot = "Trinket", effect = "Mastery Proc", farmPriority = 8 })
+AddItem(271533, { name = "Edge of the Abyss", slot = "One-Hand", secondary = { haste = true, mastery = true } })
+AddItem(271534, { name = "Void-Touched Greatcloak", slot = "Back", secondary = { criticalStrike = true, versatility = true } })
 
 -- ==========================================
 -- SPEC CONFIG (ALL 40 SPECIALIZATIONS)

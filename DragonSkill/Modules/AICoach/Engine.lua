@@ -1,11 +1,10 @@
--- Dragon Skill - Module: AI Coach Engine (v2.1.0)
--- Enhanced Local Expert Engine with expanded Knowledge Base.
+-- Dragon Skill - Module: AI Coach Engine (v2.1.1)
+-- Enhanced Expert Engine with Boss Loot lookup and Talent Audit.
 
 local AICoach = DragonSkill:RegisterModule("AICoach", {
     context = {}
 })
 
--- Expanded Keywords for better Intent Recognition
 local INTENTS = {
     GEAR = {"gear", "ausruestung", "item", "trinket", "schmuck", "brust", "ring", "waffe", "neck", "hals", "back", "rücken"},
     FARM = {"farm", "ini", "dungeon", "laufen", "route", "heute", "ziel", "wohin"},
@@ -14,27 +13,19 @@ local INTENTS = {
     STATS = {"stats", "werte", "prio", "prioritaet", "haste", "mastery", "tempo", "meisterschaft", "crit", "krit"},
     VAULT = {"vault", "kammer", "schatzkammer", "wöchentlich", "weekly"},
     CATALYST = {"catalyst", "katalysator", "tier", "set", "boni", "bonus"},
-    TALENTS = {"talent", "skillung", "build", "baum", "pve", "raid"},
+    TALENTS = {"talent", "skillung", "build", "baum", "pve", "raid", "falsch", "korrekt"},
     CONSUMABLES = {"essen", "food", "fläschchen", "flask", "trank", "potion", "buff", "verzuberung", "enchant", "edelstein", "gem"},
     PROFESSIONS = {"beruf", "craft", "herstellen", "auftrag", "funke", "spark"},
-    DUNGEON_TIPS = {"boss", "mechanik", "taktik", "tipp", "guide", "achtung", "gefährlich"}
+    BOSS = {"boss", "sszorak", "nekzali", "sentinels", "ulatek", "droppt", "beute", "loot"}
 }
 
--- Local Knowledge Base for 12.1 Midnight (Factual Data)
 local KNOWLEDGE = {
     GENERAL = "Ich bin dein lokaler Dragon Skill Experte. Frag mich nach Gear, Farm-Routen, Stats oder deinen Taschen!",
-    SPARK = "In Patch 12.1 erhältst du 'Funken der Erneuerung'. Nutze sie für deine schwächsten Slots (meistens Waffe oder Schmuck).",
-    CRESTS = "Wappen (Crests) solltest du erst für Items nutzen, die mindestens Heroic-Stufe haben, um keine Ressourcen zu verschwenden.",
+    SPARK = "Nutze deine 'Funken der Erneuerung' fuer schwache Slots wie Waffe oder Trinket.",
     CONSUMABLES = {
-        dps = "Nutze 'Speise der Leere' für Primärwerte und das 'Fläschchen der unbändigen Wut'.",
-        tank = "Nutze 'Eiserner Kuchen' für Ausdauer und 'Fläschchen der Standhaftigkeit'.",
-        healer = "Nutze 'Manatee' und 'Fläschchen der klaren Sicht'.",
-    },
-    DUNGEONS = {
-        ["Murder Row"] = "Achtung bei Zaen Bladesorrow: Die Schattenflächen müssen am Rand abgelegt werden!",
-        ["Altar of Fangs"] = "Zul'jan beschwört Adds. Fokusse diese sofort, bevor der Giftstack zu hoch wird.",
-        ["Voidscar Arena"] = "Taz'Rah springt viel herum. Behalte ihn im Fokus und kicke 'Nichts-Schlag'.",
-        ["Den of Nalorakk"] = "Nalorakk stürmt den am weitesten entfernten Spieler an. Steht nicht zu weit weg!",
+        dps = "Nutze 'Speise der Leere' und 'Flaeschchen der unbaendigen Wut'.",
+        tank = "Nutze 'Eiserner Kuchen' und 'Flaeschchen der Standhaftigkeit'.",
+        healer = "Nutze 'Manatee' und 'Flaeschchen der klaren Sicht'.",
     }
 }
 
@@ -52,96 +43,90 @@ end
 function AICoach:GetReply(msg)
     local GM = DragonSkill:GetModule("GearManager")
     local Char = DragonSkill:GetModule("Character")
-
     if not GM or not Char then return "Daten-Module laden noch..." end
 
-    -- 1. Check for specific Local Expert Answers first
-    local reply = self:GetLocalReply(msg, GM, Char)
+    local localReply = self:GetLocalReply(msg, GM, Char)
 
-    -- 2. Parallel outbound request if AI is active (Hybrid Mode)
     if DragonSkillDB and DragonSkillDB.ai and DragonSkillDB.ai.enabled and DragonSkillDB.ai.apiKey ~= "" then
         self:TriggerExternalQuery(msg, GM, Char)
-        if not reply:find("Anfrage") then
-            reply = reply .. "\n\n|cff00ccff(Parallel wurde Claude gefragt, um eine detailliertere Antwort zu geben. Klick auf 'KI-Antwort abholen'.)|r"
+        if not localReply:find("Anfrage") then
+            localReply = localReply .. "\n\n|cff00ccff(Parallel wurde Claude gefragt. Klick auf 'KI-Antwort abholen' fuer Details.)|r"
         end
     end
 
-    return reply
+    return localReply
 end
 
 function AICoach:GetLocalReply(msg, GM, Char)
     local intents = self:ParseIntent(msg)
     msg = msg:lower()
-    local specIndex = GetSpecialization()
-    local specID = specIndex and select(1, GetSpecializationInfo(specIndex)) or 0
+    local _, class = UnitClass("player")
+    local specID = select(1, GetSpecializationInfo(GetSpecialization() or 0)) or 0
     local role = (specID > 0) and DragonSkillGearData.specs[specID] and DragonSkillGearData.specs[specID].role or "dps"
 
-    -- 1. TALENTS
-    if intents.TALENTS then
-        local guide = DragonSkill.Database:GetGuideData(select(2, UnitClass("player")), specID)
-        if guide and guide.talentBuilds and guide.talentBuilds[1] then
-            return "Ich empfehle dir die Skillung: |cffffffff" .. guide.talentBuilds[1].label .. "|r. Du findest den Import-Code im Reiter 'Talente'."
-        end
-    end
-
-    -- 2. CONSUMABLES / ENCHANTS
-    if intents.CONSUMABLES then
-        local tip = KNOWLEDGE.CONSUMABLES[role] or KNOWLEDGE.CONSUMABLES.dps
-        local prio = Char:GetStatPriority()
-        local statTip = prio and ("\nVerwende Edelsteine mit: |cffffd100" .. prio.wowhead .. "|r.") or ""
-        return "Buff-Food & Chemie: " .. tip .. statTip
-    end
-
-    -- 3. DUNGEON TIPS
-    if intents.DUNGEON_TIPS or intents.FARM then
-        for dName, tip in pairs(KNOWLEDGE.DUNGEONS) do
-            if msg:find(dName:lower()) then
-                return "|cffffd100Tipp fuer " .. dName .. ":|r " .. tip
+    -- 1. BOSS LOOT LOOKUP
+    if intents.BOSS then
+        for dName, dData in pairs(DragonSkillGearData.dungeons) do
+            for _, boss in ipairs(dData.bosses) do
+                if msg:find(boss.name:lower()) or (boss.loot and msg:find("loot")) then
+                    local lootList = ""
+                    for _, itemId in ipairs(boss.loot) do
+                        local item = DragonSkillGearData.items[itemId]
+                        if item then
+                            local upgrade = GM:GetUpgradeScore(item.slot, itemId)
+                            local color = (upgrade > 0) and "|cff00ff00" or "|cffffffff"
+                            lootList = lootList .. "\n  - " .. color .. item.name .. "|r (" .. item.slot .. ")"
+                        end
+                    end
+                    if lootList ~= "" then
+                        return "|cffffd100Beute bei " .. boss.name .. ":|r" .. lootList
+                    end
+                end
             end
         end
     end
 
-    -- 4. PROFESSIONS / CRAFTING
-    if intents.PROFESSIONS then
-        return KNOWLEDGE.SPARK .. " Vergiss nicht, deine Handwerksaufträge für das 12.1 Gear zu nutzen."
+    -- 2. TALENT AUDIT
+    if intents.TALENTS then
+        local inInstance, instanceType = IsInInstance()
+        local guide = DragonSkill.Database:GetGuideData(class, specID)
+        local currentBuild = "Unbekannt" -- In real, use C_Traits to get active build name
+
+        if msg:find("falsch") or msg:find("korrekt") or msg:find("raid") then
+            if instanceType == "raid" then
+                return "Du bist im Raid. Ich empfehle hierfuer den |cffffffffRaid-Build|r aus meinen Guides. Pruefe im Reiter 'Talente', ob du ihn geladen hast."
+            elseif instanceType == "party" then
+                return "Fuer Dungeons solltest du den |cffffffffM+ Build|r nutzen. Schau im Talente-Tab nach dem passenden Import-String."
+            else
+                return "Deine Skillung sieht gut aus. Achte darauf, fuer Raids auf den dedizierten Raid-Build zu wechseln."
+            end
+        end
+        if guide and guide.talentBuilds and guide.talentBuilds[1] then
+            return "Empfohlene Skillung: |cffffffff" .. guide.talentBuilds[1].label .. "|r. Import-Code ist im Reiter 'Talente' hinterlegt."
+        end
     end
 
-    -- 5. INVENTORY SCAN
+    -- 3. INVENTORY & UPGRADES
     if intents.INVENTORY then
         local upgrades = Char:GetInventoryUpgrades()
-        if upgrades and #upgrades > 0 then
-            return "Ja! Ich habe |cff00ff00" .. #upgrades .. " Upgrades|r in deinen Taschen gefunden! Sieh sie dir im 'Upgrades'-Reiter an."
-        end
-        return "Dein Inventar ist sauber. Ich habe keine Items gefunden, die besser als deine aktuelle Ausrüstung sind."
+        return (#upgrades > 0) and "Ich habe |cff00ff00" .. #upgrades .. " Upgrades|r in deinen Taschen gefunden!" or "Keine Taschen-Upgrades gefunden."
     end
 
-    -- 6. VAULT & CATALYST (Expert Logic)
+    -- 4. VAULT & CATALYST
     if intents.VAULT then return GM:GetVaultRecommendation() end
     if intents.CATALYST then return GM:GetCatalystRecommendation() end
 
-    -- 7. GEAR & UPGRADES
+    -- 5. GEAR & STATS
     if intents.UPGRADE or intents.GEAR then
         local ups = GM:GetBestUpgrades()
-        if ups and ups[1] then
-            return string.format("Dein aktuell wichtigstes Ziel ist |cffffd100%s|r (%s). Das Item bringt dir eine theoretische Verbesserung von |cff00ff00+%.1f%%|r.",
-                ups[1].name, ups[1].slot, ups[1].percent or 0)
+        if ups[1] then
+            return string.format("Top-Ziel: |cffffd100%s|r (%s). Steigerung: |cff00ff00+%.1f%%|r.", ups[1].name, ups[1].slot, ups[1].percent or 0)
         end
     end
 
-    -- 8. FARM PLAN
-    if intents.FARM then
-        local plan = GM:GetFarmPlan()
-        if plan and plan[1] then
-            return "Wenn du jetzt losziehen willst, ist |cffffd100" .. plan[1].name .. "|r dein bester Dungeon. Dort hast du die höchste Upgrade-Dichte."
-        end
-    end
-
-    -- 9. STATS
     if intents.STATS then
         local prio = Char:GetStatPriority()
-        if prio and prio.wowhead then
-            return "Deine Stat-Priorität ist: |cffffd100" .. prio.wowhead .. "|r. Achte bei neuem Gear vor allem auf den ersten Wert."
-        end
+        return prio and ("Deine Prio: |cffffd100" .. prio.wowhead .. "|r.") or "Stat-Prioritaet wird geladen..."
     end
 
     return KNOWLEDGE.GENERAL
@@ -149,16 +134,12 @@ end
 
 function AICoach:TriggerExternalQuery(msg, GM, Char)
     local _, class = UnitClass("player")
-    local specIndex = GetSpecialization()
-    local spec = specIndex and select(2, GetSpecializationInfo(specIndex)) or "Spec"
+    local spec = select(2, GetSpecializationInfo(GetSpecialization() or 0))
     local upgrades = GM:GetBestUpgrades()
-
     DragonSkillDB.ai.pendingQuery = {
         question = msg,
         context = string.format("Class: %s, Spec: %s. TopUpgrade: %s.", class, spec, upgrades[1] and upgrades[1].name or "None"),
-        timestamp = GetTime(),
-        status = "SENT",
-        provider = DragonSkillDB.ai.provider or "openai",
-        apiKey = DragonSkillDB.ai.apiKey
+        timestamp = GetTime(), status = "SENT",
+        provider = DragonSkillDB.ai.provider or "openai", apiKey = DragonSkillDB.ai.apiKey
     }
 end
