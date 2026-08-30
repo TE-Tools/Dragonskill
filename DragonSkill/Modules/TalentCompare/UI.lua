@@ -1,10 +1,11 @@
--- Dragon Skill - Main UI (v2.1.6)
--- Full Restoration & New Raid Guides Tab.
+-- Dragon Skill - Main UI (v2.2.0)
+-- Master UI with Professional Raid Guides Boss-Browser.
 
 local L = DragonSkill.L or {}
 local UI = {}
 local currentTab = 1
-local tabs = {"Dashboard", "Talente", "AI Coach", "Farm Plan", "Upgrades", "BiS List", "Raid Guides", "Bosse"}
+local selectedBossIdx = 1
+local tabs = {"Dashboard", "Talente", "AI Coach", "Farm Plan", "Upgrades", "BiS List", "Raid Guides"}
 
 local TAB_DASHBOARD = 1
 local TAB_TALENTS = 2
@@ -13,9 +14,9 @@ local TAB_FARM = 4
 local TAB_UPGRADES = 5
 local TAB_BIS = 6
 local TAB_RAIDGUIDES = 7
-local TAB_BOSSES = 8
 
-local CONTENT_WIDTH, FRAME_WIDTH, FRAME_HEIGHT, ROW_WIDTH = 620, 780, 620, 600
+local FRAME_WIDTH, FRAME_HEIGHT = 800, 650
+local CONTENT_WIDTH = 580
 
 function UI:Init()
     if self.frame then return end
@@ -28,7 +29,7 @@ function UI:Init()
     f:SetScript("OnDragStart", f.StartMoving)
     f:SetScript("OnDragStop", f.StopMovingOrSizing)
 
-    if f.SetTitle then f:SetTitle("Dragon Skill v2.1.6") end
+    if f.SetTitle then f:SetTitle("Dragon Skill v2.2.0") end
 
     if f.portrait then
         f.portrait:SetTexture("Interface\\Icons\\Inv_misc_head_dragon_01")
@@ -61,7 +62,7 @@ function UI:Init()
     tinsert(UISpecialFrames, "DragonSkillMainFrame")
     f:Hide()
     self.frame = f
-    self.rows = {}; self.extraFS = {}; self.talentBtns = {}
+    self.rows = {}; self.extraFS = {}; self.talentBtns = {}; self.bossBtns = {}
 end
 
 function UI:SelectTab(id)
@@ -73,7 +74,7 @@ end
 function UI:GetRow(index)
     if not self.rows[index] then
         local row = CreateFrame("Button", nil, self.frame.Content)
-        row:SetSize(ROW_WIDTH, 28)
+        row:SetSize(CONTENT_WIDTH, 28)
         row.icon = row:CreateTexture(nil, "ARTWORK")
         row.icon:SetSize(24, 24); row.icon:SetPoint("LEFT", 0, 0)
         row.text = row:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
@@ -90,6 +91,8 @@ function UI:GetExtraFS(index, font)
         self.extraFS[index] = self.frame.Content:CreateFontString(nil, "OVERLAY", font or "GameFontHighlight")
     end
     self.extraFS[index]:SetFontObject(font or "GameFontHighlight")
+    self.extraFS[index]:SetWidth(CONTENT_WIDTH - 20)
+    self.extraFS[index]:SetJustifyH("LEFT")
     return self.extraFS[index]
 end
 
@@ -130,17 +133,15 @@ function UI:Update()
 
     local ok, err = pcall(function()
         if currentTab == TAB_DASHBOARD then self:DrawDashboard(content, class, specID)
-        elseif currentTab == TAB_COACH then DragonSkill.AICoachUI:Draw(content, CONTENT_WIDTH)
+        elseif currentTab == TAB_COACH then DragonSkill.AICoachUI:Draw(content, CONTENT_WIDTH + 150)
         elseif currentTab == TAB_FARM then self:DrawFarm(content)
         elseif currentTab == TAB_UPGRADES then self:DrawUpgrades(content)
         elseif currentTab == TAB_RAIDGUIDES then self:DrawRaidGuides(content)
-        elseif currentTab == TAB_BOSSES then self:DrawBosses(content)
         else
             local guideData = DragonSkill.Database:GetGuideData(class, specID)
-            if not guideData then self.text:SetText("No guide data."); return end
+            if not guideData then self.text:SetText("Keine Guide-Daten gefunden."); return end
             if currentTab == TAB_TALENTS then self:DrawTalents(content, guideData)
             elseif currentTab == TAB_BIS then self:DrawBiSList(content, guideData.bisGear and guideData.bisGear.wowhead)
-            elseif currentTab == TAB_TRINKETS then self:DrawBiSList(content, guideData.trinkets and guideData.trinkets.archon, "Top Trinkets")
             end
         end
     end)
@@ -148,61 +149,107 @@ function UI:Update()
     if not ok then self.text:SetText("|cffff0000UI Fehler:|r " .. tostring(err)) end
 end
 
+-- --- TAB: RAID GUIDES (Boss Browser) ---
+function UI:DrawRaidGuides(content)
+    local guides = DragonSkillRaidGuides
+    local listWidth = 180
+    local detailWidth = CONTENT_WIDTH + 100 -- Expanded width for more text
+
+    -- 1. Boss List (Left Side)
+    for i, guide in ipairs(guides) do
+        local btn = self.bossBtns[i]
+        if not btn then
+            btn = CreateFrame("Button", nil, content, "UIPanelButtonTemplate")
+            btn:SetSize(listWidth, 35)
+            self.bossBtns[i] = btn
+        end
+        btn:SetPoint("TOPLEFT", 10, -50 - (i-1)*38)
+        btn:SetText(guide.name)
+        btn:SetScript("OnClick", function()
+            selectedBossIdx = i
+            self:Update()
+        end)
+        if i == selectedBossIdx then btn:SetNormalFontObject("GameFontHighlight") else btn:SetNormalFontObject("GameFontNormal") end
+        btn:Show()
+    end
+
+    -- 2. Boss Details (Right Side)
+    local guide = guides[selectedBossIdx]
+    if not guide then return end
+
+    local y = -50
+    local fsIdx = 500
+
+    -- Icon & Title
+    local title = self:GetExtraFS(fsIdx, "GameFontNormalLarge")
+    title:SetPoint("TOPLEFT", listWidth + 25, y); title:SetText("|cffffd100" .. guide.name .. "|r")
+    title:SetWidth(detailWidth); title:Show(); fsIdx = fsIdx + 1; y = y - 30
+
+    local summary = self:GetExtraFS(fsIdx, "GameFontHighlight")
+    summary:SetPoint("TOPLEFT", listWidth + 25, y); summary:SetText("|cffaaaaaa" .. guide.summary .. "|r")
+    summary:SetWidth(detailWidth); summary:Show(); fsIdx = fsIdx + 1; y = y - 45
+
+    -- Phases
+    for _, phase in ipairs(guide.phases) do
+        local phTitle = self:GetExtraFS(fsIdx, "GameFontNormal")
+        phTitle:SetPoint("TOPLEFT", listWidth + 25, y); phTitle:SetText("|cffffff00" .. phase.name .. "|r")
+        phTitle:Show(); fsIdx = fsIdx + 1; y = y - 20
+
+        local phDesc = self:GetExtraFS(fsIdx, "GameFontHighlightSmall")
+        phDesc:SetPoint("TOPLEFT", listWidth + 35, y); phDesc:SetText(phase.desc)
+        phDesc:Show(); fsIdx = fsIdx + 1; y = y - 30
+
+        for _, mech in ipairs(phase.mechanics) do
+            local mText = self:GetExtraFS(fsIdx, "GameFontHighlightSmall")
+            mText:SetPoint("TOPLEFT", listWidth + 45, y)
+            mText:SetText("|cffffd100" .. mech.name .. ":|r " .. mech.tip)
+            mText:Show(); fsIdx = fsIdx + 1; y = y - 35
+        end
+        y = y - 10
+    end
+
+    -- Roles
+    local roleTitle = self:GetExtraFS(fsIdx, "GameFontNormal")
+    roleTitle:SetPoint("TOPLEFT", listWidth + 25, y); roleTitle:SetText("|cffffff00Rollen-Tipps|r")
+    roleTitle:Show(); fsIdx = fsIdx + 1; y = y - 25
+
+    local roleText = self:GetExtraFS(fsIdx, "GameFontHighlightSmall")
+    roleText:SetPoint("TOPLEFT", listWidth + 35, y)
+    roleText:SetText(string.format("|cff00ccffTank:|r %s\n\n|cff00ff00Healer:|r %s\n\n|cffffffffDPS:|r %s", guide.roles.tank, guide.roles.heal, guide.roles.dps))
+    roleText:Show(); fsIdx = fsIdx + 1; y = y - 120
+
+    -- Position
+    local posTitle = self:GetExtraFS(fsIdx, "GameFontNormal")
+    posTitle:SetPoint("TOPLEFT", listWidth + 25, y); posTitle:SetText("|cffffff00Positionierung|r")
+    posTitle:Show(); fsIdx = fsIdx + 1; y = y - 25
+
+    local posText = self:GetExtraFS(fsIdx, "GameFontHighlightSmall")
+    posText:SetPoint("TOPLEFT", listWidth + 35, y); posText:SetText(guide.position)
+    posText:Show(); fsIdx = fsIdx + 1
+
+    -- Adjust content height for scrolling
+    content:SetHeight(math.abs(y) + 300)
+end
+
+-- --- Other Helper Draw Methods ---
 function UI:DrawDashboard(content, class, specID)
     local GM = DragonSkill:GetModule("GearManager")
     local specName = select(2, GetSpecializationInfo(GetSpecialization() or 0)) or "Spec"
     local avgIlvl = select(2, GetAverageItemLevel())
-    local txt = "|cffffff00" .. class .. ": " .. specName .. " Dashboard|r\n\n"
-    txt = txt .. string.format("Gegenstandsstufe: |cffffffff%.1f|r\n\n", avgIlvl)
-    txt = txt .. "|cffffd100NÄCHSTE BESTE UPGRADES:|r"
-    self.text:SetText(txt)
-    local upgrades = GM:GetBestUpgrades()
-    local yOffset = -85
-    local rowIndex = 1
-    if upgrades and #upgrades > 0 then
+    self.text:SetText("|cffffff00" .. class .. ": " .. specName .. " Dashboard|r\n\n" .. string.format("Gegenstandsstufe: |cffffffff%.1f|r\n\n", avgIlvl) .. "|cffffd100NÄCHSTE BESTE UPGRADES:|r")
+    local upgrades = GM:GetBestUpgrades(); local yOffset = -85; local rowIndex = 1
+    if upgrades then
         for i=1, math.min(3, #upgrades) do
             local row = self:GetRow(rowIndex)
             row:SetParent(content); row:ClearAllPoints(); row:SetPoint("TOPLEFT", 15, yOffset)
-            local texture = "Interface\\Icons\\Inv_misc_questionmark"
-            if upgrades[i].itemId then texture = C_Item.GetItemIconByID(upgrades[i].itemId) or texture end
-            row.icon:SetTexture(texture)
+            row.icon:SetTexture(C_Item.GetItemIconByID(upgrades[i].itemId) or "Interface\\Icons\\Inv_misc_questionmark")
             row.text:SetText("|cff00ff00"..upgrades[i].slot..":|r " .. upgrades[i].name)
             row.val:SetText("|cff00ff00+"..upgrades[i].percent.."%|r"); row.val:Show()
-            row:SetScript("OnEnter", function(s)
-                GameTooltip:SetOwner(s, "ANCHOR_RIGHT")
-                GameTooltip:SetItemByID(upgrades[i].itemId); GameTooltip:Show()
-            end)
-            row:SetScript("OnLeave", function() GameTooltip:Hide() end)
             row:Show(); yOffset = yOffset - 30; rowIndex = rowIndex + 1
         end
     end
 end
 
-function UI:DrawRaidGuides(content)
-    self.text:SetText("|cffffff00VENOMOUS ABYSS RAID GUIDES|r")
-    local yOffset = -45
-    local fsIdx = 200
-    for key, guide in pairs(DragonSkillRaidGuides) do
-        local title = self:GetExtraFS(fsIdx, "GameFontNormalLarge")
-        title:SetPoint("TOPLEFT", 15, yOffset); title:SetText("|cffffd100" .. guide.name .. "|r"); title:Show()
-        yOffset = yOffset - 25; fsIdx = fsIdx + 1
-
-        local pText = ""
-        for _, p in ipairs(guide.phases) do pText = pText .. "• " .. p .. "\n" end
-        local phases = self:GetExtraFS(fsIdx, "GameFontHighlightSmall")
-        phases:SetPoint("TOPLEFT", 25, yOffset); phases:SetText(pText); phases:Show()
-        yOffset = yOffset - (20 * #guide.phases) - 10; fsIdx = fsIdx + 1
-
-        local roles = self:GetExtraFS(fsIdx, "GameFontHighlightSmall")
-        roles:SetPoint("TOPLEFT", 25, yOffset)
-        roles:SetText(string.format("|cff00ccffTank:|r %s\n|cff00ff00Heal:|r %s\n|cffffffffDPS:|r %s", guide.roles.tank or "-", guide.roles.heal or "-", guide.roles.dps or "-"))
-        roles:Show(); yOffset = yOffset - 60; fsIdx = fsIdx + 1
-
-        yOffset = yOffset - 20
-    end
-end
-
--- Re-implementing simplified versions of other tabs for space
 function UI:DrawFarm(content)
     local GM = DragonSkill:GetModule("GearManager")
     local plan = GM:GetFarmPlan()
@@ -226,23 +273,22 @@ function UI:DrawUpgrades(content)
     for _, item in ipairs(items) do
         local row = self:GetRow(rowIndex)
         row:SetParent(content); row:ClearAllPoints(); row:SetPoint("TOPLEFT", 15, yOffset)
-        local texture = C_Item.GetItemIconByID(item.itemId) or "Interface\\Icons\\Inv_misc_questionmark"
-        row.icon:SetTexture(texture); row.text:SetText("|cff00ff00"..item.slot..":|r " .. item.name)
+        row.icon:SetTexture(C_Item.GetItemIconByID(item.itemId) or "Interface\\Icons\\Inv_misc_questionmark")
+        row.text:SetText("|cff00ff00"..item.slot..":|r " .. item.name)
         row.val:SetText("|cff00ff00+"..item.percent.."%|r"); row.val:Show()
-        row:SetScript("OnEnter", function(s) GameTooltip:SetOwner(s, "ANCHOR_RIGHT"); GameTooltip:SetItemByID(item.itemId); GameTooltip:Show() end)
-        row:SetScript("OnLeave", function() GameTooltip:Hide() end); row:Show()
-        yOffset = yOffset - 30; rowIndex = rowIndex + 1
+        row:Show(); yOffset = yOffset - 30; rowIndex = rowIndex + 1
     end
 end
 
 function UI:DrawBiSList(content, items, title)
     self.text:SetText("|cffffff00" .. (title or "BiS Gear List") .. "|r")
     local yOffset = -45; local rowIndex = 1
-    if not items then return end
-    for _, item in ipairs(items) do
-        local row = self:GetRow(rowIndex + 50)
-        row:SetParent(content); row:ClearAllPoints(); row:SetPoint("TOPLEFT", 15, yOffset)
-        row.text:SetText(item.name or "Item"); row:Show(); yOffset = yOffset - 28; rowIndex = rowIndex + 1
+    if items then
+        for _, item in ipairs(items) do
+            local row = self:GetRow(rowIndex + 100)
+            row:SetParent(content); row:ClearAllPoints(); row:SetPoint("TOPLEFT", 15, yOffset)
+            row.text:SetText(item.name or "Item"); row:Show(); yOffset = yOffset - 28; rowIndex = rowIndex + 1
+        end
     end
 end
 
@@ -257,21 +303,6 @@ function UI:DrawTalents(content, guideData)
             btn:SetScript("OnClick", function() StaticPopup_Show("DRAGONSKILL_COPY", nil, nil, build.importString) end)
             btn:Show(); yOffset = yOffset - 35
         end
-    end
-end
-
-function UI:DrawBosses(content)
-    local BM = DragonSkill:GetModule("BossMechanics")
-    if not BM or not BM.Bosses then return end
-    self.text:SetText("|cffffff00Boss Mechanics|r")
-    local yOffset = -45; local idx = 1
-    for id, boss in pairs(BM.Bosses) do
-        local btn = self.talentBtns[idx + 100] or CreateFrame("Button", nil, content, "UIPanelButtonTemplate")
-        self.talentBtns[idx + 100] = btn
-        btn:SetSize(ROW_WIDTH, 30); btn:SetPoint("TOPLEFT", 15, yOffset)
-        btn:SetText(boss.Name or "Unbekannt")
-        btn:SetScript("OnClick", function() BM:Simulate(id) end)
-        btn:Show(); yOffset = yOffset - 35; idx = idx + 1
     end
 end
 
