@@ -1,5 +1,5 @@
--- Dragon Skill - Main UI (v2.2.4)
--- Final Master UI Restoration & Safety Update.
+-- Dragon Skill - Main UI (v2.2.5)
+-- Master UI with Guild Branding & Absolute Stability Fixes.
 
 local L = DragonSkill.L or {}
 local UI = {}
@@ -17,7 +17,6 @@ local TAB_RAIDGUIDES = 7
 
 local FRAME_WIDTH, FRAME_HEIGHT = 800, 650
 local CONTENT_WIDTH = 580
-local ROW_WIDTH = 560
 
 function UI:Init()
     if self.frame then return end
@@ -30,7 +29,7 @@ function UI:Init()
     f:SetScript("OnDragStart", f.StartMoving)
     f:SetScript("OnDragStop", f.StopMovingOrSizing)
 
-    if f.SetTitle then f:SetTitle("Dragon Skill v2.2.4") end
+    if f.SetTitle then f:SetTitle("Dragon Skill v2.2.5") end
     if f.portrait then f.portrait:SetTexture("Interface\\Icons\\Inv_misc_head_dragon_01") end
 
     local credit = f:CreateFontString(nil, "OVERLAY", "GameFontDisableSmall")
@@ -69,7 +68,7 @@ end
 function UI:GetRow(index)
     if not self.rows[index] then
         local row = CreateFrame("Button", nil, self.frame.Content)
-        row:SetSize(560, 28) -- Hardcoded width for safety
+        row:SetSize(560, 28)
         row.icon = row:CreateTexture(nil, "ARTWORK")
         row.icon:SetSize(24, 24); row.icon:SetPoint("LEFT", 0, 0)
         row.text = row:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
@@ -150,12 +149,12 @@ end
 
 function UI:DrawDashboard(content, class, specID)
     local GM = DragonSkill:GetModule("GearManager")
-    local specName = select(2, GetSpecializationInfo(GetSpecialization() or 0)) or "Spec"
+    local specName = specID > 0 and select(2, GetSpecializationInfo(GetSpecialization() or 0)) or "Spec"
     self.text:SetText("|cffffff00" .. tostring(class) .. ": " .. tostring(specName) .. " Dashboard|r\n\n" .. string.format("Gegenstandsstufe: |cffffffff%.1f|r\n\n", select(2, GetAverageItemLevel())) .. "|cffffd100NÄCHSTE BESTE UPGRADES:|r")
     local upgrades = GM:GetBestUpgrades(); local yOffset = -85; local rowIndex = 1
-    if upgrades then
+    if upgrades and #upgrades > 0 then
         for i=1, math.min(3, #upgrades) do
-            rowIndex = self:AddInteractiveRow(rowIndex, upgrades[i], yOffset, nil, "|cff00ff00+"..upgrades[i].percent.."%|r")
+            rowIndex = self:AddInteractiveRow(rowIndex, upgrades[i], yOffset, nil, string.format("|cff00ff00+%.1f%%|r", upgrades[i].percent or 0))
             yOffset = yOffset - 30
         end
     end
@@ -182,7 +181,7 @@ function UI:DrawUpgrades(content)
     self.text:SetText("|cffffff00UPGRADE MATRIX|r")
     local yOffset = -75; local rowIndex = 1
     for _, item in ipairs(items) do
-        rowIndex = self:AddInteractiveRow(rowIndex, item, yOffset, nil, "|cff00ff00+"..item.percent.."%|r")
+        rowIndex = self:AddInteractiveRow(rowIndex, item, yOffset, nil, string.format("|cff00ff00+%.1f%%|r", item.percent or 0))
         yOffset = yOffset - 30
     end
 end
@@ -232,6 +231,19 @@ function UI:DrawRaidGuides(content)
     local pT = self:GetExtraFS(fsIdx); pT:SetPoint("TOPLEFT", listWidth + 25, y); pT:SetText("|cffffff00Positionierung|r"); pT:Show(); fsIdx = fsIdx + 1; y = y - 25
     local pX = self:GetExtraFS(fsIdx, "GameFontHighlightSmall"); pX:SetPoint("TOPLEFT", listWidth + 35, y); pX:SetText(guide.position); pX:Show(); fsIdx = fsIdx + 1
     content:SetHeight(math.abs(y) + 300)
+end
+
+function UI:DrawBosses(content)
+    local BM = DragonSkill:GetModule("BossMechanics")
+    if not BM or not BM.Bosses then return end
+    self.text:SetText("|cffffff00Raid Boss Simulator|r")
+    local yOffset = -45; local idx = 1
+    for id, boss in pairs(BM.Bosses) do
+        local btn = self.talentBtns[idx + 100] or CreateFrame("Button", nil, content, "UIPanelButtonTemplate")
+        self.talentBtns[idx + 100] = btn; btn:SetSize(560, 30); btn:SetPoint("TOPLEFT", 15, yOffset)
+        btn:SetText(boss.Name or "Unbekannt")
+        btn:SetScript("OnClick", function() BM:Simulate(id) end); btn:Show(); yOffset = yOffset - 35; idx = idx + 1
+    end
 end
 
 StaticPopupDialogs["DRAGONSKILL_COPY"] = {

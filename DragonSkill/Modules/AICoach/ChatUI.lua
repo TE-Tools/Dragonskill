@@ -1,16 +1,15 @@
--- Dragon Skill - Module: AI Coach Chat UI (v2.2.4)
--- Final Stability Fix: Protected Font and Scroll Logic.
+-- Dragon Skill - Module: AI Coach Chat UI (v2.2.5)
+-- Ultra Stability Fix: Simplified UI components and robust Font handling.
 
 local AICoachUI = {}
 DragonSkill.AICoachUI = AICoachUI
 
-local messages = {}
-
 function AICoachUI:Draw(content, width)
+    if not content then return end
     local Engine = DragonSkill:GetModule("AICoach")
     if not Engine then return end
 
-    local chatWidth = tonumber(width) or 600
+    local chatWidth = tonumber(width) or 580
 
     -- 1. Create Scrollable History Area
     if not self.scrollFrame then
@@ -25,14 +24,14 @@ function AICoachUI:Draw(content, width)
         h:SetTextInsets(10, 10, 10, 10)
         h:SetReadOnly(true)
         h:SetAutoFocus(false)
-
-        -- Safe Font Selection
-        if ChatFontNormal then h:SetFontObject(ChatFontNormal) else h:SetFont("Fonts\\FRIZQT__.TTF", 12, "") end
+        h:SetFontObject("GameFontHighlightSmall")
 
         h:SetScript("OnHyperlinkEnter", function(self, link)
-            GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-            GameTooltip:SetHyperlink(link)
-            GameTooltip:Show()
+            if link then
+                GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+                GameTooltip:SetHyperlink(link)
+                GameTooltip:Show()
+            end
         end)
         h:SetScript("OnHyperlinkLeave", function() GameTooltip:Hide() end)
         sf:SetScrollChild(h)
@@ -62,7 +61,7 @@ function AICoachUI:Draw(content, width)
         eb:SetAutoFocus(false)
         eb:SetScript("OnEnterPressed", function(selfEb)
             local msg = selfEb:GetText()
-            if msg ~= "" then
+            if msg and msg ~= "" then
                 selfEb:SetText("")
                 AICoachUI:AddMessage("User", msg)
 
@@ -82,7 +81,9 @@ function AICoachUI:Draw(content, width)
         btn:SetPoint("LEFT", eb, "RIGHT", 5, 0)
         btn:SetText("Senden")
         btn:SetScript("OnClick", function()
-            eb:GetScript("OnEnterPressed")(eb)
+            if eb:GetScript("OnEnterPressed") then
+                eb:GetScript("OnEnterPressed")(eb)
+            end
         end)
         self.sendBtn = btn
     end
@@ -91,11 +92,13 @@ function AICoachUI:Draw(content, width)
 end
 
 function AICoachUI:AddMessage(sender, text)
+    if not text then return end
     local prefix = (sender == "User") and "|cffffffffDu: |r" or (sender == "AI") and "|cff00ccffReal-AI: |r" or "|cff00ff00Coach: |r"
+
     if DragonSkillDB then
         DragonSkillDB.history = DragonSkillDB.history or {}
         table.insert(DragonSkillDB.history, prefix .. tostring(text))
-        if #DragonSkillDB.history > 15 then table.remove(DragonSkillDB.history, 1) end
+        if #DragonSkillDB.history > 20 then table.remove(DragonSkillDB.history, 1) end
     end
     self:RefreshHistory()
 end
@@ -108,9 +111,12 @@ function AICoachUI:RefreshHistory()
             full = full .. tostring(m) .. "\n\n"
         end
     end
-    self.historyText:SetText(full == "" and "Willkommen!" or full)
+    self.historyText:SetText(full == "" and "Willkommen beim Coach!" or full)
+
     if self.scrollFrame then
-        local range = self.scrollFrame:GetVerticalScrollRange() or 0
-        if range > 0 then self.scrollFrame:SetVerticalScroll(range) end
+        C_Timer.After(0.1, function()
+            local range = self.scrollFrame:GetVerticalScrollRange() or 0
+            if range > 0 then self.scrollFrame:SetVerticalScroll(range) end
+        end)
     end
 end
