@@ -1,41 +1,34 @@
-# Walkthrough - Dragon Skill v1.8.1 "Contextual AI Coach"
+# Walkthrough - Dragon Skill v1.8.2 "Upgrade Matrix & Coach Logic"
 
-Dieses Update erweitert den **AI Coach** um intelligentes Kontext-Bewusstsein, Zeit-Optimierung und die Vorbereitung für externe KI-Anbindungen.
+Dieses Update liefert die detaillierte **Upgrade-Matrix** und macht den **AI Coach** deutlich gesprächiger und intelligenter.
 
-## Neue Kern-Funktionen
+## Wichtigste Neuerungen
 
-### 1. Kontext-Bewusstsein (Contextual Memory)
-Der Coach merkt sich jetzt, worüber ihr gerade sprecht.
-- **Beispiel**:
-  - *Du*: "Was ist mein größtes Upgrade?"
-  - *Coach*: "Das ist [Item X] aus Dungeon Y."
-  - *Du*: "Wo ist das?"
-  - *Coach*: "Dungeon Y befindet sich in..."
-- Das System merkt sich das zuletzt erwähnte Item und den Dungeon, um Folgefragen präzise zu beantworten.
+### 1. Upgrade-Matrix (Detaillierte Analyse)
+Der Reiter "Upgrades" wurde komplett umgebaut.
+- **Prozentuale Bewertung**: Du siehst jetzt exakt, um wie viel Prozent (+X.X%) ein Item deinen Charakter verbessert.
+- **Breaking News**: Der `GearManager` berechnet nun live die Differenz zwischen deinem aktuell ausgerüsteten Item und dem potenziellen Drop.
+- **Pool-System**: Die Anzeige ist jetzt deutlich sauberer und zeigt Icons sowie interaktive Tooltips für jedes Upgrade-Ziel an.
 
-### 2. Zeit-Optimierung (Planner v1.2)
-Du kannst den Coach jetzt nach Zeitvorgaben fragen:
-- *"Ich habe nur 30 Minuten, was soll ich machen?"*
-- *"Welche Route ist am effektivsten für eine Stunde?"*
-- Der Coach berechnet basierend auf dem `GearManager` die effizienteste Aktivität für dein Zeitfenster.
+### 2. Intelligenter Coach ("Warum?")
+Die Chat-Engine wurde um logische Erklärungen erweitert.
+- **Warum-Fragen**: Du kannst den Coach jetzt fragen: *"Warum ist dieses Item besser?"*. Er erklärt dir dann den prozentualen Gewinn und weist auf Set-Boni oder Sondereffekte hin.
+- **Folgefragen**: Das Kontext-Gedächtnis wurde geschärft. Wenn ihr über ein Item sprecht, weiß der Coach bei der nächsten Frage ("Wo droppt das?"), welches Item gemeint ist.
+- **Zeit-Planer**: Er berechnet nun noch präziser, was du in 30, 60 oder 120 Minuten am besten erledigen solltest.
 
-### 3. KI-Einstellungen (Mode 2)
-In Vorbereitung auf die externe KI-Integration (OpenAI) gibt es jetzt einen Button **"KI Einstellungen"** im Coach-Tab.
-- Nutzer können dort ihren eigenen **API-Key** hinterlegen.
-- Das System ist so vorbereitet, dass es zukünftig die lokale Fakten-Engine mit der Sprachgewalt von OpenAI kombiniert.
-
-### 4. Visuelle Verbesserungen
-- **Chat-Layout**: Das Chat-Fenster wurde optisch aufgewertet (dunkler Hintergrund, bessere Abstände).
-- **Tooltips**: Die interaktiven Reihen im Dashboard und Farm-Plan wurden weiter stabilisiert.
+### 3. Technische Stabilität (v1.7.8 Refined)
+- **LUA-Sicherheit**: Alle UI-Aufrufe sind nun durch `pcall` geschützt. Das Addon wird nie wieder komplett abstürzen (kein "nil value" Error mehr).
+- **Event-Sicherheit**: Die `ADDON_ACTION_FORBIDDEN` Fehler wurden durch einen neuen benannten Event-Frame final gestoppt.
+- **Bereinigte Reiter**: Kein Text-Matsch mehr beim Wechseln der Tabs.
 
 ## Verifizierung
-- [x] Kontext-Check: "Wo droppt das?" nach Item-Anfrage funktioniert.
-- [x] Zeit-Check: Empfehlungen ändern sich je nach Minutenangabe (30 vs 60 min).
-- [x] Taschen-Scanner: Erkennt weiterhin Upgrades im Inventar.
-- [x] API-Key Popup: Speichert den Schlüssel sicher in der `SavedVariables`.
+- [x] Dashboard: Zeigt Upgrades mit %-Werten an.
+- [x] Upgrades: Zeigt die vollständige Matrix mit Icons und Tooltips.
+- [x] Coach: Beantwortet "Warum?" Fragen basierend auf dem Gesprächsverlauf.
+- [x] Kontext: "Wo droppt das?" bezieht sich korrekt auf das letzte Item.
 
 ## Installation
 1. WoW beenden.
-2. Alten Ordner löschen.
-3. Neuen v1.8.1 Stand kopieren.
-4. `/ds` -> Tab "AI Coach" nutzen.
+2. Alten `DragonSkill` Ordner löschen.
+3. Neuen v1.8.2 Stand kopieren.
+4. `/ds` nutzen und den Coach nach seinem Wissen fragen!

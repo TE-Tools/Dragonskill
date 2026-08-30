@@ -1,4 +1,4 @@
--- Dragon Skill - Gear Manager Engine (v1.7.0)
+-- Dragon Skill - Gear Manager Engine (v1.8.2)
 -- Handles stat weights, upgrade scores, and farm planning.
 
 local GearManager = DragonSkill:RegisterModule("GearManager", {})
@@ -21,10 +21,9 @@ function GearManager:GetStatWeights()
 
     local priorityData = SP and SP:GetForCurrentSpec()
     if priorityData and priorityData.wowhead then
-        -- Parse "Haste > Mastery > Versatility > Critical Strike"
         local str = priorityData.wowhead:lower()
         local parts = { strsplit(">", str) }
-        local currentWeight = 100
+        local currentWeight = 110
         for _, p in ipairs(parts) do
             local name = strtrim(p)
             if name:find("haste") then weights.haste = currentWeight
@@ -39,38 +38,60 @@ end
 
 function GearManager:GetItemScore(itemId, itemLevel)
     local data = DragonSkillGearData.items[itemId]
-    if not data then return 0 end
+    if not data then return 0, {} end
 
     local weights = self:GetStatWeights()
-    local score = (itemLevel or 250) * 10 -- Base ilvl score
+    local ilvlScore = (itemLevel or 250) * 12
+    local statScore = 0
+    local bonusScore = 0
 
     if data.secondary then
         for stat, active in pairs(data.secondary) do
-            if active then score = score + (weights[stat] or 0) end
+            if active then statScore = statScore + (weights[stat] or 0) end
         end
     end
 
-    if data.tierItem then score = score + 500 end -- Huge bonus for tier
-    if data.catalystEligible then score = score + 300 end
-    if data.overallScore then score = score + (data.overallScore * 5) end
+    if data.tierItem then bonusScore = bonusScore + 600 end
+    if data.catalystEligible then bonusScore = bonusScore + 400 end
+    if data.overallScore then bonusScore = bonusScore + (data.overallScore * 8) end
 
-    return score
+    local total = ilvlScore + statScore + bonusScore
+    return total, { ilvl = ilvlScore, stats = statScore, bonus = bonusScore }
 end
 
-function GearManager:GetUpgradeScore(slot, targetItemId, targetIlvl)
+function GearManager:GetUpgradeDetails(slot, targetItemId, targetIlvl)
     local currentGear = DragonSkill:GetModule("Character"):GetCurrentGear()
     local current = currentGear[slot]
 
     local currentScore = 0
+    local currentIlvl = 0
     if current and current.itemId then
         currentScore = self:GetItemScore(current.itemId, current.ilvl)
+        currentIlvl = current.ilvl
     end
 
-    local targetScore = self:GetItemScore(targetItemId, targetIlvl or 252)
+    local targetScore, breakdown = self:GetItemScore(targetItemId, targetIlvl or 252)
     local diff = targetScore - currentScore
 
-    if diff <= 0 then return 0 end
-    return diff
+    local percent = 0
+    if currentScore > 0 then
+        percent = (diff / currentScore) * 100
+    else
+        percent = 100 -- New slot
+    end
+
+    return {
+        score = diff,
+        percent = math.floor(percent * 10) / 10,
+        currentIlvl = currentIlvl,
+        targetIlvl = targetIlvl or 252,
+        breakdown = breakdown
+    }
+end
+
+function GearManager:GetUpgradeScore(slot, targetItemId, targetIlvl)
+    local details = self:GetUpgradeDetails(slot, targetItemId, targetIlvl)
+    return details.score
 end
 
 function GearManager:GetDungeonScore(dungeonName)
@@ -78,7 +99,7 @@ function GearManager:GetDungeonScore(dungeonName)
     if not dungeon then return 0 end
 
     local totalUpgrade = 0
-    local relevantItems = 0
+    local count = 0
 
     for _, boss in ipairs(dungeon.bosses) do
         for _, itemId in ipairs(boss.loot) do
@@ -87,14 +108,13 @@ function GearManager:GetDungeonScore(dungeonName)
                 local upgrade = self:GetUpgradeScore(item.slot, itemId)
                 if upgrade > 0 then
                     totalUpgrade = totalUpgrade + upgrade
-                    relevantItems = relevantItems + 1
+                    count = count + 1
                 end
             end
         end
     end
 
-    -- Normalize score to 0-100
-    local finalScore = math.min(100, (totalUpgrade / 100) + (relevantItems * 10))
+    local finalScore = math.min(100, (totalUpgrade / 80) + (count * 12))
     return math.floor(finalScore)
 end
 
@@ -102,7 +122,7 @@ function GearManager:GetFarmPlan()
     local plan = {}
     for name, _ in pairs(DragonSkillGearData.dungeons) do
         local score = self:GetDungeonScore(name)
-        if score > 10 then
+        if score > 5 then
             table.insert(plan, { name = name, score = score })
         end
     end
@@ -121,14 +141,15 @@ function GearManager:GetBestUpgrades()
     for _, itemId in ipairs(specData.bis.overall) do
         local item = DragonSkillGearData.items[itemId]
         if item then
-            local score = self:GetUpgradeScore(item.slot, itemId)
-            if score > 0 then
+            local details = self:GetUpgradeDetails(item.slot, itemId)
+            if details.score > 0 then
                 table.insert(upgrades, {
                     itemId = itemId,
                     name = item.name,
                     slot = item.slot,
-                    score = score,
-                    priority = math.floor(math.min(10, score / 100))
+                    score = details.score,
+                    percent = details.percent,
+                    priority = math.floor(math.min(10, details.percent * 2)) -- Dynamic priority based on %
                 })
             end
         end

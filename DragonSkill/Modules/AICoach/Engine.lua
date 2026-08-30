@@ -1,5 +1,5 @@
--- Dragon Skill - Module: AI Coach Engine (v1.8.1)
--- Local Facts Engine with Contextual Memory and Time Optimization.
+-- Dragon Skill - Module: AI Coach Engine (v1.8.2)
+-- Local Facts Engine with Contextual Memory and Upgrade Explanations.
 
 local AICoach = DragonSkill:RegisterModule("AICoach", {
     history = {},
@@ -42,7 +42,22 @@ function AICoach:GetReply(msg)
 
     msg = msg:lower()
 
-    -- 1. TIME OPTIMIZATION (e.g. "I have 30 minutes")
+    -- 1. WHY / EXPLANATION (Special Handling)
+    if msg:find("warum") or msg:find("why") then
+        if self.context.lastItem then
+            local item = DragonSkillGearData.items[self.context.lastItem]
+            if item then
+                local details = GM:GetUpgradeDetails(item.slot, self.context.lastItem)
+                local reason = string.format("Dieses Item verbessert dich um |cff00ff00%.1f%%|r. ", details.percent)
+                if item.tierItem then reason = reason .. "Es ist ein Teil deines Tier-Sets! " end
+                if item.effect then reason = reason .. "Es hat einen starken Sondereffekt (" .. item.effect .. "). " end
+                return reason .. "Die Kombination aus Stats und Item-Level macht es zu deinem aktuellen Top-Ziel."
+            end
+        end
+        return "Ich kann dir erklaeren, warum ein Item gut ist, wenn wir gerade darueber gesprochen haben."
+    end
+
+    -- 2. TIME OPTIMIZATION
     if intents.TIME then
         local mins = msg:match("(%d+)")
         mins = tonumber(mins) or 60
@@ -62,7 +77,7 @@ function AICoach:GetReply(msg)
         end
     end
 
-    -- 2. FOLLOW-UP QUESTIONS (Context awareness)
+    -- 3. FOLLOW-UP QUESTIONS (Context awareness)
     if intents.FOLLOWUP then
         if msg:find("wo") or msg:find("where") then
             if self.context.lastItem then
@@ -80,7 +95,7 @@ function AICoach:GetReply(msg)
         end
     end
 
-    -- 3. INVENTORY UPGRADES
+    -- 4. INVENTORY UPGRADES
     if intents.INVENTORY then
         local upgrades = Char:GetInventoryUpgrades()
         if upgrades and #upgrades > 0 then
@@ -90,17 +105,17 @@ function AICoach:GetReply(msg)
         end
     end
 
-    -- 4. GENERAL GEAR/UPGRADE
+    -- 5. GENERAL GEAR/UPGRADE
     if intents.UPGRADE or intents.GEAR then
         local ups = GM:GetBestUpgrades()
         if ups[1] then
             self.context.lastItem = ups[1].itemId
-            return string.format("Dein naechstes grosses Upgrade ist |cffffd100%s|r (%s). Es hat Prio %d/10. Du bekommst es in %s.",
-                ups[1].name, ups[1].slot, ups[1].priority, (ups[1].dungeonName or "einem Dungeon"))
+            return string.format("Dein naechstes grosses Upgrade ist |cffffd100%s|r (%s). Es bringt eine Verbesserung von |cff00ff00%.1f%%|r. Du findest es in %s.",
+                ups[1].name, ups[1].slot, ups[1].percent, (ups[1].dungeonName or "einem Dungeon"))
         end
     end
 
-    -- 5. FARMING
+    -- 6. FARMING
     if intents.FARM then
         local plan = GM:GetFarmPlan()
         if plan[1] then
@@ -110,7 +125,7 @@ function AICoach:GetReply(msg)
         end
     end
 
-    -- 6. STATS
+    -- 7. STATS
     if intents.STATS then
         local prio = Char:GetStatPriority()
         if prio and prio.wowhead then
@@ -118,7 +133,7 @@ function AICoach:GetReply(msg)
         end
     end
 
-    -- 7. CATALYST
+    -- 8. CATALYST
     if intents.CATALYST then
         return GM:GetCatalystRecommendation()
     end
