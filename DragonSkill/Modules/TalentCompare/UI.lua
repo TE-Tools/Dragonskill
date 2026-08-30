@@ -1,5 +1,5 @@
--- Dragon Skill - Main UI (v2.2.3)
--- Master UI with Professional Raid Guides & Critical Fixes.
+-- Dragon Skill - Main UI (v2.2.4)
+-- Final Master UI Restoration & Safety Update.
 
 local L = DragonSkill.L or {}
 local UI = {}
@@ -30,15 +30,11 @@ function UI:Init()
     f:SetScript("OnDragStart", f.StartMoving)
     f:SetScript("OnDragStop", f.StopMovingOrSizing)
 
-    if f.SetTitle then f:SetTitle("Dragon Skill v2.2.3") end
-
-    if f.portrait then
-        f.portrait:SetTexture("Interface\\Icons\\Inv_misc_head_dragon_01")
-    end
+    if f.SetTitle then f:SetTitle("Dragon Skill v2.2.4") end
+    if f.portrait then f.portrait:SetTexture("Interface\\Icons\\Inv_misc_head_dragon_01") end
 
     local credit = f:CreateFontString(nil, "OVERLAY", "GameFontDisableSmall")
-    credit:SetPoint("BOTTOMRIGHT", f, "BOTTOMRIGHT", -10, 6)
-    credit:SetText("Entwickelt von wear-alleria")
+    credit:SetPoint("BOTTOMRIGHT", f, "BOTTOMRIGHT", -10, 6); credit:SetText("Entwickelt von wear-alleria")
 
     local scrollFrame = CreateFrame("ScrollFrame", "DragonSkillScrollFrame", f.Inset, "UIPanelScrollFrameTemplate")
     scrollFrame:SetPoint("TOPLEFT", 8, -8); scrollFrame:SetPoint("BOTTOMRIGHT", -28, 8)
@@ -46,8 +42,7 @@ function UI:Init()
     local content = CreateFrame("Frame", "DragonSkillContentFrame", scrollFrame)
     content:SetSize(CONTENT_WIDTH, 2000)
     scrollFrame:SetScrollChild(content)
-    f.Content = content
-    f.ScrollFrame = scrollFrame
+    f.Content = content; f.ScrollFrame = scrollFrame
 
     f.Tabs = {}
     for i, name in ipairs(tabs) do
@@ -61,8 +56,7 @@ function UI:Init()
     PanelTemplates_SetNumTabs(f, #tabs); PanelTemplates_SetTab(f, 1)
 
     tinsert(UISpecialFrames, "DragonSkillMainFrame")
-    f:Hide()
-    self.frame = f
+    f:Hide(); self.frame = f
     self.rows = {}; self.extraFS = {}; self.talentBtns = {}; self.bossBtns = {}
 end
 
@@ -75,7 +69,7 @@ end
 function UI:GetRow(index)
     if not self.rows[index] then
         local row = CreateFrame("Button", nil, self.frame.Content)
-        row:SetSize(tonumber(ROW_WIDTH), 28)
+        row:SetSize(560, 28) -- Hardcoded width for safety
         row.icon = row:CreateTexture(nil, "ARTWORK")
         row.icon:SetSize(24, 24); row.icon:SetPoint("LEFT", 0, 0)
         row.text = row:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
@@ -92,20 +86,15 @@ function UI:GetExtraFS(index, font)
         self.extraFS[index] = self.frame.Content:CreateFontString(nil, "OVERLAY", font or "GameFontHighlight")
     end
     self.extraFS[index]:SetFontObject(font or "GameFontHighlight")
-    self.extraFS[index]:SetWidth(CONTENT_WIDTH - 20)
-    self.extraFS[index]:SetJustifyH("LEFT")
+    self.extraFS[index]:SetWidth(CONTENT_WIDTH - 20); self.extraFS[index]:SetJustifyH("LEFT")
     return self.extraFS[index]
 end
 
 function UI:ClearContent()
     if not self.frame or not self.frame.Content then return end
     local content = self.frame.Content
-    for _, child in ipairs({ content:GetChildren() }) do
-        if child ~= self.text then child:Hide() end
-    end
-    for _, region in ipairs({ content:GetRegions() }) do
-        if region ~= self.text then region:Hide() end
-    end
+    for _, child in ipairs({ content:GetChildren() }) do if child ~= self.text then child:Hide() end end
+    for _, region in ipairs({ content:GetRegions() }) do if region ~= self.text then region:Hide() end end
     for _, row in pairs(self.rows) do row:Hide() end
     for _, fs in pairs(self.extraFS) do fs:Hide() end
 end
@@ -123,9 +112,7 @@ function UI:Update()
     if not self.frame or not self.frame.Content then return end
     local content = self.frame.Content
     self:ClearContent()
-
-    self.text = self:EnsureText(content)
-    self.text:SetText(""); self.text:Show()
+    self.text = self:EnsureText(content); self.text:SetText(""); self.text:Show()
     if self.frame.ScrollFrame then self.frame.ScrollFrame:SetVerticalScroll(0) end
 
     local _, class = UnitClass("player")
@@ -134,72 +121,46 @@ function UI:Update()
 
     local ok, err = pcall(function()
         if currentTab == TAB_DASHBOARD then self:DrawDashboard(content, class, specID)
-        elseif currentTab == TAB_COACH then DragonSkill.AICoachUI:Draw(content, CONTENT_WIDTH + 150)
+        elseif currentTab == TAB_COACH then DragonSkill.AICoachUI:Draw(content, 580)
         elseif currentTab == TAB_FARM then self:DrawFarm(content)
         elseif currentTab == TAB_UPGRADES then self:DrawUpgrades(content)
         elseif currentTab == TAB_RAIDGUIDES then self:DrawRaidGuides(content)
         elseif currentTab == TAB_BIS then self:DrawBiSList(content)
         elseif currentTab == TAB_TALENTS then
             local guideData = DragonSkill.Database:GetGuideData(class, specID)
-            if guideData then self:DrawTalents(content, guideData) else self.text:SetText("Keine Guide-Daten gefunden.") end
+            if guideData then self:DrawTalents(content, guideData) else self.text:SetText("Keine Guide-Daten.") end
         end
     end)
-
     if not ok then self.text:SetText("|cffff0000UI Fehler:|r " .. tostring(err)) end
 end
 
 function UI:AddInteractiveRow(index, itemData, yOffset, labelPrefix, valueText)
     if not itemData or not itemData.itemId then return index end
     local row = self:GetRow(index)
-    row:SetParent(self.frame.Content)
-    row:ClearAllPoints()
-    row:SetPoint("TOPLEFT", 15, yOffset)
-
+    row:SetParent(self.frame.Content); row:ClearAllPoints(); row:SetPoint("TOPLEFT", 15, yOffset)
     local iid = tonumber(itemData.itemId) or 0
-    local texture = C_Item.GetItemIconByID(iid) or "Interface\\Icons\\Inv_misc_questionmark"
-    row.icon:SetTexture(texture)
-
-    local prefix = labelPrefix or (itemData.slot and "|cff00ff00"..itemData.slot..":|r " or "")
-    local name = itemData.name or "Item "..iid
-    row.text:SetText(prefix .. tostring(name))
-
+    row.icon:SetTexture(C_Item.GetItemIconByID(iid) or "Interface\\Icons\\Inv_misc_questionmark")
+    local name = tostring(itemData.name) or "Item "..iid
+    row.text:SetText((labelPrefix or (itemData.slot and "|cff00ff00"..itemData.slot..":|r " or "")) .. name)
     if valueText then row.val:SetText(tostring(valueText)); row.val:Show() else row.val:Hide() end
-
-    row:SetScript("OnEnter", function(s)
-        GameTooltip:SetOwner(s, "ANCHOR_RIGHT")
-        GameTooltip:SetItemByID(iid); GameTooltip:Show()
-    end)
-    row:SetScript("OnLeave", function() GameTooltip:Hide() end)
-    row:Show()
+    row:SetScript("OnEnter", function(s) GameTooltip:SetOwner(s, "ANCHOR_RIGHT"); GameTooltip:SetItemByID(iid); GameTooltip:Show() end)
+    row:SetScript("OnLeave", function() GameTooltip:Hide() end); row:Show()
     return index + 1
 end
 
 function UI:DrawDashboard(content, class, specID)
     local GM = DragonSkill:GetModule("GearManager")
     local specName = select(2, GetSpecializationInfo(GetSpecialization() or 0)) or "Spec"
-    local avgIlvl = select(2, GetAverageItemLevel())
-
-    local txt = "|cffffff00" .. tostring(class) .. ": " .. tostring(specName) .. " Dashboard|r\n\n"
-    txt = txt .. string.format("Gegenstandsstufe: |cffffffff%.1f|r\n\n", avgIlvl)
-    txt = txt .. "|cffffd100NÄCHSTE BESTE UPGRADES:|r"
-    self.text:SetText(txt)
-
-    local upgrades = GM:GetBestUpgrades()
-    local yOffset = -85
-    local rowIndex = 1
-    if upgrades and #upgrades > 0 then
+    self.text:SetText("|cffffff00" .. tostring(class) .. ": " .. tostring(specName) .. " Dashboard|r\n\n" .. string.format("Gegenstandsstufe: |cffffffff%.1f|r\n\n", select(2, GetAverageItemLevel())) .. "|cffffd100NÄCHSTE BESTE UPGRADES:|r")
+    local upgrades = GM:GetBestUpgrades(); local yOffset = -85; local rowIndex = 1
+    if upgrades then
         for i=1, math.min(3, #upgrades) do
-            local valStr = string.format("|cff00ff00+%.1f%%|r", upgrades[i].percent or 0)
-            rowIndex = self:AddInteractiveRow(rowIndex, upgrades[i], yOffset, nil, valStr)
+            rowIndex = self:AddInteractiveRow(rowIndex, upgrades[i], yOffset, nil, "|cff00ff00+"..upgrades[i].percent.."%|r")
             yOffset = yOffset - 30
         end
     end
-
-    local y = yOffset - 40
-    local guildTitle = self:GetExtraFS(1000, "GameFontNormal")
-    guildTitle:SetPoint("TOPLEFT", 15, y); guildTitle:SetText("|cffffd100GILDE: DRAGON LORDS ALLERIA|r"); guildTitle:Show(); y = y - 25
-    local guildWeb = self:GetExtraFS(1001, "GameFontHighlightSmall")
-    guildWeb:SetPoint("TOPLEFT", 15, y); guildWeb:SetText("Website: |cff00ccffhttps://guildsowow.com/dragon-lords|r"); guildWeb:Show()
+    local y = yOffset - 40; local gT = self:GetExtraFS(1000); gT:SetPoint("TOPLEFT", 15, y); gT:SetText("|cffffd100GILDE: DRAGON LORDS ALLERIA|r"); gT:Show(); y = y - 25
+    local gW = self:GetExtraFS(1001, "GameFontHighlightSmall"); gW:SetPoint("TOPLEFT", 15, y); gW:SetText("Website: |cff00ccffhttps://guildsowow.com/dragon-lords|r"); gW:Show()
 end
 
 function UI:DrawFarm(content)
@@ -209,10 +170,8 @@ function UI:DrawFarm(content)
     local yOffset = -45
     if plan then
         for i, d in ipairs(plan) do
-            local fs = self:GetExtraFS(i, "GameFontNormal")
-            fs:ClearAllPoints(); fs:SetPoint("TOPLEFT", 15, yOffset)
-            fs:SetText(string.format("|cffffd100%d. %s|r (Score: %d/100)", i, d.name, d.score))
-            fs:Show(); yOffset = yOffset - 35
+            local fs = self:GetExtraFS(i, "GameFontNormal"); fs:ClearAllPoints(); fs:SetPoint("TOPLEFT", 15, yOffset)
+            fs:SetText(string.format("|cffffd100%d. %s|r (Score: %d/100)", i, d.name, d.score)); fs:Show(); yOffset = yOffset - 35
         end
     end
 end
@@ -223,8 +182,7 @@ function UI:DrawUpgrades(content)
     self.text:SetText("|cffffff00UPGRADE MATRIX|r")
     local yOffset = -75; local rowIndex = 1
     for _, item in ipairs(items) do
-        local valStr = string.format("|cff00ff00+%.1f%%|r", item.percent or 0)
-        rowIndex = self:AddInteractiveRow(rowIndex, item, yOffset, nil, valStr)
+        rowIndex = self:AddInteractiveRow(rowIndex, item, yOffset, nil, "|cff00ff00+"..item.percent.."%|r")
         yOffset = yOffset - 30
     end
 end
@@ -232,12 +190,9 @@ end
 function UI:DrawBiSList(content)
     local GM = DragonSkill:GetModule("GearManager")
     local items = GM:GetBiSList()
-    self.text:SetText("|cffffff00BiS Gear List (Spec Targets)|r")
+    self.text:SetText("|cffffff00BiS Gear List|r")
     local yOffset = -45; local rowIndex = 1
-    for _, item in ipairs(items) do
-        rowIndex = self:AddInteractiveRow(rowIndex + 200, item, yOffset)
-        yOffset = yOffset - 30
-    end
+    for _, item in ipairs(items) do rowIndex = self:AddInteractiveRow(rowIndex + 200, item, yOffset); yOffset = yOffset - 30 end
 end
 
 function UI:DrawTalents(content, guideData)
@@ -245,9 +200,8 @@ function UI:DrawTalents(content, guideData)
     if guideData and guideData.talentBuilds then
         for i, build in ipairs(guideData.talentBuilds) do
             local btn = self.talentBtns[i] or CreateFrame("Button", nil, content, "UIPanelButtonTemplate")
-            self.talentBtns[i] = btn
-            btn:SetSize(tonumber(ROW_WIDTH), 30); btn:SetPoint("TOPLEFT", 15, yOffset)
-            btn:SetText(string.format("[%s] %s", (tostring(build.provider) or "Guide"):upper(), tostring(build.label) or "Build"))
+            self.talentBtns[i] = btn; btn:SetSize(560, 30); btn:SetPoint("TOPLEFT", 15, yOffset)
+            btn:SetText(string.format("[%s] %s", tostring(build.provider):upper(), tostring(build.label)))
             btn:SetScript("OnClick", function() StaticPopup_Show("DRAGONSKILL_COPY", nil, nil, build.importString) end)
             btn:Show(); yOffset = yOffset - 35
         end
@@ -256,45 +210,37 @@ end
 
 function UI:DrawRaidGuides(content)
     local guides = DragonSkillRaidGuides
-    local listWidth = 180
-    local detailWidth = CONTENT_WIDTH + 100
+    local listWidth, y, fsIdx = 180, -50, 500
     for i, guide in ipairs(guides) do
         local btn = self.bossBtns[i] or CreateFrame("Button", nil, content, "UIPanelButtonTemplate")
-        self.bossBtns[i] = btn
-        btn:SetSize(listWidth, 35); btn:SetPoint("TOPLEFT", 10, -50 - (i-1)*38)
-        btn:SetText(guide.name); btn:SetScript("OnClick", function() selectedBossIdx = i; self:Update() end)
-        btn:Show()
+        self.bossBtns[i] = btn; btn:SetSize(listWidth, 35); btn:SetPoint("TOPLEFT", 10, -50 - (i-1)*38)
+        btn:SetText(guide.name); btn:SetScript("OnClick", function() selectedBossIdx = i; self:Update() end); btn:Show()
     end
     local guide = guides[selectedBossIdx]
     if not guide then return end
-    local y, fsIdx = -50, 500
-    local title = self:GetExtraFS(fsIdx, "GameFontNormalLarge"); title:SetPoint("TOPLEFT", listWidth + 25, y); title:SetText("|cffffd100" .. guide.name .. "|r"); title:Show(); fsIdx = fsIdx + 1; y = y - 30
-    local summary = self:GetExtraFS(fsIdx, "GameFontHighlight"); summary:SetPoint("TOPLEFT", listWidth + 25, y); summary:SetText("|cffaaaaaa" .. guide.summary .. "|r"); summary:Show(); fsIdx = fsIdx + 1; y = y - 45
+    local title = self:GetExtraFS(fsIdx); title:SetPoint("TOPLEFT", listWidth + 25, y); title:SetText("|cffffd100" .. guide.name .. "|r"); title:Show(); fsIdx = fsIdx + 1; y = y - 30
     for _, phase in ipairs(guide.phases) do
-        local phTitle = self:GetExtraFS(fsIdx, "GameFontNormal"); phTitle:SetPoint("TOPLEFT", listWidth + 25, y); phTitle:SetText("|cffffff00" .. phase.name .. "|r"); phTitle:Show(); fsIdx = fsIdx + 1; y = y - 20
-        local phDesc = self:GetExtraFS(fsIdx, "GameFontHighlightSmall"); phDesc:SetPoint("TOPLEFT", listWidth + 35, y); phDesc:SetText(phase.desc); phDesc:Show(); fsIdx = fsIdx + 1; y = y - 30
+        local phT = self:GetExtraFS(fsIdx); phT:SetPoint("TOPLEFT", listWidth + 25, y); phT:SetText("|cffffff00" .. phase.name .. "|r"); phT:Show(); fsIdx = fsIdx + 1; y = y - 20
+        local phD = self:GetExtraFS(fsIdx, "GameFontHighlightSmall"); phD:SetPoint("TOPLEFT", listWidth + 35, y); phD:SetText(phase.desc); phD:Show(); fsIdx = fsIdx + 1; y = y - 30
         for _, mech in ipairs(phase.mechanics) do
-            local mText = self:GetExtraFS(fsIdx, "GameFontHighlightSmall"); mText:SetPoint("TOPLEFT", listWidth + 45, y); mText:SetText("|cffffd100" .. mech.name .. ":|r " .. mech.tip); mText:Show(); fsIdx = fsIdx + 1; y = y - 35
+            local mT = self:GetExtraFS(fsIdx, "GameFontHighlightSmall"); mT:SetPoint("TOPLEFT", listWidth + 45, y); mT:SetText("|cffffd100" .. mech.name .. ":|r " .. mech.tip); mT:Show(); fsIdx = fsIdx + 1; y = y - 35
         end
         y = y - 10
     end
-    local roleTitle = self:GetExtraFS(fsIdx, "GameFontNormal"); roleTitle:SetPoint("TOPLEFT", listWidth + 25, y); roleTitle:SetText("|cffffff00Rollen-Tipps|r"); roleTitle:Show(); fsIdx = fsIdx + 1; y = y - 25
-    local roleText = self:GetExtraFS(fsIdx, "GameFontHighlightSmall"); roleText:SetPoint("TOPLEFT", listWidth + 35, y); roleText:SetText(string.format("|cff00ccffTank:|r %s\n\n|cff00ff00Healer:|r %s\n\n|cffffffffDPS:|r %s", guide.roles.tank, guide.roles.heal, guide.roles.dps)); roleText:Show(); fsIdx = fsIdx + 1; y = y - 120
-    local posTitle = self:GetExtraFS(fsIdx, "GameFontNormal"); posTitle:SetPoint("TOPLEFT", listWidth + 25, y); posTitle:SetText("|cffffff00Positionierung|r"); posTitle:Show(); fsIdx = fsIdx + 1; y = y - 25
-    local posText = self:GetExtraFS(fsIdx, "GameFontHighlightSmall"); posText:SetPoint("TOPLEFT", listWidth + 35, y); posText:SetText(guide.position); posText:Show(); fsIdx = fsIdx + 1
+    local rT = self:GetExtraFS(fsIdx); rT:SetPoint("TOPLEFT", listWidth + 25, y); rT:SetText("|cffffff00Rollen-Tipps|r"); rT:Show(); fsIdx = fsIdx + 1; y = y - 25
+    local rX = self:GetExtraFS(fsIdx, "GameFontHighlightSmall"); rX:SetPoint("TOPLEFT", listWidth + 35, y); rX:SetText(string.format("|cff00ccffTank:|r %s\n\n|cff00ff00Healer:|r %s\n\n|cffffffffDPS:|r %s", guide.roles.tank, guide.roles.heal, guide.roles.dps)); rX:Show(); fsIdx = fsIdx + 1; y = y - 120
+    local pT = self:GetExtraFS(fsIdx); pT:SetPoint("TOPLEFT", listWidth + 25, y); pT:SetText("|cffffff00Positionierung|r"); pT:Show(); fsIdx = fsIdx + 1; y = y - 25
+    local pX = self:GetExtraFS(fsIdx, "GameFontHighlightSmall"); pX:SetPoint("TOPLEFT", listWidth + 35, y); pX:SetText(guide.position); pX:Show(); fsIdx = fsIdx + 1
     content:SetHeight(math.abs(y) + 300)
 end
 
-function UI:Toggle()
-    self:Init()
-    if self.frame:IsShown() then self.frame:Hide() else self.frame:Show(); self:Update() end
-end
+StaticPopupDialogs["DRAGONSKILL_COPY"] = {
+    text = "Build-String kopieren (Strg+C):", button1 = "Fertig", hasEditBox = 1,
+    OnShow = function(self, data) if data then self.editBox:SetText(tostring(data)) self.editBox:HighlightText() end end,
+    timeout = 0, whileDead = true, hideOnEscape = true,
+}
 
-SLASH_DRAGONSKILL1 = "/ds"
-SLASH_DRAGONSKILL2 = "/wear"
-SlashCmdList["DRAGONSKILL"] = function() UI:Toggle() end
-
-DragonSkill.Events:On("PLAYER_LOGIN", function() UI:Init() end)
-if IsLoggedIn() then UI:Init() end
-
+function UI:Toggle() self:Init(); if self.frame:IsShown() then self.frame:Hide() else self.frame:Show(); self:Update() end end
+SLASH_DRAGONSKILL1 = "/ds"; SlashCmdList["DRAGONSKILL"] = function() UI:Toggle() end
+DragonSkill.Events:On("PLAYER_LOGIN", function() UI:Init() end); if IsLoggedIn() then UI:Init() end
 DragonSkill.UI = UI

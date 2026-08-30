@@ -1,78 +1,93 @@
--- Dragon Skill - Module: AI Coach Chat UI (v2.2.3)
--- Stability Fix: Robust Font and Scroll Handling.
+-- Dragon Skill - Module: AI Coach Chat UI (v2.2.4)
+-- Final Stability Fix: Protected Font and Scroll Logic.
 
 local AICoachUI = {}
 DragonSkill.AICoachUI = AICoachUI
+
+local messages = {}
 
 function AICoachUI:Draw(content, width)
     local Engine = DragonSkill:GetModule("AICoach")
     if not Engine then return end
 
-    -- Check for Bridge response
-    if DragonSkillDB and DragonSkillDB.ai and DragonSkillDB.ai.pendingQuery and DragonSkillDB.ai.pendingQuery.status == "DONE" then
-        if DragonSkillDB.ai.lastResponse and DragonSkillDB.ai.lastResponse ~= self.prevResponse then
-            self:AddMessage("AI", tostring(DragonSkillDB.ai.lastResponse))
-            self.prevResponse = DragonSkillDB.ai.lastResponse
-            DragonSkillDB.ai.pendingQuery.status = "READ"
-        end
-    end
+    local chatWidth = tonumber(width) or 600
 
     -- 1. Create Scrollable History Area
     if not self.scrollFrame then
         local sf = CreateFrame("ScrollFrame", "DragonSkillAICoachScroll", content, "UIPanelScrollFrameTemplate")
-        sf:SetSize(width - 60, 300); sf:SetPoint("TOPLEFT", 15, -60)
+        sf:SetSize(chatWidth - 60, 300)
+        sf:SetPoint("TOPLEFT", 15, -60)
 
         local h = CreateFrame("EditBox", nil, sf)
-        h:SetMultiLine(true); h:SetMaxLetters(99999)
-        h:SetFontObject("ChatFontNormal") -- Using standard WoW font object
-        h:SetWidth(width - 80); h:SetTextInsets(10, 10, 10, 10); h:SetReadOnly(true); h:SetAutoFocus(false)
+        h:SetMultiLine(true)
+        h:SetMaxLetters(99999)
+        h:SetWidth(chatWidth - 100)
+        h:SetTextInsets(10, 10, 10, 10)
+        h:SetReadOnly(true)
+        h:SetAutoFocus(false)
+
+        -- Safe Font Selection
+        if ChatFontNormal then h:SetFontObject(ChatFontNormal) else h:SetFont("Fonts\\FRIZQT__.TTF", 12, "") end
+
         h:SetScript("OnHyperlinkEnter", function(self, link)
             GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-            GameTooltip:SetHyperlink(link); GameTooltip:Show()
+            GameTooltip:SetHyperlink(link)
+            GameTooltip:Show()
         end)
         h:SetScript("OnHyperlinkLeave", function() GameTooltip:Hide() end)
         sf:SetScrollChild(h)
 
         local bg = CreateFrame("Frame", nil, content, "BackdropTemplate")
-        bg:SetPoint("TOPLEFT", sf, -5, 5); bg:SetPoint("BOTTOMRIGHT", sf, 25, -5)
-        bg:SetBackdrop({bgFile = "Interface\\ChatFrame\\ChatFrameBackground", edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border", tile = true, tileSize = 16, edgeSize = 12, insets = { left = 3, right = 3, top = 3, bottom = 3 }})
+        bg:SetPoint("TOPLEFT", sf, -5, 5)
+        bg:SetPoint("BOTTOMRIGHT", sf, 25, -5)
+        bg:SetBackdrop({
+            bgFile = "Interface\\ChatFrame\\ChatFrameBackground",
+            edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
+            tile = true, tileSize = 16, edgeSize = 12,
+            insets = { left = 3, right = 3, top = 3, bottom = 3 }
+        })
         bg:SetBackdropColor(0, 0, 0, 0.8)
 
-        self.scrollFrame = sf; self.historyText = h
+        self.scrollFrame = sf
+        self.historyText = h
     end
-    self.scrollFrame:Show(); self:RefreshHistory()
+    self.scrollFrame:Show()
+    self:RefreshHistory()
 
     -- 2. Create Input Box
     if not self.inputBox then
         local eb = CreateFrame("EditBox", "DragonSkillAICoachInput", content, "InputBoxTemplate")
-        eb:SetSize(width - 110, 30); eb:SetPoint("TOPLEFT", 15, -390); eb:SetAutoFocus(false)
+        eb:SetSize(chatWidth - 110, 30)
+        eb:SetPoint("TOPLEFT", 15, -390)
+        eb:SetAutoFocus(false)
         eb:SetScript("OnEnterPressed", function(selfEb)
             local msg = selfEb:GetText()
             if msg ~= "" then
-                selfEb:SetText(""); AICoachUI:AddMessage("User", msg)
-                local reply = Engine:GetReply(msg)
-                if reply then C_Timer.After(0.2, function() AICoachUI:AddMessage("Coach", tostring(reply)) end) end
+                selfEb:SetText("")
+                AICoachUI:AddMessage("User", msg)
+
+                local ok, reply = pcall(function() return Engine:GetReply(msg) end)
+                if ok and reply then
+                    AICoachUI:AddMessage("Coach", tostring(reply))
+                else
+                    AICoachUI:AddMessage("Coach", "|cffff0000Fehler:|r " .. tostring(reply))
+                end
             end
             selfEb:ClearFocus()
         end)
         self.inputBox = eb
 
         local btn = CreateFrame("Button", nil, content, "UIPanelButtonTemplate")
-        btn:SetSize(70, 30); btn:SetPoint("LEFT", eb, "RIGHT", 5, 0); btn:SetText("Senden")
-        btn:SetScript("OnClick", function() eb:GetScript("OnEnterPressed")(eb) end)
+        btn:SetSize(70, 30)
+        btn:SetPoint("LEFT", eb, "RIGHT", 5, 0)
+        btn:SetText("Senden")
+        btn:SetScript("OnClick", function()
+            eb:GetScript("OnEnterPressed")(eb)
+        end)
         self.sendBtn = btn
     end
-    self.inputBox:Show(); self.sendBtn:Show()
-
-    -- Sync Button
-    if not self.syncBtn then
-        local btn = CreateFrame("Button", nil, content, "UIPanelButtonTemplate")
-        btn:SetSize(140, 22); btn:SetPoint("BOTTOMLEFT", self.scrollFrame, "TOPLEFT", 0, 10)
-        btn:SetText("KI-Antwort abholen")
-        btn:SetScript("OnClick", function() ReloadUI() end)
-        self.syncBtn = btn
-    end
-    self.syncBtn:Show()
+    self.inputBox:Show()
+    self.sendBtn:Show()
 end
 
 function AICoachUI:AddMessage(sender, text)
@@ -89,8 +104,13 @@ function AICoachUI:RefreshHistory()
     if not self.historyText then return end
     local full = ""
     if DragonSkillDB and DragonSkillDB.history then
-        for _, m in ipairs(DragonSkillDB.history) do full = full .. tostring(m) .. "\n\n" end
+        for _, m in ipairs(DragonSkillDB.history) do
+            full = full .. tostring(m) .. "\n\n"
+        end
     end
     self.historyText:SetText(full == "" and "Willkommen!" or full)
-    if self.scrollFrame then self.scrollFrame:SetVerticalScroll(self.scrollFrame:GetVerticalScrollRange()) end
+    if self.scrollFrame then
+        local range = self.scrollFrame:GetVerticalScrollRange() or 0
+        if range > 0 then self.scrollFrame:SetVerticalScroll(range) end
+    end
 end
