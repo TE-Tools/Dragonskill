@@ -155,8 +155,28 @@ function GearManager:GetBestUpgrades()
         end
     end
 
-    table.sort(upgrades, function(a, b) return a.score > b.score end)
     return upgrades
+end
+
+function GearManager:GetBiSList()
+    local specIndex = GetSpecialization()
+    local specID = specIndex and select(1, GetSpecializationInfo(specIndex)) or 0
+    local specData = DragonSkillGearData.specs[specID]
+
+    if not specData or not specData.bis then return {} end
+
+    local list = {}
+    for _, itemId in ipairs(specData.bis.overall) do
+        local item = DragonSkillGearData.items[itemId]
+        if item then
+            table.insert(list, {
+                itemId = itemId,
+                name = item.name,
+                slot = item.slot
+            })
+        end
+    end
+    return list
 end
 
 function GearManager:GetCatalystRecommendation()

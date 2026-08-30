@@ -1,5 +1,5 @@
--- Dragon Skill - Main UI (v2.2.2)
--- Master UI with Guild Branding & Critical Fixes.
+-- Dragon Skill - Main UI (v2.2.3)
+-- Master UI with Professional Raid Guides & Critical Fixes.
 
 local L = DragonSkill.L or {}
 local UI = {}
@@ -30,7 +30,7 @@ function UI:Init()
     f:SetScript("OnDragStart", f.StartMoving)
     f:SetScript("OnDragStop", f.StopMovingOrSizing)
 
-    if f.SetTitle then f:SetTitle("Dragon Skill v2.2.2") end
+    if f.SetTitle then f:SetTitle("Dragon Skill v2.2.3") end
 
     if f.portrait then
         f.portrait:SetTexture("Interface\\Icons\\Inv_misc_head_dragon_01")
@@ -75,7 +75,7 @@ end
 function UI:GetRow(index)
     if not self.rows[index] then
         local row = CreateFrame("Button", nil, self.frame.Content)
-        row:SetSize(ROW_WIDTH, 28)
+        row:SetSize(tonumber(ROW_WIDTH), 28)
         row.icon = row:CreateTexture(nil, "ARTWORK")
         row.icon:SetSize(24, 24); row.icon:SetPoint("LEFT", 0, 0)
         row.text = row:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
@@ -138,12 +138,10 @@ function UI:Update()
         elseif currentTab == TAB_FARM then self:DrawFarm(content)
         elseif currentTab == TAB_UPGRADES then self:DrawUpgrades(content)
         elseif currentTab == TAB_RAIDGUIDES then self:DrawRaidGuides(content)
-        else
+        elseif currentTab == TAB_BIS then self:DrawBiSList(content)
+        elseif currentTab == TAB_TALENTS then
             local guideData = DragonSkill.Database:GetGuideData(class, specID)
-            if not guideData then self.text:SetText("Keine Guide-Daten gefunden."); return end
-            if currentTab == TAB_TALENTS then self:DrawTalents(content, guideData)
-            elseif currentTab == TAB_BIS then self:DrawBiSList(content, (guideData.bisGear and guideData.bisGear.wowhead) or {})
-            end
+            if guideData then self:DrawTalents(content, guideData) else self.text:SetText("Keine Guide-Daten gefunden.") end
         end
     end)
 
@@ -151,21 +149,25 @@ function UI:Update()
 end
 
 function UI:AddInteractiveRow(index, itemData, yOffset, labelPrefix, valueText)
-    if not itemData then return index end
+    if not itemData or not itemData.itemId then return index end
     local row = self:GetRow(index)
     row:SetParent(self.frame.Content)
     row:ClearAllPoints()
     row:SetPoint("TOPLEFT", 15, yOffset)
-    local texture = "Interface\\Icons\\Inv_misc_questionmark"
-    if itemData.itemId then texture = C_Item.GetItemIconByID(itemData.itemId) or texture end
+
+    local iid = tonumber(itemData.itemId) or 0
+    local texture = C_Item.GetItemIconByID(iid) or "Interface\\Icons\\Inv_misc_questionmark"
     row.icon:SetTexture(texture)
+
     local prefix = labelPrefix or (itemData.slot and "|cff00ff00"..itemData.slot..":|r " or "")
-    row.text:SetText(prefix .. (tostring(itemData.name) or tostring(itemData.text) or "Item"))
-    if valueText then row.val:SetText(valueText); row.val:Show() else row.val:Hide() end
+    local name = itemData.name or "Item "..iid
+    row.text:SetText(prefix .. tostring(name))
+
+    if valueText then row.val:SetText(tostring(valueText)); row.val:Show() else row.val:Hide() end
+
     row:SetScript("OnEnter", function(s)
         GameTooltip:SetOwner(s, "ANCHOR_RIGHT")
-        if itemData.itemId then GameTooltip:SetItemByID(itemData.itemId) else GameTooltip:SetText(itemData.name or "Item") end
-        GameTooltip:Show()
+        GameTooltip:SetItemByID(iid); GameTooltip:Show()
     end)
     row:SetScript("OnLeave", function() GameTooltip:Hide() end)
     row:Show()
@@ -187,31 +189,17 @@ function UI:DrawDashboard(content, class, specID)
     local rowIndex = 1
     if upgrades and #upgrades > 0 then
         for i=1, math.min(3, #upgrades) do
-            local row = self:GetRow(rowIndex)
-            row:SetParent(content); row:ClearAllPoints(); row:SetPoint("TOPLEFT", 15, yOffset)
-            row.icon:SetTexture(C_Item.GetItemIconByID(upgrades[i].itemId) or "Interface\\Icons\\Inv_misc_questionmark")
-            row.text:SetText("|cff00ff00"..upgrades[i].slot..":|r " .. upgrades[i].name)
-            row.val:SetText("|cff00ff00+"..upgrades[i].percent.."%|r"); row.val:Show()
-            row:SetScript("OnEnter", function(s)
-                GameTooltip:SetOwner(s, "ANCHOR_RIGHT")
-                GameTooltip:SetItemByID(upgrades[i].itemId); GameTooltip:Show()
-            end)
-            row:SetScript("OnLeave", function() GameTooltip:Hide() end)
-            row:Show(); yOffset = yOffset - 30; rowIndex = rowIndex + 1
+            local valStr = string.format("|cff00ff00+%.1f%%|r", upgrades[i].percent or 0)
+            rowIndex = self:AddInteractiveRow(rowIndex, upgrades[i], yOffset, nil, valStr)
+            yOffset = yOffset - 30
         end
     end
 
-    -- Guild Info
     local y = yOffset - 40
     local guildTitle = self:GetExtraFS(1000, "GameFontNormal")
-    guildTitle:SetPoint("TOPLEFT", 15, y)
-    guildTitle:SetText("|cffffd100GILDE: DRAGON LORDS ALLERIA|r")
-    guildTitle:Show(); y = y - 25
-
+    guildTitle:SetPoint("TOPLEFT", 15, y); guildTitle:SetText("|cffffd100GILDE: DRAGON LORDS ALLERIA|r"); guildTitle:Show(); y = y - 25
     local guildWeb = self:GetExtraFS(1001, "GameFontHighlightSmall")
-    guildWeb:SetPoint("TOPLEFT", 15, y)
-    guildWeb:SetText("Besuche uns auf unserer Website für mehr Guides und Infos:\n|cff00ccffhttps://guildsowow.com/dragon-lords|r")
-    guildWeb:Show()
+    guildWeb:SetPoint("TOPLEFT", 15, y); guildWeb:SetText("Website: |cff00ccffhttps://guildsowow.com/dragon-lords|r"); guildWeb:Show()
 end
 
 function UI:DrawFarm(content)
@@ -235,42 +223,20 @@ function UI:DrawUpgrades(content)
     self.text:SetText("|cffffff00UPGRADE MATRIX|r")
     local yOffset = -75; local rowIndex = 1
     for _, item in ipairs(items) do
-        local row = self:GetRow(rowIndex)
-        row:SetParent(content); row:ClearAllPoints(); row:SetPoint("TOPLEFT", 15, yOffset)
-        row.icon:SetTexture(C_Item.GetItemIconByID(item.itemId) or "Interface\\Icons\\Inv_misc_questionmark")
-        row.text:SetText("|cff00ff00"..item.slot..":|r " .. item.name)
-        row.val:SetText("|cff00ff00+"..item.percent.."%|r"); row.val:Show()
-        row:Show(); yOffset = yOffset - 30; rowIndex = rowIndex + 1
+        local valStr = string.format("|cff00ff00+%.1f%%|r", item.percent or 0)
+        rowIndex = self:AddInteractiveRow(rowIndex, item, yOffset, nil, valStr)
+        yOffset = yOffset - 30
     end
 end
 
-function UI:DrawBiSList(content, items, title)
-    self.text:SetText("|cffffff00" .. (title or "BiS Gear List") .. "|r")
+function UI:DrawBiSList(content)
+    local GM = DragonSkill:GetModule("GearManager")
+    local items = GM:GetBiSList()
+    self.text:SetText("|cffffff00BiS Gear List (Spec Targets)|r")
     local yOffset = -45; local rowIndex = 1
-    if items then
-        for _, item in ipairs(items) do
-            local row = self:GetRow(rowIndex + 100)
-            row:SetParent(content); row:ClearAllPoints(); row:SetPoint("TOPLEFT", 15, yOffset)
-
-            local iid = type(item) == "table" and item.itemId or item
-            local name = type(item) == "table" and item.name or "Lade Item..."
-
-            if name == "Lade Item..." then
-                local iname = GetItemInfo(iid)
-                if iname then name = iname end
-            end
-
-            row.icon:SetTexture(C_Item.GetItemIconByID(iid) or "Interface\\Icons\\Inv_misc_questionmark")
-            row.text:SetText(tostring(name)); row:Show()
-
-            row:SetScript("OnEnter", function(s)
-                GameTooltip:SetOwner(s, "ANCHOR_RIGHT")
-                GameTooltip:SetItemByID(iid); GameTooltip:Show()
-            end)
-            row:SetScript("OnLeave", function() GameTooltip:Hide() end)
-
-            yOffset = yOffset - 28; rowIndex = rowIndex + 1
-        end
+    for _, item in ipairs(items) do
+        rowIndex = self:AddInteractiveRow(rowIndex + 200, item, yOffset)
+        yOffset = yOffset - 30
     end
 end
 
@@ -280,8 +246,8 @@ function UI:DrawTalents(content, guideData)
         for i, build in ipairs(guideData.talentBuilds) do
             local btn = self.talentBtns[i] or CreateFrame("Button", nil, content, "UIPanelButtonTemplate")
             self.talentBtns[i] = btn
-            btn:SetSize(ROW_WIDTH, 30); btn:SetPoint("TOPLEFT", 15, yOffset)
-            btn:SetText(string.format("[%s] %s", (build.provider or "Guide"):upper(), build.label or "Build"))
+            btn:SetSize(tonumber(ROW_WIDTH), 30); btn:SetPoint("TOPLEFT", 15, yOffset)
+            btn:SetText(string.format("[%s] %s", (tostring(build.provider) or "Guide"):upper(), tostring(build.label) or "Build"))
             btn:SetScript("OnClick", function() StaticPopup_Show("DRAGONSKILL_COPY", nil, nil, build.importString) end)
             btn:Show(); yOffset = yOffset - 35
         end
@@ -292,7 +258,6 @@ function UI:DrawRaidGuides(content)
     local guides = DragonSkillRaidGuides
     local listWidth = 180
     local detailWidth = CONTENT_WIDTH + 100
-
     for i, guide in ipairs(guides) do
         local btn = self.bossBtns[i] or CreateFrame("Button", nil, content, "UIPanelButtonTemplate")
         self.bossBtns[i] = btn
@@ -300,7 +265,6 @@ function UI:DrawRaidGuides(content)
         btn:SetText(guide.name); btn:SetScript("OnClick", function() selectedBossIdx = i; self:Update() end)
         btn:Show()
     end
-
     local guide = guides[selectedBossIdx]
     if not guide then return end
     local y, fsIdx = -50, 500
