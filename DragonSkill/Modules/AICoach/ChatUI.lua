@@ -104,10 +104,14 @@ StaticPopupDialogs["DRAGONSKILL_AI_KEY"] = {
     end,
     OnCancel = function(self, data, reason)
         if reason == "clicked" then
-            DragonSkillDB.ai = DragonSkillDB.ai or { provider = "openai" }
-            local ai = DragonSkillDB.ai
-            ai.provider = (ai.provider == "openai") and "claude" or "openai"
-            StaticPopup_Show("DRAGONSKILL_AI_KEY")
+            if DragonSkillDB then
+                DragonSkillDB.ai = DragonSkillDB.ai or { provider = "openai" }
+                local ai = DragonSkillDB.ai
+                ai.provider = (ai.provider == "openai") and "claude" or "openai"
+                print("|cff00ff00Dragon Skill:|r Anbieter auf " .. ai.provider:upper() .. " gewechselt.")
+                -- Kleiner Delay damit Blizzard das Fenster sauber schließt bevor es neu öffnet
+                C_Timer.After(0.1, function() StaticPopup_Show("DRAGONSKILL_AI_KEY") end)
+            end
         end
     end,
     timeout = 0, whileDead = true, hideOnEscape = true,

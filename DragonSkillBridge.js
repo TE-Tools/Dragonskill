@@ -120,10 +120,11 @@ function watchFile() {
         if (content.includes('["status"] = "SENT"')) {
             console.log("Neue Anfrage erkannt...");
 
-            const question = content.match(/\["question"\] = "(.*?)"/)?.[1];
-            const context = content.match(/\["context"\] = "(.*?)"/)?.[1];
-            const apiKey = content.match(/\["apiKey"\] = "(.*?)"/)?.[1];
-            const provider = content.match(/\["provider"\] = "(.*?)"/)?.[1] || "openai";
+            // Robustere Regex fuer Lua SavedVariables
+            const question = content.match(/\["question"\]\s*=\s*"(.*?)"/)?.[1];
+            const context = content.match(/\["context"\]\s*=\s*"(.*?)"/)?.[1];
+            const apiKey = content.match(/\["apiKey"\]\s*=\s*"(.*?)"/)?.[1];
+            const provider = content.match(/\["provider"\]\s*=\s*"(.*?)"/)?.[1] || "openai";
 
             if (question && apiKey) {
                 const answer = await processQuery({ question, context }, apiKey, provider);

@@ -155,8 +155,13 @@ function UI:Init()
     f:SetScript("OnDragStart", f.StartMoving)
     f:SetScript("OnDragStop", f.StopMovingOrSizing)
 
-    if f.SetTitle then f:SetTitle("Dragon Skill v1.9.3") end
+    if f.SetTitle then f:SetTitle("Dragon Skill v1.9.7") end
     if f.portrait then f.portrait:SetTexture("Interface\\Icons\\Inv_misc_head_dragon_01") end
+
+    -- Footer Credit
+    local footer = f:CreateFontString(nil, "OVERLAY", "GameFontDisableSmall")
+    footer:SetPoint("BOTTOMRIGHT", f, "BOTTOMRIGHT", -10, 6)
+    footer:SetText("Entwickelt von wear-alleria")
 
     local scrollFrame = CreateFrame("ScrollFrame", "DragonSkillScrollFrame", f.Inset, "UIPanelScrollFrameTemplate")
     scrollFrame:SetPoint("TOPLEFT", 8, -8)

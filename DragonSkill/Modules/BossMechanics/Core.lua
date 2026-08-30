@@ -11,7 +11,8 @@ local BossMechanics = DragonSkill:RegisterModule("BossMechanics", {
 DragonSkill.BossMechanics = BossMechanics
 
 function BossMechanics:Init()
-    self:RegisterEvents()
+    -- Die Events werden jetzt sofort beim Laden der Datei registriert,
+    -- um ADDON_ACTION_FORBIDDEN Fehler in 12.1 zu vermeiden.
 end
 
 function BossMechanics:RegisterBoss(id, bossTable)
@@ -136,6 +137,9 @@ function BossMechanics:PlaySound(kind)
     local id = sounds[kind]
     if id then PlaySound(id, "Master") end
 end
+
+-- Registrierung der Events sofort beim Laden der Datei (WoW 12.1 Sicherheit)
+BossMechanics:RegisterEvents()
 
 DragonSkill.Events:On("PLAYER_LOGIN", function()
     BossMechanics:Init()
