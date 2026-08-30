@@ -1,6 +1,5 @@
--- Dragon Skill - Module: AI Coach Engine (v1.9.1)
+-- Dragon Skill - Module: AI Coach Engine (v1.9.2)
 -- Hybrid Engine: Local Facts + External AI Bridge support.
--- Enhanced Local Expert with Vault & Catalyst logic.
 
 local AICoach = DragonSkill:RegisterModule("AICoach", {
     history = {},
@@ -34,11 +33,17 @@ function AICoach:ParseIntent(msg)
 end
 
 function AICoach:GetReply(msg)
+    if not msg or msg == "" then return "Bitte schreib mir eine Frage." end
+
     local GM = DragonSkill:GetModule("GearManager")
     local Char = DragonSkill:GetModule("Character")
 
+    if not GM or not Char then
+        return "|cffff0000Fehler:|r GearManager oder Character Modul nicht geladen."
+    end
+
     -- Check if External AI (Mode 2/3) is active
-    if DragonSkillDB.ai and DragonSkillDB.ai.enabled and DragonSkillDB.ai.apiKey ~= "" then
+    if DragonSkillDB and DragonSkillDB.ai and DragonSkillDB.ai.enabled and DragonSkillDB.ai.apiKey ~= "" then
         return self:GetExternalReply(msg)
     end
 
@@ -85,7 +90,7 @@ function AICoach:GetLocalReply(msg, GM, Char)
     -- 5. UPGRADES
     if intents.UPGRADE or intents.GEAR then
         local ups = GM:GetBestUpgrades()
-        if ups[1] then
+        if ups and ups[1] then
             self.context.lastItem = ups[1].itemId
             return string.format("Dein naechstes grosses Upgrade ist |cffffd100%s|r (%s). Es bringt eine Verbesserung von |cff00ff00%.1f%%|r. Du findest es in %s.",
                 ups[1].name, ups[1].slot, ups[1].percent, (ups[1].dungeonName or "einem Dungeon"))
@@ -98,7 +103,7 @@ function AICoach:GetLocalReply(msg, GM, Char)
         mins = tonumber(mins) or 60
         local plan = GM:GetFarmPlan()
 
-        if plan[1] then
+        if plan and plan[1] then
             self.context.lastDungeon = plan[1].name
             if mins <= 30 then
                 return "Fuer 30 Minuten empfehle ich einen schnellen Run in |cffffd100" .. plan[1].name .. "|r. Das ist dein aktuell effizientestes Ziel."
@@ -120,12 +125,13 @@ function AICoach:GetLocalReply(msg, GM, Char)
     return "Ich bin dein Dragon Skill Coach. Frag mich nach 'Farmen', 'Upgrades', 'Werten', 'Vault' oder ob du was 'in der Tasche' hast."
 end
 
--- EXTERNAL AI LOGIC (Outbound via SavedVariables)
+-- EXTERNAL AI LOGIC
 function AICoach:GetExternalReply(msg)
     local GM = DragonSkill:GetModule("GearManager")
     local Char = DragonSkill:GetModule("Character")
     local _, class = UnitClass("player")
-    local spec = select(2, GetSpecializationInfo(GetSpecialization() or 0))
+    local specInfo = GetSpecialization()
+    local spec = specInfo and select(2, GetSpecializationInfo(specInfo)) or "None"
     local upgrades = GM:GetBestUpgrades()
 
     local contextStr = string.format("Class: %s, Spec: %s, Ilvl: %.1f. Top 2 Upgrades: %s, %s.",
@@ -144,6 +150,7 @@ function AICoach:GetExternalReply(msg)
     }
 
     local pName = (DragonSkillDB.ai.provider == "claude") and "Claude" or "OpenAI"
-    print("|cffaaaaaa[Info]:|r Bridge-Pfad in 'DragonSkillBridge.js' muss korrekt sein!")
-    return "|cff00ccff(Anfrage an " .. pName .. " gesendet...)|r\n|cff888888Warte auf Bridge. Sobald dein Desktop-Programm 'Fertig' anzeigt, musst du in WoW '/reload' eingeben.|r"
+    return "|cff00ccff(Anfrage an " .. pName .. " gesendet...)|r\n|cff888888Sobald die Brücke 'Fertig' zeigt, nutze /reload.|r"
 end
+
+print("|cff00ff00Dragon Skill:|r AI Coach Engine geladen.")

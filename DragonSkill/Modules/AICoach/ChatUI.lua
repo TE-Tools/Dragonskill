@@ -1,14 +1,15 @@
--- Dragon Skill - Module: AI Coach Chat UI (v1.9.0)
--- Full Real-AI Bridge support.
+-- Dragon Skill - Module: AI Coach Chat UI (v1.9.1)
+-- Fixed message delivery and scope issues.
 
 local AICoachUI = {}
 local messages = {}
 
 function AICoachUI:Draw(content, width)
     local Engine = DragonSkill:GetModule("AICoach")
+    if not Engine then return end
 
     -- Check for Bridge response
-    if DragonSkillDB.ai and DragonSkillDB.ai.pendingQuery and DragonSkillDB.ai.pendingQuery.status == "DONE" then
+    if DragonSkillDB and DragonSkillDB.ai and DragonSkillDB.ai.pendingQuery and DragonSkillDB.ai.pendingQuery.status == "DONE" then
         if DragonSkillDB.ai.lastResponse and DragonSkillDB.ai.lastResponse ~= self.prevResponse then
             self:AddMessage("AI", DragonSkillDB.ai.lastResponse)
             self.prevResponse = DragonSkillDB.ai.lastResponse
@@ -25,7 +26,7 @@ function AICoachUI:Draw(content, width)
 
         self.historyText = h:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
         self.historyText:SetPoint("TOPLEFT", 10, -10); self.historyText:SetWidth(width - 70); self.historyText:SetJustifyH("LEFT"); self.historyText:SetSpacing(3)
-        self.historyText:SetText("|cffaaaaaaSchreib eine Frage! Wenn du den API-Key gesetzt hast, antwortet eine echte KI.|r")
+        self.historyText:SetText("|cffaaaaaaWillkommen beim Dragon Skill Coach. Frag mich nach Gear oder Inis!|r")
         self.historyFrame = h
     end
     self.historyFrame:Show()
@@ -37,9 +38,15 @@ function AICoachUI:Draw(content, width)
         eb:SetScript("OnEnterPressed", function(selfEb)
             local msg = selfEb:GetText()
             if msg ~= "" then
-                selfEb:SetText(""); self:AddMessage("User", msg)
-                local reply = Engine:GetReply(msg)
-                if reply then self:AddMessage("Coach", reply) end
+                selfEb:SetText("")
+                AICoachUI:AddMessage("User", msg) -- Fixed scope: AICoachUI instead of self
+
+                local ok, reply = pcall(function() return Engine:GetReply(msg) end)
+                if ok and reply then
+                    AICoachUI:AddMessage("Coach", reply)
+                elseif not ok then
+                    AICoachUI:AddMessage("Coach", "|cffff0000Fehler:|r " .. tostring(reply))
+                end
             end
             selfEb:ClearFocus()
         end)
@@ -54,7 +61,7 @@ function AICoachUI:Draw(content, width)
     -- Settings
     if not self.settingsBtn then
         local btn = CreateFrame("Button", nil, content, "UIPanelButtonTemplate")
-        btn:SetSize(120, 22); btn:SetPoint("TOPRIGHT", content, "TOPRIGHT", -15, -15); btn:SetText("KI-Key setzen")
+        btn:SetSize(120, 22); btn:SetPoint("TOPRIGHT", content, "TOPRIGHT", -15, -15); btn:SetText("KI Einstellungen")
         btn:SetScript("OnClick", function() StaticPopup_Show("DRAGONSKILL_AI_KEY") end)
         self.settingsBtn = btn
     end
@@ -73,7 +80,7 @@ end
 
 DragonSkill.AICoachUI = AICoachUI
 
--- Popup for API Key & Provider
+-- Popup for API Key & Provider (Fix for 1.9.1)
 StaticPopupDialogs["DRAGONSKILL_AI_KEY"] = {
     text = "KI-Einstellungen (Mode 2):",
     button1 = "Speichern",
@@ -109,7 +116,6 @@ StaticPopupDialogs["DRAGONSKILL_AI_KEY"] = {
                 local ai = DragonSkillDB.ai
                 ai.provider = (ai.provider == "openai") and "claude" or "openai"
                 print("|cff00ff00Dragon Skill:|r Anbieter auf " .. ai.provider:upper() .. " gewechselt.")
-                -- Kleiner Delay damit Blizzard das Fenster sauber schließt bevor es neu öffnet
                 C_Timer.After(0.1, function() StaticPopup_Show("DRAGONSKILL_AI_KEY") end)
             end
         end
