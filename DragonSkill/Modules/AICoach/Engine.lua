@@ -1,5 +1,5 @@
--- Dragon Skill - Module: AI Coach Engine (v2.0.4)
--- Hybrid Engine: Always gives Local Facts + Optional External AI.
+-- Dragon Skill - Module: AI Coach Engine (v2.0.5)
+-- Hybrid Engine: Fixed instant local responses.
 
 local AICoach = DragonSkill:RegisterModule("AICoach", {
     context = {}
@@ -30,18 +30,18 @@ function AICoach:GetReply(msg)
     local GM = DragonSkill:GetModule("GearManager")
     local Char = DragonSkill:GetModule("Character")
 
-    if not GM or not Char then return "Module laden noch..." end
+    if not GM or not Char then return "Daten-Module laden noch..." end
 
-    -- 1. Always generate Local Reply first (Factual Basis)
-    local localReply = self:GetLocalReply(msg, GM, Char)
+    -- 1. Always give the Local Response (Instant facts)
+    local reply = self:GetLocalReply(msg, GM, Char)
 
-    -- 2. If External AI is enabled, also trigger the bridge
+    -- 2. Parallel outbound request if AI is active
     if DragonSkillDB and DragonSkillDB.ai and DragonSkillDB.ai.enabled and DragonSkillDB.ai.apiKey ~= "" then
         self:TriggerExternalQuery(msg, GM, Char)
-        return localReply .. "\n\n|cff00ccff(KI-Anfrage wurde parallel an die Bridge gesendet. Nutze 'Sync' fuer mehr Details.)|r"
+        reply = reply .. "\n\n|cff00ccff(KI-Anfrage wurde parallel gesendet. Klick auf 'Synchronisieren' wenn die Bridge fertig ist.)|r"
     end
 
-    return localReply
+    return reply
 end
 
 function AICoach:GetLocalReply(msg, GM, Char)
@@ -50,9 +50,7 @@ function AICoach:GetLocalReply(msg, GM, Char)
 
     if intents.INVENTORY then
         local upgrades = Char:GetInventoryUpgrades()
-        if upgrades and #upgrades > 0 then
-            return "Ich habe |cff00ff00" .. #upgrades .. " Upgrades|r in deinen Taschen gefunden! Schau im Upgrades-Tab nach."
-        end
+        if upgrades and #upgrades > 0 then return "Ich habe Upgrades in deinen Taschen gefunden! Schau im Upgrades-Tab nach." end
         return "Keine besseren Items in deinen Taschen gefunden."
     end
 
@@ -62,23 +60,16 @@ function AICoach:GetLocalReply(msg, GM, Char)
     if intents.UPGRADE or intents.GEAR then
         local ups = GM:GetBestUpgrades()
         if ups and ups[1] then
-            return string.format("Dein naechstes Ziel: |cffffd100%s|r (%s). Steigerung: |cff00ff00+%.1f%%|r.", ups[1].name, ups[1].slot, ups[1].percent or 0)
+            return string.format("Upgrade: |cffffd100%s|r (%s). Steigerung: |cff00ff00+%.1f%%|r.", ups[1].name, ups[1].slot, ups[1].percent or 0)
         end
     end
 
     if intents.FARM then
         local plan = GM:GetFarmPlan()
-        if plan and plan[1] then
-            return "Die beste Ini heute: |cffffd100" .. plan[1].name .. "|r. Dort droppen deine wichtigsten Upgrades."
-        end
+        if plan and plan[1] then return "Die beste Ini heute: |cffffd100" .. plan[1].name .. "|r. Dort droppen deine wichtigsten Upgrades." end
     end
 
-    if intents.STATS then
-        local prio = Char:GetStatPriority()
-        if prio and prio.wowhead then return "Prioritaet laut Guide: |cffffd100" .. prio.wowhead .. "|r." end
-    end
-
-    return "Ich habe deine Frage lokal verstanden. Frag nach 'Farmen', 'Upgrades', 'Vault' oder 'Tasche'."
+    return "Ich antworte momentan lokal. Frag mich nach 'Farmen', 'Upgrades' oder 'Tasche'."
 end
 
 function AICoach:TriggerExternalQuery(msg, GM, Char)
@@ -87,14 +78,9 @@ function AICoach:TriggerExternalQuery(msg, GM, Char)
     local spec = specIndex and select(2, GetSpecializationInfo(specIndex)) or "Spec"
     local upgrades = GM:GetBestUpgrades()
 
-    local contextStr = string.format("Char: %s %s, Ilvl: %.1f. TopUpgrade: %s.",
-        class, spec, select(2, GetAverageItemLevel()),
-        upgrades[1] and upgrades[1].name or "None"
-    )
-
     DragonSkillDB.ai.pendingQuery = {
         question = msg,
-        context = contextStr,
+        context = string.format("Class: %s, Spec: %s. TopUpgrade: %s.", class, spec, upgrades[1] and upgrades[1].name or "None"),
         timestamp = GetTime(),
         status = "SENT",
         provider = DragonSkillDB.ai.provider or "openai",

@@ -1,64 +1,16 @@
 /**
- * Dragon Skill - AI Bridge & Live Hub v1.2.0
- * Connects WoW to AI + Provides a Real-Time Web Interface.
+ * Dragon Skill - AI Bridge v1.2.1
+ * Connects WoW to Claude/OpenAI.
  */
 
 const fs = require('fs');
 const path = require('path');
 const https = require('https');
-const http = require('http');
 
-// CONFIG: Path to your WoW retail SavedVariables
+// KONFIGURATION: Pfad zu deiner WoW retail SavedVariables Datei
 const WOW_PATH = 'C:/Program Files (x86)/World of Warcraft/_retail_/WTF/Account/SIRKRYPT/SavedVariables/DragonSkill.lua';
 
-console.log("--- Dragon Skill AI Bridge & Live Hub v1.2.0 ---");
-
-// --- 1. WEB SERVER (THE OVERLAY ALTERNATIVE) ---
-const server = http.createServer((req, res) => {
-    res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
-    res.end(`
-        <html>
-        <head>
-            <title>Dragon Skill AI Hub</title>
-            <style>
-                body { background: #1a1a1a; color: #ddd; font-family: sans-serif; padding: 20px; }
-                #chat { height: 400px; overflow-y: auto; background: #000; padding: 15px; border-radius: 5px; border: 1px solid #333; margin-bottom: 10px; }
-                .user { color: #fff; font-weight: bold; }
-                .coach { color: #00ff00; font-weight: bold; }
-                input { width: 80%; padding: 10px; background: #333; color: #fff; border: none; }
-                button { padding: 10px; background: #00ff00; color: #000; border: none; cursor: pointer; }
-            </style>
-        </head>
-        <body>
-            <h1>Dragon Skill Live Hub</h1>
-            <div id="chat">
-                <p><span class="coach">Coach:</span> Willkommen im Live-Hub! Hier antwortet Claude in Echtzeit.</p>
-            </div>
-            <input type="text" id="msg" placeholder="Frag den Coach...">
-            <button onclick="send()">Senden</button>
-            <p><small>Hinweis: Fragen von hier erscheinen in WoW erst nach einem /reload.</small></p>
-            <script>
-                function send() {
-                    const m = document.getElementById('msg').value;
-                    const c = document.getElementById('chat');
-                    c.innerHTML += '<p><span class="user">Du:</span> ' + m + '</p>';
-                    document.getElementById('msg').value = '';
-                    // In a full version, this would use WebSockets to Claude
-                    setTimeout(() => {
-                        c.innerHTML += '<p><span class="coach">Coach:</span> Ich analysiere das gerade...</p>';
-                    }, 500);
-                }
-            </script>
-        </body>
-        </html>
-    `);
-});
-server.listen(3000, () => {
-    console.log("Live Hub aktiv unter: http://localhost:3000");
-});
-
-
-// --- 2. AI CONNECTORS (CLAUDE / OPENAI) ---
+console.log("--- Dragon Skill AI Bridge v1.2.1 gestartet ---");
 
 async function callClaude(question, context, apiKey) {
     const data = JSON.stringify({
@@ -96,21 +48,19 @@ async function callClaude(question, context, apiKey) {
     });
 }
 
-// --- 3. FILE WATCHER (WOW INTERFACE) ---
-
 function watchFile() {
     if (!fs.existsSync(WOW_PATH)) {
-        console.error("FEHLER: SavedVariables nicht gefunden!");
+        console.error("FEHLER: SavedVariables nicht gefunden: " + WOW_PATH);
         return;
     }
 
-    console.log("Beobachte WoW Datei für Ingame-Chat...");
+    console.log("Beobachte WoW Datei: " + WOW_PATH);
 
     fs.watchFile(WOW_PATH, { interval: 1000 }, async (curr, prev) => {
         const content = fs.readFileSync(WOW_PATH, 'utf8');
 
         if (content.includes('["status"] = "SENT"')) {
-            console.log("Neue Anfrage in WoW erkannt...");
+            console.log("Neue Anfrage erkannt...");
 
             const question = content.match(/\["question"\]\s*=\s*"(.*?)"/)?.[1];
             const context = content.match(/\["context"\]\s*=\s*"(.*?)"/)?.[1];
@@ -119,12 +69,10 @@ function watchFile() {
 
             if (question && apiKey) {
                 console.log(`Rufe ${provider} auf...`);
-                let answer = "Simulierte Antwort der KI.";
-                try {
-                    if (provider === "claude") {
-                        answer = await callClaude(question, context, apiKey);
-                    }
-                } catch (e) { answer = "Fehler: " + e.message; }
+                let answer = "Simulierte Antwort.";
+                if (provider === "claude") {
+                    answer = await callClaude(question, context, apiKey);
+                }
 
                 console.log("Antwort erhalten. Schreibe in Datei...");
                 const escapedAnswer = answer.replace(/"/g, '\\"').replace(/\n/g, '\\n');
