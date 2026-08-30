@@ -1,17 +1,11 @@
--- Dragon Skill - Gear Manager Engine (v1.8.2)
--- Handles stat weights, upgrade scores, and farm planning.
+-- Dragon Skill - Gear Manager Engine (v2.2.6)
+-- Handles stat weights, upgrade scores, and BiS lists.
 
 local GearManager = DragonSkill:RegisterModule("GearManager", {})
 
 local STAT_WEIGHTS_BASE = {
-    haste = 100,
-    mastery = 90,
-    versatility = 75,
-    criticalStrike = 60,
-    intellect = 150,
-    strength = 150,
-    agility = 150,
-    stamina = 50
+    haste = 100, mastery = 90, versatility = 75, criticalStrike = 60,
+    intellect = 150, strength = 150, agility = 150, stamina = 50
 }
 
 function GearManager:GetStatWeights()
@@ -77,7 +71,7 @@ function GearManager:GetUpgradeDetails(slot, targetItemId, targetIlvl)
     if currentScore > 0 then
         percent = (diff / currentScore) * 100
     else
-        percent = (diff / 1000) * 100 -- Default baseline for empty slots
+        percent = (diff / 1000) * 100
     end
 
     return {
@@ -94,30 +88,6 @@ function GearManager:GetUpgradeScore(slot, targetItemId, targetIlvl)
     return details.score
 end
 
-function GearManager:GetDungeonScore(dungeonName)
-    local dungeon = DragonSkillGearData.dungeons[dungeonName]
-    if not dungeon then return 0 end
-
-    local totalUpgrade = 0
-    local count = 0
-
-    for _, boss in ipairs(dungeon.bosses) do
-        for _, itemId in ipairs(boss.loot) do
-            local item = DragonSkillGearData.items[itemId]
-            if item then
-                local upgrade = self:GetUpgradeScore(item.slot, itemId)
-                if upgrade > 0 then
-                    totalUpgrade = totalUpgrade + upgrade
-                    count = count + 1
-                end
-            end
-        end
-    end
-
-    local finalScore = math.min(100, (totalUpgrade / 80) + (count * 12))
-    return math.floor(finalScore)
-end
-
 function GearManager:GetFarmPlan()
     local plan = {}
     for name, _ in pairs(DragonSkillGearData.dungeons) do
@@ -130,84 +100,101 @@ function GearManager:GetFarmPlan()
     return plan
 end
 
+function GearManager:GetDungeonScore(dungeonName)
+    local dungeon = DragonSkillGearData.dungeons[dungeonName]
+    if not dungeon then return 0 end
+    local totalUpgrade = 0
+    local count = 0
+    for _, boss in ipairs(dungeon.bosses) do
+        for _, itemId in ipairs(boss.loot) do
+            local item = DragonSkillGearData.items[itemId]
+            if item then
+                local upgrade = self:GetUpgradeScore(item.slot, itemId)
+                if upgrade > 0 then
+                    totalUpgrade = totalUpgrade + upgrade
+                    count = count + 1
+                end
+            end
+        end
+    end
+    return math.floor(math.min(100, (totalUpgrade / 80) + (count * 12)))
+end
+
 function GearManager:GetBestUpgrades()
     local upgrades = {}
     local specIndex = GetSpecialization()
     local specID = specIndex and select(1, GetSpecializationInfo(specIndex)) or 0
-    local specData = DragonSkillGearData.specs[specID]
 
-    if not specData or not specData.bis then return {} end
-
-    for _, itemId in ipairs(specData.bis.overall) do
-        local item = DragonSkillGearData.items[itemId]
-        if item then
-            local details = self:GetUpgradeDetails(item.slot, itemId)
-            if details.score > 0 then
-                table.insert(upgrades, {
-                    itemId = itemId,
-                    name = item.name,
-                    slot = item.slot,
-                    score = details.score,
-                    percent = details.percent,
-                    priority = math.floor(math.min(10, details.percent * 2)) -- Dynamic priority based on %
-                })
-            end
+    -- Dynamically pull BiS from GuideData if available, otherwise from GearDatabase
+    local bisList = self:GetBiSList()
+    for _, item in ipairs(bisList) do
+        local details = self:GetUpgradeDetails(item.slot, item.itemId)
+        if details.score > 0 then
+            table.insert(upgrades, {
+                itemId = item.itemId,
+                name = item.name,
+                slot = item.slot,
+                score = details.score,
+                percent = details.percent,
+                priority = math.floor(math.min(10, details.percent * 2))
+            })
         end
     end
-
+    table.sort(upgrades, function(a, b) return a.score > b.score end)
     return upgrades
 end
 
 function GearManager:GetBiSList()
+    local _, class = UnitClass("player")
     local specIndex = GetSpecialization()
     local specID = specIndex and select(1, GetSpecializationInfo(specIndex)) or 0
-    local specData = DragonSkillGearData.specs[specID]
-
-    if not specData or not specData.bis then return {} end
 
     local list = {}
-    for _, itemId in ipairs(specData.bis.overall) do
-        local item = DragonSkillGearData.items[itemId]
-        if item then
-            table.insert(list, {
-                itemId = itemId,
-                name = item.name,
-                slot = item.slot
-            })
+
+    -- 1. Try Scraped Data (More complete)
+    if DragonSkillData and DragonSkillData[class] and DragonSkillData[class][specID] then
+        local bis = DragonSkillData[class][specID].bisGear
+        local sourceList = (bis and bis.wowhead) or (bis and bis.archon) or {}
+        for _, entry in ipairs(sourceList) do
+            if entry.itemId then
+                local name = entry.name or entry.text or "Item "..entry.itemId
+                table.insert(list, { itemId = entry.itemId, name = name, slot = entry.slot or "Item" })
+            end
         end
     end
+
+    -- 2. Fallback to Hardcoded GearDatabase
+    if #list == 0 and DragonSkillGearData.specs[specID] then
+        local bis = DragonSkillGearData.specs[specID].bis
+        if bis and bis.overall then
+            for _, itemId in ipairs(bis.overall) do
+                local item = DragonSkillGearData.items[itemId]
+                if item then
+                    table.insert(list, { itemId = itemId, name = item.name, slot = item.slot or "Item" })
+                end
+            end
+        end
+    end
+
     return list
 end
 
 function GearManager:GetCatalystRecommendation()
     local Char = DragonSkill:GetModule("Character")
     local tierCount, tierName = Char:GetActiveTierInfo()
-
-    if tierCount >= 4 then
-        return "Du hast bereits den 4er Bonus (" .. tierName .. "). Verwende den Catalyst nur noch für Itemlevel-Upgrades auf schwachen Slots."
-    end
-
+    if tierCount >= 4 then return "Du hast den 4er Bonus (" .. tierName .. "). Nutze Catalyst fuer Itemlevel-Upgrades." end
     local upgrades = self:GetBestUpgrades()
-    local candidates = {}
     for _, up in ipairs(upgrades) do
         local item = DragonSkillGearData.items[up.itemId]
         if item and item.catalystEligible then
-            table.insert(candidates, up.name)
+            return "Empfehlung: Wandle |cffffd100" .. up.name .. "|r um fuer deinen " .. (tierCount < 2 and "2er" or "4er") .. " Bonus."
         end
     end
-
-    if #candidates > 0 then
-        return "Empfehlung: Wandle |cffffd100" .. candidates[1] .. "|r um, um deinem " .. (tierCount < 2 and "2er" or "4er") .. " Bonus näher zu kommen."
-    end
-
-    return "Momentan keine idealen Catalyst-Kandidaten in deiner Farm-Liste. Suche nach Items für Brust oder Beine."
+    return "Keine idealen Catalyst-Kandidaten gefunden. Brust/Beine priorisieren!"
 end
 
 function GearManager:GetVaultRecommendation()
-    -- This would normally iterate over C_WeeklyRewards.GetActivities()
-    -- For now, we provide expert logic based on BiS
     local upgrades = self:GetBestUpgrades()
-    if #upgrades == 0 then return "Nimm die Sockel-Token (Aspekt-Abzeichen), da du bereits BiS-Gear hast." end
-
-    return "Priorisiere in der Vault: |cffffd100" .. upgrades[1].name .. "|r oder Items für den Slot |cff00ff00" .. upgrades[1].slot .. "|r."
+    if #upgrades == 0 then return "Nimm die Sockel-Token (Aspekt-Abzeichen)." end
+    return "Priorisiere in der Vault: |cffffd100" .. upgrades[1].name .. "|r (" .. upgrades[1].slot .. ")."
 end
