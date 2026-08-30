@@ -1,40 +1,14 @@
--- Dragon Skill - Module: AI Coach Chat UI (v2.0.7)
--- Robust Chat Interface with Instant Local Response.
+-- Dragon Skill - Module: AI Coach Chat UI (v2.0.8)
+-- Persistent Chat: History survives ReloadUI via DragonSkillDB.
 
 local AICoachUI = {}
-local messages = {}
 DragonSkill.AICoachUI = AICoachUI
 
 function AICoachUI:Draw(content, width)
     local Engine = DragonSkill:GetModule("AICoach")
     if not Engine then return end
 
-    -- 1. Create Chat History Area
-    if not self.historyFrame then
-        local h = CreateFrame("Frame", "DragonSkillAICoachHistory", content, "BackdropTemplate")
-        h:SetSize(width - 40, 320)
-        h:SetPoint("TOPLEFT", 15, -60)
-        h:SetBackdrop({
-            bgFile = "Interface\\ChatFrame\\ChatFrameBackground",
-            edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
-            tile = true, tileSize = 16, edgeSize = 12,
-            insets = { left = 3, right = 3, top = 3, bottom = 3 }
-        })
-        h:SetBackdropColor(0, 0, 0, 0.75)
-
-        local fs = h:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-        fs:SetPoint("TOPLEFT", 10, -10)
-        fs:SetWidth(width - 70)
-        fs:SetJustifyH("LEFT")
-        fs:SetSpacing(4)
-        fs:SetText("|cffaaaaaaWillkommen beim Dragon Skill Coach. Frag mich etwas ueber dein Gear!|r")
-
-        self.historyFrame = h
-        self.historyText = fs
-    end
-    self.historyFrame:Show()
-
-    -- Sync external response if ready
+    -- Check for Bridge response
     if DragonSkillDB and DragonSkillDB.ai and DragonSkillDB.ai.pendingQuery and DragonSkillDB.ai.pendingQuery.status == "DONE" then
         if DragonSkillDB.ai.lastResponse and DragonSkillDB.ai.lastResponse ~= self.prevResponse then
             self:AddMessage("AI", DragonSkillDB.ai.lastResponse)
@@ -43,9 +17,22 @@ function AICoachUI:Draw(content, width)
         end
     end
 
+    -- Create Chat History Area
+    if not self.historyFrame then
+        local h = CreateFrame("Frame", "DragonSkillAICoachHistory", content, "BackdropTemplate")
+        h:SetSize(width - 40, 320); h:SetPoint("TOPLEFT", 15, -60)
+        h:SetBackdrop({bgFile = "Interface\\ChatFrame\\ChatFrameBackground", edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border", tile = true, tileSize = 16, edgeSize = 12, insets = { left = 3, right = 3, top = 3, bottom = 3 }})
+        h:SetBackdropColor(0, 0, 0, 0.75)
+
+        self.historyText = h:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+        self.historyText:SetPoint("TOPLEFT", 10, -10); self.historyText:SetWidth(width - 70); self.historyText:SetJustifyH("LEFT"); self.historyText:SetSpacing(4)
+        self.historyFrame = h
+    end
+    self.historyFrame:Show()
+
     self:RefreshHistory()
 
-    -- 2. Create Input Box
+    -- Create Input Box
     if not self.inputBox then
         local eb = CreateFrame("EditBox", "DragonSkillAICoachInput", content, "InputBoxTemplate")
         eb:SetSize(width - 110, 30)
@@ -81,16 +68,16 @@ function AICoachUI:Draw(content, width)
     self.inputBox:Show()
     self.sendBtn:Show()
 
-    -- 3. Sync/Reload Button (For External AI)
+    -- Sync/Reload Button
     if not self.syncBtn then
         local btn = CreateFrame("Button", nil, content, "UIPanelButtonTemplate")
         btn:SetSize(140, 22)
         btn:SetPoint("BOTTOMLEFT", self.historyFrame, "TOPLEFT", 0, 5)
-        btn:SetText("KI-Antwort abholen")
+        btn:SetText("Antwort abholen")
         btn:SetScript("OnClick", function() ReloadUI() end)
         btn:SetScript("OnEnter", function(s)
             GameTooltip:SetOwner(s, "ANCHOR_RIGHT")
-            GameTooltip:SetText("Wenn Claude fertig ist (siehe Desktop-Fenster), klick hier zum Anzeigen.")
+            GameTooltip:SetText("Wenn Claude fertig ist, klick hier zum Anzeigen.")
             GameTooltip:Show()
         end)
         btn:SetScript("OnLeave", function() GameTooltip:Hide() end)
@@ -98,7 +85,7 @@ function AICoachUI:Draw(content, width)
     end
     self.syncBtn:Show()
 
-    -- 4. Settings Button
+    -- Settings Button
     if not self.settingsBtn then
         local btn = CreateFrame("Button", nil, content, "UIPanelButtonTemplate")
         btn:SetSize(130, 22)
@@ -114,19 +101,29 @@ end
 
 function AICoachUI:AddMessage(sender, text)
     local prefix = (sender == "User") and "|cffffffffDu: |r" or (sender == "AI") and "|cff00ccffReal-AI: |r" or "|cff00ff00Coach: |r"
-    table.insert(messages, prefix .. text)
-    if #messages > 8 then table.remove(messages, 1) end
+
+    -- Save to Persistent DB
+    if DragonSkillDB then
+        DragonSkillDB.history = DragonSkillDB.history or {}
+        table.insert(DragonSkillDB.history, prefix .. text)
+        if #DragonSkillDB.history > 10 then table.remove(DragonSkillDB.history, 1) end
+    end
+
     self:RefreshHistory()
 end
 
 function AICoachUI:RefreshHistory()
     if not self.historyText then return end
+
     local full = ""
-    for _, m in ipairs(messages) do
-        full = full .. m .. "\n\n"
+    if DragonSkillDB and DragonSkillDB.history then
+        for _, m in ipairs(DragonSkillDB.history) do
+            full = full .. m .. "\n\n"
+        end
     end
+
     if full == "" then
-        full = "|cffaaaaaaSchreib eine Frage! Der Coach antwortet sofort lokal (intern), waehrend Claude im Hintergrund arbeitet.|r"
+        full = "|cffaaaaaaWillkommen beim Dragon Skill Coach. Schreib eine Frage!|r"
     end
     self.historyText:SetText(full)
 end

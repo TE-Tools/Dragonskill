@@ -2,7 +2,7 @@
 ## Title: Dragon Skill
 ## Notes: Talent-Guides, Trinkets, Rotation, BiS-Farm-Upgrade Assistant - by wear-alleria
 ## Author: wear-alleria
-## Version: 2.0.1
+## Version: 2.0.8
 ## SavedVariables: DragonSkillDB
 ## SavedVariablesPerCharacter: DragonSkillCharDB
 

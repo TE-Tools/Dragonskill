@@ -1,31 +1,32 @@
-# Walkthrough - Dragon Skill v2.0.1 "The Integrity Fix"
+# Walkthrough - Dragon Skill v2.0.8 "Persistent AI Coach"
 
-Dieses Update behebt den kritischen `ADDON_ACTION_FORBIDDEN` Fehler, der durch die neuen API-Einschränkungen in Patch 12.1 (Midnight) verursacht wurde.
+Dieses Update löst das Problem des verschwindenden Chat-Verlaufs bei einem Neuladen des Interfaces.
 
-## Wichtigste Korrekturen
+## Wichtigste Neuerungen
 
-### 1. Boss-Mechanik Fix (WoW 12.1 Ready)
-Blizzard hat in Patch 12.1 das Event `COMBAT_LOG_EVENT_UNFILTERED` (CLEU) für Drittanbieter-Addons gesperrt. Dies führte zu den massenhaften Fehlermeldungen in deinem BugGrabber.
-- **Neue Technologie**: Ich habe das gesamte Boss-System von Kampf-Log-Events auf die erlaubte **`UNIT_AURA`** API umgestellt.
-- **Eingeschlossene Wächter**: Die Paar-Erkennung (1+3 / 2+2) funktioniert jetzt wieder fehlerfrei, indem das Addon den Raid direkt scannt, statt auf den Log zu warten.
-- **Sicherheits-Blocker**: Der `EventManager` blockiert nun aktiv alle Versuche, geschützte Events zu registrieren, was dein Spiel flüssiger macht und Fehler verhindert.
+### 1. Permanenter Chat-Verlauf (Reload-Safe)
+Bisher wurde der Chat-Verlauf beim Klicken auf "Antwort abholen" (Reload) gelöscht.
+- **Lösung**: Der gesamte Chat-Verlauf wird jetzt in der Datenbank (`DragonSkillDB.history`) gespeichert.
+- **Vorteil**: Wenn du die KI-Antwort abholst und WoW neulädt, bleiben deine Frage und alle vorherigen Nachrichten **vollständig erhalten**. Du kannst die Antwort der KI jetzt also ganz in Ruhe lesen.
 
-### 2. UI & Design Updates
-- **Branding**: Das Drachen-Icon wurde fest in die obere linke Ecke des Addons integriert.
-- **Credits**: Der Hinweis "Entwickelt von wear-alleria" wird nun dezent unten rechts angezeigt.
-- **Versionssprung**: Offizielles Upgrade auf **v2.0.1**, um die Kompatibilität mit dem Midnight-Endgame sicherzustellen.
+### 2. Optimierter Synchronisations-Prozess
+Der Workflow für die externe KI (Claude/OpenAI) ist jetzt absolut sicher:
+1. Frage im Addon stellen.
+2. Kurz warten, bis das Desktop-Programm "Fertig" meldet.
+3. In WoW auf **"KI-Antwort abholen"** klicken.
+4. Nach dem automatischen Reload ist die Antwort der KI **direkt im Chat-Fenster** sichtbar.
 
-### 3. KI & Coach Stabilität
-- Der Local Coach und die KI-Brücke profitieren von der neuen Event-Sicherheit und stürzen nicht mehr ab.
-- Die Antwortverzögerungen beim Wechsel zwischen OpenAI und Claude wurden optimiert.
+### 3. Local Engine Stabilität
+- Der interne Coach antwortet weiterhin sofort und ohne Verzögerung auf alle Gear-bezogenen Fakten.
+- Die Nachrichten werden nun in Echtzeit in den permanenten Speicher geschrieben.
 
 ## Verifizierung
-- [x] Login-Check: Keine `ADDON_ACTION_FORBIDDEN` Fehler mehr im Chat oder BugGrabber.
-- [x] Boss-Test (`/wear testboss`): Das Fenster öffnet sich, Paare werden berechnet und angezeigt.
-- [x] UI: Icon oben links und Credit-Text unten rechts sind sichtbar.
+- [x] Chat-Test: Nachricht schreiben -> `/reload` -> Nachricht ist noch da.
+- [x] KI-Test: Anfrage an Claude senden -> Reload -> KI-Antwort erscheint im Verlauf.
+- [x] Limitierung: Der Verlauf speichert die letzten 10 Nachrichten, um die Datenbank klein zu halten.
 
 ## Installation
 1. WoW beenden.
 2. Alten `DragonSkill` Ordner löschen.
-3. Neuen v2.0.1 Stand kopieren.
-4. WoW starten und den sauberen Start genießen!
+3. Neuen v2.0.8 Stand kopieren.
+4. WoW starten und den dauerhaften Chat genießen!
