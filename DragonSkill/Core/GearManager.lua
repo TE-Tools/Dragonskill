@@ -77,12 +77,12 @@ function GearManager:GetUpgradeDetails(slot, targetItemId, targetIlvl)
     if currentScore > 0 then
         percent = (diff / currentScore) * 100
     else
-        percent = 100 -- New slot
+        percent = (diff / 1000) * 100 -- Default baseline for empty slots
     end
 
     return {
         score = diff,
-        percent = math.floor(percent * 10) / 10,
+        percent = math.max(0, math.floor(percent * 10) / 10),
         currentIlvl = currentIlvl,
         targetIlvl = targetIlvl or 252,
         breakdown = breakdown

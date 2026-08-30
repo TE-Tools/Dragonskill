@@ -1,5 +1,5 @@
--- Dragon Skill - Main UI (v2.2.1)
--- Master UI with Professional Raid Guides & Bug Fixes.
+-- Dragon Skill - Main UI (v2.2.2)
+-- Master UI with Guild Branding & Critical Fixes.
 
 local L = DragonSkill.L or {}
 local UI = {}
@@ -17,7 +17,7 @@ local TAB_RAIDGUIDES = 7
 
 local FRAME_WIDTH, FRAME_HEIGHT = 800, 650
 local CONTENT_WIDTH = 580
-local ROW_WIDTH = 560 -- Fixed missing ROW_WIDTH constant
+local ROW_WIDTH = 560
 
 function UI:Init()
     if self.frame then return end
@@ -30,7 +30,7 @@ function UI:Init()
     f:SetScript("OnDragStart", f.StartMoving)
     f:SetScript("OnDragStop", f.StopMovingOrSizing)
 
-    if f.SetTitle then f:SetTitle("Dragon Skill v2.2.1") end
+    if f.SetTitle then f:SetTitle("Dragon Skill v2.2.2") end
 
     if f.portrait then
         f.portrait:SetTexture("Interface\\Icons\\Inv_misc_head_dragon_01")
@@ -160,7 +160,7 @@ function UI:AddInteractiveRow(index, itemData, yOffset, labelPrefix, valueText)
     if itemData.itemId then texture = C_Item.GetItemIconByID(itemData.itemId) or texture end
     row.icon:SetTexture(texture)
     local prefix = labelPrefix or (itemData.slot and "|cff00ff00"..itemData.slot..":|r " or "")
-    row.text:SetText(prefix .. (itemData.name or itemData.text or "Item"))
+    row.text:SetText(prefix .. (tostring(itemData.name) or tostring(itemData.text) or "Item"))
     if valueText then row.val:SetText(valueText); row.val:Show() else row.val:Hide() end
     row:SetScript("OnEnter", function(s)
         GameTooltip:SetOwner(s, "ANCHOR_RIGHT")
@@ -176,18 +176,42 @@ function UI:DrawDashboard(content, class, specID)
     local GM = DragonSkill:GetModule("GearManager")
     local specName = select(2, GetSpecializationInfo(GetSpecialization() or 0)) or "Spec"
     local avgIlvl = select(2, GetAverageItemLevel())
-    self.text:SetText("|cffffff00" .. class .. ": " .. specName .. " Dashboard|r\n\n" .. string.format("Gegenstandsstufe: |cffffffff%.1f|r\n\n", avgIlvl) .. "|cffffd100NÄCHSTE BESTE UPGRADES:|r")
-    local upgrades = GM:GetBestUpgrades(); local yOffset = -85; local rowIndex = 1
-    if upgrades then
+
+    local txt = "|cffffff00" .. tostring(class) .. ": " .. tostring(specName) .. " Dashboard|r\n\n"
+    txt = txt .. string.format("Gegenstandsstufe: |cffffffff%.1f|r\n\n", avgIlvl)
+    txt = txt .. "|cffffd100NÄCHSTE BESTE UPGRADES:|r"
+    self.text:SetText(txt)
+
+    local upgrades = GM:GetBestUpgrades()
+    local yOffset = -85
+    local rowIndex = 1
+    if upgrades and #upgrades > 0 then
         for i=1, math.min(3, #upgrades) do
             local row = self:GetRow(rowIndex)
             row:SetParent(content); row:ClearAllPoints(); row:SetPoint("TOPLEFT", 15, yOffset)
             row.icon:SetTexture(C_Item.GetItemIconByID(upgrades[i].itemId) or "Interface\\Icons\\Inv_misc_questionmark")
             row.text:SetText("|cff00ff00"..upgrades[i].slot..":|r " .. upgrades[i].name)
             row.val:SetText("|cff00ff00+"..upgrades[i].percent.."%|r"); row.val:Show()
+            row:SetScript("OnEnter", function(s)
+                GameTooltip:SetOwner(s, "ANCHOR_RIGHT")
+                GameTooltip:SetItemByID(upgrades[i].itemId); GameTooltip:Show()
+            end)
+            row:SetScript("OnLeave", function() GameTooltip:Hide() end)
             row:Show(); yOffset = yOffset - 30; rowIndex = rowIndex + 1
         end
     end
+
+    -- Guild Info
+    local y = yOffset - 40
+    local guildTitle = self:GetExtraFS(1000, "GameFontNormal")
+    guildTitle:SetPoint("TOPLEFT", 15, y)
+    guildTitle:SetText("|cffffd100GILDE: DRAGON LORDS ALLERIA|r")
+    guildTitle:Show(); y = y - 25
+
+    local guildWeb = self:GetExtraFS(1001, "GameFontHighlightSmall")
+    guildWeb:SetPoint("TOPLEFT", 15, y)
+    guildWeb:SetText("Besuche uns auf unserer Website für mehr Guides und Infos:\n|cff00ccffhttps://guildsowow.com/dragon-lords|r")
+    guildWeb:Show()
 end
 
 function UI:DrawFarm(content)
@@ -228,12 +252,24 @@ function UI:DrawBiSList(content, items, title)
             local row = self:GetRow(rowIndex + 100)
             row:SetParent(content); row:ClearAllPoints(); row:SetPoint("TOPLEFT", 15, yOffset)
 
-            -- BiS Items are IDs or tables. Handle both.
             local iid = type(item) == "table" and item.itemId or item
-            local name = type(item) == "table" and item.name or (DragonSkillGearData.items[iid] and DragonSkillGearData.items[iid].name or "Item "..iid)
+            local name = type(item) == "table" and item.name or "Lade Item..."
+
+            if name == "Lade Item..." then
+                local iname = GetItemInfo(iid)
+                if iname then name = iname end
+            end
 
             row.icon:SetTexture(C_Item.GetItemIconByID(iid) or "Interface\\Icons\\Inv_misc_questionmark")
-            row.text:SetText(name); row:Show(); yOffset = yOffset - 28; rowIndex = rowIndex + 1
+            row.text:SetText(tostring(name)); row:Show()
+
+            row:SetScript("OnEnter", function(s)
+                GameTooltip:SetOwner(s, "ANCHOR_RIGHT")
+                GameTooltip:SetItemByID(iid); GameTooltip:Show()
+            end)
+            row:SetScript("OnLeave", function() GameTooltip:Hide() end)
+
+            yOffset = yOffset - 28; rowIndex = rowIndex + 1
         end
     end
 end
@@ -283,21 +319,6 @@ function UI:DrawRaidGuides(content)
     local posTitle = self:GetExtraFS(fsIdx, "GameFontNormal"); posTitle:SetPoint("TOPLEFT", listWidth + 25, y); posTitle:SetText("|cffffff00Positionierung|r"); posTitle:Show(); fsIdx = fsIdx + 1; y = y - 25
     local posText = self:GetExtraFS(fsIdx, "GameFontHighlightSmall"); posText:SetPoint("TOPLEFT", listWidth + 35, y); posText:SetText(guide.position); posText:Show(); fsIdx = fsIdx + 1
     content:SetHeight(math.abs(y) + 300)
-end
-
-function UI:DrawBosses(content)
-    local BM = DragonSkill:GetModule("BossMechanics")
-    if not BM or not BM.Bosses then return end
-    self.text:SetText("|cffffff00Boss Mechanics|r")
-    local yOffset = -45; local idx = 1
-    for id, boss in pairs(BM.Bosses) do
-        local btn = self.talentBtns[idx + 100] or CreateFrame("Button", nil, content, "UIPanelButtonTemplate")
-        self.talentBtns[idx + 100] = btn
-        btn:SetSize(ROW_WIDTH, 30); btn:SetPoint("TOPLEFT", 15, yOffset)
-        btn:SetText(boss.Name or "Unbekannt")
-        btn:SetScript("OnClick", function() BM:Simulate(id) end)
-        btn:Show(); yOffset = yOffset - 35; idx = idx + 1
-    end
 end
 
 function UI:Toggle()

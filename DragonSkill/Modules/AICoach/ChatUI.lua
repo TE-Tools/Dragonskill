@@ -1,5 +1,5 @@
--- Dragon Skill - Module: AI Coach Chat UI (v2.1.5)
--- Fixed Scrollbar and added Item Tooltip support for AI messages.
+-- Dragon Skill - Module: AI Coach Chat UI (v2.2.2)
+-- Stability Fix: Replaced EditBox:SetFontObject with SetFont.
 
 local AICoachUI = {}
 DragonSkill.AICoachUI = AICoachUI
@@ -11,8 +11,9 @@ function AICoachUI:Draw(content, width)
         local sf = CreateFrame("ScrollFrame", "DragonSkillAICoachScroll", content, "UIPanelScrollFrameTemplate")
         sf:SetSize(width - 60, 300); sf:SetPoint("TOPLEFT", 15, -60)
 
-        local h = CreateFrame("EditBox", nil, sf) -- Using EditBox for Hyperlink support
-        h:SetMultiLine(true); h:SetMaxLetters(99999); h:SetFontObject("GameFontHighlightSmall")
+        local h = CreateFrame("EditBox", nil, sf)
+        h:SetMultiLine(true); h:SetMaxLetters(99999)
+        h:SetFont("Fonts\\FRIZQT__.TTF", 12, "") -- Safe font setting
         h:SetWidth(width - 80); h:SetTextInsets(10, 10, 10, 10); h:SetReadOnly(true); h:SetAutoFocus(false)
         h:SetScript("OnHyperlinkEnter", function(self, link)
             GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
@@ -53,7 +54,7 @@ function AICoachUI:Draw(content, width)
 end
 
 function AICoachUI:AddMessage(sender, text)
-    local prefix = (sender == "User") and "|cffffffffDu: |r" or "|cff00ff00Coach: |r"
+    local prefix = (sender == "User") and "|cffffffffDu: |r" or (sender == "AI") and "|cff00ccffReal-AI: |r" or "|cff00ff00Coach: |r"
     if DragonSkillDB then
         DragonSkillDB.history = DragonSkillDB.history or {}
         table.insert(DragonSkillDB.history, prefix .. text)
