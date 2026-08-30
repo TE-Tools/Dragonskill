@@ -1,6 +1,6 @@
--- Dragon Skill - Main UI (v1.7.7)
+-- Dragon Skill - Main UI (v1.7.8)
 -- Optimized Gear Assistant & Farm Planner for WoW 12.1.
--- Fix for UI Content Leak: Properly clearing old tab content and pooling regions.
+-- High Stability: Fixed syntax errors and content clearing logic.
 
 local L = DragonSkill.L or {}
 local UI = {}
@@ -153,7 +153,7 @@ function UI:Init()
     f:SetScript("OnDragStart", f.StartMoving)
     f:SetScript("OnDragStop", f.StopMovingOrSizing)
 
-    if f.SetTitle then f:SetTitle("Dragon Skill v1.7.7") end
+    if f.SetTitle then f:SetTitle("Dragon Skill v1.7.8") end
     if f.portrait then f.portrait:SetTexture("Interface\\Icons\\Inv_misc_head_dragon_01") end
 
     local scrollFrame = CreateFrame("ScrollFrame", "DragonSkillScrollFrame", f.Inset, "UIPanelScrollFrameTemplate")
@@ -184,7 +184,7 @@ function UI:Init()
     self.frame = f
     self.rows = {}
     self.talentBtns = {}
-    self.extraFS = {} -- Pool for extra fontstrings
+    self.extraFS = {}
 end
 
 function UI:SelectTab(id)
@@ -220,26 +220,21 @@ function UI:ClearContent()
     if not self.frame or not self.frame.Content then return end
     local content = self.frame.Content
 
-    -- Hide all children (Frames like Buttons, EditBoxes)
-    for _, child in ipairs({ content:GetChildren() }) do
-        if child ~= self.text and child ~= self.searchBox then child:Hide() end
-    end
-
-    -- Hide all regions (FontStrings created on content)
-    for _, region in ipairs({ content:GetRegions() }) do
-        if region ~= self.text then region:Hide() end
-    end
-
     -- Hide Pooled rows
     for _, row in pairs(self.rows) do
         row:Hide()
         row:SetScript("OnEnter", nil)
     end
 
-    -- HidePooled Extra FontStrings
+    -- Hide Pooled Extra FontStrings
     for _, fs in pairs(self.extraFS) do
         fs:Hide()
     end
+
+    -- Hide other static elements if they exist
+    if self.searchBox then self.searchBox:Hide() end
+    if self.answerText then self.answerText:Hide() end
+    if self.text then self.text:SetText(""); self.text:Show() end
 end
 
 function UI:EnsureText(content)
@@ -276,7 +271,7 @@ function UI:Update()
         elseif currentTab == TAB_BOSSES then self:DrawBosses(content)
         else
             local guideData = DragonSkill.Database:GetGuideData(class, specID)
-            if not guideData then self.text:SetText("Keine Guide-Daten fuer diese Spezialisierung gefunden."); return end
+            if not guideData then self.text:SetText("Keine Guide-Daten gefunden."); return end
 
             if currentTab == TAB_TALENTS then self:DrawTalents(content, guideData)
             elseif currentTab == TAB_BIS then self:DrawBiSList(content, guideData.bisGear and guideData.bisGear.wowhead, "BiS List (Wowhead)")
@@ -297,7 +292,7 @@ function UI:AddInteractiveRow(index, itemData, yOffset, labelPrefix)
     row:ClearAllPoints()
     row:SetPoint("TOPLEFT", 15, yOffset)
 
-    local name = itemData.name or itemData.text or "Unbekanntes Item"
+    local name = itemData.name or itemData.text or "Item"
     local slot = itemData.slot or ""
     local prefix = labelPrefix or (slot ~= "" and "|cff00ff00"..slot..":|r " or "")
 
@@ -345,6 +340,7 @@ function UI:DrawDashboard(content, class, specID)
 
     yOffset = yOffset - 20
     local farmTitle = self:GetExtraFS(1, "GameFontNormal")
+    farmTitle:ClearAllPoints()
     farmTitle:SetPoint("TOPLEFT", 15, yOffset)
     farmTitle:SetText("|cffffff00WAS SOLL ICH HEUTE FARMEN?|r")
     farmTitle:Show()
@@ -353,6 +349,7 @@ function UI:DrawDashboard(content, class, specID)
     local plan = GM:GetFarmPlan()
     if plan and #plan > 0 then
         local dungeonTxt = self:GetExtraFS(2, "GameFontHighlight")
+        dungeonTxt:ClearAllPoints()
         dungeonTxt:SetPoint("TOPLEFT", 15, yOffset)
         dungeonTxt:SetText("1. |cffffffff" .. plan[1].name .. "|r (Score: " .. plan[1].score .. ")")
         dungeonTxt:Show()
@@ -360,12 +357,14 @@ function UI:DrawDashboard(content, class, specID)
     end
 
     local catTitle = self:GetExtraFS(3, "GameFontNormal")
+    catTitle:ClearAllPoints()
     catTitle:SetPoint("TOPLEFT", 15, yOffset)
     catTitle:SetText("|cffffd100CATALYST EMPFEHLUNG:|r")
     catTitle:Show()
     yOffset = yOffset - 25
 
     local catTxt = self:GetExtraFS(4, "GameFontHighlight")
+    catTxt:ClearAllPoints()
     catTxt:SetPoint("TOPLEFT", 15, yOffset)
     catTxt:SetWidth(CONTENT_WIDTH - 40)
     catTxt:SetJustifyH("LEFT")
@@ -380,11 +379,12 @@ function UI:DrawFarm(content)
 
     local yOffset = -45
     local rowIndex = 1
-    local fsIndex = 10 -- Start index for pooled fontstrings in this view
+    local fsIndex = 10
 
     if plan then
         for i, d in ipairs(plan) do
             local dTitle = self:GetExtraFS(fsIndex, "GameFontNormal")
+            dTitle:ClearAllPoints()
             dTitle:SetPoint("TOPLEFT", 15, yOffset)
             dTitle:SetText(string.format("|cffffd100%d. %s|r (Score: %d)", i, d.name, d.score))
             dTitle:Show()
@@ -432,13 +432,8 @@ function UI:DrawTalents(content, guideData)
     self.text:SetText("Talent Builds (12.1)")
     if guideData and guideData.talentBuilds then
         for i, build in ipairs(guideData.talentBuilds) do
-            local btn = self.talentBtns[i]
-            if not btn then
-                btn = CreateFrame("Button", nil, content, "UIPanelButtonTemplate")
-                btn:SetSize(ROW_WIDTH, 30)
-                self.talentBtns[i] = btn
-            end
-            btn:ClearAllPoints()
+            local btn = CreateFrame("Button", nil, content, "UIPanelButtonTemplate")
+            btn:SetSize(ROW_WIDTH, 30)
             btn:SetPoint("TOPLEFT", 15, yOffset)
             btn:SetText(string.format("[%s] %s", (build.provider or "Guide"):upper(), build.label or "Build"))
             btn:SetScript("OnClick", function()
@@ -457,13 +452,8 @@ function UI:DrawBosses(content)
     local yOffset = -45
     local idx = 1
     for id, boss in pairs(BM.Bosses) do
-        local btn = self.talentBtns[idx + 100]
-        if not btn then
-            btn = CreateFrame("Button", nil, content, "UIPanelButtonTemplate")
-            btn:SetSize(ROW_WIDTH, 30)
-            self.talentBtns[idx + 100] = btn
-        end
-        btn:ClearAllPoints()
+        local btn = CreateFrame("Button", nil, content, "UIPanelButtonTemplate")
+        btn:SetSize(ROW_WIDTH, 30)
         btn:SetPoint("TOPLEFT", 15, yOffset)
         btn:SetText(boss.Name or "Unbekannt")
         btn:SetScript("OnClick", function() BM:Simulate(id) end)
@@ -489,7 +479,7 @@ function UI:Open(tabId)
 end
 
 ---------------------------------------------------------------------------
--- Slash Commands (Global)
+-- Slash Commands
 ---------------------------------------------------------------------------
 
 SLASH_DRAGONSKILL1 = "/ds"

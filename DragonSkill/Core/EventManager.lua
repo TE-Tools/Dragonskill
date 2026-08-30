@@ -1,18 +1,23 @@
--- Dragon Skill - Event Manager (v1.5.1)
--- Zentrale Event-Registrierung über einen anonymen Frame zur Vermeidung von Blizzard-Blockaden.
+-- Dragon Skill - Event Manager (v1.7.8)
+-- Zentrale Event-Registrierung.
 
 local ADDON_NAME = ...
 local EventManager = {}
+DragonSkill = DragonSkill or {}
+DragonSkill.Events = EventManager
 
--- Wir nutzen einen anonymen Frame ohne globalen Namen.
--- Dies verhindert "ADDON_ACTION_FORBIDDEN" Fehler in WoW 12.1.
-local frame = CreateFrame("Frame")
+-- Wir nutzen einen benannten Frame, um Blizzard-Blockaden zu minimieren.
+local frame = CreateFrame("Frame", "DragonSkillEventFrame")
 EventManager.listeners = {}
 
 function EventManager:On(event, callback)
     if not self.listeners[event] then
         self.listeners[event] = {}
-        frame:RegisterEvent(event)
+        -- Wir nutzen pcall, falls Blizzard bestimmte Events fuer Addons sperrt
+        local ok, err = pcall(function() frame:RegisterEvent(event) end)
+        if not ok then
+            print("|cffff4444Dragon Skill:|r Konnte Event nicht registrieren: " .. tostring(event))
+        end
     end
     table.insert(self.listeners[event], callback)
 end
@@ -26,7 +31,7 @@ function EventManager:Off(event, callback)
         end
     end
     if #list == 0 then
-        frame:UnregisterEvent(event)
+        pcall(function() frame:UnregisterEvent(event) end)
     end
 end
 
@@ -40,6 +45,3 @@ frame:SetScript("OnEvent", function(_, event, ...)
         end
     end
 end)
-
-DragonSkill = DragonSkill or {}
-DragonSkill.Events = EventManager
