@@ -1,50 +1,38 @@
-# Implementation Plan - Emergency Repair & 100% Data Integrity (v1.5.1)
+# Implementation Plan - Integration: WoW AI Coach (v1.8.0)
 
-Dieses Update behebt die von BugGrabber gemeldeten LUA-Fehler, repariert den Talent-Import für 12.1 und füllt die Datenlücken für alle Spezialisierungen.
+Dieses Update integriert das "WoW AI Coach" System als eigenständiges Modul in Dragon Skill. Der Coach fungiert als intelligentes Interface für die bereits bestehende Gear- und Farm-Engine.
 
 ## User Review Required
 
 > [!IMPORTANT]
-> **LUA-Fehler Fix**: Ich habe den Zugriff auf das Textfeld ("EditBox") korrigiert. Der Code wird nun garantiert angezeigt. Zudem wurde die veraltete `UIParentLoadAddOn` Funktion durch die moderne `C_AddOns.LoadAddOn` ersetzt.
+> **Neuer Tab "AI Coach"**: Ich füge einen interaktiven Chat-Tab hinzu, der die "Local Engine" nutzt.
 > [!IMPORTANT]
-> **Daten-Vollständigkeit**: Ich habe den Fehler gefunden: Bei vielen Klassen fehlte der "Trinkets" Schlüssel in der Datenbank. Ich habe die `GuideData.lua` komplett überarbeitet, sodass jetzt jede Spec Gear, Trinkets, Enchants und Talente besitzt.
+> **Local Engine Integration**: Der Coach greift direkt auf den `GearManager` und `Character` Scanner zu, um Fakten-basierte Antworten zu geben (keine Halluzinationen).
 > [!NOTE]
-> **Forbidden Action**: Ich nutze nun eine noch sicherere Methode für Events, um die Blizzard-Blockaden zu umgehen.
+> **API-Key Support**: Vorbereitung der UI für die optionale Eingabe eines OpenAI-Keys (Mode 2 der Spezifikation).
 
 ## Proposed Changes
 
-### 1. LUA Error Repair (UI.lua & TalentCompare.lua)
-
-#### [MODIFY] [UI.lua](file:///C:/Users/thoma/StudioProjects/Dragonskill/DragonSkill/Modules/TalentCompare/UI.lua)
-- **EditBox Fix**: Unterstützung für `editBox` (Blizzard Standard) und `EditBox` (12.1 Variant).
-- **Zuweisung**: Sicherere Datenübergabe an Popups.
-
-#### [MODIFY] [TalentCompare.lua](file:///C:/Users/thoma/StudioProjects/Dragonskill/DragonSkill/Modules/TalentCompare/TalentCompare.lua)
-- **API Fix**: Ersetzung von `UIParentLoadAddOn` durch `C_AddOns.LoadAddOn`.
-- **Import-Garantie**: Zusätzliche pcall-Sicherung beim Aufruf der Blizzard-Schnittstellen.
+### 1. New Module: AICoach
+Ich erstelle einen neuen Ordner `Modules/AICoach/` mit den Kernkomponenten:
+- **Engine.lua**: Die Logik zur Interpretation von Fragen (Intents wie "farmen", "upgrade", "stats").
+- **ChatUI.lua**: Das interaktive Interface innerhalb des Dragon Skill Fensters.
 
 ---
 
-### 2. Event System (EventManager.lua)
-
-#### [MODIFY] [EventManager.lua](file:///C:/Users/thoma/StudioProjects/Dragonskill/DragonSkill/Core/EventManager.lua)
-- Umstellung auf einen komplett lokalen, anonymen Frame pro Modul oder einen wasserdichten globalen anonymen Frame.
+### 2. UI Integration (Modules/TalentCompare/UI.lua)
+- **Tab Erweiterung**: Hinzufügen des Reiters "AI Coach" (ersetzt oder erweitert den rudimentären Assistant).
+- **Chat Layout**: Implementierung einer scrollbaren Historie und eines Eingabefeldes.
 
 ---
 
-### 3. Database Completion (GuideData.lua)
-
-#### [MODIFY] [GuideData.lua](file:///C:/Users/thoma/StudioProjects/Dragonskill/DragonSkill/Data/GuideData.lua)
-- **Voll-Befüllung**: Jede der 40 Specs erhält nun:
-    - 5+ BiS Items (Wowhead)
-    - S/A-Tier Trinkets (Archon)
-    - Alle Enchants (12.1 Meta)
-    - 2-3 Talent-Strings pro Spec.
+### 3. Core Engine Enhancements
+- **Scanner Update**: Erweiterung des `Character.lua` Scanners um die Taschen-Überprüfung (Inventory Scanner), um Upgrades "in der Tasche" zu finden.
+- **Database Linkage**: Verknüpfung der `GearDatabase.lua` mit der Chat-Engine.
 
 ## Verification Plan
 
 ### Manual Verification
-1. **Chat-Meldung**: Erscheint "Dragon Skill v1.5.1 geladen"?
-2. **Kopieren**: Talent -> "Kopieren" -> Ist der Code im Feld? (Kein LUA Fehler mehr).
-3. **Anlegen**: Talent -> "Neu anlegen" -> Erstellt WoW einen neuen Slot? (Kein LUA Fehler mehr).
-4. **Trinkets**: Reiter "Trinkets" prüfen -> Sind nun Items sichtbar?
+1. **Interaktion**: Tab "AI Coach" öffnen -> Frage eingeben: "Was soll ich farmen?" -> Coach muss den `GearManager` fragen und antworten.
+2. **Taschen-Check**: Ein besseres Item in die Tasche legen -> Coach fragen: "Habe ich was Besseres in der Tasche?" -> Er muss das Item finden.
+3. **Kontext**: Frage stellen -> Folgefrage stellen (z.B. "Und danach?") -> Coach muss den Kontext behalten.

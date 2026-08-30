@@ -1,0 +1,1422 @@
+# WoW AI Coach – Entwicklungsübergabe seit der letzten ZIP
+
+## 1. Projektziel
+
+Entwickelt werden soll ein World-of-Warcraft-Retail-Addon für **WoW 12.1 / Midnight**, das sich wie ein persönlicher WoW-Coach verhält.
+
+Der zentrale Unterschied zu einem klassischen Addon:
+
+Der Spieler soll **frei im Spiel mit dem Coach chatten können**.
+
+Beispiele:
+
+- „Welche Items sollte ich noch austauschen?“
+- „Was ist momentan mein größtes Upgrade?“
+- „Welche Ini bringt mich am schnellsten weiter?“
+- „Ich habe 30 Minuten, was soll ich machen?“
+- „Ich habe 2 Stunden, welche Route ist am effektivsten?“
+- „Welche Skillung soll ich nehmen?“
+- „Welche Stats sind für meine Spec wichtig?“
+- „Habe ich in meinen Taschen ein besseres Item?“
+- „Wo bekomme ich mein nächstes Upgrade?“
+- „Was soll ich als Nächstes machen?“
+- „Warum ist dieses Item besser?“
+- „Was sollte ich zuerst verbessern?“
+
+Der Nutzer möchte **keine starre Auswahl von vorgegebenen Fragen**.
+
+Das System soll freie Sprache verstehen.
+
+---
+
+# 2. Grundentscheidung: Lokale KI/Expert Engine
+
+Eine externe KI soll **nicht zwingend erforderlich** sein.
+
+Das Addon soll grundsätzlich auch ohne Internet und ohne API-Key funktionieren.
+
+Deshalb:
+
+```text
+                 WoW AI Coach
+                      │
+          ┌───────────┴───────────┐
+          │                       │
+     LOCAL ENGINE             OPTIONAL KI
+          │                       │
+          │                       ├── eigener API-Key
+          │                       └── eigener Proxy
+          │
+          ▼
+      WoW-Daten
+          │
+          ▼
+      Berechnung
+          │
+          ▼
+      Empfehlung
+```
+
+Die lokale Engine ist die eigentliche Fakten- und Berechnungsschicht.
+
+Die externe KI ist optional.
+
+---
+
+# 3. Warum die lokale Engine wichtig ist
+
+Die externe KI darf nicht einfach selbst behaupten:
+
+> „Dieses Item bekommst du aus Dungeon X.“
+
+wenn das nicht aus unseren Daten stammt.
+
+Die lokale Engine soll die Fakten liefern:
+
+- aktuelles Gear
+- Itemlevel
+- Items
+- Stats
+- Spec
+- Rollen
+- vorhandene Items
+- bekannte Lootquellen
+- Dungeons
+- Bosse
+- Upgrade-Möglichkeiten
+- Zeitaufwand
+
+Die KI kann anschließend daraus eine natürliche Antwort formulieren.
+
+Beispiel:
+
+```text
+Spieler:
+Was soll ich verbessern?
+
+Local Engine:
+Trinket 1 = Upgrade Score 91
+Ring 1 = Upgrade Score 82
+Brust = Upgrade Score 51
+
+KI:
+Dein erstes Ziel sollte Trinket 1 sein.
+```
+
+---
+
+# 4. API-Key-Konzept
+
+Der Benutzer möchte ausdrücklich die Möglichkeit haben, **seinen eigenen API-Key direkt im Spiel einzugeben**.
+
+Beispiel:
+
+```text
+/wki settings
+```
+
+Danach:
+
+```text
+KI-Einstellungen
+
+KI-Modus:
+
+● Lokale Engine
+○ Eigener API-Key
+○ Eigener Server
+
+Provider:
+OpenAI
+
+API-Key:
+[ ************************ ]
+
+[ Verbindung testen ]
+[ Schlüssel löschen ]
+```
+
+Der Benutzer soll seinen eigenen Key eingeben können.
+
+Der Key darf:
+
+- nicht im Quellcode stehen
+- nicht in GitHub stehen
+- nicht in die veröffentlichte ZIP eingebaut werden
+- nicht an den Entwickler übertragen werden
+
+Der Benutzer soll den Key selbst verwalten können.
+
+## Wichtige Sicherheitswarnung
+
+Ein WoW-Addon läuft auf dem Client.
+
+Deshalb kann ein API-Key, der clientseitig gespeichert wird, technisch niemals vollständig geheim gehalten werden.
+
+Das Addon soll deshalb beim Aktivieren anzeigen:
+
+> Ein API-Key, der auf dem eigenen Rechner gespeichert wird, kann von Software oder Personen mit Zugriff auf den Rechner grundsätzlich ausgelesen werden. Für maximale Sicherheit wird ein eigener Proxy/Server empfohlen.
+
+Für eine öffentliche Version ist daher vorzusehen:
+
+```text
+WoW Addon
+   ↓
+eigener Proxy
+   ↓
+OpenAI
+```
+
+Der echte OpenAI-Key liegt dann nur auf dem Server.
+
+---
+
+# 5. Modi
+
+Es sollen drei Modi existieren.
+
+## MODE 1 – LOCAL
+
+Kostenlos.
+
+Keine externe KI.
+
+Keine API.
+
+Keine Cloud.
+
+Die lokale Expert Engine beantwortet Fragen.
+
+---
+
+## MODE 2 – OWN API KEY
+
+Der Spieler verwendet seinen eigenen API-Key.
+
+Der Key wird lokal konfiguriert.
+
+Der Spieler trägt die API-Kosten selbst.
+
+Dieser Modus ist optional.
+
+---
+
+## MODE 3 – OWN SERVER
+
+Für eine spätere öffentliche Version.
+
+Architektur:
+
+```text
+WoW AI Coach
+      ↓
+TE-WoW-Coach-Proxy
+      ↓
+OpenAI API
+```
+
+API-Key nur auf dem Server.
+
+---
+
+# 6. Aktuelle Addon-Struktur
+
+Die bisherige Architektur besteht aus folgenden Modulen:
+
+```text
+WoWAICoach/
+│
+├── WoWAICoach.toc
+├── WoWAICoach.lua
+│
+├── Data.lua
+├── SeasonData.lua
+├── Knowledge.lua
+├── Scanner.lua
+├── Engine.lua
+├── Planner.lua
+└── UI.lua
+```
+
+Später soll daraus eine größere modulare Struktur werden.
+
+---
+
+# 7. WoWAICoach.toc
+
+Das Addon ist für Retail / 12.1 vorgesehen.
+
+Beispiel:
+
+```lua
+## Interface: 120100
+## Title: WoW AI Coach
+## Notes: Local WoW expert coach for Midnight 12.1
+## Author: TE
+## Version: 1.x
+## SavedVariables: WoWAICoachDB
+
+Data.lua
+SeasonData.lua
+Knowledge.lua
+Scanner.lua
+Engine.lua
+Planner.lua
+UI.lua
+WoWAICoach.lua
+```
+
+Die tatsächliche Interface-Version muss gegen den aktuellen Live-Client geprüft werden.
+
+---
+
+# 8. Character Scanner
+
+Das Addon soll automatisch erkennen:
+
+- Charaktername
+- Realm
+- Klasse
+- Klassen-Token
+- Level
+- Spezialisierung
+- Spec-ID
+- durchschnittliches Itemlevel
+- ausgerüstete Items
+
+Beispiel:
+
+```text
+CharacterSnapshot
+
+name
+realm
+class
+className
+level
+spec
+specID
+avgItemLevel
+equipment
+inventory
+timestamp
+```
+
+---
+
+# 9. Equipment Scanner
+
+Das Addon soll alle relevanten Slots analysieren.
+
+Beispiel:
+
+```text
+Kopf
+Hals
+Schulter
+Rücken
+Brust
+Handgelenk
+Hände
+Gürtel
+Beine
+Füße
+Ring 1
+Ring 2
+Trinket 1
+Trinket 2
+Haupthand
+Nebenhand
+```
+
+Für jedes Item sollen möglichst gespeichert werden:
+
+```text
+Item ID
+Name
+Link
+Itemlevel
+Qualität
+Slot
+Stats
+Set
+Upgradeinformationen
+Specinformationen
+```
+
+---
+
+# 10. Inventory Scanner
+
+Das Addon soll die Taschen durchsuchen.
+
+Ziel:
+
+Automatisch feststellen:
+
+> „Habe ich bereits ein besseres Item in meinen Taschen?“
+
+Beispiel:
+
+```text
+Aktuell:
+Ring 1 – Itemlevel 710
+
+Tasche:
+Ring – Itemlevel 728
+
+→ mögliches direktes Upgrade
+```
+
+Das soll automatisch erkannt werden.
+
+---
+
+# 11. Itemvergleich
+
+Es reicht NICHT, nur Itemlevel zu vergleichen.
+
+Beispiel:
+
+```text
+Item A
+720
+Crit
+Haste
+
+Item B
+728
+Mastery
+Versatility
+```
+
+Der Coach soll berücksichtigen:
+
+- Itemlevel
+- Primärwerte
+- Sekundärwerte
+- Spec
+- Rolle
+- Content
+- Setboni
+- ggf. Sondereffekte
+- Upgrade-System
+
+---
+
+# 12. Item Score
+
+Es soll ein interner Upgrade Score entwickelt werden.
+
+Grundidee:
+
+```text
+ItemScore =
+    ItemlevelScore
+  + StatScore
+  + SpecScore
+  + SetBonusScore
+  + SpecialEffectScore
+  + UpgradePotential
+```
+
+Wichtig:
+
+Itemlevel darf NICHT automatisch alles dominieren.
+
+Ein Item mit höherem Itemlevel kann je nach Spec schlechter sein.
+
+---
+
+# 13. Upgrade Matrix
+
+Der Coach soll eine Übersicht erzeugen können:
+
+```text
+Slot       Aktuell   Bester Kandidat   Upgrade
+------------------------------------------------
+Kopf       720       Item X            +12.4
+Brust      728       Item Y             +4.1
+Ring 1     710       Item Z            +18.7
+Ring 2     725       Item A             +2.8
+Trinket 1  721       Item B            +21.2
+Trinket 2  730       Item C             +1.4
+```
+
+Danach:
+
+```text
+Priorität 1:
+Trinket
+
+Priorität 2:
+Ring
+
+Priorität 3:
+Kopf
+```
+
+---
+
+# 14. Größtes Upgrade
+
+Der Spieler soll fragen können:
+
+> „Was ist mein größtes Upgrade?“
+
+Antwort:
+
+```text
+Dein größtes Upgrade ist momentan dein Trinket.
+
+Aktuell:
+Item X – 721
+
+Potentielles Upgrade:
+Item Y – 735
+
+Geschätzter Upgrade Score:
++21.2
+
+Quelle:
+Dungeon X
+Boss Y
+```
+
+Nur wenn diese Daten tatsächlich verifiziert vorhanden sind.
+
+---
+
+# 15. Loot-Datenbank
+
+Die Loot-Datenbank soll getrennt von der Engine gespeichert werden.
+
+Struktur:
+
+```text
+Dungeon
+  ↓
+Boss
+  ↓
+Item
+  ↓
+Slot
+  ↓
+Stats
+  ↓
+Spec-Relevanz
+```
+
+Beispiel:
+
+```text
+Dungeon X
+ ├── Boss A
+ │    ├── Item 1
+ │    └── Item 2
+ │
+ ├── Boss B
+ │    └── Item 3
+ │
+ └── Boss C
+      └── Item 4
+```
+
+---
+
+# 16. Keine erfundenen Lootdaten
+
+Das ist eine harte Regel.
+
+Wenn das Addon nicht weiß, wo ein Item erhältlich ist:
+
+NICHT:
+
+> „Das bekommst du wahrscheinlich aus Dungeon X.“
+
+Sondern:
+
+> „Für dieses Item ist momentan keine verifizierte Lootquelle in meiner Datenbank vorhanden.“
+
+Datenstatus soll erkennbar sein.
+
+---
+
+# 17. Dungeon Optimizer
+
+Die Frage:
+
+> „Welche Ini bringt mich am schnellsten weiter?“
+
+soll nicht einfach mit der höchsten Itemlevel-Belohnung beantwortet werden.
+
+Berechnung soll berücksichtigen:
+
+```text
+Upgrade Value
+×
+Relevanz
+×
+Drop-Wahrscheinlichkeit
+×
+Zeitaufwand
+```
+
+Zusätzlich:
+
+- benötigter Slot
+- möglicher Boss
+- vorhandenes Gear
+- Ziel des Spielers
+- verfügbare Zeit
+
+---
+
+# 18. Zeitoptimierung
+
+Spieler kann fragen:
+
+> „Ich habe 30 Minuten.“
+
+oder:
+
+> „Ich habe 45 Minuten.“
+
+oder:
+
+> „Ich habe zwei Stunden.“
+
+Das System soll daraus einen Plan erzeugen.
+
+Beispiel:
+
+```text
+30-MINUTEN-PLAN
+
+1. Dungeon X
+   Grund:
+   mögliches Trinket-Upgrade
+
+2. Falls kein Drop:
+   Dungeon Y
+
+3. Vorhandenes Taschen-Upgrade ausrüsten
+```
+
+Bei 2 Stunden kann der Plan anders aussehen.
+
+---
+
+# 19. Zielsystem
+
+Der Coach soll erkennen, welches Ziel der Spieler verfolgt.
+
+Mögliche Ziele:
+
+```text
+GEAR_PROGRESS
+ITEM_FARM
+M_PLUS
+RAID
+PVP
+SPEC_OPTIMIZATION
+STAT_OPTIMIZATION
+FASTEST_PROGRESS
+TIME_LIMITED
+GENERAL
+```
+
+Beispiel:
+
+> „Ich will möglichst schnell stärker werden.“
+
+→ `FASTEST_PROGRESS`
+
+> „Ich will M+ pushen.“
+
+→ `M_PLUS`
+
+> „Ich brauche ein besseres Trinket.“
+
+→ `ITEM_FARM`
+
+---
+
+# 20. Intent-Erkennung
+
+Der freie Chat soll Fragen klassifizieren.
+
+Beispiele:
+
+```text
+„Welche Items brauche ich?“
+→ gear
+
+„Welche Ini soll ich laufen?“
+→ dungeon
+
+„Welche Skillung?“
+→ talent
+
+„Welche Stats?“
+→ stat
+
+„Habe ich in den Taschen was Besseres?“
+→ inventory
+
+„Was soll ich jetzt machen?“
+→ plan
+
+„Welches Item ist besser?“
+→ compare
+```
+
+Mehrere Intents können gleichzeitig auftreten.
+
+Beispiel:
+
+> „Welche Ini soll ich laufen, damit ich mein Trinket schnell verbessern kann?“
+
+→
+
+```text
+dungeon
++
+gear
++
+item_farm
++
+time_optimization
+```
+
+---
+
+# 21. Gesprächskontext
+
+Der Chat soll sich auf vorherige Antworten beziehen können.
+
+Beispiel:
+
+Spieler:
+
+> Was soll ich verbessern?
+
+Coach:
+
+> Dein Trinket ist momentan dein größtes Upgrade.
+
+Spieler:
+
+> Wo bekomme ich das?
+
+Coach:
+
+> Aus Dungeon X.
+
+Spieler:
+
+> Und danach?
+
+Coach:
+
+> Danach würde ich Ring 1 verbessern.
+
+Dafür muss der Kontext strukturiert gespeichert werden.
+
+Nicht nur als Text.
+
+Beispiel:
+
+```lua
+context = {
+    currentGoal = "gear_progress",
+    recommendedItem = itemID,
+    recommendedSlot = 13,
+    recommendedDungeon = dungeonID,
+    nextPriority = itemID2
+}
+```
+
+---
+
+# 22. Build-System
+
+Der Coach soll später Empfehlungen für:
+
+- M+
+- Raid
+- Open World
+- PvP
+
+geben können.
+
+Dabei:
+
+```text
+Klasse
+↓
+Spec
+↓
+Content
+↓
+Build
+↓
+Talente
+↓
+Stats
+```
+
+Konkrete Builds dürfen nur aus verifizierten Daten stammen.
+
+---
+
+# 23. Stat-System
+
+Für jede Spec sollen später Daten gepflegt werden:
+
+```text
+Crit
+Haste
+Mastery
+Versatility
+Primary Stat
+```
+
+Aber keine festen Gewichte erfinden.
+
+Daten müssen verifiziert und aktualisierbar sein.
+
+---
+
+# 24. M+ Saison
+
+Die bisherige Datenstruktur enthält die Saison-2-M+-Rotation:
+
+```text
+Altar der Fänge
+Mördergasse
+Nalorakks Bau
+Das blendende Tal
+Arena der Leerennarbe
+Königsruh
+Rubinlebensbecken
+Tempel von Sethraliss
+```
+
+Diese Daten müssen bei zukünftigen Patches/Saisons austauschbar sein.
+
+Deshalb:
+
+```text
+SeasonData
+```
+
+separat halten.
+
+---
+
+# 25. Chat UI
+
+Geplant ist ein eigenes Ingame-Fenster.
+
+Elemente:
+
+```text
+WoW AI Coach
+--------------------------------
+
+Coach:
+Bereit. Frag mich nach deinem Gear...
+
+Du:
+Welche Items sollte ich verbessern?
+
+Coach:
+Dein Trinket ist momentan...
+
+--------------------------------
+[ Frage eingeben... ] [Senden]
+```
+
+Das Fenster soll:
+
+- verschiebbar sein
+- scrollbar sein
+- Chat-Historie zeigen
+- Fragen senden können
+- Antworten anzeigen
+
+---
+
+# 26. Slash Commands
+
+Bereits vorgesehen:
+
+```text
+/wki
+/wowai
+```
+
+Beispiele:
+
+```text
+/wki
+
+/wki Welche Items soll ich verbessern?
+
+/wowai Welche Ini soll ich laufen?
+```
+
+---
+
+# 27. SavedVariables
+
+Das Addon verwendet:
+
+```lua
+WoWAICoachDB
+```
+
+Darin sollen später gespeichert werden:
+
+```text
+settings
+history
+local cache
+user preferences
+optional API configuration
+```
+
+Die Struktur muss migrationsfähig sein.
+
+Beispiel:
+
+```lua
+WoWAICoachDB = {
+    version = 1,
+    settings = {},
+    history = {},
+    cache = {},
+    ai = {}
+}
+```
+
+---
+
+# 28. API-Key Speicherung
+
+Wenn der Benutzer seinen eigenen Key verwenden möchte:
+
+```lua
+WoWAICoachDB.ai = {
+    enabled = true,
+    provider = "openai",
+    apiKey = "...",
+    model = "...",
+}
+```
+
+Aber:
+
+Diese Speicherung ist nur eine praktische Client-Konfiguration, keine echte sichere Geheimhaltung.
+
+Das UI muss einen Warnhinweis anzeigen.
+
+Später sollte zusätzlich eine sichere Proxy-Variante angeboten werden.
+
+---
+
+# 29. Externe KI – Aufgabe
+
+Wenn externe KI aktiviert ist, soll nicht der komplette WoW-Datensatz blind übertragen werden.
+
+Die lokale Engine soll zunächst einen Kontext erzeugen.
+
+Beispiel:
+
+```text
+Character:
+Druid
+
+Spec:
+Restoration
+
+Average Item Level:
+728
+
+Weakest Slots:
+Ring 1
+Trinket 1
+
+Potential Upgrades:
+Item A
+Item B
+
+Available Loot:
+Dungeon X
+Dungeon Y
+```
+
+Dann erhält die KI diese strukturierten Daten und die Frage.
+
+---
+
+# 30. KI-Antwort
+
+Die externe KI formuliert daraus beispielsweise:
+
+> Dein größtes Upgrade ist aktuell Trinket 1.  
+> Du hast bereits ein mögliches Upgrade in Dungeon X.  
+> Ich würde deshalb zuerst Dungeon X laufen und danach Ring 1 angehen.
+
+Die Daten kommen aber von der Engine.
+
+---
+
+# 31. WoW-API / 12.1
+
+Bei der weiteren Entwicklung muss zwingend die aktuelle Retail-API geprüft werden.
+
+Insbesondere:
+
+- Item APIs
+- Container APIs
+- Inventory APIs
+- Specialization APIs
+- Talent APIs
+- Upgrade APIs
+- Item Stat APIs
+
+Außerdem müssen die aktuellen Einschränkungen rund um **Secret Values / geschützte Combat-Daten** berücksichtigt werden.
+
+Das Addon darf kein automatisierter Combat-Bot werden.
+
+Es soll:
+
+- analysieren
+- beraten
+- erklären
+- planen
+
+Es soll NICHT:
+
+- automatisch Fähigkeiten ausführen
+- automatisch Kampfentscheidungen ausführen
+- verbotene geschützte Werte auswerten
+- Gameplay automatisieren
+
+---
+
+# 32. Aktueller Entwicklungsstand
+
+Die bisherigen Module enthalten bereits Grundgerüste für:
+
+### Scanner
+
+- Charakter
+- Equipment
+- Taschen
+- Itemlevel
+
+### Engine
+
+- Intent-Erkennung
+- grundlegende Antworten
+
+### Planner
+
+- schwächste Slots
+- Taschen-Upgrades
+- Zeitplan-Grundlage
+
+### UI
+
+- Chatfenster
+- Eingabe
+- Antwortausgabe
+
+### Daten
+
+- Slots
+- M+-Rotation
+- Loot-Datenstruktur
+- Build-Datenstruktur
+- Stat-Datenstruktur
+
+---
+
+# 33. Was noch nicht vollständig fertig ist
+
+Diese Punkte müssen weiterentwickelt werden:
+
+## Sehr wichtig
+
+1. Vollständige 12.1 Item-Datenerfassung
+2. Asynchrones Item-Caching
+3. vollständige Stat-Auswertung
+4. echtes Item-Scoring
+5. Spec-spezifische Bewertung
+6. Setbonus-Bewertung
+7. Sondereffekt-Bewertung
+8. vollständige Loot-Datenbank
+9. Boss-Daten
+10. Dungeon-Daten
+11. Loot → Dungeon → Boss → Item-Verknüpfung
+12. Build-Daten
+13. Stat-Gewichtungen
+14. Upgrade-Matrix
+15. Content-Optimizer
+16. Zeit-Optimizer
+17. Route-Optimizer
+18. Gesprächskontext
+19. KI-Einstellungen
+20. API-Key-Management
+21. Proxy-Modus
+22. Tests
+23. Performance-Optimierung
+24. Fehlerbehandlung
+25. Datenbank-Updates
+
+---
+
+# 34. Wichtigste nächste Entwicklungsphase
+
+Als nächstes soll NICHT nur noch mehr UI gebaut werden.
+
+Der Schwerpunkt soll auf der Datenpipeline liegen:
+
+```text
+WoW Character
+      ↓
+Equipment
+      ↓
+Inventory
+      ↓
+Item Cache
+      ↓
+Stats
+      ↓
+Spec
+      ↓
+Item Score
+      ↓
+Upgrade Matrix
+      ↓
+Loot Database
+      ↓
+Dungeon/Boss
+      ↓
+Content Score
+      ↓
+Time Optimizer
+      ↓
+Recommendation
+      ↓
+Chat
+```
+
+---
+
+# 35. Zielbeispiel
+
+Der fertige Coach soll diese Frage verstehen:
+
+> „Ich habe heute ungefähr 45 Minuten und möchte mein Gear möglichst schnell verbessern. Was soll ich machen?“
+
+Dann:
+
+```text
+CHARAKTER ANALYSIEREN
+
+↓
+Spec erkennen
+
+↓
+Gear analysieren
+
+↓
+schwächste Slots bestimmen
+
+↓
+Taschen prüfen
+
+↓
+beste vorhandene Upgrades verwenden
+
+↓
+fehlende Upgrades bestimmen
+
+↓
+Loot-Datenbank durchsuchen
+
+↓
+Dungeons/Bosse bestimmen
+
+↓
+Zeitaufwand berechnen
+
+↓
+Drop-/Upgrade-Relevanz bestimmen
+
+↓
+Route erstellen
+```
+
+Antwort beispielsweise:
+
+```text
+DEIN 45-MINUTEN-PLAN
+
+1. Dungeon X
+   Grund:
+   Trinket ist dein größtes Upgrade.
+
+2. Danach Dungeon Y
+   Grund:
+   Ring 1 ist dein zweitgrößtes Upgrade.
+
+3. Vorher:
+   Item aus deiner Tasche anlegen.
+
+Gesamtnutzen:
+HOCH
+```
+
+---
+
+# 36. Noch wichtiger: Begründungen
+
+Der Coach soll immer erklären können:
+
+> „Warum?“
+
+Beispiel:
+
+> Dein Trinket hat Priorität, weil es im Verhältnis zu deinem aktuellen Gear den höchsten Upgrade Score besitzt und eine passende Lootquelle verfügbar ist.
+
+---
+
+# 37. Keine Blackbox
+
+Der Benutzer soll die Möglichkeit haben, die Berechnung zu verstehen.
+
+Später beispielsweise:
+
+```text
+Warum ist dieses Item besser?
+
+Itemlevel:        +8
+Crit:             +2.4
+Haste:            +1.8
+Spec-Bonus:       +3.2
+Setbonus:         +0
+Gesamt:           +15.4
+```
+
+---
+
+# 38. Daten müssen aktualisierbar sein
+
+Die Engine darf nicht fest mit Saison-/Lootdaten verdrahtet werden.
+
+Struktur:
+
+```text
+Core Engine
+    ↓
+Data Modules
+    ├── Seasons
+    ├── Dungeons
+    ├── Bosses
+    ├── Items
+    ├── Loot
+    ├── Specs
+    ├── Builds
+    └── Stats
+```
+
+Dadurch kann eine neue Saison hinzugefügt werden.
+
+---
+
+# 39. Versionssystem
+
+Das Projekt soll versioniert werden.
+
+Bisher gedanklich:
+
+```text
+1.0
+Grundaddon / Chat
+
+1.1
+Upgrade-/Loot-Grundlagen
+
+1.2
+Optimizer-/Planer-Grundlagen
+
+1.3
+echte Item-/Loot-/Upgrade-Engine
+
+1.4
+Build-/Stat-System
+
+1.5
+Zeit-/Dungeon-Optimizer
+
+1.6
+KI-Integration
+
+1.7
+API-Key-/Proxy-System
+
+1.8
+Performance/Test
+
+2.0
+Release
+```
+
+Die Versionsnummer darf bei der tatsächlichen Entwicklung angepasst werden.
+
+---
+
+# 40. Qualitätsanforderung
+
+Das Projekt soll nicht nur „irgendwie funktionieren“.
+
+Vor Veröffentlichung müssen:
+
+- Lua-Syntax geprüft werden
+- WoW-API geprüft werden
+- Events geprüft werden
+- Itemdaten getestet werden
+- Containerdaten getestet werden
+- Performance getestet werden
+- SavedVariables getestet werden
+- Fehlerfälle getestet werden
+- fehlende Daten behandelt werden
+- neue Patches berücksichtigt werden
+
+---
+
+# 41. Verhalten bei fehlenden Daten
+
+Wenn beispielsweise keine Lootdaten vorhanden sind:
+
+Nicht:
+
+> Dungeon X ist definitiv dein bester Dungeon.
+
+Sondern:
+
+> Ich kann deinen Gear-Zustand analysieren, aber für eine konkrete Dungeon-Empfehlung fehlen mir derzeit verifizierte Lootdaten.
+
+---
+
+# 42. Zielbild
+
+Das fertige Produkt soll sich ungefähr so anfühlen:
+
+```text
+                 WoW AI COACH
+                       │
+                       ▼
+                Freier Chat
+                       │
+                       ▼
+              Frage verstehen
+                       │
+                       ▼
+              Charakter analysieren
+                       │
+             ┌─────────┴─────────┐
+             ▼                   ▼
+           Gear               Ziel
+             │                   │
+             └─────────┬─────────┘
+                       ▼
+                Upgrade Engine
+                       │
+                       ▼
+                 Loot Database
+                       │
+                       ▼
+              Dungeon Optimizer
+                       │
+                       ▼
+                Zeit Optimizer
+                       │
+                       ▼
+                konkrete Route
+                       │
+                       ▼
+                 Chatantwort
+```
+
+---
+
+# 43. Hauptprinzip des gesamten Projekts
+
+Das wichtigste Ziel lautet:
+
+**Nicht einfach eine KI in WoW einbauen.**
+
+Sondern:
+
+**Einen datengetriebenen WoW-Experten bauen, mit dem man wie mit einer KI sprechen kann.**
+
+Die lokale Engine kennt die Fakten.
+
+Die Optimierungsengine berechnet die beste Möglichkeit.
+
+Der Chat macht die Interaktion natürlich.
+
+Eine externe KI ist lediglich optional für bessere Sprachverarbeitung und Erklärungen.
+
+---
+
+# 44. Arbeitsauftrag an die nächste KI
+
+Übernimm dieses Projekt ab diesem Entwicklungsstand.
+
+Nicht von vorne beginnen.
+
+Zuerst:
+
+1. vorhandenen Code analysieren
+2. Lua-Syntax prüfen
+3. 12.1-APIs verifizieren
+4. Scanner stabilisieren
+5. Item-Caching implementieren
+6. Itemdaten normalisieren
+7. Stat-Engine bauen
+8. Spec-System bauen
+9. Item-Score implementieren
+10. Upgrade-Matrix bauen
+11. Loot-Datenmodell fertigstellen
+12. Dungeon/Boss/Item-Verknüpfung implementieren
+13. Content-Score entwickeln
+14. Zeit-Optimizer entwickeln
+15. Chat-Kontext implementieren
+16. KI-Einstellungen implementieren
+17. API-Key-Modus implementieren
+18. Proxy-Modus vorbereiten
+19. Tests durchführen
+20. anschließend vollständigen Release bauen.
+
+Dabei gilt:
+
+**Keine erfundenen WoW-Daten.**
+
+**Keine erfundenen Lootquellen.**
+
+**Keine verbotene Combat-Automatisierung.**
+
+**Keine API-Keys in den Quellcode.**
+
+**Lokale Funktionalität muss ohne externe KI erhalten bleiben.**
+
+Das Addon soll letztendlich nicht nur sagen, was schlecht ist, sondern konkret beantworten:
+
+> **„Was ist für meinen Charakter jetzt der beste nächste Schritt – und warum?“**

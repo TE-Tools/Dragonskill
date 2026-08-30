@@ -42,3 +42,27 @@ function Character:GetStatPriority()
     if SP then return SP:GetForCurrentSpec() end
     return nil
 end
+
+function Character:GetInventoryUpgrades()
+    local GM = DragonSkill:GetModule("GearManager")
+    local upgrades = {}
+
+    for bag = 0, 4 do
+        for slot = 1, C_Container.GetContainerNumSlots(bag) do
+            local itemID = C_Container.GetContainerItemID(bag, slot)
+            if itemID then
+                local itemLink = C_Container.GetContainerItemLink(bag, slot)
+                local _, _, _, ilvl, _, _, _, _, slotName = GetItemInfo(itemLink)
+
+                -- Nur Rüstung und Waffen
+                if slotName and slotName ~= "" then
+                    local upgrade = GM:GetUpgradeScore(nil, itemID, ilvl)
+                    if upgrade > 0 then
+                        table.insert(upgrades, { itemId = itemID, link = itemLink, score = upgrade })
+                    end
+                end
+            end
+        end
+    end
+    return upgrades
+end

@@ -1,0 +1,15 @@
+## Interface: 120100
+## Title: WoW AI Coach
+## Notes: Local WoW gear, loot, route and upgrade coach for Midnight 12.1
+## Author: TE
+## Version: 1.2.0
+## SavedVariables: WoWAICoachDB
+Data.lua
+SeasonData.lua
+Database.lua
+Scanner.lua
+Analyzer.lua
+Planner.lua
+Engine.lua
+UI.lua
+WoWAICoach.lua

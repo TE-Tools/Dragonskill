@@ -12,6 +12,8 @@ Core\Database.lua
 Core\Locale.lua
 Core\GearManager.lua
 Core\Character.lua
+Modules\AICoach\Engine.lua
+Modules\AICoach\ChatUI.lua
 
 Data\GuideData.lua
 Data\GearDatabase.lua
