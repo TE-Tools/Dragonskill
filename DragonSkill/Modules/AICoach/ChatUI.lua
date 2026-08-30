@@ -81,8 +81,9 @@ StaticPopupDialogs["DRAGONSKILL_AI_KEY"] = {
     button3 = "Abbrechen",
     hasEditBox = 1,
     OnShow = function(self)
-        local ai = DragonSkillDB.ai
-        self.text:SetFormattedText(StaticPopupDialogs["DRAGONSKILL_AI_KEY"].text, (ai.provider or "OpenAI"):upper())
+        local ai = DragonSkillDB and DragonSkillDB.ai or { provider = "openai" }
+        local providerName = (ai.provider or "openai"):upper()
+        self.text:SetText(string.format("KI-Einstellungen (Mode 2):\nAnbieter: |cffffd100%s|r\n\nKey eingeben:", providerName))
         if ai.apiKey then
             self.editBox:SetText(ai.apiKey)
         end
