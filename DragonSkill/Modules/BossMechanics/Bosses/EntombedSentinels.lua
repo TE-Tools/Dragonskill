@@ -1,82 +1,62 @@
--- Dragon Skill - Boss: Entombed Sentinels (Eingeschlossene Wächter)
--- Update v1.6.4: Vollständiger 12.1 Support (Heroic & Mythic)
--- IDs: Helical Toxins (1284590), Protogift (1296880), Miasma (1288260)
+-- Dragon Skill - Boss: Entombed Sentinels (v2.0.1)
+-- 12.1 Ready: Using C_UnitAuras instead of restricted Combat Log.
 
 local BossMechanics = DragonSkill:GetModule("BossMechanics")
 
 local Boss = {
     ID = 3010,
     Name = "Entombed Sentinels",
-    Aliases = { "sentinels", "entombed", "golems" },
-    Phase = "Split – 40y Abstand",
-    Tip = "Heroic: Helical Toxins (1+3 / 2+2). Mythic: Unstetes Protogift – Partner finden!",
-
     -- Spell-IDs aus Patch 12.1
-    ToxinID = 1284590,     -- Helical Toxins (Heroic)
-    PrototoxinID = 1296880, -- Unstetes Protogift (Mythic)
-    MiasmaID = 1288260,     -- Instabiles Miasma (Soak)
+    ToxinID = 1284590,      -- Helical Toxins (Heroic)
+    PrototoxinID = 1296880,  -- Unstetes Protogift (Mythic)
+    MiasmaID = 1288260,      -- Instabiles Miasma (Soak)
 
-    helicalPlayers = {},    -- [Name] = Stacks (1-3)
-    protoPlayers = {},      -- [Name] = Timestamp
-    miasmaPlayers = {}      -- [Name] = true
+    helicalPlayers = {},
+    protoPlayers = {},
+    miasmaPlayers = {}
 }
 
 function Boss:OnStart()
     self.helicalPlayers = {}
     self.protoPlayers = {}
     self.miasmaPlayers = {}
-    if DragonSkill.BossMechanicsUI then
-        DragonSkill.BossMechanicsUI:SetPhase(self.Phase)
-        DragonSkill.BossMechanicsUI:SetTip(self.Tip)
-    end
 end
 
-function Boss:OnCombatLogEvent(...)
-    local _, event, _, _, _, _, _, _, destName, _, _, spellID, _, _, amount = CombatLogGetCurrentEventInfo()
+-- WoW 12.1 Fix: Wir scannen die Auren der Einheit bei jedem UNIT_AURA Event
+function Boss:OnUnitAura(unit)
+    local name = GetUnitName(unit, true)
+    if not name then return end
 
-    -- 1. Helical Toxins (Heroic)
-    if spellID == self.ToxinID then
-        if event == "SPELL_AURA_APPLIED" or event == "SPELL_AURA_APPLIED_DOSE" then
-            self.helicalPlayers[destName] = amount or 1
-            self:UpdateUI()
-        elseif event == "SPELL_AURA_REMOVED" then
-            self.helicalPlayers[destName] = nil
-            self:UpdateUI()
-        end
-    end
+    -- Reset status for this player
+    self.helicalPlayers[name] = nil
+    self.protoPlayers[name] = nil
+    self.miasmaPlayers[name] = nil
 
-    -- 2. Unstetes Protogift (Mythic)
-    if spellID == self.PrototoxinID then
-        if event == "SPELL_AURA_APPLIED" then
-            self.protoPlayers[destName] = GetTime()
-            self:UpdateUI()
-        elseif event == "SPELL_AURA_REMOVED" then
-            self.protoPlayers[destName] = nil
-            self:UpdateUI()
-        end
-    end
+    -- Scan for 12.1 Boss Auras
+    for i = 1, 40 do
+        local aura = C_UnitAuras.GetAuraDataByIndex(unit, i, "HARMFUL")
+        if not aura then break end
 
-    -- 3. Instabiles Miasma (Soak)
-    if spellID == self.MiasmaID then
-        if event == "SPELL_AURA_APPLIED" then
-            self.miasmaPlayers[destName] = true
-            if destName == GetUnitName("player", true) then
-                DragonSkill.BossMechanicsUI:ShowBigWarning("|cffff0000MIASMA AUF DIR! SOAKEN!|r", 5)
-                BossMechanics:PlaySound("CRITICAL")
+        if aura.spellId == self.ToxinID then
+            self.helicalPlayers[name] = aura.applications or 1
+        elseif aura.spellId == self.PrototoxinID then
+            self.protoPlayers[name] = GetTime() -- Store timestamp for pairing
+        elseif aura.spellId == self.MiasmaID then
+            self.miasmaPlayers[name] = true
+            if name == GetUnitName("player", true) then
+                DragonSkill.BossMechanicsUI:ShowBigWarning("|cffff0000MIASMA AUF DIR!|r", 3)
             end
-            self:UpdateUI()
-        elseif event == "SPELL_AURA_REMOVED" then
-            self.miasmaPlayers[destName] = nil
-            self:UpdateUI()
         end
     end
+
+    self:UpdateUI()
 end
 
 function Boss:UpdateUI()
     local pairsList = {}
     local open = {}
 
-    -- A. Helical Pairing (1+3 / 2+2)
+    -- 1. Helical Pairing (Heroic 1+3 / 2+2)
     local s1, s2, s3 = {}, {}, {}
     for name, stacks in pairs(self.helicalPlayers) do
         local p = { name = name, stacks = stacks }
@@ -91,7 +71,7 @@ function Boss:UpdateUI()
         table.insert(pairsList, { p1 = table.remove(s2, 1), p2 = table.remove(s2, 1) })
     end
 
-    -- B. Mythic Prototoxin Pairing (Zeit-basiert)
+    -- 2. Mythic Prototoxin Pairing
     local sortedProto = {}
     for name, t in pairs(self.protoPlayers) do
         table.insert(sortedProto, {name = name, time = t})
@@ -106,11 +86,7 @@ function Boss:UpdateUI()
         })
     end
 
-    -- C. Offene Listen & Miasma
-    for _, p in ipairs(s1) do table.insert(open, p) end
-    for _, p in ipairs(s2) do table.insert(open, p) end
-    for _, p in ipairs(s3) do table.insert(open, p) end
-    for _, p in ipairs(sortedProto) do table.insert(open, { name = p.name, stacks = "GIFT" }) end
+    -- 3. Open Warnungen
     for name, _ in pairs(self.miasmaPlayers) do
         table.insert(open, { name = "|cffff8000SOAK:|r " .. name, stacks = "MIASMA" })
     end
@@ -122,17 +98,9 @@ end
 
 function Boss:SimulateStart()
     self:OnStart()
-    self.protoPlayers = {
-        ["Thomas"] = GetTime(),
-        ["Lisa"] = GetTime() + 0.1,
-        ["Kevin"] = GetTime() + 0.2,
-        ["Anna"] = GetTime() + 0.3
-    }
+    self.protoPlayers = { ["Thomas"] = GetTime(), ["Lisa"] = GetTime() }
     self.miasmaPlayers = { ["Markus"] = true }
     self:UpdateUI()
-    if DragonSkill.BossMechanicsUI then
-        DragonSkill.BossMechanicsUI:ShowBigWarning("TEST: ENCHANTED SENTINELS PAARE!", 5)
-    end
 end
 
 BossMechanics:RegisterBoss(Boss.ID, Boss)

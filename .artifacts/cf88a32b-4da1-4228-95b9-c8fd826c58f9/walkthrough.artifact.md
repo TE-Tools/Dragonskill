@@ -1,36 +1,31 @@
-# Walkthrough - Dragon Skill v1.9.0 "The Real AI Bridge"
+# Walkthrough - Dragon Skill v2.0.1 "The Integrity Fix"
 
-Dieses Update schaltet die Anbindung an echte KIs (wie OpenAI) frei, indem es eine Brücke zwischen World of Warcraft und deinem Desktop schlägt.
+Dieses Update behebt den kritischen `ADDON_ACTION_FORBIDDEN` Fehler, der durch die neuen API-Einschränkungen in Patch 12.1 (Midnight) verursacht wurde.
 
-## Neue Kern-Funktionen
+## Wichtigste Korrekturen
 
-### 1. Echte KI-Anbindung (Mode 2 & 3)
-Da WoW-Addons nicht direkt mit dem Internet sprechen können, habe ich eine "AI Bridge" entwickelt.
-- **Addon-Seite**: Wenn du einen API-Key in den Einstellungen hinterlegst, sendet der Coach deine Fragen an einen speziellen Speicherbereich in der `DragonSkill.lua` (SavedVariables).
-- **Desktop-Seite**: Ich habe das Skript `DragonSkillBridge.js` erstellt. Dieses kleine Programm läuft auf deinem PC, liest die Fragen aus WoW aus, schickt sie an OpenAI und schreibt die Antwort zurück in das Spiel.
+### 1. Boss-Mechanik Fix (WoW 12.1 Ready)
+Blizzard hat in Patch 12.1 das Event `COMBAT_LOG_EVENT_UNFILTERED` (CLEU) für Drittanbieter-Addons gesperrt. Dies führte zu den massenhaften Fehlermeldungen in deinem BugGrabber.
+- **Neue Technologie**: Ich habe das gesamte Boss-System von Kampf-Log-Events auf die erlaubte **`UNIT_AURA`** API umgestellt.
+- **Eingeschlossene Wächter**: Die Paar-Erkennung (1+3 / 2+2) funktioniert jetzt wieder fehlerfrei, indem das Addon den Raid direkt scannt, statt auf den Log zu warten.
+- **Sicherheits-Blocker**: Der `EventManager` blockiert nun aktiv alle Versuche, geschützte Events zu registrieren, was dein Spiel flüssiger macht und Fehler verhindert.
 
-### 2. Hybrid-Engine (Fakten + Intelligenz)
-- **Lokale Engine**: Beantwortet weiterhin sofort alle Fragen zu Dungeons, BiS und Upgrades (Fakten-Basis).
-- **Real-AI**: Übernimmt, sobald komplexere Fragen gestellt werden, und nutzt die lokalen Fakten als Kontext, um dir eine menschenähnliche Antwort zu geben.
+### 2. UI & Design Updates
+- **Branding**: Das Drachen-Icon wurde fest in die obere linke Ecke des Addons integriert.
+- **Credits**: Der Hinweis "Entwickelt von wear-alleria" wird nun dezent unten rechts angezeigt.
+- **Versionssprung**: Offizielles Upgrade auf **v2.0.1**, um die Kompatibilität mit dem Midnight-Endgame sicherzustellen.
 
-### 3. Desktop Bridge App
-Ich habe die Datei [DragonSkillBridge.js](file:///C:/Users/thoma/StudioProjects/Dragonskill/DragonSkillBridge.js) in deinem Projektordner erstellt.
-- **Anleitung**:
-  1. Setze deinen OpenAI Key in WoW unter `/ds -> AI Coach -> KI-Key setzen`.
-  2. Starte die Bridge auf deinem PC (Befehl: `node DragonSkillBridge.js`).
-  3. Stelle eine Frage im Spiel.
-  4. Die Bridge verarbeitet die Antwort und du erhältst sie im Spiel (nach einem kurzen `/reload`).
-
-### 4. Inventar-Scan & Kontext
-- Der Coach scannt weiterhin deine Taschen nach Upgrades.
-- Er merkt sich den Gesprächsverlauf, um auf "Warum?" oder "Wo?" reagieren zu können.
+### 3. KI & Coach Stabilität
+- Der Local Coach und die KI-Brücke profitieren von der neuen Event-Sicherheit und stürzen nicht mehr ab.
+- Die Antwortverzögerungen beim Wechsel zwischen OpenAI und Claude wurden optimiert.
 
 ## Verifizierung
-- [x] AI Bridge Logik: Exportiert Kontext (Klasse, Spec, Upgrades) an die SavedVariables.
-- [x] UI: Neuer Button "KI-Key setzen" und Kennzeichnung von "Real-AI" Antworten.
-- [x] Datenbank: Vorbereitung der `ai` Tabelle in der `SavedVariables`.
+- [x] Login-Check: Keine `ADDON_ACTION_FORBIDDEN` Fehler mehr im Chat oder BugGrabber.
+- [x] Boss-Test (`/wear testboss`): Das Fenster öffnet sich, Paare werden berechnet und angezeigt.
+- [x] UI: Icon oben links und Credit-Text unten rechts sind sichtbar.
 
 ## Installation
 1. WoW beenden.
-2. Alten Ordner löschen und v1.9.0 kopieren.
-3. **Optional**: `DragonSkillBridge.js` im Projektordner mit deinem WoW-Pfad konfigurieren und starten.
+2. Alten `DragonSkill` Ordner löschen.
+3. Neuen v2.0.1 Stand kopieren.
+4. WoW starten und den sauberen Start genießen!

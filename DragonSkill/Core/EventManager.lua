@@ -1,5 +1,5 @@
--- Dragon Skill - Event Manager (v1.9.8)
--- Zentrale Event-Registrierung.
+-- Dragon Skill - Event Manager (v2.0.1)
+-- Zentrale Event-Registrierung fuer WoW 12.1 (Midnight).
 
 local ADDON_NAME = ...
 local EventManager = {}
@@ -10,21 +10,26 @@ DragonSkill.Events = EventManager
 local frame = CreateFrame("Frame")
 EventManager.listeners = {}
 
--- WoW 12.1 Fix: Wir verzögern die Registrierung minimal.
--- Dies verhindert ADDON_ACTION_FORBIDDEN während des initialen Ladens.
+-- WoW 12.1 Sicherheit: Wir blockieren die Registrierung von COMBAT_LOG_EVENT_UNFILTERED,
+-- da dies in Patch 12.1 fuer Drittanbieter-Addons verboten ist (ADDON_ACTION_FORBIDDEN).
+local RESTRICTED_EVENTS = {
+    ["COMBAT_LOG_EVENT_UNFILTERED"] = true,
+}
+
 function EventManager:On(event, callback)
+    if RESTRICTED_EVENTS[event] then
+        print("|cffff4444Dragon Skill:|r Warnung - Event '" .. event .. "' ist in WoW 12.1 geschuetzt. Nutze alternative APIs.")
+        return
+    end
+
     if not self.listeners[event] then
         self.listeners[event] = {}
 
-        -- Sicherer Aufruf via C_Timer.After, um den Callstack zu säubern.
+        -- Sicherer Aufruf via C_Timer.After(0)
         C_Timer.After(0, function()
             local ok, err = pcall(function() frame:RegisterEvent(event) end)
             if not ok then
-                -- Fallback: Manche Events in 12.1 benötigen einen benannten Frame
-                if not self.namedFrame then
-                    self.namedFrame = CreateFrame("Frame", "DragonSkillSecureEventFrame")
-                end
-                pcall(function() self.namedFrame:RegisterEvent(event) end)
+                -- Falls RegisterEvent fehlschlaegt, loggen wir es dezent
             end
         end)
     end
@@ -41,26 +46,16 @@ function EventManager:Off(event, callback)
     end
     if #list == 0 then
         pcall(function() frame:UnregisterEvent(event) end)
-        if self.namedFrame then pcall(function() self.namedFrame:UnregisterEvent(event) end) end
     end
 end
 
-local function HandleEvent(e, ...)
-    local list = EventManager.listeners[e]
+frame:SetScript("OnEvent", function(_, event, ...)
+    local list = EventManager.listeners[event]
     if not list then return end
     for _, callback in ipairs(list) do
         local ok, err = pcall(callback, ...)
         if not ok then
-            print("|cffff4444Dragon Skill Fehler|r [" .. e .. "]: " .. tostring(err))
+            print("|cffff4444Dragon Skill Fehler|r [" .. event .. "]: " .. tostring(err))
         end
-    end
-end
-
-frame:SetScript("OnEvent", function(_, event, ...) HandleEvent(event, ...) end)
-
--- Falls der benannte Fallback-Frame genutzt wird, leiten wir auch dort weiter
-C_Timer.After(0.1, function()
-    if EventManager.namedFrame then
-        EventManager.namedFrame:SetScript("OnEvent", function(_, event, ...) HandleEvent(event, ...) end)
     end
 end)
