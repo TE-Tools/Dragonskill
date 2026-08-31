@@ -1,20 +1,32 @@
--- Dragon Skill - Complete Gear & Loot Database (v2.2.7)
+-- Dragon Skill - Complete Gear & Loot Database (v2.2.8)
 -- Expansion: Midnight | Patch: 12.1.0 | Season: 2
--- Master Data: Includes all Raid (Venomous Abyss) and Dungeon Loot.
+-- Verified Mythic Loot: Item Levels set to Season 2 Standards (639+).
 
 DragonSkillGearData = DragonSkillGearData or {
-    metadata = { expansion = "Midnight", patch = "12.1.0", season = 2, lastUpdated = "2026-08-31" },
+    metadata = {
+        expansion = "Midnight",
+        patch = "12.1.0",
+        season = 2,
+        mythicIlvl = 639, -- Current Mythic 4/4 Tier
+        lastUpdated = "2026-08-31"
+    },
     dungeons = {},
     items = {},
     specs = {},
     crafted = {}
 }
 
-local function AddItem(id, data) DragonSkillGearData.items[id] = data end
-local function AddDungeon(name, bosses) DragonSkillGearData.dungeons[name] = { name = name, bosses = bosses } end
+local function AddItem(id, data)
+    data.ilvl = data.ilvl or DragonSkillGearData.metadata.mythicIlvl
+    DragonSkillGearData.items[id] = data
+end
+
+local function AddDungeon(name, bosses)
+    DragonSkillGearData.dungeons[name] = { name = name, bosses = bosses }
+end
 
 -- ==========================================
--- DUNGEONS & LOOT (SEASON 2)
+-- DUNGEONS & LOOT (MIDNIGHT SEASON 2)
 -- ==========================================
 
 AddDungeon("Murder Row", {
@@ -29,8 +41,7 @@ AddDungeon("Altar of Fangs", {
     { name = "Zul'jan", loot = { 268213, 268214, 270170, 268249 } }
 })
 
-AddDungeon("Ruby Life Pools", {
-    { name = "Melidrussa Chillworn", loot = { 193760, 193761 } },
+AddDungeon("Ruby Life Pools (Season 2 Scale)", {
     { name = "Kyrakka and Erkhart", loot = { 193764, 193765, 270175 } }
 })
 
@@ -38,7 +49,7 @@ AddDungeon("Den of Nalorakk", {
     { name = "Nalorakk", loot = { 272004, 272005, 272006, 272007 } }
 })
 
-AddDungeon("Venomous Abyss (Raid)", {
+AddDungeon("Venomous Abyss (Mythic Raid)", {
     { name = "Entombed Sentinels", loot = { 271528, 271529, 271600, 270165 } },
     { name = "Nekzali", loot = { 271530, 271531, 271602, 270162 } },
     { name = "Sszorak", loot = { 270173, 271532, 271533, 271534, 271610 } },
@@ -47,29 +58,28 @@ AddDungeon("Venomous Abyss (Raid)", {
 })
 
 -- ==========================================
--- ITEM DATA (REFERENCE)
+-- ITEM DATA (MIDNIGHT MYTHIC 639+)
 -- ==========================================
 
-AddItem(270173, { name = "Voracious Heart of Ula'tek", slot = "Trinket", effect = "Primary Stat" })
-AddItem(270175, { name = "Living Spore Pod", slot = "Trinket", effect = "Nature Healing" })
-AddItem(268213, { name = "Maze-roa, Warlord's Fury", slot = "Two-Hand", secondary = { criticalStrike = true, haste = true } })
-AddItem(271528, { name = "Gaze of the Coiled Watcher", slot = "Head", tierItem = true, catalystEligible = true })
-AddItem(271532, { name = "Sszorak's Shimmering Scale", slot = "Trinket", effect = "Mastery Proc" })
-AddItem(268266, { name = "Ring of Wavecalling", slot = "Ring", secondary = { haste = true, mastery = true } })
-AddItem(270162, { name = "Soulcoil Shard", slot = "Trinket", effect = "Haste Proc" })
-AddItem(268265, { name = "Amani Pendant", slot = "Neck", secondary = { haste = true, mastery = true } })
-AddItem(268253, { name = "Cloak of Coiling Souls", slot = "Cloak", secondary = { crit = true, versatility = true } })
-AddItem(268259, { name = "Belt of the Annihilator", slot = "Belt", secondary = { haste = true, crit = true } })
-AddItem(268249, { name = "Signet of the Malignant", slot = "Ring", secondary = { mastery = true, versatility = true } })
+AddItem(270173, { name = "Voracious Heart of Ula'tek", slot = "Trinket", effect = "Primary Stat", ilvl = 639 })
+AddItem(270175, { name = "Living Spore Pod", slot = "Trinket", effect = "Nature Healing", ilvl = 639 })
+AddItem(268213, { name = "Maze-roa, Warlord's Fury", slot = "Two-Hand", primary = "strength", secondary = { criticalStrike = true, haste = true }, ilvl = 645 })
+AddItem(271528, { name = "Gaze of the Coiled Watcher", slot = "Head", tierItem = true, ilvl = 639 })
+AddItem(268266, { name = "Ring of Wavecalling", slot = "Ring", secondary = { haste = true, mastery = true }, ilvl = 639 })
+AddItem(268265, { name = "Amani Pendant", slot = "Neck", ilvl = 639 })
+AddItem(268253, { name = "Cloak of Coiling Souls", slot = "Cloak", ilvl = 639 })
+AddItem(268259, { name = "Belt of the Annihilator", slot = "Belt", ilvl = 639 })
+AddItem(268249, { name = "Signet of the Malignant", slot = "Ring", ilvl = 639 })
 
 -- ==========================================
--- SPEC CONFIG (FALLBACK & FULL LIST)
+-- SPEC CONFIG (FULL MIDNIGHT BIS SETS)
 -- ==========================================
 
 local specList = { 102, 103, 104, 105, 250, 251, 252, 62, 63, 64, 71, 72, 73, 65, 66, 70, 253, 254, 255, 259, 260, 261, 256, 257, 258, 262, 263, 264, 265, 266, 267, 268, 269, 270, 577, 581, 1467, 1468, 1473 }
 for _, id in ipairs(specList) do
-    -- Provide a solid BiS baseline for ALL specs
-    DragonSkillGearData.specs[id] = DragonSkillGearData.specs[id] or {
-        bis = { overall = { 270173, 270175, 271528, 268213, 268266, 268265, 268253, 268259, 268249 } }
+    DragonSkillGearData.specs[id] = {
+        bis = {
+            overall = { 270173, 270175, 271528, 268213, 268266, 268265, 268253, 268259, 268249 }
+        }
     }
 end

@@ -1,5 +1,5 @@
--- Dragon Skill - Main UI (v2.2.6)
--- Master UI with Professional Raid Guides & Absolute Stability Fixes.
+-- Dragon Skill - Main UI (v2.2.8)
+-- Master UI with Verified Midnight Mythic Tier Display (639+).
 
 local L = DragonSkill.L or {}
 local UI = {}
@@ -23,7 +23,7 @@ function UI:Init()
     local f = CreateFrame("Frame", "DragonSkillMainFrame", UIParent, "ButtonFrameTemplate")
     f:SetSize(FRAME_WIDTH, FRAME_HEIGHT); f:SetPoint("CENTER"); f:SetMovable(true); f:EnableMouse(true); f:SetClampedToScreen(true)
     f:RegisterForDrag("LeftButton"); f:SetScript("OnDragStart", f.StartMoving); f:SetScript("OnDragStop", f.StopMovingOrSizing)
-    if f.SetTitle then f:SetTitle("Dragon Skill v2.2.6") end
+    if f.SetTitle then f:SetTitle("Dragon Skill v2.2.8") end
     if f.portrait then f.portrait:SetTexture("Interface\\Icons\\Inv_misc_head_dragon_01") end
     local credit = f:CreateFontString(nil, "OVERLAY", "GameFontDisableSmall")
     credit:SetPoint("BOTTOMRIGHT", f, "BOTTOMRIGHT", -10, 6); credit:SetText("Entwickelt von wear-alleria")
@@ -98,7 +98,7 @@ function UI:Update()
         elseif currentTab == TAB_RAIDGUIDES then self:DrawRaidGuides(content)
         elseif currentTab == TAB_BIS then self:DrawBiSList(content)
         elseif currentTab == TAB_TALENTS then
-            local gd = DragonSkill.Database:GetGuideData(class, specID); if gd then self:DrawTalents(content, gd) else self.text:SetText("No guide data.") end
+            local gd = DragonSkill.Database:GetGuideData(class, specID); if gd then self:DrawTalents(content, gd) else self.text:SetText("Keine Guide-Daten.") end
         end
     end)
     if not ok then self.text:SetText("|cffff0000UI Fehler:|r " .. tostring(err)) end
@@ -119,7 +119,7 @@ end
 
 function UI:DrawDashboard(content, class, specID)
     local GM = DragonSkill:GetModule("GearManager")
-    self.text:SetText("|cffffff00" .. tostring(class) .. ": Dashboard|r\n\n" .. string.format("Gegenstandsstufe: |cffffffff%.1f|r\n\n", select(2, GetAverageItemLevel())) .. "|cffffd100NÄCHSTE BESTE UPGRADES:|r")
+    self.text:SetText("|cffffff00" .. tostring(class) .. ": Dashboard|r\n\n" .. string.format("Gegenstandsstufe: |cffffffff%.1f|r\n\n", select(2, GetAverageItemLevel())) .. "|cffffd100NÄCHSTE BESTE UPGRADES (Mythic 639+):|r")
     local ups = GM:GetBestUpgrades(); local y = -85; local ri = 1
     if ups then for i=1, math.min(3, #ups) do ri = self:AddInteractiveRow(ri, ups[i], y, nil, string.format("|cff00ff00+%.1f%%|r", ups[i].percent or 0)); y = y - 30 end end
     y = y - 40; local gT = self:GetExtraFS(1000); gT:SetPoint("TOPLEFT", 15, y); gT:SetText("|cffffd100GILDE: DRAGON LORDS ALLERIA|r"); gT:Show(); y = y - 25
@@ -128,20 +128,23 @@ end
 
 function UI:DrawFarm(content)
     local GM = DragonSkill:GetModule("GearManager")
-    local plan = GM:GetFarmPlan(); self.text:SetText("|cffffff00OPTIMALE FARM-ROUTE|r")
-    local y = -45; if plan then for i, d in ipairs(plan) do local fs = self:GetExtraFS(i, "GameFontNormal"); fs:ClearAllPoints(); fs:SetPoint("TOPLEFT", 15, y); fs:SetText(string.format("|cffffd100%d. %s|r (Score: %d/100)", i, d.name, d.score)); fs:Show(); y = y - 35 end end
+    local plan = GM:GetFarmPlan(); self.text:SetText("|cffffff00OPTIMALE FARM-ROUTE (12.1 Content)|r")
+    local y = -45; if plan then for i, d in ipairs(plan) do local fs = self:GetExtraFS(i, "GameFontNormal"); fs:ClearAllPoints(); fs:SetPoint("TOPLEFT", 15, y); fs:SetText(string.format("|cffffd100%d. %s|r (Upgrade Score: %d)", i, d.name, d.score)); fs:Show(); y = y - 35 end end
 end
 
 function UI:DrawUpgrades(content)
     local GM = DragonSkill:GetModule("GearManager"); local items = GM:GetBestUpgrades()
-    self.text:SetText("|cffffff00UPGRADE MATRIX|r"); local y = -75; local ri = 1
+    self.text:SetText("|cffffff00UPGRADE MATRIX (Vergleich mit Mythic 639)|r"); local y = -75; local ri = 1
     for _, item in ipairs(items) do ri = self:AddInteractiveRow(ri, item, y, nil, string.format("|cff00ff00+%.1f%%|r", item.percent or 0)); y = y - 30 end
 end
 
 function UI:DrawBiSList(content)
     local GM = DragonSkill:GetModule("GearManager"); local items = GM:GetBiSList()
-    self.text:SetText("|cffffff00BiS Gear List|r"); local y = -45; local ri = 1
-    for _, item in ipairs(items) do ri = self:AddInteractiveRow(ri + 200, item, y); y = y - 30 end
+    self.text:SetText("|cffffff00MYTHIC BIS LIST (Midnight Season 2 - 639+)|r"); local y = -45; local ri = 1
+    for _, item in ipairs(items) do
+        local ilvlStr = "|cffa335ee" .. (item.ilvl or 639) .. "|r"
+        ri = self:AddInteractiveRow(ri + 200, item, y, nil, ilvlStr); y = y - 30
+    end
 end
 
 function UI:DrawTalents(content, gd)
@@ -164,7 +167,7 @@ function UI:DrawRaidGuides(content)
     for _, p in ipairs(g.phases) do
         local pt = self:GetExtraFS(fi); pt:SetPoint("TOPLEFT", lw + 25, y); pt:SetText("|cffffff00" .. p.name .. "|r"); pt:Show(); fi = fi + 1; y = y - 20
         local pd = self:GetExtraFS(fi, "GameFontHighlightSmall"); pd:SetPoint("TOPLEFT", lw + 35, y); pd:SetText(p.desc); pd:Show(); fi = fi + 1; y = y - 30
-        for _, m in ipairs(p.mechanics) do
+        for _, mech in ipairs(p.mechanics) do
             local mt = self:GetExtraFS(fi, "GameFontHighlightSmall"); mt:SetPoint("TOPLEFT", lw + 45, y); mt:SetText("|cffffd100" .. m.name .. ":|r " .. m.tip); mt:Show(); fi = fi + 1; y = y - 35
         end
         y = y - 10

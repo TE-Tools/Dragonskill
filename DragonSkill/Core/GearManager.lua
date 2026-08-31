@@ -1,5 +1,5 @@
--- Dragon Skill - Gear Manager Engine (v2.2.7)
--- Handles stat weights, upgrade scores, and merged BiS lists.
+-- Dragon Skill - Gear Manager Engine (v2.2.8)
+-- Optimized for Midnight 12.1 Mythic Tier (ilvl 639+).
 
 local GearManager = DragonSkill:RegisterModule("GearManager", {})
 
@@ -12,7 +12,6 @@ function GearManager:GetStatWeights()
     local SP = DragonSkill:GetModule("StatPriority")
     local weights = {}
     for k, v in pairs(STAT_WEIGHTS_BASE) do weights[k] = v end
-
     local priorityData = SP and SP:GetForCurrentSpec()
     if priorityData and priorityData.wowhead then
         local str = priorityData.wowhead:lower()
@@ -33,54 +32,36 @@ end
 function GearManager:GetItemScore(itemId, itemLevel)
     local data = DragonSkillGearData.items[itemId]
     if not data then return 0, {} end
-
     local weights = self:GetStatWeights()
-    local ilvlScore = (itemLevel or 250) * 12
+    -- Midnight Season 2 Scaling
+    local ilvlScore = (itemLevel or data.ilvl or 639) * 15
     local statScore = 0
-    local bonusScore = 0
-
     if data.secondary then
         for stat, active in pairs(data.secondary) do
             if active then statScore = statScore + (weights[stat] or 0) end
         end
     end
-
-    if data.tierItem then bonusScore = bonusScore + 600 end
-    if data.catalystEligible then bonusScore = bonusScore + 400 end
-    if data.overallScore then bonusScore = bonusScore + (data.overallScore * 8) end
-
-    local total = ilvlScore + statScore + bonusScore
-    return total, { ilvl = ilvlScore, stats = statScore, bonus = bonusScore }
+    return ilvlScore + statScore, { ilvl = ilvlScore, stats = statScore }
 end
 
 function GearManager:GetUpgradeDetails(slot, targetItemId, targetIlvl)
     local Char = DragonSkill:GetModule("Character")
     local currentGear = Char and Char:GetCurrentGear() or {}
     local current = currentGear[slot]
-
     local currentScore = 0
     local currentIlvl = 0
     if current and current.itemId then
         currentScore = self:GetItemScore(current.itemId, current.ilvl)
         currentIlvl = current.ilvl
     end
-
-    local targetScore, breakdown = self:GetItemScore(targetItemId, targetIlvl or 252)
+    local targetScore, breakdown = self:GetItemScore(targetItemId, targetIlvl or 639)
     local diff = targetScore - currentScore
-
-    local percent = 0
-    if currentScore > 0 then
-        percent = (diff / currentScore) * 100
-    else
-        percent = (diff / 1000) * 100
-    end
-
+    local percent = (currentScore > 0) and ((diff / currentScore) * 100) or 100
     return {
         score = diff,
         percent = math.max(0, math.floor(percent * 10) / 10),
         currentIlvl = currentIlvl,
-        targetIlvl = targetIlvl or 252,
-        breakdown = breakdown
+        targetIlvl = targetIlvl or 639
     }
 end
 
@@ -94,9 +75,7 @@ function GearManager:GetFarmPlan()
     if not DragonSkillGearData or not DragonSkillGearData.dungeons then return plan end
     for name, _ in pairs(DragonSkillGearData.dungeons) do
         local score = self:GetDungeonScore(name)
-        if score > 5 then
-            table.insert(plan, { name = name, score = score })
-        end
+        if score > 0 then table.insert(plan, { name = name, score = score }) end
     end
     table.sort(plan, function(a, b) return a.score > b.score end)
     return plan
@@ -109,32 +88,22 @@ function GearManager:GetDungeonScore(dungeonName)
     local count = 0
     for _, boss in ipairs(dungeon.bosses) do
         for _, itemId in ipairs(boss.loot) do
-            local item = DragonSkillGearData.items[itemId]
-            if item then
-                local upgrade = self:GetUpgradeScore(item.slot, itemId)
-                if upgrade > 0 then
-                    totalUpgrade = totalUpgrade + upgrade
-                    count = count + 1
-                end
-            end
+            local upgrade = self:GetUpgradeScore("Item", itemId, 639)
+            if upgrade > 0 then totalUpgrade = totalUpgrade + upgrade; count = count + 1 end
         end
     end
-    return math.floor(math.min(100, (totalUpgrade / 80) + (count * 12)))
+    return math.floor(math.min(100, (totalUpgrade / 100) + (count * 10)))
 end
 
 function GearManager:GetBestUpgrades()
     local upgrades = {}
     local bisList = self:GetBiSList()
     for _, item in ipairs(bisList) do
-        local details = self:GetUpgradeDetails(item.slot or "Item", item.itemId)
+        local details = self:GetUpgradeDetails(item.slot or "Item", item.itemId, 639)
         if details.score > 0 then
             table.insert(upgrades, {
-                itemId = item.itemId,
-                name = item.name,
-                slot = item.slot or "Item",
-                score = details.score,
-                percent = details.percent,
-                priority = math.floor(math.min(10, details.percent * 2))
+                itemId = item.itemId, name = item.name, slot = item.slot or "Item",
+                score = details.score, percent = details.percent, ilvl = 639
             })
         end
     end
@@ -146,68 +115,42 @@ function GearManager:GetBiSList()
     local _, class = UnitClass("player")
     local specIndex = GetSpecialization()
     local specID = specIndex and select(1, GetSpecializationInfo(specIndex)) or 0
-
     local list = {}
-    local seenItems = {}
-
-    -- 1. Combine Wowhead and Archon Data (Deep Merge)
+    local seen = {}
+    -- 1. Merge Scraped Data
     if DragonSkillData and DragonSkillData[class] and DragonSkillData[class][specID] then
         local bis = DragonSkillData[class][specID].bisGear
-        if bis then
-            local sources = { bis.wowhead, bis.archon }
-            for _, sourceList in ipairs(sources) do
-                if sourceList then
-                    for _, entry in ipairs(sourceList) do
-                        if entry.itemId and not seenItems[entry.itemId] then
-                            local name = entry.name or entry.text or "Item "..entry.itemId
-                            table.insert(list, {
-                                itemId = entry.itemId,
-                                name = name,
-                                slot = entry.slot or "Item"
-                            })
-                            seenItems[entry.itemId] = true
-                        end
-                    end
+        local sources = { bis.wowhead, bis.archon }
+        for _, s in ipairs(sources) do
+            if s then for _, entry in ipairs(s) do
+                if entry.itemId and not seen[entry.itemId] then
+                    table.insert(list, { itemId = entry.itemId, name = entry.name or entry.text or "Item", slot = entry.slot or "Item", ilvl = 639 })
+                    seen[entry.itemId] = true
                 end
-            end
+            end end
         end
     end
-
-    -- 2. Fallback to Hardcoded GearDatabase
+    -- 2. Fallback to Midnight Master Database
     if #list < 5 and DragonSkillGearData.specs[specID] then
-        local bis = DragonSkillGearData.specs[specID].bis
-        if bis and bis.overall then
-            for _, itemId in ipairs(bis.overall) do
-                if not seenItems[itemId] then
-                    local item = DragonSkillGearData.items[itemId]
-                    if item then
-                        table.insert(list, { itemId = itemId, name = item.name, slot = item.slot or "Item" })
-                        seenItems[itemId] = true
-                    end
+        for _, itemId in ipairs(DragonSkillGearData.specs[specID].bis.overall) do
+            if not seen[itemId] then
+                local item = DragonSkillGearData.items[itemId]
+                if item then
+                    table.insert(list, { itemId = itemId, name = item.name, slot = item.slot or "Item", ilvl = item.ilvl or 639 })
+                    seen[itemId] = true
                 end
             end
         end
     end
-
     return list
 end
 
 function GearManager:GetCatalystRecommendation()
-    local Char = DragonSkill:GetModule("Character")
-    local tierCount, tierName = Char:GetActiveTierInfo()
-    if tierCount >= 4 then return "Du hast den 4er Bonus (" .. tierName .. "). Nutze Catalyst fuer Itemlevel-Upgrades." end
-    local upgrades = self:GetBestUpgrades()
-    for _, up in ipairs(upgrades) do
-        local item = DragonSkillGearData.items[up.itemId]
-        if item and item.catalystEligible then
-            return "Empfehlung: Wandle |cffffd100" .. up.name .. "|r um fuer deinen " .. (tierCount < 2 and "2er" or "4er") .. " Bonus."
-        end
-    end
-    return "Keine idealen Catalyst-Kandidaten gefunden. Brust/Beine priorisieren!"
+    return "Catalyst: Priorisiere Brust oder Beine fuer den 12.1 Set-Bonus."
 end
 
 function GearManager:GetVaultRecommendation()
-    local upgrades = self:GetBestUpgrades()
-    if #upgrades == 0 then return "Nimm die Sockel-Token (Aspekt-Abzeichen)." end
-    return "Priorisiere in der Vault: |cffffd100" .. upgrades[1].name .. "|r (" .. (upgrades[1].slot or "Gear") .. ")."
+    local ups = self:GetBestUpgrades()
+    if #ups == 0 then return "Vault: Nimm Aspekt-Abzeichen." end
+    return string.format("Vault: Priorisiere |cffffd100%s|r (Mythic %d).", ups[1].name, ups[1].ilvl)
 end
