@@ -1,36 +1,29 @@
-# Walkthrough - Dragon Skill v2.1.0 "The Local Expert"
+# Walkthrough - Dragon Skill v2.2.7 "Full Spec Coverage"
 
-Dieses Update verwandelt den AI Coach in einen echten WoW-Experten, der auch ohne Internetverbindung (lokal) deutlich mehr Fragen beantworten kann.
+Dieses Update stellt sicher, dass für jede einzelne Klasse und Spezialisierung eine vollständige BiS-Liste (Best-in-Slot) angezeigt wird.
 
-## Neue Kern-Funktionen
+## Wichtigste Neuerungen
 
-### 1. Massive Wissensdatenbank (Lokal)
-Der Coach verfügt jetzt über eine integrierte Fakten-Datenbank für Patch 12.1 (Midnight), die sofort auf folgende Themen antwortet:
-- **Dungeon-Taktiken**: Frag nach einem Dungeon (z.B. "Tipp für Murder Row") und erhalte sofort einen strategischen Hinweis für die Bosse.
-- **Chemie & Food**: Der Coach weiß jetzt, welche Fläschchen und Buff-Food für deine Rolle (Tank, Heiler, DPS) am besten sind.
-- **Berufe & Funken**: Erhalte Tipps zur Nutzung der "Funken der Erneuerung" (Spark of Omen) und Handwerksaufträgen.
-- **Talente**: Der Coach empfiehlt dir jetzt aktiv die beste Skillung aus deinem Talente-Tab.
-- **Währungen**: Tipps zur optimalen Nutzung von Wappen (Crests) wurden hinzugefügt.
+### 1. Master BiS-Merge Technologie
+Bisher hat das Addon oft nur die Daten von einer Quelle (entweder Wowhead oder Archon) angezeigt. Wenn eine Quelle unvollständig war, sah die Liste leer aus.
+- **Lösung**: Ich habe den `GearManager` so umgebaut, dass er die Daten von **Wowhead und Archon kombiniert**.
+- **Ergebnis**: Doppelte Items werden automatisch gefiltert, und du erhältst eine deutlich längere und vollständigere Liste aller Top-Items für deinen Spec.
 
-### 2. Intelligente Intent-Erkennung
-Die Engine versteht jetzt deutlich mehr Keywords. Du kannst natürlicher fragen:
-- *"Was soll ich essen?"*
-- *"Welche Skillung ist am besten?"*
-- *"Was mache ich mit dem Funken?"*
-- *"Hast du Tipps für Altar of Fangs?"*
+### 2. Vollständige Klassen-Datenbank (v2.2.7)
+Ich habe die interne Fallback-Datenbank massiv erweitert:
+- Alle **40 Spezialisierungen** (von Druiden-Heiler bis Krieger-Tank) haben nun einen garantierten Mindest-Satz an 12.1 BiS-Items hinterlegt.
+- Auch wenn das Internet oder das Scraping einmal ausfällt, siehst du immer die wichtigsten Ziele für Schmuckstücke, Waffen, Ringe und Umhänge.
 
-### 3. Hybrid-Antworten
-Wenn du die externe KI (Claude/OpenAI) aktiviert hast, erhältst du jetzt eine **Hybrid-Antwort**:
-1. **Sofort**: Der lokale Coach gibt dir die harten Fakten aus der Datenbank.
-2. **Parallel**: Die Anfrage wird an Claude gesendet, damit du per Knopfdruck ("KI-Antwort abholen") später noch eine tiefergehende, menschlichere Analyse bekommst.
+### 3. Druiden-Heiler Fokus
+- Die BiS-Liste für Wiederherstellungs-Druiden wurde explizit geprüft und zeigt nun deutlich mehr als nur 3 Gegenstände an. Es werden nun alle relevanten Trinkets (wie *Voracious Heart* und *Living Spore Pod*) sowie Waffen und Rüstungsteile gelistet.
 
 ## Verifizierung
-- [x] Lokale Abfrage: "Was soll ich essen?" liefert rollenspezifische Empfehlungen.
-- [x] Dungeon-Check: "Tipp für Zul'jan" (im Altar of Fangs) liefert Taktik-Hinweise.
-- [x] Persistenz: Der gesamte Chatverlauf bleibt weiterhin über Reloads hinweg gespeichert.
+- [x] Druiden-Check: BiS-Liste zeigt nun eine lange Liste an Items aus beiden Quellen.
+- [x] All-Spec Check: Jede Spezialisierung hat nun eine valide BiS-Anzeige.
+- [x] Dubletten-Check: Items erscheinen trotz Merging nicht doppelt in der Liste.
 
 ## Installation
 1. WoW beenden.
 2. Alten `DragonSkill` Ordner löschen.
-3. Neuen v2.1.0 Stand kopieren.
-4. WoW starten und den Experten befragen!
+3. Neuen v2.2.7 Stand kopieren.
+4. WoW starten und die vollständigen Listen im Reiter "BiS List" genießen!
