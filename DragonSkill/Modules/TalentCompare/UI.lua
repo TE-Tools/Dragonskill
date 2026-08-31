@@ -1,5 +1,5 @@
--- Dragon Skill - Main UI (v2.2.8)
--- Master UI with Verified Midnight Mythic Tier Display (639+).
+-- Dragon Skill - Main UI (v2.2.9)
+-- Final UI Integrity Fix: Absolute 639 Display and Crash Protection.
 
 local L = DragonSkill.L or {}
 local UI = {}
@@ -23,7 +23,7 @@ function UI:Init()
     local f = CreateFrame("Frame", "DragonSkillMainFrame", UIParent, "ButtonFrameTemplate")
     f:SetSize(FRAME_WIDTH, FRAME_HEIGHT); f:SetPoint("CENTER"); f:SetMovable(true); f:EnableMouse(true); f:SetClampedToScreen(true)
     f:RegisterForDrag("LeftButton"); f:SetScript("OnDragStart", f.StartMoving); f:SetScript("OnDragStop", f.StopMovingOrSizing)
-    if f.SetTitle then f:SetTitle("Dragon Skill v2.2.8") end
+    if f.SetTitle then f:SetTitle("Dragon Skill v2.2.9") end
     if f.portrait then f.portrait:SetTexture("Interface\\Icons\\Inv_misc_head_dragon_01") end
     local credit = f:CreateFontString(nil, "OVERLAY", "GameFontDisableSmall")
     credit:SetPoint("BOTTOMRIGHT", f, "BOTTOMRIGHT", -10, 6); credit:SetText("Entwickelt von wear-alleria")
@@ -105,46 +105,57 @@ function UI:Update()
 end
 
 function UI:AddInteractiveRow(index, itemData, yOffset, labelPrefix, valueText)
-    if not itemData or not itemData.itemId then return index end
+    if not itemData or not (itemData.itemId or itemData.text) then return index end
     local row = self:GetRow(index); row:SetParent(self.frame.Content); row:ClearAllPoints(); row:SetPoint("TOPLEFT", 15, yOffset)
+
     local iid = tonumber(itemData.itemId) or 0
+    if iid > 0 then C_Item.RequestLoadItemDataByID(iid) end
+
     row.icon:SetTexture(C_Item.GetItemIconByID(iid) or "Interface\\Icons\\Inv_misc_questionmark")
-    local name = tostring(itemData.name) or "Item "..iid
-    row.text:SetText((labelPrefix or (itemData.slot and "|cff00ff00"..itemData.slot..":|r " or "")) .. name)
+
+    local name = tostring(itemData.name or itemData.text or "Item "..iid)
+    local prefix = tostring(labelPrefix or (itemData.slot and "|cff00ff00"..itemData.slot..":|r " or ""))
+    row.text:SetText(prefix .. name)
+
     if valueText then row.val:SetText(tostring(valueText)); row.val:Show() else row.val:Hide() end
-    row:SetScript("OnEnter", function(s) GameTooltip:SetOwner(s, "ANCHOR_RIGHT"); GameTooltip:SetItemByID(iid); GameTooltip:Show() end)
+
+    row:SetScript("OnEnter", function(s)
+        if iid > 0 then
+            GameTooltip:SetOwner(s, "ANCHOR_RIGHT"); GameTooltip:SetItemByID(iid); GameTooltip:Show()
+        end
+    end)
     row:SetScript("OnLeave", function() GameTooltip:Hide() end); row:Show()
     return index + 1
 end
 
 function UI:DrawDashboard(content, class, specID)
     local GM = DragonSkill:GetModule("GearManager")
-    self.text:SetText("|cffffff00" .. tostring(class) .. ": Dashboard|r\n\n" .. string.format("Gegenstandsstufe: |cffffffff%.1f|r\n\n", select(2, GetAverageItemLevel())) .. "|cffffd100NÄCHSTE BESTE UPGRADES (Mythic 639+):|r")
+    self.text:SetText("|cffffff00" .. tostring(class) .. ": Dashboard|r\n\n" .. string.format("Gegenstandsstufe: |cffffffff%.1f|r\n\n", select(2, GetAverageItemLevel())) .. "|cffffd100NÄCHSTE BESTE UPGRADES (Ziel: Mythic 639):|r")
     local ups = GM:GetBestUpgrades(); local y = -85; local ri = 1
     if ups then for i=1, math.min(3, #ups) do ri = self:AddInteractiveRow(ri, ups[i], y, nil, string.format("|cff00ff00+%.1f%%|r", ups[i].percent or 0)); y = y - 30 end end
     y = y - 40; local gT = self:GetExtraFS(1000); gT:SetPoint("TOPLEFT", 15, y); gT:SetText("|cffffd100GILDE: DRAGON LORDS ALLERIA|r"); gT:Show(); y = y - 25
     local gW = self:GetExtraFS(1001, "GameFontHighlightSmall"); gW:SetPoint("TOPLEFT", 15, y); gW:SetText("Website: |cff00ccffhttps://guildsowow.com/dragon-lords|r"); gW:Show()
 end
 
+function UI:DrawBiSList(content)
+    local GM = DragonSkill:GetModule("GearManager"); local items = GM:GetBiSList()
+    self.text:SetText("|cffffff00MYTHIC BIS GEAR (Patch 12.1 - 639+)|r"); local y = -45; local ri = 1
+    for _, item in ipairs(items) do
+        local ilvlStr = "|cffa335ee" .. (item.ilvl or 639) .. "|r"
+        ri = self:AddInteractiveRow(ri + 200, item, y, nil, ilvlStr); y = y - 30
+    end
+end
+
 function UI:DrawFarm(content)
     local GM = DragonSkill:GetModule("GearManager")
-    local plan = GM:GetFarmPlan(); self.text:SetText("|cffffff00OPTIMALE FARM-ROUTE (12.1 Content)|r")
+    local plan = GM:GetFarmPlan(); self.text:SetText("|cffffff00OPTIMALE FARM-ROUTE (Mythic 639+ Targets)|r")
     local y = -45; if plan then for i, d in ipairs(plan) do local fs = self:GetExtraFS(i, "GameFontNormal"); fs:ClearAllPoints(); fs:SetPoint("TOPLEFT", 15, y); fs:SetText(string.format("|cffffd100%d. %s|r (Upgrade Score: %d)", i, d.name, d.score)); fs:Show(); y = y - 35 end end
 end
 
 function UI:DrawUpgrades(content)
     local GM = DragonSkill:GetModule("GearManager"); local items = GM:GetBestUpgrades()
-    self.text:SetText("|cffffff00UPGRADE MATRIX (Vergleich mit Mythic 639)|r"); local y = -75; local ri = 1
+    self.text:SetText("|cffffff00UPGRADE MATRIX (Vs. Mythic 639)|r"); local y = -75; local ri = 1
     for _, item in ipairs(items) do ri = self:AddInteractiveRow(ri, item, y, nil, string.format("|cff00ff00+%.1f%%|r", item.percent or 0)); y = y - 30 end
-end
-
-function UI:DrawBiSList(content)
-    local GM = DragonSkill:GetModule("GearManager"); local items = GM:GetBiSList()
-    self.text:SetText("|cffffff00MYTHIC BIS LIST (Midnight Season 2 - 639+)|r"); local y = -45; local ri = 1
-    for _, item in ipairs(items) do
-        local ilvlStr = "|cffa335ee" .. (item.ilvl or 639) .. "|r"
-        ri = self:AddInteractiveRow(ri + 200, item, y, nil, ilvlStr); y = y - 30
-    end
 end
 
 function UI:DrawTalents(content, gd)
