@@ -1,5 +1,5 @@
--- Dragon Skill - Main UI (v2.3.10)
--- Gilden-Website Link, Dashboard BiS-Ziele, BiS empty-state.
+-- Dragon Skill - Main UI (v2.3.11)
+-- Fix: Copy-Popup nutzt self.data (12.1), EditBox unlimited, Chat-Fallback.
 
 local L = DragonSkill.L or {}
 local UI = {}
@@ -62,10 +62,22 @@ function UI:Init()
         local url = (DragonSkillDB and DragonSkillDB.guildUrl) or DEFAULT_GUILD_URL
         StaticPopupDialogs["DRAGONSKILL_URL"] = {
             text = "Gilden-Website (Strg+C zum Kopieren):",
-            button1 = "OK", hasEditBox = 1,
-            OnShow = function(self, data)
-                if self.editBox then self.editBox:SetText(tostring(data or "")); self.editBox:HighlightText() end
+            button1 = "OK",
+            hasEditBox = true,
+            editBoxWidth = 420,
+            maxLetters = 0,
+            preferredIndex = 3,
+            OnShow = function(self)
+                local u = tostring(self.data or "")
+                local eb = self.editBox or self.EditBox
+                if eb then
+                    if eb.SetMaxLetters then eb:SetMaxLetters(0) end
+                    eb:SetText(u)
+                    eb:HighlightText()
+                    eb:SetFocus()
+                end
             end,
+            EditBoxOnEscapePressed = function(self) self:GetParent():Hide() end,
             timeout = 0, whileDead = true, hideOnEscape = true,
         }
         StaticPopup_Show("DRAGONSKILL_URL", nil, nil, url)
@@ -270,10 +282,22 @@ function UI:DrawDashboard(content, class, specID)
     webBtn:SetScript("OnClick", function()
         StaticPopupDialogs["DRAGONSKILL_URL"] = {
             text = "Gilden-Website (Strg+C):",
-            button1 = "OK", hasEditBox = 1,
-            OnShow = function(self, data)
-                if self.editBox then self.editBox:SetText(tostring(data or "")); self.editBox:HighlightText() end
+            button1 = "OK",
+            hasEditBox = true,
+            editBoxWidth = 420,
+            maxLetters = 0,
+            preferredIndex = 3,
+            OnShow = function(self)
+                local u = tostring(self.data or "")
+                local eb = self.editBox or self.EditBox
+                if eb then
+                    if eb.SetMaxLetters then eb:SetMaxLetters(0) end
+                    eb:SetText(u)
+                    eb:HighlightText()
+                    eb:SetFocus()
+                end
             end,
+            EditBoxOnEscapePressed = function(self) self:GetParent():Hide() end,
             timeout = 0, whileDead = true, hideOnEscape = true,
         }
         StaticPopup_Show("DRAGONSKILL_URL", nil, nil, gUrl)
@@ -358,10 +382,17 @@ function UI:DrawTalents(content, gd)
             self.talentBtns[i] = btn; btn:SetSize(560, 32); btn:SetPoint("TOPLEFT", 15, y)
             local label = string.format("[%s] %s", tostring(b.provider or "?"):upper(), tostring(b.label or "Build"))
             btn:SetText(label)
-            local importStr = b.importString
-            btn:SetScript("OnClick", function()
-                if importStr and importStr ~= "" then StaticPopup_Show("DRAGONSKILL_COPY", nil, nil, importStr)
-                else print("|cffff0000Dragon Skill:|r Kein Import-String.") end
+            local importStr = tostring(b.importString or "")
+            btn.importString = importStr
+            btn:SetScript("OnClick", function(selfBtn)
+                local s = selfBtn.importString or importStr or ""
+                if s ~= "" then
+                    print("|cffffd100Dragon Skill:|r Import-String kopieren (Strg+C im Popup):")
+                    print(s)
+                    StaticPopup_Show("DRAGONSKILL_COPY", nil, nil, s)
+                else
+                    print("|cffff0000Dragon Skill:|r Kein Import-String hinterlegt.")
+                end
             end)
             btn:Show(); y = y - 40
         end
@@ -404,13 +435,36 @@ end
 
 StaticPopupDialogs["DRAGONSKILL_COPY"] = {
     text = "Build-String kopieren (Strg+C):",
-    button1 = "Fertig", hasEditBox = 1,
-    OnShow = function(self, data)
+    button1 = "Fertig",
+    hasEditBox = true,
+    editBoxWidth = 420,
+    maxLetters = 0,
+    timeout = 0,
+    whileDead = true,
+    hideOnEscape = true,
+    preferredIndex = 3,
+    OnShow = function(self)
+        local data = self.data
         local str = data
-        if type(data) == "table" then str = data.importString or data[1] or "" end
-        if self.editBox and str then self.editBox:SetText(tostring(str)); self.editBox:HighlightText() end
+        if type(data) == "table" then
+            str = data.importString or data[1] or tostring(data)
+        end
+        str = tostring(str or "")
+        local eb = self.editBox or self.EditBox
+        if eb then
+            if eb.SetMaxLetters then eb:SetMaxLetters(0) end
+            eb:SetText(str)
+            eb:HighlightText()
+            eb:SetFocus()
+        end
+        if str ~= "" then
+            print("|cffffd100Dragon Skill:|r Talent-String (falls Feld leer – manuell markieren):")
+            print(str)
+        end
     end,
-    timeout = 0, whileDead = true, hideOnEscape = true,
+    EditBoxOnEscapePressed = function(self)
+        self:GetParent():Hide()
+    end,
 }
 
 function UI:Toggle()
