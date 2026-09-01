@@ -1,5 +1,5 @@
--- Dragon Skill - Main UI (v2.3.6)
--- Midnight Modern: Professional Dark Design with High-End Highlights.
+-- Dragon Skill - Main UI (v2.3.7)
+-- Midnight Modern + critical UI fixes (gold color, guild, popup, row index).
 
 local L = DragonSkill.L or {}
 local UI = {}
@@ -18,14 +18,13 @@ local TAB_RAIDGUIDES = 7
 local FRAME_WIDTH, FRAME_HEIGHT = 820, 680
 local CONTENT_WIDTH = 590
 
-local COLOR_GOLD = "|cFFD100"
+local COLOR_GOLD = "|cffffd100"
 local COLOR_GREY = "|cffaaaaaa"
 local COLOR_WHITE = "|cffffffff"
 
 function UI:Init()
     if self.frame then return end
 
-    -- --- Midnight Modern Frame ---
     local f = CreateFrame("Frame", "DragonSkillMainFrame", UIParent, "BackdropTemplate")
     f:SetSize(FRAME_WIDTH, FRAME_HEIGHT); f:SetPoint("CENTER"); f:SetMovable(true); f:EnableMouse(true); f:SetClampedToScreen(true)
     f:RegisterForDrag("LeftButton"); f:SetScript("OnDragStart", f.StartMoving); f:SetScript("OnDragStop", f.StopMovingOrSizing)
@@ -39,7 +38,6 @@ function UI:Init()
     f:SetBackdropColor(0.02, 0.02, 0.05, 0.95)
     f:SetBackdropBorderColor(0.2, 0.2, 0.2, 1)
 
-    -- --- Character Header Section ---
     local header = CreateFrame("Frame", nil, f, "BackdropTemplate")
     header:SetSize(FRAME_WIDTH - 28, 70)
     header:SetPoint("TOPLEFT", 14, -14)
@@ -49,20 +47,21 @@ function UI:Init()
     })
     header:SetBackdropColor(0.1, 0.1, 0.1, 0.3)
 
-    local name = UnitName("player")
+    local name = UnitName("player") or "Player"
     local _, avgItemLevel = GetAverageItemLevel()
-    local guildName = "Dragon Lords"
+    local guildName = GetGuildInfo("player") or "Keine Gilde"
     local classColor = RAID_CLASS_COLORS[select(2, UnitClass("player"))] or { r=1, g=1, b=1 }
 
     header.nameText = header:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
     header.nameText:SetPoint("TOPLEFT", 15, -12)
-    header.nameText:SetText(string.format("%s%s|r %s(%d)|r", "|cff"..string.format("%02x%02x%02x", classColor.r*255, classColor.g*255, classColor.b*255), name, COLOR_WHITE, math.floor(avgItemLevel)))
+    header.nameText:SetText(string.format("%s%s|r %s(%d)|r",
+        "|cff"..string.format("%02x%02x%02x", classColor.r*255, classColor.g*255, classColor.b*255),
+        name, COLOR_WHITE, math.floor(avgItemLevel or 0)))
 
     header.guildText = header:CreateFontString(nil, "OVERLAY", "GameFontNormal")
     header.guildText:SetPoint("TOPLEFT", header.nameText, "BOTTOMLEFT", 0, -4)
-    header.guildText:SetText(COLOR_GREY .. "Gilde:|r " .. COLOR_GOLD .. guildName .. "|r")
+    header.guildText:SetText(COLOR_GREY .. "Gilde:|r " .. COLOR_GOLD .. tostring(guildName) .. "|r")
 
-    -- Add a stylish separator line
     local line = header:CreateTexture(nil, "ARTWORK")
     line:SetSize(header:GetWidth() - 30, 1)
     line:SetPoint("BOTTOMLEFT", 15, 5)
@@ -70,7 +69,6 @@ function UI:Init()
 
     f.Header = header
 
-    -- --- Content Area (Inset) ---
     local inset = CreateFrame("Frame", nil, f, "BackdropTemplate")
     inset:SetPoint("TOPLEFT", 14, -90); inset:SetPoint("BOTTOMRIGHT", -14, 55)
     inset:SetBackdrop({
@@ -89,9 +87,8 @@ function UI:Init()
     content:SetSize(CONTENT_WIDTH, 5000); sf:SetScrollChild(content)
     f.Content = content; f.ScrollFrame = sf
 
-    -- --- Modern Tab Buttons ---
     f.Tabs = {}
-    for i, name in ipairs(tabs) do
+    for i, tabName in ipairs(tabs) do
         local tab = CreateFrame("Button", "DragonSkillTabBtn" .. i, f, "BackdropTemplate")
         tab:SetSize((FRAME_WIDTH - 40) / #tabs, 32)
         tab:SetID(i)
@@ -105,7 +102,7 @@ function UI:Init()
 
         tab.text = tab:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
         tab.text:SetPoint("CENTER")
-        tab.text:SetText(name)
+        tab.text:SetText(tabName)
 
         tab:SetScript("OnClick", function(selfBtn) UI:SelectTab(selfBtn:GetID()) end)
         tab:SetScript("OnEnter", function(s)
@@ -119,7 +116,6 @@ function UI:Init()
         if i == 1 then tab:SetPoint("BOTTOMLEFT", f, "BOTTOMLEFT", 15, 12) else tab:SetPoint("LEFT", f.Tabs[i - 1], "RIGHT", 2, 0) end
     end
 
-    -- Close Button (Modernized)
     local cb = CreateFrame("Button", nil, f, "UIPanelCloseButton")
     cb:SetPoint("TOPRIGHT", -4, -4)
     cb:SetSize(30, 30)
@@ -196,13 +192,15 @@ function UI:Update()
     local _, class = UnitClass("player"); local specID = GetSpecialization() and select(1, GetSpecializationInfo(GetSpecialization())) or 0
     local ok, err = pcall(function()
         if currentTab == TAB_DASHBOARD then self:DrawDashboard(content, class, specID)
-        elseif currentTab == TAB_COACH then DragonSkill.AICoachUI:Draw(content, 580)
+        elseif currentTab == TAB_COACH then
+            if DragonSkill.AICoachUI then DragonSkill.AICoachUI:Draw(content, 580) end
         elseif currentTab == TAB_FARM then self:DrawFarm(content)
         elseif currentTab == TAB_UPGRADES then self:DrawUpgrades(content)
         elseif currentTab == TAB_RAIDGUIDES then self:DrawRaidGuides(content)
         elseif currentTab == TAB_BIS then self:DrawBiSList(content)
         elseif currentTab == TAB_TALENTS then
-            local gd = DragonSkill.Database:GetGuideData(class, specID); if gd then self:DrawTalents(content, gd) else self.text:SetText("Keine Guide-Daten.") end
+            local gd = DragonSkill.Database and DragonSkill.Database:GetGuideData(class, specID)
+            if gd then self:DrawTalents(content, gd) else self.text:SetText("Keine Guide-Daten.") end
         end
     end)
     if not ok then self.text:SetText("|cffff0000UI Fehler:|r " .. tostring(err)) end
@@ -213,17 +211,19 @@ function UI:AddInteractiveRow(index, itemData, yOffset, labelPrefix, valueText)
     local row = self:GetRow(index); row:SetParent(self.frame.Content); row:ClearAllPoints(); row:SetPoint("TOPLEFT", 10, yOffset)
     local iid = tonumber(itemData.itemId) or 0
 
-    local name = itemData.name or "Item "..iid
-    local texture = C_Item.GetItemIconByID(iid) or "Interface\\Icons\\Inv_misc_questionmark"
+    local name = itemData.name or ("Item " .. iid)
+    local texture = (C_Item and C_Item.GetItemIconByID and C_Item.GetItemIconByID(iid)) or "Interface\\Icons\\Inv_misc_questionmark"
     row.icon:SetTexture(texture)
 
-    local prefix = tostring(labelPrefix) or (itemData.slot and "|cff00ff00"..tostring(itemData.slot)..":|r " or "")
-    row.text:SetText(prefix .. name)
+    local prefix = labelPrefix or (itemData.slot and ("|cff00ff00" .. tostring(itemData.slot) .. ":|r ") or "")
+    row.text:SetText(tostring(prefix) .. tostring(name))
 
     if valueText then row.val:SetText(tostring(valueText)); row.val:Show() else row.val:Hide() end
     row:SetScript("OnEnter", function(s)
         s.bg:SetColorTexture(1, 0.82, 0, 0.1)
-        GameTooltip:SetOwner(s, "ANCHOR_RIGHT"); if iid > 0 then GameTooltip:SetItemByID(iid) else GameTooltip:SetText(name) end; GameTooltip:Show()
+        GameTooltip:SetOwner(s, "ANCHOR_RIGHT")
+        if iid > 0 then GameTooltip:SetItemByID(iid) else GameTooltip:SetText(name) end
+        GameTooltip:Show()
     end)
     row:SetScript("OnLeave", function(s)
         s.bg:SetColorTexture(1, 1, 1, 0.03)
@@ -238,9 +238,10 @@ function UI:DrawDashboard(content, class, specID)
     local specName = specID > 0 and select(2, GetSpecializationInfo(GetSpecialization() or 0)) or "Spec"
     self.text:SetText(COLOR_GOLD .. tostring(class) .. ": " .. tostring(specName) .. " Overview|r\n\n" .. "|cffffffffNÄCHSTE SCHRITTE (Season 2 Fokus):|r")
 
-    local ups = GM:GetBestUpgrades(); local y, ri = -80, 1
+    local ups = GM and GM:GetBestUpgrades() or {}
+    local y, ri = -80, 1
     if ups and #ups > 0 then
-        for i=1, math.min(3, #ups) do
+        for i = 1, math.min(3, #ups) do
             ri = self:AddInteractiveRow(ri, ups[i], y, nil, string.format("|cff00ff00+%.1f%%|r", ups[i].percent or 0))
             y = y - 35
         end
@@ -248,19 +249,27 @@ function UI:DrawDashboard(content, class, specID)
         local fs = self:GetExtraFS(50); fs:SetPoint("TOPLEFT", 25, y); fs:SetText(COLOR_GREY .. "Dein Gear ist auf Mythisch-Stand!|r"); fs:Show(); y = y - 35
     end
 
-    y = y - 30; local gT = self:GetExtraFS(1000, "GameFontNormalLarge"); gT:SetPoint("TOPLEFT", 15, y); gT:SetText(COLOR_GOLD .. "STATUS: BEREIT FÜR RAID|r"); gT:Show()
+    y = y - 30
+    local gT = self:GetExtraFS(1000, "GameFontNormalLarge")
+    gT:SetPoint("TOPLEFT", 15, y)
+    gT:SetText(COLOR_GOLD .. "STATUS: BEREIT FÜR RAID|r")
+    gT:Show()
 end
 
 function UI:DrawFarm(content)
     local GM = DragonSkill:GetModule("GearManager")
-    local plan = GM:GetFarmPlan(); self.text:SetText(COLOR_GOLD .. "OPTIMALE FARM-ROUTE (Mythic 12.1 Targets)|r")
+    local plan = GM and GM:GetFarmPlan() or {}
+    self.text:SetText(COLOR_GOLD .. "OPTIMALE FARM-ROUTE (Mythic 12.1 Targets)|r")
     local y, fsIdx, rowIndex = -50, 300, 1000
     if plan and #plan > 0 then
         for i, d in ipairs(plan) do
-            local fs = self:GetExtraFS(fsIdx, "GameFontNormal"); fs:SetPoint("TOPLEFT", 15, y); fs:SetText(string.format(COLOR_GOLD .. "%d. %s|r (Score: %d)", i, d.name, d.score)); fs:Show(); y = y - 30; fsIdx = fsIdx + 1
-            for _, item in ipairs(d.items) do
-                rowIndex = self:AddInteractiveRow(rowIndex, item, y, "   " .. COLOR_GREY .. "Boss: "..tostring(item.boss)..":|r ")
-                y = y - 32; rowIndex = rowIndex + 1
+            local fs = self:GetExtraFS(fsIdx, "GameFontNormal")
+            fs:SetPoint("TOPLEFT", 15, y)
+            fs:SetText(string.format(COLOR_GOLD .. "%d. %s|r (Score: %d)", i, d.name, d.score))
+            fs:Show(); y = y - 30; fsIdx = fsIdx + 1
+            for _, item in ipairs(d.items or {}) do
+                rowIndex = self:AddInteractiveRow(rowIndex, item, y, "   " .. COLOR_GREY .. "Boss: " .. tostring(item.boss) .. ":|r ")
+                y = y - 32
             end
             y = y - 10
         end
@@ -271,43 +280,69 @@ function UI:DrawFarm(content)
 end
 
 function UI:DrawUpgrades(content)
-    local GM = DragonSkill:GetModule("GearManager"); local items = GM:GetBestUpgrades()
-    self.text:SetText(COLOR_GOLD .. "UPGRADE MATRIX (Vergleich vs. Mythic 639)|r"); local y, ri = -80, 2000
+    local GM = DragonSkill:GetModule("GearManager")
+    local items = GM and GM:GetBestUpgrades() or {}
+    self.text:SetText(COLOR_GOLD .. "UPGRADE MATRIX (Vergleich vs. Mythic 639)|r")
+    local y, ri = -80, 2000
     if #items > 0 then
-        for _, item in ipairs(items) do ri = self:AddInteractiveRow(ri, item, y, nil, string.format("|cff00ff00+%.1f%%|r", item.percent or 0)); y = y - 35 end
+        for _, item in ipairs(items) do
+            ri = self:AddInteractiveRow(ri, item, y, nil, string.format("|cff00ff00+%.1f%%|r", item.percent or 0))
+            y = y - 35
+        end
     else
         local fs = self:GetExtraFS(60); fs:SetPoint("TOPLEFT", 25, y); fs:SetText(COLOR_GREY .. "Keine Upgrades verfügbar.|r"); fs:Show()
     end
 end
 
 function UI:DrawBiSList(content)
-    local GM = DragonSkill:GetModule("GearManager"); local items = GM:GetBiSList()
-    self.text:SetText(COLOR_GOLD .. "MYTHIC BIS LIST (Midnight Season 2 - 639+)|r"); local y, ri = -50, 3000
+    local GM = DragonSkill:GetModule("GearManager")
+    local items = GM and GM:GetBiSList() or {}
+    self.text:SetText(COLOR_GOLD .. "MYTHIC BIS LIST (Midnight Season 2 - 639+)|r")
+    local y, ri = -50, 3000
     for _, item in ipairs(items) do
         local ilvlStr = "|cffa335ee639|r"
-        ri = self:AddInteractiveRow(ri, item, y, nil, ilvlStr); y = y - 35; ri = ri + 1
+        ri = self:AddInteractiveRow(ri, item, y, nil, ilvlStr)
+        y = y - 35
     end
     content:SetHeight(math.abs(y) + 500)
 end
 
 function UI:DrawTalents(content, gd)
-    local y = -50; self.text:SetText(COLOR_GOLD .. "Optimierte Talent Builds|r")
-    if gd.talentBuilds then for i, b in ipairs(gd.talentBuilds) do
-        local btn = self.talentBtns[i] or CreateFrame("Button", nil, content, "UIPanelButtonTemplate")
-        self.talentBtns[i] = btn; btn:SetSize(560, 32); btn:SetPoint("TOPLEFT", 15, y)
-        btn:SetText(string.format("[%s] %s", tostring(b.provider):upper(), tostring(b.label)))
-        btn:SetScript("OnClick", function() StaticPopup_Show("DRAGONSKILL_COPY", nil, nil, b.importString) end); btn:Show(); y = y - 40
-    end end
+    local y = -50
+    self.text:SetText(COLOR_GOLD .. "Optimierte Talent Builds|r")
+    if gd.talentBuilds then
+        for i, b in ipairs(gd.talentBuilds) do
+            local btn = self.talentBtns[i] or CreateFrame("Button", nil, content, "UIPanelButtonTemplate")
+            self.talentBtns[i] = btn; btn:SetSize(560, 32); btn:SetPoint("TOPLEFT", 15, y)
+            btn:SetText(string.format("[%s] %s", tostring(b.provider):upper(), tostring(b.label)))
+            btn:SetScript("OnClick", function()
+                StaticPopup_Show("DRAGONSKILL_COPY", nil, nil, b.importString)
+            end)
+            btn:Show(); y = y - 40
+        end
+    else
+        local fs = self:GetExtraFS(70)
+        fs:SetPoint("TOPLEFT", 15, y)
+        fs:SetText(COLOR_GREY .. "Keine Talent-Builds für diese Spec hinterlegt (aktuell: Paladin via TalentOverrides).|r")
+        fs:Show()
+    end
 end
 
 function UI:DrawRaidGuides(content)
-    local guides = DragonSkillRaidGuides; local lw, y, fi = 180, -55, 4000
+    local guides = DragonSkillRaidGuides
+    local lw, y, fi = 180, -55, 4000
     if not guides then return end
     for i, g in ipairs(guides) do
         local btn = self.bossBtns[i] or CreateFrame("Button", nil, content, "UIPanelButtonTemplate")
-        self.bossBtns[i] = btn; btn:SetSize(lw, 38); btn:SetPoint("TOPLEFT", 10, -55 - (i-1)*42); btn:SetText(g.name or "Boss"); btn:SetScript("OnClick", function() selectedBossIdx = i; self:Update() end); btn:Show()
+        self.bossBtns[i] = btn
+        btn:SetSize(lw, 38)
+        btn:SetPoint("TOPLEFT", 10, -55 - (i - 1) * 42)
+        btn:SetText(g.name or "Boss")
+        btn:SetScript("OnClick", function() selectedBossIdx = i; self:Update() end)
+        btn:Show()
     end
-    local g = guides[selectedBossIdx]; if not g then return end
+    local g = guides[selectedBossIdx]
+    if not g then return end
     local ti = self:GetExtraFS(fi); ti:SetPoint("TOPLEFT", lw + 25, -55); ti:SetText(COLOR_GOLD .. tostring(g.name) .. "|r"); ti:Show(); fi = fi + 1; y = -85
     for _, p in ipairs(g.phases or {}) do
         local pt = self:GetExtraFS(fi); pt:SetPoint("TOPLEFT", lw + 25, y); pt:SetText("|cffffff00" .. tostring(p.name) .. "|r"); pt:Show(); fi = fi + 1; y = y - 25
@@ -322,18 +357,44 @@ function UI:DrawRaidGuides(content)
 end
 
 StaticPopupDialogs["DRAGONSKILL_COPY"] = {
-    text = "Build-String kopieren (Strg+C):", button1 = "Fertig", hasEditBox = 1,
-    OnShow = function(self, data) if data then self.editBox:SetText(tostring(data)) self.editBox:HighlightText() end end,
-    timeout = 0, whileDead = true, hideOnEscape = true,
+    text = "Build-String kopieren (Strg+C):",
+    button1 = "Fertig",
+    hasEditBox = 1,
+    OnShow = function(self, data)
+        local str = data
+        if type(data) == "table" then str = data.importString or data[1] or "" end
+        if self.editBox and str then
+            self.editBox:SetText(tostring(str))
+            self.editBox:HighlightText()
+        end
+    end,
+    timeout = 0,
+    whileDead = true,
+    hideOnEscape = true,
 }
 
-function UI:Toggle() self:Init(); if self.frame:IsShown() then self.frame:Hide() else self.frame:Show(); self:Update() end end
+function UI:Toggle()
+    self:Init()
+    if self.frame:IsShown() then self.frame:Hide() else self.frame:Show(); self:Update() end
+end
 
 local function SlashHandler(msg)
-    if msg == "minimap" then if DragonSkill.Minimap then DragonSkill.Minimap:Toggle() end else UI:Toggle() end
+    msg = strtrim(tostring(msg or ""):lower())
+    if msg == "minimap" then
+        if DragonSkill.Minimap then DragonSkill.Minimap:Toggle() end
+    elseif msg == "help" then
+        print("|cffffd100Dragon Skill|r Commands:")
+        print("  /ds | /wear | /dragonskill  – Fenster")
+        print("  /ds minimap                – Minimap an/aus")
+    else
+        UI:Toggle()
+    end
 end
-SLASH_DRAGONSKILL1 = "/ds"; SLASH_DRAGONSKILL2 = "/wear"; SLASH_DRAGONSKILL3 = "/dragonskill"
+SLASH_DRAGONSKILL1 = "/ds"
+SLASH_DRAGONSKILL2 = "/wear"
+SLASH_DRAGONSKILL3 = "/dragonskill"
 SlashCmdList["DRAGONSKILL"] = SlashHandler
 
-DragonSkill.Events:On("PLAYER_LOGIN", function() UI:Init() end); if IsLoggedIn() then UI:Init() end
+DragonSkill.Events:On("PLAYER_LOGIN", function() UI:Init() end)
+if IsLoggedIn and IsLoggedIn() then UI:Init() end
 DragonSkill.UI = UI
