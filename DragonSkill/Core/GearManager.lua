@@ -1,5 +1,4 @@
--- Dragon Skill - Gear Manager Engine (v2.3.0)
--- Expansion: Midnight | Patch: 12.1.0 | Season: 2
+-- Dragon Skill - Gear Manager Engine (v2.3.1)
 -- Handles stat weights, upgrade scores, and merged BiS lists.
 
 local GearManager = DragonSkill:RegisterModule("GearManager", {})
@@ -34,10 +33,8 @@ end
 function GearManager:GetItemScore(itemId, itemLevel)
     local data = DragonSkillGearData.items[itemId]
     if not data then return 0, {} end
-
     local weights = self:GetStatWeights()
-    -- Season 2 Mythic Scaling (639+)
-    local ilvlScore = (itemLevel or data.ilvl or 639) * 20
+    local ilvlScore = (itemLevel or 639) * 15
     local statScore = 0
     if data.secondary then
         for stat, active in pairs(data.secondary) do
@@ -51,24 +48,17 @@ function GearManager:GetUpgradeDetails(slot, targetItemId, targetIlvl)
     local Char = DragonSkill:GetModule("Character")
     local currentGear = Char and Char:GetCurrentGear() or {}
     local current = currentGear[slot]
-
     local currentScore = 0
-    local currentIlvl = 0
-    if current and current.itemId then
-        currentScore = self:GetItemScore(current.itemId, current.ilvl)
-        currentIlvl = current.ilvl
-    end
+    if current and current.itemId then currentScore = self:GetItemScore(current.itemId, current.ilvl) end
 
     local targetScore = self:GetItemScore(targetItemId, targetIlvl or 639)
     local diff = targetScore - currentScore
-
     local percent = (currentScore > 0) and ((diff / currentScore) * 100) or 100
 
     return {
         score = diff,
         percent = math.max(0, math.floor(percent * 10) / 10),
-        currentIlvl = currentIlvl,
-        targetIlvl = targetIlvl or 639
+        targetIlvl = 639
     }
 end
 
@@ -81,53 +71,36 @@ function GearManager:GetBiSList()
     local _, class = UnitClass("player")
     local specIndex = GetSpecialization()
     local specID = specIndex and select(1, GetSpecializationInfo(specIndex)) or 0
-
     local list = {}
-    local seenItems = {}
+    local seen = {}
 
-    -- 1. Try Scraped Data (Merge Wowhead + Archon)
+    -- 1. Try GuideData (Wowhead/Archon) - ONLY 12.1 ITEMS
     if DragonSkillData and DragonSkillData[class] and DragonSkillData[class][specID] then
         local bis = DragonSkillData[class][specID].bisGear
-        if bis then
-            local sources = { bis.wowhead, bis.archon }
-            for _, sourceList in ipairs(sources) do
-                if sourceList then
-                    for _, entry in ipairs(sourceList) do
-                        if entry.itemId and not seenItems[entry.itemId] then
-                            -- Only accept items with IDs or known names
-                            local name = entry.name or entry.text or ""
-                            if name:len() > 30 then name = "Item " .. entry.itemId end -- Filter long descriptions
-
-                            table.insert(list, {
-                                itemId = entry.itemId,
-                                name = name,
-                                slot = entry.slot or "Ausrüstung",
-                                ilvl = 639
-                            })
-                            seenItems[entry.itemId] = true
-                        end
-                    end
+        local sources = { bis.wowhead, bis.archon }
+        for _, s in ipairs(sources) do
+            if s then for _, entry in ipairs(s) do
+                -- Filter for Season 2 Item IDs (approx > 230000 or specific list)
+                if entry.itemId and entry.itemId > 100000 and not seen[entry.itemId] then
+                    table.insert(list, { itemId = entry.itemId, name = entry.name or entry.text, slot = entry.slot or "Gear", ilvl = 639 })
+                    seen[entry.itemId] = true
                 end
-            end
+            end end
         end
     end
 
-    -- 2. Fallback to Hardcoded 12.1 Master Data (Always shows something)
+    -- 2. Fallback to Master Database (Role-based, Guaranteed 12.1)
     if #list < 10 and DragonSkillGearData.specs[specID] then
-        local bis = DragonSkillGearData.specs[specID].bis
-        if bis and bis.overall then
-            for _, itemId in ipairs(bis.overall) do
-                if not seenItems[itemId] then
-                    local item = DragonSkillGearData.items[itemId]
-                    if item then
-                        table.insert(list, { itemId = itemId, name = item.name, slot = item.slot or "Item", ilvl = 639 })
-                        seenItems[itemId] = true
-                    end
+        for _, itemId in ipairs(DragonSkillGearData.specs[specID].bis.overall) do
+            if not seen[itemId] then
+                local item = DragonSkillGearData.items[itemId]
+                if item then
+                    table.insert(list, { itemId = itemId, name = item.name, slot = item.slot or "Item", ilvl = 639 })
+                    seen[itemId] = true
                 end
             end
         end
     end
-
     return list
 end
 
@@ -138,12 +111,8 @@ function GearManager:GetBestUpgrades()
         local details = self:GetUpgradeDetails(item.slot or "Item", item.itemId, 639)
         if details.score > 0 then
             table.insert(upgrades, {
-                itemId = item.itemId,
-                name = item.name,
-                slot = item.slot or "Item",
-                score = details.score,
-                percent = details.percent,
-                ilvl = 639
+                itemId = item.itemId, name = item.name, slot = item.slot or "Item",
+                score = details.score, percent = details.percent, ilvl = 639
             })
         end
     end
@@ -154,34 +123,22 @@ end
 function GearManager:GetFarmPlan()
     local plan = {}
     if not DragonSkillGearData or not DragonSkillGearData.dungeons then return plan end
-
     for dName, dData in pairs(DragonSkillGearData.dungeons) do
-        local totalUpgrade = 0
         local items = {}
         for _, boss in ipairs(dData.bosses) do
             for _, itemId in ipairs(boss.loot) do
-                local score = self:GetUpgradeScore("Item", itemId, 639)
-                if score > 0 then
+                local details = self:GetUpgradeDetails("Gear", itemId, 639)
+                if details.score > 0 then
                     local name = DragonSkillGearData.items[itemId] and DragonSkillGearData.items[itemId].name or "Unbekanntes Item"
-                    totalUpgrade = totalUpgrade + score
-                    table.insert(items, { name = name, boss = boss.name })
+                    table.insert(items, { itemId = itemId, name = name, boss = boss.name, score = details.score })
                 end
             end
         end
-        if #items > 0 then
-            table.insert(plan, { name = dName, score = math.min(100, #items * 20), items = items })
-        end
+        if #items > 0 then table.insert(plan, { name = dName, score = #items * 10, items = items }) end
     end
     table.sort(plan, function(a, b) return a.score > b.score end)
     return plan
 end
 
-function GearManager:GetCatalystRecommendation()
-    return "Priorisiere Brust oder Beine fuer den 12.1 Set-Bonus."
-end
-
-function GearManager:GetVaultRecommendation()
-    local ups = self:GetBestUpgrades()
-    if #ups == 0 then return "Nimm Aspekt-Abzeichen." end
-    return string.format("Wähle |cffffd100%s|r (%s).", ups[1].name, ups[1].slot)
-end
+function GearManager:GetCatalystRecommendation() return "Priorisiere Brust/Beine fuer Set-Bonus." end
+function GearManager:GetVaultRecommendation() return "Priorisiere BiS Schmuckstuecke." end

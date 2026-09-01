@@ -1,5 +1,5 @@
--- Dragon Skill - Main UI (v2.3.1)
--- Master UI: Fixed Raid Guides crash and added Interactive Farm Plan.
+-- Dragon Skill - Main UI (v2.3.2)
+-- Master UI with Professional Raid Guides & Absolute Stability Fixes.
 
 local L = DragonSkill.L or {}
 local UI = {}
@@ -23,13 +23,13 @@ function UI:Init()
     local f = CreateFrame("Frame", "DragonSkillMainFrame", UIParent, "ButtonFrameTemplate")
     f:SetSize(FRAME_WIDTH, FRAME_HEIGHT); f:SetPoint("CENTER"); f:SetMovable(true); f:EnableMouse(true); f:SetClampedToScreen(true)
     f:RegisterForDrag("LeftButton"); f:SetScript("OnDragStart", f.StartMoving); f:SetScript("OnDragStop", f.StopMovingOrSizing)
-    if f.SetTitle then f:SetTitle("Dragon Skill v2.3.1") end
+    if f.SetTitle then f:SetTitle("Dragon Skill v2.3.2") end
     if f.portrait then f.portrait:SetTexture("Interface\\Icons\\Inv_misc_head_dragon_01") end
 
     local sf = CreateFrame("ScrollFrame", "DragonSkillScrollFrame", f.Inset, "UIPanelScrollFrameTemplate")
     sf:SetPoint("TOPLEFT", 8, -8); sf:SetPoint("BOTTOMRIGHT", -28, 8)
     local content = CreateFrame("Frame", "DragonSkillContentFrame", sf)
-    content:SetSize(CONTENT_WIDTH, 4000); sf:SetScrollChild(content)
+    content:SetSize(CONTENT_WIDTH, 5000); sf:SetScrollChild(content)
     f.Content = content; f.ScrollFrame = sf
 
     f.Tabs = {}
@@ -42,7 +42,7 @@ function UI:Init()
     PanelTemplates_SetNumTabs(f, #tabs); PanelTemplates_SetTab(f, 1)
 
     tinsert(UISpecialFrames, "DragonSkillMainFrame")
-    f:Hide(); self.frame = f; self.rows = {}; self.extraFS = {}; self.talentBtns = {}; self.bossBtns = {}; self.farmRows = {}
+    f:Hide(); self.frame = f; self.rows = {}; self.extraFS = {}; self.talentBtns = {}; self.bossBtns = {}
 end
 
 function UI:SelectTab(id)
@@ -78,7 +78,6 @@ function UI:ClearContent()
     for _, region in ipairs({ content:GetRegions() }) do if region ~= self.text then region:Hide() end end
     for _, row in pairs(self.rows) do row:Hide() end
     for _, fs in pairs(self.extraFS) do fs:Hide() end
-    for _, fr in pairs(self.farmRows) do fr:Hide() end
 end
 
 function UI:EnsureText(content)
@@ -110,16 +109,18 @@ function UI:Update()
     if not ok then self.text:SetText("|cffff0000UI Fehler:|r " .. tostring(err)) end
 end
 
-function UI:AddInteractiveRow(index, itemData, yOffset, labelPrefix, valueText, parent)
+function UI:AddInteractiveRow(index, itemData, yOffset, labelPrefix, valueText)
     if not itemData or not (itemData.itemId or itemData.text) then return index end
-    local row = self:GetRow(index); row:SetParent(parent or self.frame.Content); row:ClearAllPoints(); row:SetPoint("TOPLEFT", 15, yOffset)
+    local row = self:GetRow(index); row:SetParent(self.frame.Content); row:ClearAllPoints(); row:SetPoint("TOPLEFT", 15, yOffset)
     local iid = tonumber(itemData.itemId) or 0
+    if iid > 0 then C_Item.RequestLoadItemDataByID(iid) end
 
-    local _, link, quality, iLevel, _, _, _, _, _, texture = GetItemInfo(iid)
+    local _, link, _, _, _, _, _, _, _, texture = GetItemInfo(iid)
     row.icon:SetTexture(texture or "Interface\\Icons\\Inv_misc_questionmark")
 
-    local name = link or itemData.name or "Item "..iid
-    row.text:SetText((labelPrefix or (itemData.slot and "|cff00ff00"..itemData.slot..":|r " or "")) .. name)
+    local name = link or tostring(itemData.name or itemData.text or "Item "..iid)
+    row.text:SetText((tostring(labelPrefix) or (itemData.slot and "|cff00ff00"..tostring(itemData.slot)..":|r " or "")) .. name)
+
     if valueText then row.val:SetText(tostring(valueText)); row.val:Show() else row.val:Hide() end
     row:SetScript("OnEnter", function(s) GameTooltip:SetOwner(s, "ANCHOR_RIGHT"); if iid > 0 then GameTooltip:SetItemByID(iid) else GameTooltip:SetText(name) end; GameTooltip:Show() end)
     row:SetScript("OnLeave", function() GameTooltip:Hide() end); row:Show()
@@ -130,42 +131,42 @@ function UI:DrawDashboard(content, class, specID)
     local GM = DragonSkill:GetModule("GearManager")
     local specName = specID > 0 and select(2, GetSpecializationInfo(GetSpecialization() or 0)) or "Spec"
     self.text:SetText("|cffffff00" .. tostring(class) .. ": " .. tostring(specName) .. " Dashboard|r\n\n" .. string.format("Gegenstandsstufe: |cffffffff%.1f|r\n\n", select(2, GetAverageItemLevel())) .. "|cffffd100NÄCHSTE BESTE UPGRADES (Mythic 639):|r")
-    local ups = GM:GetBestUpgrades(); local y = -85; local ri = 1
-    if ups and #ups > 0 then for i=1, math.min(3, #ups) do ri = self:AddInteractiveRow(ri, ups[i], y, nil, string.format("|cff00ff00+%.1f%%|r", ups[i].percent or 0))
-    y = y - 30 end else local fs = self:GetExtraFS(50); fs:SetPoint("TOPLEFT", 25, y); fs:SetText("|cffaaaaaaKeine Upgrades gefunden.|r"); fs:Show(); y = y - 30 end
+    local ups = GM:GetBestUpgrades(); local y, ri = -85, 1
+    if ups and #ups > 0 then for i=1, math.min(3, #ups) do ri = self:AddInteractiveRow(ri, ups[i], y, nil, string.format("|cff00ff00+%.1f%%|r", ups[i].percent or 0)); y = y - 30 end
+    else local fs = self:GetExtraFS(50); fs:SetPoint("TOPLEFT", 25, y); fs:SetText("|cffaaaaaaKeine Upgrades gefunden.|r"); fs:Show(); y = y - 30 end
     y = y - 40; local gT = self:GetExtraFS(1000); gT:SetPoint("TOPLEFT", 15, y); gT:SetText("|cffffd100GILDE: DRAGON LORDS ALLERIA|r"); gT:Show(); y = y - 25
     local gW = self:GetExtraFS(1001, "GameFontHighlightSmall"); gW:SetPoint("TOPLEFT", 15, y); gW:SetText("Website: |cff00ccffhttps://guildsowow.com/dragon-lords|r"); gW:Show()
 end
 
 function UI:DrawFarm(content)
     local GM = DragonSkill:GetModule("GearManager")
-    local plan = GM:GetFarmPlan(); self.text:SetText("|cffffff00OPTIMALE FARM-ROUTE (12.1 Mythic Targets)|r")
-    local y = -45; local rowIndex = 500
+    local plan = GM:GetFarmPlan(); self.text:SetText("|cffffff00OPTIMALE FARM-ROUTE (Season 12.1 Targets)|r")
+    local y, fsIdx, rowIndex = -45, 300, 1000
     if plan and #plan > 0 then for i, d in ipairs(plan) do
-        local fs = self:GetExtraFS(i + 300, "GameFontNormal")
-        fs:SetPoint("TOPLEFT", 15, y); fs:SetText(string.format("|cffffd100%d. %s|r (Score: %d)", i, d.name, d.score)); fs:Show(); y = y - 25
+        local fs = self:GetExtraFS(fsIdx, "GameFontNormal"); fs:SetPoint("TOPLEFT", 15, y); fs:SetText(string.format("|cffffd100%d. %s|r (Upgrade Score: %d)", i, d.name, d.score)); fs:Show(); y = y - 25; fsIdx = fsIdx + 1
         for _, item in ipairs(d.items) do
-            rowIndex = self:AddInteractiveRow(rowIndex, item, y, "   |cffaaaaaaBoss: "..item.boss..":|r ")
-            y = y - 28
+            local prefix = "   |cffaaaaaaBoss: "..tostring(item.boss)..":|r "
+            rowIndex = self:AddInteractiveRow(rowIndex, item, y, prefix)
+            y = y - 28; rowIndex = rowIndex + 1
         end
         y = y - 10
-    end else self.text:SetText(self.text:GetText() .. "\n\nKeine Mythischen Upgrades in Dungeons gefunden.") end
+    end else self.text:SetText(self.text:GetText() .. "\n\nKeine Upgrades in Dungeons gefunden.") end
     content:SetHeight(math.abs(y) + 500)
 end
 
 function UI:DrawUpgrades(content)
     local GM = DragonSkill:GetModule("GearManager"); local items = GM:GetBestUpgrades()
-    self.text:SetText("|cffffff00UPGRADE MATRIX (Vs. Mythic 639)|r"); local y = -75; local ri = 1
-    if #items > 0 then for _, item in ipairs(items) do ri = self:AddInteractiveRow(ri + 400, item, y, nil, string.format("|cff00ff00+%.1f%%|r", item.percent or 0)); y = y - 30 end
+    self.text:SetText("|cffffff00UPGRADE MATRIX (Vs. Mythic 639)|r"); local y, ri = -75, 2000
+    if #items > 0 then for _, item in ipairs(items) do ri = self:AddInteractiveRow(ri, item, y, nil, string.format("|cff00ff00+%.1f%%|r", item.percent or 0)); y = y - 30 end
     else local fs = self:GetExtraFS(60); fs:SetPoint("TOPLEFT", 25, y); fs:SetText("|cffaaaaaaKeine Upgrades verfügbar.|r"); fs:Show() end
 end
 
 function UI:DrawBiSList(content)
     local GM = DragonSkill:GetModule("GearManager"); local items = GM:GetBiSList()
-    self.text:SetText("|cffffff00MYTHIC BIS LIST (Midnight Season 2 - 639+)|r"); local y = -45; local ri = 1
+    self.text:SetText("|cffffff00MYTHIC BIS LIST (Season 12.1 - 639+)|r"); local y, ri = -45, 3000
     for _, item in ipairs(items) do
         local ilvlStr = "|cffa335ee" .. (item.ilvl or 639) .. "|r"
-        ri = self:AddInteractiveRow(ri + 700, item, y, nil, ilvlStr); y = y - 30
+        ri = self:AddInteractiveRow(ri, item, y, nil, ilvlStr); y = y - 30; ri = ri + 1
     end
     content:SetHeight(math.abs(y) + 500)
 end
@@ -174,15 +175,14 @@ function UI:DrawTalents(content, gd)
     local y = -45; self.text:SetText("|cffffff00Talent Builds|r")
     if gd.talentBuilds then for i, b in ipairs(gd.talentBuilds) do
         local btn = self.talentBtns[i] or CreateFrame("Button", nil, content, "UIPanelButtonTemplate")
-        self.talentBtns[i] = btn; btn:SetSize(560, 30); btn:SetPoint("TOPLEFT", 15, y)
-        btn:SetText(string.format("[%s] %s", tostring(b.provider):upper(), tostring(b.label)))
+        self.talentBtns[i] = btn; btn:SetSize(560, 30); btn:SetPoint("TOPLEFT", 15, y); btn:SetText(string.format("[%s] %s", tostring(b.provider):upper(), tostring(b.label)))
         btn:SetScript("OnClick", function() StaticPopup_Show("DRAGONSKILL_COPY", nil, nil, b.importString) end); btn:Show(); y = y - 35
     end end
 end
 
 function UI:DrawRaidGuides(content)
-    local guides = DragonSkillRaidGuides; local lw, y, fi = 180, -50, 800
-    if not guides or #guides == 0 then return end
+    local guides = DragonSkillRaidGuides; local lw, y, fi = 180, -50, 4000
+    if not guides then return end
     for i, g in ipairs(guides) do
         local btn = self.bossBtns[i] or CreateFrame("Button", nil, content, "UIPanelButtonTemplate")
         self.bossBtns[i] = btn; btn:SetSize(lw, 35); btn:SetPoint("TOPLEFT", 10, -50 - (i-1)*38); btn:SetText(g.name or "Boss"); btn:SetScript("OnClick", function() selectedBossIdx = i; self:Update() end); btn:Show()
@@ -202,7 +202,7 @@ function UI:DrawRaidGuides(content)
     rx:SetText(string.format("|cff00ccffTank:|r %s\n\n|cff00ff00Healer:|r %s\n\n|cffffffffDPS:|r %s", tostring(g.roles and g.roles.tank or "-"), tostring(g.roles and g.roles.heal or "-"), tostring(g.roles and g.roles.dps or "-")))
     rx:Show(); fi = fi + 1; y = y - 120; local post = self:GetExtraFS(fi); post:SetPoint("TOPLEFT", lw + 25, y); post:SetText("|cffffff00Positionierung|r"); post:Show(); fi = fi + 1; y = y - 25
     local pxt = self:GetExtraFS(fi, "GameFontHighlightSmall"); pxt:SetPoint("TOPLEFT", lw + 35, y); pxt:SetText(tostring(g.position)); pxt:Show(); fi = fi + 1
-    content:SetHeight(math.abs(y) + 300)
+    content:SetHeight(math.abs(y) + 500)
 end
 
 StaticPopupDialogs["DRAGONSKILL_COPY"] = {
