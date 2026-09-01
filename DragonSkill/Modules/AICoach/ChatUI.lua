@@ -1,5 +1,5 @@
--- Dragon Skill - Module: AI Coach Chat UI (v2.2.5)
--- Ultra Stability Fix: Simplified UI components and robust Font handling.
+-- Dragon Skill - Module: AI Coach Chat UI (v2.3.0)
+-- Stability Master: Fixed ScrollChild and Font errors.
 
 local AICoachUI = {}
 DragonSkill.AICoachUI = AICoachUI
@@ -34,6 +34,8 @@ function AICoachUI:Draw(content, width)
             end
         end)
         h:SetScript("OnHyperlinkLeave", function() GameTooltip:Hide() end)
+
+        -- CRITICAL FIX: SetScrollChild MUST be called after sf and h are ready
         sf:SetScrollChild(h)
 
         local bg = CreateFrame("Frame", nil, content, "BackdropTemplate")
@@ -98,7 +100,7 @@ function AICoachUI:AddMessage(sender, text)
     if DragonSkillDB then
         DragonSkillDB.history = DragonSkillDB.history or {}
         table.insert(DragonSkillDB.history, prefix .. tostring(text))
-        if #DragonSkillDB.history > 20 then table.remove(DragonSkillDB.history, 1) end
+        if #DragonSkillDB.history > 15 then table.remove(DragonSkillDB.history, 1) end
     end
     self:RefreshHistory()
 end
@@ -114,9 +116,7 @@ function AICoachUI:RefreshHistory()
     self.historyText:SetText(full == "" and "Willkommen beim Coach!" or full)
 
     if self.scrollFrame then
-        C_Timer.After(0.1, function()
-            local range = self.scrollFrame:GetVerticalScrollRange() or 0
-            if range > 0 then self.scrollFrame:SetVerticalScroll(range) end
-        end)
+        local range = self.scrollFrame:GetVerticalScrollRange() or 0
+        if range > 0 then self.scrollFrame:SetVerticalScroll(range) end
     end
 end
