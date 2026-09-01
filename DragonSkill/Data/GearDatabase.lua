@@ -1,6 +1,6 @@
--- Dragon Skill - Complete Gear & Loot Database (v2.3.0)
+-- Dragon Skill - Complete Gear & Loot Database (v2.3.6)
 -- Expansion: Midnight | Patch: 12.1.0 | Season: 2
--- Master Data: Full Mythic Loot Tables and Spec Mapping.
+-- Master Data: Full Mythic Loot Tables and Absolute Purity Registry.
 
 DragonSkillGearData = DragonSkillGearData or {
     metadata = {
@@ -49,23 +49,55 @@ AddDungeon("Venomous Abyss (Raid)", {
 })
 
 -- ==========================================
--- ITEM REGISTRY (639+)
+-- ITEM REGISTRY (639+) - PURITY 12.1
 -- ==========================================
 
-AddItem(271092, { name = "Ula'teks Stab", slot = "Stab" })
-AddItem(270173, { name = "Gieriges Herz von Ula'tek", slot = "Schmuckstück" })
-AddItem(270175, { name = "Lebendige Sporenkapsel", slot = "Schmuckstück" })
+-- Murder Row
+AddItem(268201, { name = "Manaherz-Spalter", slot = "Einhandaxt" })
+AddItem(270160, { name = "Kystias Versprechen", slot = "Schmuckstück" })
+AddItem(268250, { name = "Umhang der Manadurstigen", slot = "Rücken" })
+AddItem(268205, { name = "Klinge der Trauer", slot = "Dolch" })
+AddItem(270161, { name = "Zaens Talisman", slot = "Schmuckstück" })
+AddItem(268254, { name = "Armschienen des Leids", slot = "Handgelenke" })
+AddItem(268210, { name = "Xathuux' Leerenklinge", slot = "Einhandschwert" })
+AddItem(268258, { name = "Gurt der Schatten", slot = "Taille" })
+
+-- Altar of Fangs
+AddItem(268240, { name = "Rav'is Zerschmetterer", slot = "Einhandstreitkolben" })
+AddItem(268261, { name = "Zul'jans Bastion", slot = "Schild" })
+AddItem(270163, { name = "Voodoo-Puppe", slot = "Schmuckstück" })
 AddItem(268213, { name = "Maze-roa, Zorn des Kriegsfürsten", slot = "Zweihandstreitkolben" })
-AddItem(268262, { name = "Nymrissas Wellenschutz", slot = "Schild" })
+AddItem(268214, { name = "Großstab der Fangzähne", slot = "Stab" })
+AddItem(270170, { name = "Uraltes Gift", slot = "Schmuckstück" })
+
+-- Venomous Abyss
 AddItem(271528, { name = "Blick des gewundenen Wächters", slot = "Kopf", tierItem = true })
+AddItem(271529, { name = "Schulterplatten des Wächters", slot = "Schulter" })
+AddItem(271530, { name = "Nekzalis Faust", slot = "Faustwaffe" })
+AddItem(271531, { name = "Brustschutz der Ewigkeit", slot = "Brust" })
+AddItem(271600, { name = "Stiefel des Wächters", slot = "Füße" })
+AddItem(271602, { name = "Beinschützer des Abgrunds", slot = "Beine" })
+AddItem(270165, { name = "Auge des Wächters", slot = "Schmuckstück" })
+AddItem(270162, { name = "Seelenwindsplitter", slot = "Schmuckstück" })
+AddItem(270173, { name = "Gieriges Herz von Ula'tek", slot = "Schmuckstück" })
+AddItem(271532, { name = "Sszoraks Schuppe", slot = "Schmuckstück" })
+AddItem(271533, { name = "Bogen des Schlangenfürsten", slot = "Bogen" })
+AddItem(271534, { name = "Handschuhe der Giftmischer", slot = "Hände" })
+AddItem(271535, { name = "Ulateks Auge", slot = "Schmuckstück" })
+AddItem(271536, { name = "Gewand der Sporen", slot = "Brust" })
+AddItem(271617, { name = "Gamaschen der Fäulnis", slot = "Beine" })
+AddItem(270175, { name = "Lebendige Sporenkapsel", slot = "Schmuckstück" })
+AddItem(271619, { name = "Stab der Wellenflüsterin", slot = "Stab" })
+AddItem(271620, { name = "Halskette der Gezeiten", slot = "Hals" })
 AddItem(268266, { name = "Ring des Wellenrufers", slot = "Ring" })
+
+-- General
+AddItem(271092, { name = "Ula'teks Stab", slot = "Stab" })
+AddItem(268262, { name = "Nymrissas Wellenschutz", slot = "Schild" })
 AddItem(268265, { name = "Amani-Anhänger", slot = "Hals" })
 AddItem(268253, { name = "Umhang der gewundenen Seelen", slot = "Rücken" })
 AddItem(268259, { name = "Gurt des Vernichters", slot = "Taille" })
 AddItem(268249, { name = "Siegel des Bösartigen", slot = "Ring" })
-AddItem(271600, { name = "Stiefel des Wächters", slot = "Füße" })
-AddItem(270165, { name = "Auge des Wächters", slot = "Schmuckstück" })
-AddItem(270162, { name = "Seelenwindsplitter", slot = "Schmuckstück" })
 
 -- ==========================================
 -- ROLE-BASED FALLBACK (FOR ALL CLASSES)

@@ -1,5 +1,5 @@
--- Dragon Skill - Main UI (v2.3.3)
--- Master UI with Professional Raid Guides & Absolute Stability Fixes.
+-- Dragon Skill - Main UI (v2.3.6)
+-- Midnight Modern Design with Absolute Data Purity.
 
 local L = DragonSkill.L or {}
 local UI = {}
@@ -20,33 +20,127 @@ local CONTENT_WIDTH = 580
 
 function UI:Init()
     if self.frame then return end
-    local f = CreateFrame("Frame", "DragonSkillMainFrame", UIParent, "ButtonFrameTemplate")
+    -- "Midnight Modern" Base Frame
+    local f = CreateFrame("Frame", "DragonSkillMainFrame", UIParent, "BackdropTemplate")
     f:SetSize(FRAME_WIDTH, FRAME_HEIGHT); f:SetPoint("CENTER"); f:SetMovable(true); f:EnableMouse(true); f:SetClampedToScreen(true)
     f:RegisterForDrag("LeftButton"); f:SetScript("OnDragStart", f.StartMoving); f:SetScript("OnDragStop", f.StopMovingOrSizing)
-    if f.SetTitle then f:SetTitle("Dragon Skill v2.3.3") end
-    if f.portrait then f.portrait:SetTexture("Interface\\Icons\\Inv_misc_head_dragon_01") end
+
+    f:SetBackdrop({
+        bgFile = "Interface\\ChatFrame\\ChatFrameBackground",
+        edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
+        tile = true, tileSize = 16, edgeSize = 16,
+        insets = { left = 4, right = 4, top = 4, bottom = 4 }
+    })
+    f:SetBackdropColor(0, 0, 0, 0.9)
+    f:SetBackdropBorderColor(0.2, 0.2, 0.2, 1)
+
+    -- Integrated Close Button
+    local cb = CreateFrame("Button", nil, f, "UIPanelCloseButton")
+    cb:SetPoint("TOPRIGHT", -2, -2)
+
+    -- Character Header
+    local header = CreateFrame("Frame", nil, f)
+    header:SetSize(FRAME_WIDTH - 20, 60)
+    header:SetPoint("TOPLEFT", 10, -10)
+
+    local name = UnitName("player")
+    local _, avgItemLevel = GetAverageItemLevel()
+    local guildName = "Dragon Lords"
+
+    header.nameText = header:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+    header.nameText:SetPoint("TOPLEFT", 15, -5)
+    header.nameText:SetText("|cFFD100" .. name .. "|r |cffffffff(" .. math.floor(avgItemLevel) .. ")|r")
+
+    header.guildText = header:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    header.guildText:SetPoint("TOPLEFT", header.nameText, "BOTTOMLEFT", 0, -2)
+    header.guildText:SetText("|cffaaaaaaGilde:|r |cFFD100" .. guildName .. "|r")
+
+    f.Header = header
+
+    -- Clean Inset replacement
+    local inset = CreateFrame("Frame", nil, f, "BackdropTemplate")
+    inset:SetPoint("TOPLEFT", 10, -70); inset:SetPoint("BOTTOMRIGHT", -10, 45)
+    inset:SetBackdrop({
+        bgFile = "Interface\\Buttons\\WHITE8X8",
+        edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
+        edgeSize = 14, insets = { left = 3, right = 3, top = 3, bottom = 3 }
+    })
+    inset:SetBackdropColor(0.05, 0.05, 0.05, 0.5)
+    inset:SetBackdropBorderColor(0.15, 0.15, 0.15, 1)
+    f.Inset = inset
 
     local sf = CreateFrame("ScrollFrame", "DragonSkillScrollFrame", f.Inset, "UIPanelScrollFrameTemplate")
     sf:SetPoint("TOPLEFT", 8, -8); sf:SetPoint("BOTTOMRIGHT", -28, 8)
+
+    -- Clean ScrollBar Styling
+    if sf.ScrollBar then
+        for _, region in ipairs({sf.ScrollBar:GetRegions()}) do
+            if region:GetObjectType() == "Texture" then
+                region:SetDesaturated(true)
+                region:SetVertexColor(0.4, 0.4, 0.4)
+            end
+        end
+    end
+
     local content = CreateFrame("Frame", "DragonSkillContentFrame", sf)
     content:SetSize(CONTENT_WIDTH, 5000); sf:SetScrollChild(content)
     f.Content = content; f.ScrollFrame = sf
 
+    -- Integrated Tabs
     f.Tabs = {}
     for i, name in ipairs(tabs) do
-        local tab = CreateFrame("Button", "DragonSkillTabBtn" .. i, f, "PanelTabButtonTemplate")
-        tab:SetID(i); tab:SetText(name); tab:SetScript("OnClick", function(selfBtn) UI:SelectTab(selfBtn:GetID()) end)
+        local tab = CreateFrame("Button", "DragonSkillTabBtn" .. i, f, "BackdropTemplate")
+        tab:SetSize(100, 28)
+        tab:SetID(i)
+        tab:SetBackdrop({
+            bgFile = "Interface\\Buttons\\WHITE8X8",
+            edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
+            edgeSize = 12, insets = { left = 2, right = 2, top = 2, bottom = 2 }
+        })
+        tab:SetBackdropColor(0.1, 0.1, 0.1, 0.8)
+        tab:SetBackdropBorderColor(0.3, 0.3, 0.3, 1)
+
+        tab.text = tab:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+        tab.text:SetPoint("CENTER")
+        tab.text:SetText(name)
+
+        tab:SetScript("OnClick", function(selfBtn) UI:SelectTab(selfBtn:GetID()) end)
+        tab:SetScript("OnEnter", function(s)
+            if currentTab ~= s:GetID() then
+                s:SetBackdropColor(0.2, 0.2, 0.2, 1)
+            end
+        end)
+        tab:SetScript("OnLeave", function(s)
+            if currentTab == s:GetID() then
+                s:SetBackdropColor(0.3, 0.2, 0, 1)
+            else
+                s:SetBackdropColor(0.1, 0.1, 0.1, 0.8)
+            end
+        end)
+
         f.Tabs[i] = tab
-        if i == 1 then tab:SetPoint("TOPLEFT", f, "BOTTOMLEFT", 10, 1) else tab:SetPoint("LEFT", f.Tabs[i - 1], "RIGHT", -16, 0) end
+        if i == 1 then tab:SetPoint("BOTTOMLEFT", f, "BOTTOMLEFT", 12, 10) else tab:SetPoint("LEFT", f.Tabs[i - 1], "RIGHT", 5, 0) end
     end
-    PanelTemplates_SetNumTabs(f, #tabs); PanelTemplates_SetTab(f, 1)
 
     tinsert(UISpecialFrames, "DragonSkillMainFrame")
     f:Hide(); self.frame = f; self.rows = {}; self.extraFS = {}; self.talentBtns = {}; self.bossBtns = {}; self.farmRows = {}
+    self:SelectTab(1)
 end
 
 function UI:SelectTab(id)
-    currentTab = id; PanelTemplates_SetTab(self.frame, id); self:Update()
+    currentTab = id
+    for i, tab in ipairs(self.frame.Tabs) do
+        if i == id then
+            tab:SetBackdropColor(0.3, 0.2, 0, 1)
+            tab:SetBackdropBorderColor(1, 0.82, 0, 1)
+            tab.text:SetTextColor(1, 0.82, 0)
+        else
+            tab:SetBackdropColor(0.1, 0.1, 0.1, 0.8)
+            tab:SetBackdropBorderColor(0.3, 0.3, 0.3, 1)
+            tab.text:SetTextColor(1, 1, 1)
+        end
+    end
+    self:Update()
 end
 
 function UI:GetRow(index)
@@ -130,20 +224,20 @@ end
 function UI:DrawDashboard(content, class, specID)
     local GM = DragonSkill:GetModule("GearManager")
     local specName = specID > 0 and select(2, GetSpecializationInfo(GetSpecialization() or 0)) or "Spec"
-    self.text:SetText("|cffffff00" .. tostring(class) .. ": " .. tostring(specName) .. " Dashboard|r\n\n" .. string.format("Gegenstandsstufe: |cffffffff%.1f|r\n\n", select(2, GetAverageItemLevel())) .. "|cffffd100NÄCHSTE BESTE UPGRADES (Mythic 639):|r")
+    self.text:SetText("|cFFD100" .. tostring(class) .. ": " .. tostring(specName) .. " Dashboard|r\n\n" .. string.format("Gegenstandsstufe: |cffffffff%.1f|r\n\n", select(2, GetAverageItemLevel())) .. "|cFFD100NÄCHSTE BESTE UPGRADES (Mythic 639):|r")
     local ups = GM:GetBestUpgrades(); local y, ri = -85, 1
     if ups and #ups > 0 then for i=1, math.min(3, #ups) do ri = self:AddInteractiveRow(ri, ups[i], y, nil, string.format("|cff00ff00+%.1f%%|r", ups[i].percent or 0)); y = y - 30 end
     else local fs = self:GetExtraFS(50); fs:SetPoint("TOPLEFT", 25, y); fs:SetText("|cffaaaaaaKeine Upgrades gefunden.|r"); fs:Show(); y = y - 30 end
-    y = y - 40; local gT = self:GetExtraFS(1000); gT:SetPoint("TOPLEFT", 15, y); gT:SetText("|cffffd100GILDE: DRAGON LORDS ALLERIA|r"); gT:Show(); y = y - 25
-    local gW = self:GetExtraFS(1001, "GameFontHighlightSmall"); gW:SetPoint("TOPLEFT", 15, y); gW:SetText("Website: |cff00ccffhttps://guildsowow.com/dragon-lords|r"); gW:Show()
+    y = y - 40; local gT = self:GetExtraFS(1000); gT:SetPoint("TOPLEFT", 15, y); gT:SetText("|cFFD100GILDE: DRAGON LORDS|r"); gT:Show(); y = y - 25
+    local gW = self:GetExtraFS(1001, "GameFontHighlightSmall"); gW:SetPoint("TOPLEFT", 15, y); gW:SetText("Status: |cff00ccffBereit für Midnight Raid|r"); gW:Show()
 end
 
 function UI:DrawFarm(content)
     local GM = DragonSkill:GetModule("GearManager")
-    local plan = GM:GetFarmPlan(); self.text:SetText("|cffffff00OPTIMALE FARM-ROUTE (Season 12.1 Targets)|r")
+    local plan = GM:GetFarmPlan(); self.text:SetText("|cFFD100OPTIMALE FARM-ROUTE (Season 12.1 Targets)|r")
     local y, fsIdx, rowIndex = -45, 300, 1000
     if plan and #plan > 0 then for i, d in ipairs(plan) do
-        local fs = self:GetExtraFS(fsIdx, "GameFontNormal"); fs:SetPoint("TOPLEFT", 15, y); fs:SetText(string.format("|cffffd100%d. %s|r (Upgrade Score: %d)", i, d.name, d.score)); fs:Show(); y = y - 25; fsIdx = fsIdx + 1
+        local fs = self:GetExtraFS(fsIdx, "GameFontNormal"); fs:SetPoint("TOPLEFT", 15, y); fs:SetText(string.format("|cFFD100%d. %s|r (Upgrade Score: %d)", i, d.name, d.score)); fs:Show(); y = y - 25; fsIdx = fsIdx + 1
         for _, item in ipairs(d.items) do
             local prefix = "   |cffaaaaaaBoss: "..tostring(item.boss)..":|r "
             rowIndex = self:AddInteractiveRow(rowIndex, item, y, prefix)
@@ -156,14 +250,14 @@ end
 
 function UI:DrawUpgrades(content)
     local GM = DragonSkill:GetModule("GearManager"); local items = GM:GetBestUpgrades()
-    self.text:SetText("|cffffff00UPGRADE MATRIX (Ziel: Mythic 639)|r"); local y, ri = -75, 2000
+    self.text:SetText("|cFFD100UPGRADE MATRIX (Ziel: Mythic 639)|r"); local y, ri = -75, 2000
     if #items > 0 then for _, item in ipairs(items) do ri = self:AddInteractiveRow(ri, item, y, nil, string.format("|cff00ff00+%.1f%%|r", item.percent or 0)); y = y - 30 end
     else local fs = self:GetExtraFS(60); fs:SetPoint("TOPLEFT", 25, y); fs:SetText("|cffaaaaaaKeine Upgrades verfügbar.|r"); fs:Show() end
 end
 
 function UI:DrawBiSList(content)
     local GM = DragonSkill:GetModule("GearManager"); local items = GM:GetBiSList()
-    self.text:SetText("|cffffff00MYTHIC BIS LIST (Season 12.1 - 639+)|r"); local y, ri = -45, 3000
+    self.text:SetText("|cFFD100MYTHIC BIS LIST (Season 12.1 - 639+)|r"); local y, ri = -45, 3000
     for _, item in ipairs(items) do
         local ilvlStr = "|cffa335ee" .. (item.ilvl or 639) .. "|r"
         ri = self:AddInteractiveRow(ri, item, y, nil, ilvlStr); y = y - 30; ri = ri + 1
@@ -172,7 +266,7 @@ function UI:DrawBiSList(content)
 end
 
 function UI:DrawTalents(content, gd)
-    local y = -45; self.text:SetText("|cffffff00Talent Builds|r")
+    local y = -45; self.text:SetText("|cFFD100Talent Builds|r")
     if gd.talentBuilds then for i, b in ipairs(gd.talentBuilds) do
         local btn = self.talentBtns[i] or CreateFrame("Button", nil, content, "UIPanelButtonTemplate")
         self.talentBtns[i] = btn; btn:SetSize(560, 30); btn:SetPoint("TOPLEFT", 15, y)
@@ -189,13 +283,13 @@ function UI:DrawRaidGuides(content)
         self.bossBtns[i] = btn; btn:SetSize(lw, 35); btn:SetPoint("TOPLEFT", 10, -50 - (i-1)*38); btn:SetText(g.name or "Boss"); btn:SetScript("OnClick", function() selectedBossIdx = i; self:Update() end); btn:Show()
     end
     local g = guides[selectedBossIdx]; if not g then return end
-    local ti = self:GetExtraFS(fi); ti:SetPoint("TOPLEFT", lw + 25, y); ti:SetText("|cffffd100" .. tostring(g.name) .. "|r"); ti:Show(); fi = fi + 1; y = y - 30
+    local ti = self:GetExtraFS(fi); ti:SetPoint("TOPLEFT", lw + 25, y); ti:SetText("|cFFD100" .. tostring(g.name) .. "|r"); ti:Show(); fi = fi + 1; y = y - 30
     for _, p in ipairs(g.phases or {}) do
         local pt = self:GetExtraFS(fi); pt:SetPoint("TOPLEFT", lw + 25, y); pt:SetText("|cffffff00" .. tostring(p.name) .. "|r"); pt:Show(); fi = fi + 1; y = y - 20
         local pd = self:GetExtraFS(fi, "GameFontHighlightSmall"); pd:SetPoint("TOPLEFT", lw + 35, y); pd:SetText(tostring(p.desc)); pd:Show(); fi = fi + 1; y = y - 30
         for _, m in ipairs(p.mechanics or {}) do
             local mt = self:GetExtraFS(fi, "GameFontHighlightSmall"); mt:SetPoint("TOPLEFT", lw + 45, y)
-            mt:SetText("|cffffd100" .. tostring(m.name) .. ":|r " .. tostring(m.tip)); mt:Show(); fi = fi + 1; y = y - 35
+            mt:SetText("|cFFD100" .. tostring(m.name) .. ":|r " .. tostring(m.tip)); mt:Show(); fi = fi + 1; y = y - 35
         end
         y = y - 10
     end
@@ -215,7 +309,7 @@ StaticPopupDialogs["DRAGONSKILL_COPY"] = {
 
 function UI:Toggle() self:Init(); if self.frame:IsShown() then self.frame:Hide() else self.frame:Show(); self:Update() end end
 
--- --- Robust Slash Command Registration ---
+-- --- Slash Commands ---
 local function SlashHandler(msg)
     if msg == "minimap" then
         if DragonSkill.Minimap then DragonSkill.Minimap:Toggle() end

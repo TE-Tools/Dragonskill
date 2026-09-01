@@ -1,6 +1,6 @@
--- Dragon Skill - Gear Manager Engine (v2.3.2)
+-- Dragon Skill - Gear Manager Engine (v2.3.6)
 -- Master Engine: Strictly Patch 12.1 Midnight Season 2.
--- Implements Spec-specific weapon filtering and data integrity.
+-- Implements Absolute Data Purity and Spec-specific weapon filtering.
 
 local GearManager = DragonSkill:RegisterModule("GearManager", {})
 
@@ -9,7 +9,7 @@ local STAT_WEIGHTS_BASE = {
     intellect = 150, strength = 150, agility = 150, stamina = 50
 }
 
--- Spec-to-Weapon Mapping (Prevention of Axe-Druid etc)
+-- Spec-to-Weapon Mapping (Strictly Hard-blocked)
 local CLASS_WEAPON_CHECK = {
     WARRIOR = { "Axt", "Streitkolben", "Schwert", "Stangenwaffe", "Stab", "Schild" },
     PALADIN = { "Axt", "Streitkolben", "Schwert", "Stangenwaffe", "Schild" },
@@ -35,14 +35,17 @@ function GearManager:IsItemValidForSpec(itemId, specID)
     if not allowedTypes then return true end
 
     -- Check if it's a weapon/shield slot and if it's allowed
-    local isWeaponOrShield = item.slot:find("waffe") or item.slot:find("Stab") or item.slot:find("Dolch") or
-                             item.slot:find("Schild") or item.slot:find("Bogen") or item.slot:find("Armbrust") or
-                             item.slot:find("waffe") or item.slot:find("Gleive")
+    local slot = item.slot:lower()
+    local isWeaponOrShield = slot:find("axt") or slot:find("streitkolben") or slot:find("schwert") or
+                             slot:find("stangenwaffe") or slot:find("stab") or slot:find("schild") or
+                             slot:find("bogen") or slot:find("armbrust") or slot:find("schusswaffe") or
+                             slot:find("dolch") or slot:find("gleive") or slot:find("faustwaffe") or
+                             slot:find("zauberstab")
 
     if isWeaponOrShield then
         local found = false
         for _, allowed in ipairs(allowedTypes) do
-            if item.slot:find(allowed) then
+            if slot:find(allowed:lower()) then
                 found = true
                 break
             end
@@ -108,14 +111,16 @@ function GearManager:GetBiSList()
     local list = {}
     local seen = {}
 
-    -- 1. Try Clean 12.1 Manual Data first
+    -- 1. Try Clean 12.1 Manual Data first (With Absolute Purity Check)
     if DragonSkillData and DragonSkillData[class] and DragonSkillData[class][specID] then
         local bis = DragonSkillData[class][specID].bisGear
         if bis and bis.wowhead then
             for _, entry in ipairs(bis.wowhead) do
-                if entry.itemId and not seen[entry.itemId] then
-                    table.insert(list, { itemId = entry.itemId, name = entry.name, slot = entry.slot, ilvl = 639 })
-                    seen[entry.itemId] = true
+                local itemId = tonumber(entry.itemId)
+                -- PURITY FIX: Ignore ID < 260000 and Hard-block invalid class items
+                if itemId and itemId >= 260000 and not seen[itemId] and self:IsItemValidForSpec(itemId, specID) then
+                    table.insert(list, { itemId = itemId, name = entry.name, slot = entry.slot, ilvl = 639 })
+                    seen[itemId] = true
                 end
             end
         end
@@ -124,7 +129,7 @@ function GearManager:GetBiSList()
     -- 2. Fallback to Role Database (Filtering invalid types)
     if #list < 5 and DragonSkillGearData.specs[specID] then
         for _, itemId in ipairs(DragonSkillGearData.specs[specID].bis.overall) do
-            if not seen[itemId] and self:IsItemValidForSpec(itemId, specID) then
+            if not seen[itemId] and itemId >= 260000 and self:IsItemValidForSpec(itemId, specID) then
                 local item = DragonSkillGearData.items[itemId]
                 if item then
                     table.insert(list, { itemId = itemId, name = item.name, slot = item.slot or "Item", ilvl = 639 })
@@ -162,7 +167,8 @@ function GearManager:GetFarmPlan()
         local items = {}
         for _, boss in ipairs(dData.bosses) do
             for _, itemId in ipairs(boss.loot) do
-                if self:IsItemValidForSpec(itemId, specID) then
+                -- PURITY FIX: Only process valid items for the spec and modern IDs
+                if itemId >= 260000 and self:IsItemValidForSpec(itemId, specID) then
                     local details = self:GetUpgradeDetails("Gear", itemId, 639)
                     if details.score > 0 then
                         local name = DragonSkillGearData.items[itemId] and DragonSkillGearData.items[itemId].name or "Unbekanntes Item"
