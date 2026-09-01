@@ -1,24 +1,32 @@
--- AUTO: Talent Builds part 1 (v2.3.8) - DK DH DRUID EVOKER HUNTER MAGE MONK
--- Full builds restored after GuideData stub wipe
+-- AUTO: DRUID talentBuilds all specs (v2.3.9)
 DragonSkillData = DragonSkillData or {}
+DragonSkillData["DRUID"] = DragonSkillData["DRUID"] or {}
 
-DragonSkillData["DEATHKNIGHT"] = DragonSkillData["DEATHKNIGHT"] or {}
-if DragonSkillData["DEATHKNIGHT"][250] then
-    DragonSkillData["DEATHKNIGHT"][250].talentBuilds = {
-        { provider = "wowhead", label = "Raid", importString = "CoPAAAAAAAAAAAAAAAAAAAAAAwYWGzMmxMjhZZmZmmZxYmxMmBAAAAmZmZmZmZYGjZAYMzMzAAAMmtBGwSw2wEYYBwMMAAMzAYYA" },
-        { provider = "wowhead", label = "Mythic+", importString = "CoPAAAAAAAAAAAAAAAAAAAAAAwMzyMzMmxMzMMLzMz0MLGjxMGAAAAwMmZmZmZYGDAYmZmZGAAgxsNwAWC2GmADLAmxMAAMzAYYA" },
-        { provider = "archon", label = "Recommended Class Tree", importString = "CoPAAAAAAAAAAAAAAAAAAAAAAwMzyMzMmxMGMLzMz0MLzMjZmBAAAAwgZmZmZMzMjBAzMzMzAAAMmtBGwCYZYCMsAYGDAAmZAYMA" },
+if DragonSkillData["DRUID"][102] then
+    DragonSkillData["DRUID"][102].talentBuilds = {
+        { provider = "wowhead", label = "Raid", importString = "CkGAAAAAAAAAAAAAAAAAAAAAAMjxMLzMjZmxsNMYmFjNmBAAAAAAAAAAbDa2YMNzY4BMLzMzMDDzAAAAAAAAAbbjFMNzsMAAABswYmZYmBGNDAmZAADA" },
+        { provider = "wowhead", label = "Mythic+", importString = "CkGAAAAAAAAAAAAAAAAAAAAAAMjZmZMzYmZmxsMMYmFjNmBAAAAAAAAAAbDa2YMNzY4BMLzMzMDDzAAAAAAAAAbbjFMNzsMAAABswYmZYmBGNDAmZAADA" },
+        { provider = "archon", label = "Recommended Class Tree", importString = "CkGAAAAAAAAAAAAAAAAAAAAAAsNmZGLzMzMzY2GGMzsYmxMAAAAAAAAAAAw2mlZghZMDwMzyMzwwAAAAAAAAAww2yALbzMAAAALYmZmZGmZGAYmBAAA" },
     }
 end
-if DragonSkillData["DEATHKNIGHT"][251] then
-    DragonSkillData["DEATHKNIGHT"][251].talentBuilds = {
-        { provider = "wowhead", label = "Raid", importString = "CsPAAAAAAAAAAAAAAAAAAAAAAMGAzYMzMGLmZmtZmZGzYAAAAAAAAAgBAAAAzMzMmZYYmZmZmxMLzAAAAghZmZmxMzYGYmZGMGMA" },
-        { provider = "archon", label = "Recommended Class Tree", importString = "CsPAAAAAAAAAAAAAAAAAAAAAAMGAzMjxYsMzMbzMzMmZGAAAAAAAAAAAYAAAYmZmZGDmZmZmZMzyMAAAAYYmZGMzMmBmZmBjBDA" },
+if DragonSkillData["DRUID"][103] then
+    DragonSkillData["DRUID"][103].talentBuilds = {
+        { provider = "wowhead", label = "Raid", importString = "CkGAAAAAAAAAAAAAAAAAAAAAAsNmZGLzMzsMzY2GGMzsYmxMAAAAAAAAAAAw2mlZghZMDwMzyMzwwAAAAAAAAAww2yALbzMAAAALYmZmZGmZGAYmBAAA" },
+        { provider = "archon", label = "Recommended Class Tree", importString = "CkGAAAAAAAAAAAAAAAAAAAAAAsNmZGLzMzMzY2GGMzsYmxMAAAAAAAAAAAw2mlZghZMDwMzyMzwwAAAAAAAAAww2yALbzMAAAALYmZmZGmZGAYmBAAA" },
     }
 end
-if DragonSkillData["DEATHKNIGHT"][252] then
-    DragonSkillData["DEATHKNIGHT"][252].talentBuilds = {
-        { provider = "wowhead", label = "Raid", importString = "CwPAAAAAAAAAAAAAAAAAAAAAAAgZGjZMGLzMz2MzMzYGAAAAAAAAAAAAYAAAYmZmZMzYZYmZmZmZGzYAAAAAAgZmZMzMzADMzMDGLA" },
-        { provider = "archon", label = "Recommended Class Tree", importString = "CwPAAAAAAAAAAAAAAAAAAAAAAAgZGjZmxYZmZ2mZmZGzAAAAAAAAAAAAYAAAYmZmZMzYZYmZmZmZGzYAAAAAAgZmZMzMzADMzMDGLA" },
+if DragonSkillData["DRUID"][104] then
+    DragonSkillData["DRUID"][104].talentBuilds = {
+        { provider = "wowhead", label = "Raid", importString = "CgGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAzMzMMzyMzMzY2mZmxYgZGjZmhxYmxMjZGzAAAAAAAAAAAAmlZxsNzAAAAYhsMzMDzMzgBMzAAA" },
+        { provider = "archon", label = "Recommended Class Tree", importString = "CgGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAzYMzMMzyYmZmZ2mZmxYAzYMzMMGzsYYmxMzAAAAAAAAAAAAwsMLmtZmGAAAAsgZWYmZmxMAmZAAA" },
+    }
+end
+if DragonSkillData["DRUID"][105] then
+    DragonSkillData["DRUID"][105].talentBuilds = {
+        { provider = "wowhead", label = "Raid", importString = "CkGAAAAAAAAAAAAAAAAAAAAAAMjxMLzMjZmxsNMYmFjNmBAAAAAAAAAAbDa2YMNzY4BMLzMzMDDzAAAAAAAAAbbjFMNzsMAAABswYmZYmBGNDAmZAADA" },
+        { provider = "wowhead", label = "Mythic+", importString = "CkGAAAAAAAAAAAAAAAAAAAAAAMjZmZMzYmZmxsMMYmFjNmBAAAAAAAAAAbDa2YMNzY4BMLzMzMDDzAAAAAAAAAbbjFMNzsMAAABswYmZYmBGNDAmZAADA" },
+        { provider = "wowhead", label = "Delves", importString = "CkGAAAAAAAAAAAAAAAAAAAAAAMjxMLzMjZmxsNMYmFjNmBAAAAAAAAAAbDa2YMNzY4BMLzMzMDDzAAAAAAAAAbbjFMNzsMAAABswYmZYmBGNDAmZAADA" },
+        { provider = "archon", label = "Recommended Class Tree", importString = "CkGAAAAAAAAAAAAAAAAAAAAAAsNmZGLzMzMzY2GGMzsYmxMAAAAAAAAAAAw2mlZghZMDwMzyMzwwAAAAAAAAAww2yALbzMAAAALYmZmZGmZGAYmBAAA" },
+        { provider = "archon", label = "Alternative Class Tree #1", importString = "CkGAAAAAAAAAAAAAAAAAAAAAAsNmZGLzMzMzY2GGMzsYmxMAAAAAAAAAAAw2mlZghZMDwMzyMzwwAAAAAAAAAww2yALbzMAAAALYmZmZGmZGAYmBAAA" },
     }
 end
