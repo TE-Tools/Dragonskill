@@ -1,6 +1,5 @@
--- Dragon Skill - Gear Manager Engine (v2.3.6)
--- Master Engine: Strictly Patch 12.1 Midnight Season 2.
--- Implements Absolute Data Purity and Spec-specific weapon filtering.
+-- Dragon Skill - Gear Manager Engine (v2.3.7)
+-- Unified slot keys (DE/EN), purity filter, realistic upgrade compare.
 
 local GearManager = DragonSkill:RegisterModule("GearManager", {})
 
@@ -9,25 +8,64 @@ local STAT_WEIGHTS_BASE = {
     intellect = 150, strength = 150, agility = 150, stamina = 50
 }
 
--- Spec-to-Weapon Mapping (Strictly Hard-blocked)
-local CLASS_WEAPON_CHECK = {
-    WARRIOR = { "axt", "streitkolben", "schwert", "stangenwaffe", "stab", "schild" },
-    PALADIN = { "axt", "streitkolben", "schwert", "stangenwaffe", "schild" },
-    HUNTER = { "bogen", "armbrust", "schusswaffe", "stangenwaffe", "stab", "axt" },
-    ROGUE = { "dolch", "schwert", "axt", "streitkolben", "faustwaffe" },
-    PRIEST = { "dolch", "streitkolben", "stab", "zauberstab" },
-    DEATHKNIGHT = { "axt", "streitkolben", "schwert", "stangenwaffe" },
-    SHAMAN = { "axt", "streitkolben", "stab", "dolch", "schild" },
-    MAGE = { "dolch", "schwert", "stab", "zauberstab" },
-    WARLOCK = { "dolch", "schwert", "stab", "zauberstab" },
-    MONK = { "faustwaffe", "axt", "streitkolben", "schwert", "stangenwaffe", "stab" },
-    DRUID = { "dolch", "faustwaffe", "streitkolben", "stangenwaffe", "stab" },
-    DEMONHUNTER = { "kriegsgleive", "schwert", "axt", "faustwaffe" },
-    EVOKER = { "dolch", "faustwaffe", "streitkolben", "schwert", "stab" }
+-- Canonical slot keys used everywhere in scoring
+local SLOT_CANON = {
+    kopf = "Head", head = "Head",
+    hals = "Neck", neck = "Neck",
+    schulter = "Shoulder", shoulder = "Shoulder",
+    ruecken = "Back", rücken = "Back", back = "Back", umhang = "Back",
+    brust = "Chest", chest = "Chest",
+    handgelenke = "Wrist", wrist = "Wrist", armschienen = "Wrist",
+    haende = "Hands", hände = "Hands", hands = "Hands", handschuhe = "Hands",
+    taille = "Waist", waist = "Waist", gurt = "Waist",
+    beine = "Legs", legs = "Legs", beinschuetzer = "Legs", gamaschen = "Legs",
+    fuesse = "Feet", füße = "Feet", feet = "Feet", stiefel = "Feet",
+    ring = "Ring", finger = "Ring",
+    schmuck = "Trinket", schmuckstueck = "Trinket", schmuckstück = "Trinket", trinket = "Trinket",
+    waffe = "MainHand", mainhand = "MainHand", einhandaxt = "MainHand",
+    einhandschwert = "MainHand", einhandstreitkolben = "MainHand",
+    zweihandstreitkolben = "MainHand", stab = "MainHand", dolch = "MainHand",
+    faustwaffe = "MainHand", bogen = "MainHand", armbrust = "MainHand",
+    schusswaffe = "MainHand", stangenwaffe = "MainHand", zauberstab = "MainHand",
+    kriegsgleve = "MainHand", warglaive = "MainHand", gleve = "MainHand",
+    schild = "OffHand", offhand = "OffHand", secondaryhand = "OffHand",
+    nebenhand = "OffHand",
 }
 
+local CLASS_WEAPON_CHECK = {
+    WARRIOR = { "axt", "streitkolben", "schwert", "stangenwaffe", "stab", "schild", "waffe" },
+    PALADIN = { "axt", "streitkolben", "schwert", "stangenwaffe", "schild", "waffe" },
+    HUNTER = { "bogen", "armbrust", "schuss", "stangenwaffe", "stab", "axt", "waffe" },
+    ROGUE = { "dolch", "schwert", "axt", "streitkolben", "faust", "waffe" },
+    PRIEST = { "dolch", "streitkolben", "stab", "zauberstab", "waffe" },
+    DEATHKNIGHT = { "axt", "streitkolben", "schwert", "stangenwaffe", "waffe" },
+    SHAMAN = { "axt", "streitkolben", "stab", "dolch", "schild", "waffe" },
+    MAGE = { "dolch", "schwert", "stab", "zauberstab", "waffe" },
+    WARLOCK = { "dolch", "schwert", "stab", "zauberstab", "waffe" },
+    MONK = { "faust", "axt", "streitkolben", "schwert", "stangenwaffe", "stab", "waffe" },
+    DRUID = { "dolch", "faust", "streitkolben", "stangenwaffe", "stab", "waffe" },
+    DEMONHUNTER = { "gleve", "kriegsgleve", "warglaive", "schwert", "axt", "faust", "waffe" },
+    EVOKER = { "dolch", "faust", "streitkolben", "schwert", "stab", "waffe" },
+}
+
+local WEAPON_KEYWORDS = {
+    "waffe", "stab", "dolch", "schild", "bogen", "armbrust", "schuss",
+    "gleve", "kolben", "schwert", "axt", "faust", "stangen", "zauberstab"
+}
+
+function GearManager:NormalizeSlot(slot)
+    if not slot or slot == "" then return "Item" end
+    local key = tostring(slot):lower()
+    key = key:gsub("ü", "ue"):gsub("ö", "oe"):gsub("ä", "ae"):gsub("ß", "ss")
+    if SLOT_CANON[key] then return SLOT_CANON[key] end
+    for alias, canon in pairs(SLOT_CANON) do
+        if key:find(alias, 1, true) then return canon end
+    end
+    return slot
+end
+
 function GearManager:IsItemValidForSpec(itemId, specID)
-    local item = DragonSkillGearData.items[itemId]
+    local item = DragonSkillGearData and DragonSkillGearData.items and DragonSkillGearData.items[itemId]
     if not item or not item.slot then return true end
 
     local _, class = UnitClass("player")
@@ -35,26 +73,20 @@ function GearManager:IsItemValidForSpec(itemId, specID)
     if not allowedTypes then return true end
 
     local slotLower = item.slot:lower()
-
-    -- Weapon/Shield Keywords
-    local keywords = { "waffe", "stab", "dolch", "schild", "bogen", "armbrust", "schuss", "gleive", "kolben" }
     local isWeaponOrShield = false
-    for _, k in ipairs(keywords) do
-        if slotLower:find(k) then isWeaponOrShield = true; break end
-    end
-
-    if isWeaponOrShield then
-        local found = false
-        for _, allowed in ipairs(allowedTypes) do
-            if slotLower:find(allowed) then
-                found = true
-                break
-            end
+    for _, k in ipairs(WEAPON_KEYWORDS) do
+        if slotLower:find(k, 1, true) then
+            isWeaponOrShield = true
+            break
         end
-        return found
     end
 
-    return true
+    if not isWeaponOrShield then return true end
+
+    for _, allowed in ipairs(allowedTypes) do
+        if slotLower:find(allowed, 1, true) then return true end
+    end
+    return false
 end
 
 function GearManager:GetStatWeights()
@@ -64,15 +96,15 @@ function GearManager:GetStatWeights()
 
     local priorityData = SP and SP:GetForCurrentSpec()
     if priorityData and priorityData.wowhead then
-        local str = priorityData.wowhead:lower()
+        local str = tostring(priorityData.wowhead):lower()
         local parts = { strsplit(">", str) }
         local currentWeight = 110
         for _, p in ipairs(parts) do
             local name = strtrim(p)
-            if name:find("haste") then weights.haste = currentWeight
-            elseif name:find("mastery") then weights.mastery = currentWeight
-            elseif name:find("vers") then weights.versatility = currentWeight
-            elseif name:find("crit") then weights.criticalStrike = currentWeight end
+            if name:find("haste") or name:find("tempo") then weights.haste = currentWeight
+            elseif name:find("mastery") or name:find("meister") then weights.mastery = currentWeight
+            elseif name:find("vers") or name:find("vielseit") then weights.versatility = currentWeight
+            elseif name:find("crit") or name:find("krit") then weights.criticalStrike = currentWeight end
             currentWeight = currentWeight - 15
         end
     end
@@ -80,29 +112,70 @@ function GearManager:GetStatWeights()
 end
 
 function GearManager:GetItemScore(itemId, itemLevel)
-    local data = DragonSkillGearData.items[itemId]
-    if not data then return 0 end
-    local weights = self:GetStatWeights()
-    -- Midnight Season 2 Scaling (Strictly 639+)
-    local ilvlScore = (itemLevel or 639) * 20
-    return ilvlScore
+    local data = DragonSkillGearData and DragonSkillGearData.items and DragonSkillGearData.items[itemId]
+    local ilvl = tonumber(itemLevel) or (data and data.ilvl) or 639
+    -- Primary signal: item level (Midnight Mythic baseline 639)
+    local score = ilvl * 20
+    -- Known registry items get a small bias so BiS beats unknown same-ilvl junk
+    if data then score = score + 50 end
+    return score
+end
+
+-- Alias used by Character inventory scan
+function GearManager:GetUpgradeScore(slot, itemId, itemLevel)
+    local details = self:GetUpgradeDetails(slot or "Item", itemId, itemLevel)
+    return details and details.score or 0
+end
+
+function GearManager:GetEquippedInSlot(canonSlot)
+    local Char = DragonSkill:GetModule("Character")
+    local currentGear = Char and Char:GetCurrentGear() or {}
+    if currentGear[canonSlot] then return currentGear[canonSlot] end
+    -- Rings / Trinkets: take the weaker of the two for upgrade math
+    if canonSlot == "Ring" then
+        local a, b = currentGear.Ring, currentGear.Ring2
+        if a and b then
+            local sa = self:GetItemScore(a.itemId, a.ilvl)
+            local sb = self:GetItemScore(b.itemId, b.ilvl)
+            return sa <= sb and a or b
+        end
+        return a or b
+    end
+    if canonSlot == "Trinket" then
+        local a, b = currentGear.Trinket, currentGear.Trinket2
+        if a and b then
+            local sa = self:GetItemScore(a.itemId, a.ilvl)
+            local sb = self:GetItemScore(b.itemId, b.ilvl)
+            return sa <= sb and a or b
+        end
+        return a or b
+    end
+    return nil
 end
 
 function GearManager:GetUpgradeDetails(slot, targetItemId, targetIlvl)
-    local Char = DragonSkill:GetModule("Character")
-    local currentGear = Char and Char:GetCurrentGear() or {}
-    local current = currentGear[slot]
+    local canon = self:NormalizeSlot(slot)
+    local current = self:GetEquippedInSlot(canon)
     local currentScore = 0
-    if current and current.itemId then currentScore = self:GetItemScore(current.itemId, current.ilvl) end
+    if current and current.itemId then
+        currentScore = self:GetItemScore(current.itemId, current.ilvl)
+    end
 
-    local targetScore = self:GetItemScore(targetItemId, targetIlvl or 639)
+    local tIlvl = tonumber(targetIlvl) or 639
+    local targetScore = self:GetItemScore(targetItemId, tIlvl)
     local diff = targetScore - currentScore
-    local percent = (currentScore > 0) and ((diff / currentScore) * 100) or 100
+    local percent = 0
+    if currentScore > 0 then
+        percent = (diff / currentScore) * 100
+    elseif targetScore > 0 then
+        percent = 100
+    end
 
     return {
         score = diff,
-        percent = math.max(0, math.floor(percent * 10) / 10),
-        targetIlvl = 639
+        percent = math.floor(percent * 10 + 0.5) / 10,
+        targetIlvl = tIlvl,
+        slot = canon,
     }
 end
 
@@ -113,31 +186,46 @@ function GearManager:GetBiSList()
     local list = {}
     local seen = {}
 
-    -- 1. Try Manual Data (Pure 12.1 Check)
+    local function pushEntry(entry)
+        local itemId = tonumber(entry.itemId)
+        if not itemId or itemId < 260000 or seen[itemId] then return end
+        if not self:IsItemValidForSpec(itemId, specID) then return end
+        local name = entry.name
+        local slot = entry.slot or "Item"
+        if (not name or name == "") and DragonSkillGearData and DragonSkillGearData.items[itemId] then
+            name = DragonSkillGearData.items[itemId].name
+            slot = slot ~= "Item" and slot or (DragonSkillGearData.items[itemId].slot or "Item")
+        end
+        table.insert(list, {
+            itemId = itemId,
+            name = name or ("Item " .. itemId),
+            slot = slot,
+            ilvl = entry.ilvl or 639,
+        })
+        seen[itemId] = true
+    end
+
+    -- 1. GuideData (supports bisGear.wowhead AND legacy wowhead root)
     if DragonSkillData and DragonSkillData[class] and DragonSkillData[class][specID] then
         local specData = DragonSkillData[class][specID]
-        local bis = specData.bisGear
-        if bis and bis.wowhead then
-            for _, entry in ipairs(bis.wowhead) do
-                local itemId = tonumber(entry.itemId)
-                -- PURITY FIX: Strictly Season 2 (IDs >= 260000)
-                if itemId and itemId >= 260000 and not seen[itemId] and self:IsItemValidForSpec(itemId, specID) then
-                    table.insert(list, { itemId = itemId, name = entry.name, slot = entry.slot, ilvl = 639 })
-                    seen[itemId] = true
-                end
-            end
+        local wowhead = (specData.bisGear and specData.bisGear.wowhead) or specData.wowhead
+        if wowhead then
+            for _, entry in ipairs(wowhead) do pushEntry(entry) end
         end
     end
 
-    -- 2. Fallback to Role Database (Filtering invalid types & old IDs)
-    if #list < 8 and DragonSkillGearData.specs[specID] then
-        for _, itemId in ipairs(DragonSkillGearData.specs[specID].bis.overall) do
-            if not seen[itemId] and itemId >= 260000 and self:IsItemValidForSpec(itemId, specID) then
+    -- 2. Role fallback from GearDatabase
+    if #list < 8 and DragonSkillGearData and DragonSkillGearData.specs and DragonSkillGearData.specs[specID] then
+        local overall = DragonSkillGearData.specs[specID].bis and DragonSkillGearData.specs[specID].bis.overall
+        if overall then
+            for _, itemId in ipairs(overall) do
                 local item = DragonSkillGearData.items[itemId]
-                if item then
-                    table.insert(list, { itemId = itemId, name = item.name, slot = item.slot or "Item", ilvl = 639 })
-                    seen[itemId] = true
-                end
+                pushEntry({
+                    itemId = itemId,
+                    name = item and item.name,
+                    slot = item and item.slot or "Item",
+                    ilvl = 639,
+                })
             end
         end
     end
@@ -148,11 +236,15 @@ function GearManager:GetBestUpgrades()
     local upgrades = {}
     local bisList = self:GetBiSList()
     for _, item in ipairs(bisList) do
-        local details = self:GetUpgradeDetails(item.slot or "Item", item.itemId, 639)
+        local details = self:GetUpgradeDetails(item.slot or "Item", item.itemId, item.ilvl or 639)
         if details.score > 0 then
             table.insert(upgrades, {
-                itemId = item.itemId, name = item.name, slot = item.slot or "Item",
-                score = details.score, percent = details.percent, ilvl = 639
+                itemId = item.itemId,
+                name = item.name,
+                slot = item.slot or "Item",
+                score = details.score,
+                percent = details.percent,
+                ilvl = item.ilvl or 639,
             })
         end
     end
@@ -168,19 +260,27 @@ function GearManager:GetFarmPlan()
 
     for dName, dData in pairs(DragonSkillGearData.dungeons) do
         local items = {}
-        for _, boss in ipairs(dData.bosses) do
-            for _, itemId in ipairs(boss.loot) do
-                -- PURITY: Modern IDs and valid class types only
+        for _, boss in ipairs(dData.bosses or {}) do
+            for _, itemId in ipairs(boss.loot or {}) do
                 if itemId >= 260000 and self:IsItemValidForSpec(itemId, specID) then
-                    local details = self:GetUpgradeDetails("Gear", itemId, 639)
+                    local reg = DragonSkillGearData.items[itemId]
+                    local slot = reg and reg.slot or "Item"
+                    local details = self:GetUpgradeDetails(slot, itemId, 639)
                     if details.score > 0 then
-                        local name = DragonSkillGearData.items[itemId] and DragonSkillGearData.items[itemId].name or "Unbekanntes Item"
-                        table.insert(items, { itemId = itemId, name = name, boss = boss.name, score = details.score })
+                        table.insert(items, {
+                            itemId = itemId,
+                            name = reg and reg.name or "Unbekanntes Item",
+                            boss = boss.name,
+                            slot = slot,
+                            score = details.score,
+                        })
                     end
                 end
             end
         end
-        if #items > 0 then table.insert(plan, { name = dName, score = #items * 10, items = items }) end
+        if #items > 0 then
+            table.insert(plan, { name = dName, score = #items * 10, items = items })
+        end
     end
     table.sort(plan, function(a, b) return a.score > b.score end)
     return plan

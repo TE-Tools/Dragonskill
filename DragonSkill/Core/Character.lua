@@ -1,5 +1,5 @@
--- Dragon Skill - Character Engine (v1.7.0)
--- Reads equipped items, item levels, and stats.
+-- Dragon Skill - Character Engine (v2.3.7)
+-- Equipped gear with dual Ring/Trinket slots + inventory upgrade scan.
 
 local Character = DragonSkill:RegisterModule("Character", {})
 
@@ -10,12 +10,12 @@ local SLOTS = {
     "MainHandSlot", "SecondaryHandSlot"
 }
 
--- Map slot name to our DB slot name
 local SLOT_MAP = {
     HeadSlot = "Head", NeckSlot = "Neck", ShoulderSlot = "Shoulder", BackSlot = "Back",
     ChestSlot = "Chest", WristSlot = "Wrist", HandsSlot = "Hands", WaistSlot = "Waist",
-    LegsSlot = "Legs", FeetSlot = "Feet", Finger0Slot = "Ring", Finger1Slot = "Ring",
-    Trinket0Slot = "Trinket", Trinket1Slot = "Trinket",
+    LegsSlot = "Legs", FeetSlot = "Feet",
+    Finger0Slot = "Ring", Finger1Slot = "Ring2",
+    Trinket0Slot = "Trinket", Trinket1Slot = "Trinket2",
     MainHandSlot = "MainHand", SecondaryHandSlot = "OffHand"
 }
 
@@ -23,15 +23,20 @@ function Character:GetCurrentGear()
     local gear = {}
     for _, slotName in ipairs(SLOTS) do
         local slotID = GetInventorySlotInfo(slotName)
-        local itemLink = GetInventoryItemLink("player", slotID)
-        if itemLink then
-            local itemID = GetInventoryItemID("player", slotID)
-            local ilvl = select(4, GetItemInfo(itemLink)) or 0
-            gear[SLOT_MAP[slotName]] = {
-                itemId = itemID,
-                ilvl = ilvl,
-                link = itemLink
-            }
+        if slotID then
+            local itemLink = GetInventoryItemLink("player", slotID)
+            if itemLink then
+                local itemID = GetInventoryItemID("player", slotID)
+                local ilvl = select(4, GetItemInfo(itemLink)) or 0
+                local key = SLOT_MAP[slotName]
+                if key then
+                    gear[key] = {
+                        itemId = itemID,
+                        ilvl = ilvl,
+                        link = itemLink,
+                    }
+                end
+            end
         end
     end
     return gear
@@ -45,25 +50,31 @@ end
 
 function Character:GetInventoryUpgrades()
     local GM = DragonSkill:GetModule("GearManager")
+    if not GM then return {} end
     local upgrades = {}
 
     for bag = 0, 4 do
-        for slot = 1, C_Container.GetContainerNumSlots(bag) do
+        local numSlots = C_Container and C_Container.GetContainerNumSlots and C_Container.GetContainerNumSlots(bag) or 0
+        for slot = 1, numSlots do
             local itemID = C_Container.GetContainerItemID(bag, slot)
             if itemID then
                 local itemLink = C_Container.GetContainerItemLink(bag, slot)
-                local _, _, _, ilvl, _, _, _, _, slotName = GetItemInfo(itemLink)
-
-                -- Nur Rüstung und Waffen
-                if slotName and slotName ~= "" then
-                    local upgrade = GM:GetUpgradeScore(nil, itemID, ilvl)
-                    if upgrade > 0 then
-                        table.insert(upgrades, { itemId = itemID, link = itemLink, score = upgrade })
+                local _, _, _, ilvl, _, _, _, _, equipSlot = GetItemInfo(itemLink or itemID)
+                if equipSlot and equipSlot ~= "" and equipSlot ~= "INVTYPE_NON_EQUIP_IGNORE" then
+                    local score = GM:GetUpgradeScore(equipSlot, itemID, ilvl)
+                    if score and score > 0 then
+                        table.insert(upgrades, {
+                            itemId = itemID,
+                            link = itemLink,
+                            score = score,
+                            slot = equipSlot,
+                        })
                     end
                 end
             end
         end
     end
+    table.sort(upgrades, function(a, b) return (a.score or 0) > (b.score or 0) end)
     return upgrades
 end
 
@@ -71,9 +82,12 @@ function Character:GetActiveTierInfo()
     local gear = self:GetCurrentGear()
     local specIndex = GetSpecialization()
     local specID = specIndex and select(1, GetSpecializationInfo(specIndex)) or 0
+    if not DragonSkillGearData or not DragonSkillGearData.specs then return 0, "None" end
     local specData = DragonSkillGearData.specs[specID]
 
-    if not specData or not specData.tierSet then return 0, "None" end
+    if not specData or not specData.tierSet or not specData.tierSet.pieces then
+        return 0, "None"
+    end
 
     local count = 0
     local setPieces = {}
@@ -82,10 +96,10 @@ function Character:GetActiveTierInfo()
     end
 
     for _, item in pairs(gear) do
-        if setPieces[item.itemId] then
+        if item.itemId and setPieces[item.itemId] then
             count = count + 1
         end
     end
 
-    return count, specData.tierSet.name
+    return count, specData.tierSet.name or "Tier"
 end
