@@ -1,5 +1,5 @@
--- Dragon Skill - Gear Manager Engine (v2.3.10)
--- BiS never empty: GuideData + role list + hard fallback. Farm lists all dungeon loot.
+-- Dragon Skill - Gear Manager Engine (v2.3.11)
+-- BiS/Farm: armor-type filter (Druid = Leder only, no Plate).
 
 local GearManager = DragonSkill:RegisterModule("GearManager", {})
 
@@ -24,6 +24,19 @@ local SLOT_CANON = {
     schild = "OffHand", offhand = "OffHand",
 }
 
+-- Class → allowed armor type (jewelry/back always ok)
+local CLASS_ARMOR = {
+    WARRIOR = "plate", PALADIN = "plate", DEATHKNIGHT = "plate",
+    HUNTER = "mail", SHAMAN = "mail", EVOKER = "mail",
+    ROGUE = "leather", DRUID = "leather", MONK = "leather", DEMONHUNTER = "leather",
+    PRIEST = "cloth", MAGE = "cloth", WARLOCK = "cloth",
+}
+
+local ARMOR_SLOTS = {
+    Head = true, Shoulder = true, Chest = true, Wrist = true,
+    Hands = true, Waist = true, Legs = true, Feet = true,
+}
+
 local CLASS_WEAPON_CHECK = {
     WARRIOR = { "axt", "streitkolben", "schwert", "stangenwaffe", "stab", "schild", "waffe" },
     PALADIN = { "axt", "streitkolben", "schwert", "stangenwaffe", "schild", "waffe" },
@@ -40,7 +53,36 @@ local CLASS_WEAPON_CHECK = {
     EVOKER = { "dolch", "faust", "streitkolben", "schwert", "stab", "waffe" },
 }
 
-local WEAPON_KEYWORDS = { "waffe", "stab", "dolch", "schild", "bogen", "armbrust", "schuss", "gleve", "kolben", "schwert", "axt", "faust", "stangen", "zauberstab" }
+local WEAPON_KEYWORDS = {
+    "waffe", "stab", "dolch", "schild", "bogen", "armbrust", "schuss",
+    "gleve", "kolben", "schwert", "axt", "faust", "stangen", "zauberstab",
+}
+
+-- Detect armor type from item name (DE/EN keywords)
+local function DetectArmorType(name, slot)
+    if not name then return nil end
+    local n = name:lower()
+    n = n:gsub("ü", "ue"):gsub("ö", "oe"):gsub("ä", "ae"):gsub("ß", "ss")
+    if n:find("platte", 1, true) or n:find("panzer", 1, true)
+        or n:find("plate", 1, true) or n:find("schwere", 1, true) then
+        return "plate"
+    end
+    if n:find("kette", 1, true) or n:find("mail", 1, true)
+        or n:find("maschen", 1, true) or n:find("ringpanzer", 1, true) then
+        return "mail"
+    end
+    if n:find("stoff", 1, true) or n:find("gewand", 1, true)
+        or n:find("robe", 1, true) or n:find("tuch", 1, true)
+        or n:find("seide", 1, true) or n:find("cloth", 1, true) then
+        return "cloth"
+    end
+    if n:find("leder", 1, true) or n:find("haut", 1, true)
+        or n:find("fell", 1, true) or n:find("leather", 1, true)
+        or n:find("balg", 1, true) then
+        return "leather"
+    end
+    return nil
+end
 
 function GearManager:NormalizeSlot(slot)
     if not slot or slot == "" then return "Item" end
@@ -55,11 +97,26 @@ end
 
 function GearManager:IsItemValidForSpec(itemId, specID)
     local item = DragonSkillGearData and DragonSkillGearData.items and DragonSkillGearData.items[itemId]
-    if not item or not item.slot then return true end
+    if not item then return true end
+
     local _, class = UnitClass("player")
+    local name = item.name or ""
+    local slot = item.slot or ""
+    local canon = self:NormalizeSlot(slot)
+
+    -- Armor type filter for armor slots
+    if ARMOR_SLOTS[canon] then
+        local allowed = CLASS_ARMOR[class]
+        local detected = item.armor or DetectArmorType(name, slot)
+        if allowed and detected and detected ~= allowed then
+            return false
+        end
+    end
+
+    -- Weapon type filter
     local allowedTypes = CLASS_WEAPON_CHECK[class]
     if not allowedTypes then return true end
-    local slotLower = item.slot:lower()
+    local slotLower = slot:lower()
     local isWeapon = false
     for _, k in ipairs(WEAPON_KEYWORDS) do
         if slotLower:find(k, 1, true) then isWeapon = true; break end
@@ -137,6 +194,7 @@ function GearManager:GetBiSList()
         if not entry then return end
         local itemId = tonumber(entry.itemId)
         if not itemId or itemId <= 0 or seen[itemId] then return end
+        if not self:IsItemValidForSpec(itemId, specID) then return end
         local name = entry.name
         local slot = entry.slot or "Item"
         if DragonSkillGearData and DragonSkillGearData.items and DragonSkillGearData.items[itemId] then
@@ -144,11 +202,21 @@ function GearManager:GetBiSList()
             if not name or name == "" then name = reg.name end
             if not slot or slot == "Item" then slot = reg.slot or "Item" end
         end
-        table.insert(list, { itemId = itemId, name = name or ("Item " .. itemId), slot = slot, ilvl = entry.ilvl or 639 })
+        local canon = self:NormalizeSlot(slot)
+        if ARMOR_SLOTS[canon] then
+            local allowed = CLASS_ARMOR[class]
+            local detected = DetectArmorType(name, slot)
+            if allowed and detected and detected ~= allowed then return end
+        end
+        table.insert(list, {
+            itemId = itemId,
+            name = name or ("Item " .. itemId),
+            slot = slot,
+            ilvl = entry.ilvl or 639,
+        })
         seen[itemId] = true
     end
 
-    -- 1) GuideData (no weapon filter – curated list)
     if DragonSkillData and class and DragonSkillData[class] then
         local specData = DragonSkillData[class][specID]
         if specData then
@@ -161,23 +229,38 @@ function GearManager:GetBiSList()
         end
     end
 
-    -- 2) GearDatabase role overall
     if DragonSkillGearData and DragonSkillGearData.specs and DragonSkillGearData.specs[specID] then
         local overall = DragonSkillGearData.specs[specID].bis and DragonSkillGearData.specs[specID].bis.overall
         if overall then
             for _, itemId in ipairs(overall) do
                 local item = DragonSkillGearData.items and DragonSkillGearData.items[itemId]
-                pushEntry({ itemId = itemId, name = item and item.name, slot = item and item.slot or "Item", ilvl = 639 })
+                pushEntry({
+                    itemId = itemId,
+                    name = item and item.name,
+                    slot = item and item.slot or "Item",
+                    ilvl = 639,
+                })
             end
         end
     end
 
-    -- 3) Hard fallback so BiS is never empty
-    if #list == 0 and DragonSkillGearData and DragonSkillGearData.items then
-        local fallbackIds = { 271092, 271528, 270175, 270173, 268266, 268265, 268253, 268259, 271600, 270165, 268249 }
+    -- Fallback: jewelry + weapons only (no ambiguous armor)
+    if #list < 3 and DragonSkillGearData and DragonSkillGearData.items then
+        local fallbackIds = {
+            271092, -- Stab
+            270175, 270173, 270162, 270165,
+            268266, 268249,
+            268265,
+            268253,
+        }
         for _, itemId in ipairs(fallbackIds) do
             local item = DragonSkillGearData.items[itemId]
-            pushEntry({ itemId = itemId, name = item and item.name, slot = item and item.slot or "Item", ilvl = 639 })
+            pushEntry({
+                itemId = itemId,
+                name = item and item.name,
+                slot = item and item.slot or "Item",
+                ilvl = 639,
+            })
         end
     end
 
@@ -202,11 +285,14 @@ end
 function GearManager:GetFarmPlan()
     local plan = {}
     if not DragonSkillGearData or not DragonSkillGearData.dungeons then return plan end
+    local specIndex = GetSpecialization()
+    local specID = specIndex and select(1, GetSpecializationInfo(specIndex)) or 0
+
     for dName, dData in pairs(DragonSkillGearData.dungeons) do
         local items = {}
         for _, boss in ipairs(dData.bosses or {}) do
             for _, itemId in ipairs(boss.loot or {}) do
-                if itemId and itemId > 0 then
+                if itemId and itemId > 0 and self:IsItemValidForSpec(itemId, specID) then
                     local reg = DragonSkillGearData.items and DragonSkillGearData.items[itemId]
                     local slot = reg and reg.slot or "Item"
                     local details = self:GetUpgradeDetails(slot, itemId, 639)
