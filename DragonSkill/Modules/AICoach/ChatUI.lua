@@ -1,5 +1,5 @@
--- Dragon Skill - Module: AI Coach Chat UI (v2.3.1)
--- Absolute Stability Fix: Removed tonumber/width dependency in draw loop.
+-- Dragon Skill - Module: AI Coach Chat UI (v2.3.9)
+-- Fix: EditBox has no SetReadOnly in 12.1 – use EnableKeyboard(false) + mouse only.
 
 local AICoachUI = {}
 DragonSkill.AICoachUI = AICoachUI
@@ -7,11 +7,15 @@ DragonSkill.AICoachUI = AICoachUI
 function AICoachUI:Draw(content, width)
     if not content then return end
     local Engine = DragonSkill:GetModule("AICoach")
-    if not Engine then return end
+    if not Engine then
+        local fs = content:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+        fs:SetPoint("TOPLEFT", 15, -20)
+        fs:SetText("|cffff0000AI Coach Engine nicht geladen.|r")
+        return
+    end
 
-    local chatWidth = 580 -- Constant width for stability
+    local chatWidth = 580
 
-    -- 1. Create Scrollable History Area
     if not self.scrollFrame then
         local sf = CreateFrame("ScrollFrame", "DragonSkillAICoachScroll", content, "UIPanelScrollFrameTemplate")
         sf:SetSize(chatWidth - 60, 300)
@@ -22,9 +26,10 @@ function AICoachUI:Draw(content, width)
         h:SetMaxLetters(99999)
         h:SetWidth(chatWidth - 100)
         h:SetTextInsets(10, 10, 10, 10)
-        h:SetReadOnly(true)
         h:SetAutoFocus(false)
-        h:SetFontObject("ChatFontNormal")
+        h:EnableMouse(true)
+        h:EnableKeyboard(false)
+        if h.SetFontObject then h:SetFontObject("ChatFontNormal") end
 
         h:SetScript("OnHyperlinkEnter", function(eb, link)
             if link and eb then
@@ -34,6 +39,7 @@ function AICoachUI:Draw(content, width)
             end
         end)
         h:SetScript("OnHyperlinkLeave", function() GameTooltip:Hide() end)
+        h:SetScript("OnEscapePressed", function(eb) eb:ClearFocus() end)
         sf:SetScrollChild(h)
 
         local bg = CreateFrame("Frame", nil, content, "BackdropTemplate")
@@ -46,14 +52,16 @@ function AICoachUI:Draw(content, width)
             insets = { left = 3, right = 3, top = 3, bottom = 3 }
         })
         bg:SetBackdropColor(0, 0, 0, 0.8)
+        self.historyBg = bg
 
         self.scrollFrame = sf
         self.historyText = h
     end
+    self.scrollFrame:SetParent(content)
     self.scrollFrame:Show()
+    if self.historyBg then self.historyBg:SetParent(content); self.historyBg:Show() end
     self:RefreshHistory()
 
-    -- 2. Create Input Box
     if not self.inputBox then
         local eb = CreateFrame("EditBox", "DragonSkillAICoachInput", content, "InputBoxTemplate")
         eb:SetSize(chatWidth - 110, 30)
@@ -87,6 +95,8 @@ function AICoachUI:Draw(content, width)
         end)
         self.sendBtn = btn
     end
+    self.inputBox:SetParent(content)
+    self.sendBtn:SetParent(content)
     self.inputBox:Show()
     self.sendBtn:Show()
 end
@@ -110,7 +120,7 @@ function AICoachUI:RefreshHistory()
             full = full .. tostring(m) .. "\n\n"
         end
     end
-    self.historyText:SetText(full == "" and "Willkommen beim Coach!" or full)
+    self.historyText:SetText(full == "" and "Willkommen beim Coach! Frag nach Upgrades, Farm-Routen oder Boss-Taktiken." or full)
     if self.scrollFrame then
         local range = self.scrollFrame:GetVerticalScrollRange() or 0
         if range > 0 then self.scrollFrame:SetVerticalScroll(range) end
