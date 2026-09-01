@@ -1,5 +1,4 @@
--- Dragon Skill - Locale (deDE / enUS)
--- Automatisch nach Spielsprache (GetLocale)
+-- Dragon Skill - Locale (deDE / enUS) v2.3.7
 
 local L = {}
 DragonSkill = DragonSkill or {}
@@ -25,7 +24,7 @@ local de = {
     MINIMAP_ON = "Minimap an",
     LEFT_CLICK_BIS = "Linksklick: BiS",
     RIGHT_CLICK_MENU = "Rechtsklick: Menue",
-    LOADED = "Dragon Skill v1.6.3 geladen!  Minimap = BiS · /ds help",
+    LOADED = "Dragon Skill v2.3.7 geladen!  Minimap · /ds help",
     BUILD_MATCH = "Build: %s\nMatch: %d%%\n\nAktion: Kopieren / Anlegen",
     COPY = "Kopieren",
     CREATE_IMPORT = "Anlegen + Import",
@@ -104,7 +103,7 @@ local en = {
     MINIMAP_ON = "Minimap shown",
     LEFT_CLICK_BIS = "Left-click: BiS",
     RIGHT_CLICK_MENU = "Right-click: Menu",
-    LOADED = "Dragon Skill v1.6.3 loaded!  Minimap = BiS · /ds help",
+    LOADED = "Dragon Skill v2.3.7 loaded!  Minimap · /ds help",
     BUILD_MATCH = "Build: %s\nMatch: %d%%\n\nAction: Copy / Save",
     COPY = "Copy",
     CREATE_IMPORT = "Save + Import",

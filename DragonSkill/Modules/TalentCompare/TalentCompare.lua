@@ -1,5 +1,5 @@
--- Dragon Skill - Modul: TalentCompare (v1.5.6)
--- Node-Match-% + Node-Diff mit Talentnamen
+-- Dragon Skill - Modul: TalentCompare (v2.3.7)
+-- Node-Match-% + Node-Diff; popup always gets import string.
 
 local TalentCompare = {}
 
@@ -9,7 +9,6 @@ function TalentCompare:GetCurrentBuildString()
     return C_Traits.GenerateImportString(configID)
 end
 
--- Byte-Vergleich (Fallback)
 function TalentCompare:Compare(guideString, currentString)
     if not guideString or not currentString then return { similarity = 0, mode = "none" } end
     if guideString == currentString then return { similarity = 100, mode = "exact" } end
@@ -26,7 +25,6 @@ function TalentCompare:Compare(guideString, currentString)
     }
 end
 
--- Primärer Vergleich: Node-Ränge wenn API verfügbar, sonst Bytes
 function TalentCompare:CompareBuild(importString)
     if not importString or importString == "" then
         return { similarity = 0, mode = "none" }
@@ -136,7 +134,6 @@ function TalentCompare:GetDetailedDiff(importString)
         for _, nodeID in ipairs(C_Traits.GetTreeNodes(treeID)) do
             local nInfo = C_Traits.GetNodeInfo(configID, nodeID)
             if nInfo and not nInfo.isInvisible then
-                -- Nur Nodes die spielbar / rankbar sind
                 local maxRanks = nInfo.maxRanks or 0
                 if maxRanks > 0 or (nInfo.entryIDs and #nInfo.entryIDs > 0) then
                     total = total + 1
@@ -265,7 +262,8 @@ function TalentCompare:ImportToWoW(importString, name)
 
     print("|cffff0000Dragon Skill:|r Import-API nicht gefunden" .. (errMsg and (" (" .. errMsg .. ")") or "") .. ". Öffne Talent-Fenster (N) und importiere manuell.")
     if StaticPopup_Show and StaticPopupDialogs["DRAGONSKILL_COPY"] then
-        StaticPopup_Show("DRAGONSKILL_COPY", nil, nil, { importString = importString, label = loadoutName })
+        -- Always pass plain string (UI OnShow also accepts table for safety)
+        StaticPopup_Show("DRAGONSKILL_COPY", nil, nil, importString)
     end
     return false
 end
