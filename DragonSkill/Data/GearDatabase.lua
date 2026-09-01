@@ -52,9 +52,11 @@ AddDungeon("Venomous Abyss (Raid)", {
 -- ITEM REGISTRY (639+)
 -- ==========================================
 
+AddItem(271092, { name = "Ula'teks Stab", slot = "Stab" })
 AddItem(270173, { name = "Gieriges Herz von Ula'tek", slot = "Schmuckstück" })
 AddItem(270175, { name = "Lebendige Sporenkapsel", slot = "Schmuckstück" })
-AddItem(268213, { name = "Maze-roa, Zorn des Kriegsfürsten", slot = "Zweihandwaffe" })
+AddItem(268213, { name = "Maze-roa, Zorn des Kriegsfürsten", slot = "Zweihandstreitkolben" })
+AddItem(268262, { name = "Nymrissas Wellenschutz", slot = "Schild" })
 AddItem(271528, { name = "Blick des gewundenen Wächters", slot = "Kopf", tierItem = true })
 AddItem(268266, { name = "Ring des Wellenrufers", slot = "Ring" })
 AddItem(268265, { name = "Amani-Anhänger", slot = "Hals" })
@@ -70,9 +72,9 @@ AddItem(270162, { name = "Seelenwindsplitter", slot = "Schmuckstück" })
 -- ==========================================
 
 local roles = {
-    healer = { 270175, 270173, 271528, 268266, 268265, 268253, 268259, 268211 },
-    tank = { 270160, 270173, 271528, 268249, 268265, 268253, 268259, 268213 },
-    dps = { 270162, 270173, 271528, 268249, 268266, 268253, 268259, 268213 }
+    healer = { 271092, 270175, 270173, 271528, 268266, 268265, 268253, 268259, 270162 },
+    tank = { 268213, 268262, 270173, 271528, 268249, 268265, 268253, 268259, 270165 },
+    dps = { 271092, 268213, 270173, 271528, 268249, 268266, 268253, 268259, 270162 }
 }
 
 local specList = { 102, 103, 104, 105, 250, 251, 252, 62, 63, 64, 71, 72, 73, 65, 66, 70, 253, 254, 255, 259, 260, 261, 256, 257, 258, 262, 263, 264, 265, 266, 267, 268, 269, 270, 577, 581, 1467, 1468, 1473 }

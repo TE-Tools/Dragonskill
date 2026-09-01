@@ -10,20 +10,44 @@ local STAT_WEIGHTS_BASE = {
 }
 
 -- Spec-to-Weapon Mapping (Prevention of Axe-Druid etc)
-local SPEC_WEAPON_MAP = {
-    [105] = { "Staves", "One-Handed Maces", "Daggers" }, -- Restoration Druid
-    [102] = { "Staves", "Daggers" },                   -- Balance Druid
-    [264] = { "One-Handed Maces", "Shields" },         -- Restoration Shaman
+local CLASS_WEAPON_CHECK = {
+    WARRIOR = { "Axt", "Streitkolben", "Schwert", "Stangenwaffe", "Stab", "Schild" },
+    PALADIN = { "Axt", "Streitkolben", "Schwert", "Stangenwaffe", "Schild" },
+    HUNTER = { "Bogen", "Armbrust", "Schusswaffe", "Stangenwaffe", "Stab", "Axt" },
+    ROGUE = { "Dolch", "Schwert", "Axt", "Streitkolben", "Faustwaffe" },
+    PRIEST = { "Dolch", "Streitkolben", "Stab", "Zauberstab" },
+    DEATHKNIGHT = { "Axt", "Streitkolben", "Schwert", "Stangenwaffe" },
+    SHAMAN = { "Axt", "Streitkolben", "Stab", "Dolch", "Schild" },
+    MAGE = { "Dolch", "Schwert", "Stab", "Zauberstab" },
+    WARLOCK = { "Dolch", "Schwert", "Stab", "Zauberstab" },
+    MONK = { "Faustwaffe", "Axt", "Streitkolben", "Schwert", "Stangenwaffe", "Stab" },
+    DRUID = { "Dolch", "Faustwaffe", "Streitkolben", "Stangenwaffe", "Stab" },
+    DEMONHUNTER = { "Kriegsgleive", "Schwert", "Axt", "Faustwaffe" },
+    EVOKER = { "Dolch", "Faustwaffe", "Streitkolben", "Schwert", "Stab" }
 }
 
 function GearManager:IsItemValidForSpec(itemId, specID)
     local item = DragonSkillGearData.items[itemId]
-    if not item then return true end -- Allow if data unknown
+    if not item or not item.slot then return true end
 
-    -- Filter out axes for Druids
     local _, class = UnitClass("player")
-    if class == "DRUID" then
-        if item.slot and item.slot:find("Axe") then return false end
+    local allowedTypes = CLASS_WEAPON_CHECK[class]
+    if not allowedTypes then return true end
+
+    -- Check if it's a weapon/shield slot and if it's allowed
+    local isWeaponOrShield = item.slot:find("waffe") or item.slot:find("Stab") or item.slot:find("Dolch") or
+                             item.slot:find("Schild") or item.slot:find("Bogen") or item.slot:find("Armbrust") or
+                             item.slot:find("waffe") or item.slot:find("Gleive")
+
+    if isWeaponOrShield then
+        local found = false
+        for _, allowed in ipairs(allowedTypes) do
+            if item.slot:find(allowed) then
+                found = true
+                break
+            end
+        end
+        return found
     end
 
     return true
