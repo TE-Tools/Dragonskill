@@ -7,7 +7,7 @@ function Database:Init()
         version = DragonSkill.version,
         favorites = {},
         history = {},
-        minimap = { hide = false },
+        minimap = { hide = false, pos = 225 },
         ai = { enabled = false, provider = "openai", apiKey = "", lastResponse = "", pendingQuery = nil },
     }
     DragonSkillCharDB = DragonSkillCharDB or {

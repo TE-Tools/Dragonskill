@@ -1,4 +1,4 @@
--- Dragon Skill - Main UI (v2.3.2)
+-- Dragon Skill - Main UI (v2.3.3)
 -- Master UI with Professional Raid Guides & Absolute Stability Fixes.
 
 local L = DragonSkill.L or {}
@@ -23,7 +23,7 @@ function UI:Init()
     local f = CreateFrame("Frame", "DragonSkillMainFrame", UIParent, "ButtonFrameTemplate")
     f:SetSize(FRAME_WIDTH, FRAME_HEIGHT); f:SetPoint("CENTER"); f:SetMovable(true); f:EnableMouse(true); f:SetClampedToScreen(true)
     f:RegisterForDrag("LeftButton"); f:SetScript("OnDragStart", f.StartMoving); f:SetScript("OnDragStop", f.StopMovingOrSizing)
-    if f.SetTitle then f:SetTitle("Dragon Skill v2.3.2") end
+    if f.SetTitle then f:SetTitle("Dragon Skill v2.3.3") end
     if f.portrait then f.portrait:SetTexture("Interface\\Icons\\Inv_misc_head_dragon_01") end
 
     local sf = CreateFrame("ScrollFrame", "DragonSkillScrollFrame", f.Inset, "UIPanelScrollFrameTemplate")
@@ -42,7 +42,7 @@ function UI:Init()
     PanelTemplates_SetNumTabs(f, #tabs); PanelTemplates_SetTab(f, 1)
 
     tinsert(UISpecialFrames, "DragonSkillMainFrame")
-    f:Hide(); self.frame = f; self.rows = {}; self.extraFS = {}; self.talentBtns = {}; self.bossBtns = {}
+    f:Hide(); self.frame = f; self.rows = {}; self.extraFS = {}; self.talentBtns = {}; self.bossBtns = {}; self.farmRows = {}
 end
 
 function UI:SelectTab(id)
@@ -113,13 +113,13 @@ function UI:AddInteractiveRow(index, itemData, yOffset, labelPrefix, valueText)
     if not itemData or not (itemData.itemId or itemData.text) then return index end
     local row = self:GetRow(index); row:SetParent(self.frame.Content); row:ClearAllPoints(); row:SetPoint("TOPLEFT", 15, yOffset)
     local iid = tonumber(itemData.itemId) or 0
-    if iid > 0 then C_Item.RequestLoadItemDataByID(iid) end
 
-    local _, link, _, _, _, _, _, _, _, texture = GetItemInfo(iid)
-    row.icon:SetTexture(texture or "Interface\\Icons\\Inv_misc_questionmark")
+    local name = itemData.name or itemData.text or "Item "..iid
+    local texture = C_Item.GetItemIconByID(iid) or "Interface\\Icons\\Inv_misc_questionmark"
+    row.icon:SetTexture(texture)
 
-    local name = link or tostring(itemData.name or itemData.text or "Item "..iid)
-    row.text:SetText((tostring(labelPrefix) or (itemData.slot and "|cff00ff00"..tostring(itemData.slot)..":|r " or "")) .. name)
+    local prefix = tostring(labelPrefix) or (itemData.slot and "|cff00ff00"..tostring(itemData.slot)..":|r " or "")
+    row.text:SetText(prefix .. name)
 
     if valueText then row.val:SetText(tostring(valueText)); row.val:Show() else row.val:Hide() end
     row:SetScript("OnEnter", function(s) GameTooltip:SetOwner(s, "ANCHOR_RIGHT"); if iid > 0 then GameTooltip:SetItemByID(iid) else GameTooltip:SetText(name) end; GameTooltip:Show() end)
@@ -156,7 +156,7 @@ end
 
 function UI:DrawUpgrades(content)
     local GM = DragonSkill:GetModule("GearManager"); local items = GM:GetBestUpgrades()
-    self.text:SetText("|cffffff00UPGRADE MATRIX (Vs. Mythic 639)|r"); local y, ri = -75, 2000
+    self.text:SetText("|cffffff00UPGRADE MATRIX (Ziel: Mythic 639)|r"); local y, ri = -75, 2000
     if #items > 0 then for _, item in ipairs(items) do ri = self:AddInteractiveRow(ri, item, y, nil, string.format("|cff00ff00+%.1f%%|r", item.percent or 0)); y = y - 30 end
     else local fs = self:GetExtraFS(60); fs:SetPoint("TOPLEFT", 25, y); fs:SetText("|cffaaaaaaKeine Upgrades verfügbar.|r"); fs:Show() end
 end
@@ -175,7 +175,8 @@ function UI:DrawTalents(content, gd)
     local y = -45; self.text:SetText("|cffffff00Talent Builds|r")
     if gd.talentBuilds then for i, b in ipairs(gd.talentBuilds) do
         local btn = self.talentBtns[i] or CreateFrame("Button", nil, content, "UIPanelButtonTemplate")
-        self.talentBtns[i] = btn; btn:SetSize(560, 30); btn:SetPoint("TOPLEFT", 15, y); btn:SetText(string.format("[%s] %s", tostring(b.provider):upper(), tostring(b.label)))
+        self.talentBtns[i] = btn; btn:SetSize(560, 30); btn:SetPoint("TOPLEFT", 15, y)
+        btn:SetText(string.format("[%s] %s", tostring(b.provider):upper(), tostring(b.label)))
         btn:SetScript("OnClick", function() StaticPopup_Show("DRAGONSKILL_COPY", nil, nil, b.importString) end); btn:Show(); y = y - 35
     end end
 end
@@ -193,7 +194,8 @@ function UI:DrawRaidGuides(content)
         local pt = self:GetExtraFS(fi); pt:SetPoint("TOPLEFT", lw + 25, y); pt:SetText("|cffffff00" .. tostring(p.name) .. "|r"); pt:Show(); fi = fi + 1; y = y - 20
         local pd = self:GetExtraFS(fi, "GameFontHighlightSmall"); pd:SetPoint("TOPLEFT", lw + 35, y); pd:SetText(tostring(p.desc)); pd:Show(); fi = fi + 1; y = y - 30
         for _, m in ipairs(p.mechanics or {}) do
-            local mt = self:GetExtraFS(fi, "GameFontHighlightSmall"); mt:SetPoint("TOPLEFT", lw + 45, y); mt:SetText("|cffffd100" .. tostring(m.name) .. ":|r " .. tostring(m.tip)); mt:Show(); fi = fi + 1; y = y - 35
+            local mt = self:GetExtraFS(fi, "GameFontHighlightSmall"); mt:SetPoint("TOPLEFT", lw + 45, y)
+            mt:SetText("|cffffd100" .. tostring(m.name) .. ":|r " .. tostring(m.tip)); mt:Show(); fi = fi + 1; y = y - 35
         end
         y = y - 10
     end
@@ -212,6 +214,20 @@ StaticPopupDialogs["DRAGONSKILL_COPY"] = {
 }
 
 function UI:Toggle() self:Init(); if self.frame:IsShown() then self.frame:Hide() else self.frame:Show(); self:Update() end end
-SLASH_DRAGONSKILL1 = "/ds"; SlashCmdList["DRAGONSKILL"] = function() UI:Toggle() end
+
+-- --- Robust Slash Command Registration ---
+local function SlashHandler(msg)
+    if msg == "minimap" then
+        if DragonSkill.Minimap then DragonSkill.Minimap:Toggle() end
+    else
+        UI:Toggle()
+    end
+end
+
+SLASH_DRAGONSKILL1 = "/ds"
+SLASH_DRAGONSKILL2 = "/wear"
+SLASH_DRAGONSKILL3 = "/dragonskill"
+SlashCmdList["DRAGONSKILL"] = SlashHandler
+
 DragonSkill.Events:On("PLAYER_LOGIN", function() UI:Init() end); if IsLoggedIn() then UI:Init() end
 DragonSkill.UI = UI
