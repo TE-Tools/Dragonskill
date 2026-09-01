@@ -1,50 +1,32 @@
--- Dragon Skill - Module: AI Coach Chat UI (v2.3.9)
+-- Dragon Skill - Module: AI Coach Chat UI (v2.3.13)
 -- Fix: EditBox has no SetReadOnly in 12.1 – use EnableKeyboard(false) + mouse only.
 
 local AICoachUI = {}
 DragonSkill.AICoachUI = AICoachUI
 
 function AICoachUI:Draw(content, width)
-    if not content then return end
+    local chatWidth = (width or 580) - 20
     local Engine = DragonSkill:GetModule("AICoach")
-    if not Engine then
-        local fs = content:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-        fs:SetPoint("TOPLEFT", 15, -20)
-        fs:SetText("|cffff0000AI Coach Engine nicht geladen.|r")
-        return
-    end
 
-    local chatWidth = 580
-
-    if not self.scrollFrame then
+    if not self.historyText then
         local sf = CreateFrame("ScrollFrame", "DragonSkillAICoachScroll", content, "UIPanelScrollFrameTemplate")
-        sf:SetSize(chatWidth - 60, 300)
-        sf:SetPoint("TOPLEFT", 15, -60)
+        sf:SetSize(chatWidth, 340)
+        sf:SetPoint("TOPLEFT", 10, -40)
 
         local h = CreateFrame("EditBox", nil, sf)
         h:SetMultiLine(true)
-        h:SetMaxLetters(99999)
-        h:SetWidth(chatWidth - 100)
-        h:SetTextInsets(10, 10, 10, 10)
+        h:SetFontObject(GameFontHighlight)
+        h:SetWidth(chatWidth - 30)
         h:SetAutoFocus(false)
         h:EnableMouse(true)
         h:EnableKeyboard(false)
-        if h.SetFontObject then h:SetFontObject("ChatFontNormal") end
-
-        h:SetScript("OnHyperlinkEnter", function(eb, link)
-            if link and eb then
-                GameTooltip:SetOwner(eb, "ANCHOR_RIGHT")
-                GameTooltip:SetHyperlink(link)
-                GameTooltip:Show()
-            end
-        end)
-        h:SetScript("OnHyperlinkLeave", function() GameTooltip:Hide() end)
-        h:SetScript("OnEscapePressed", function(eb) eb:ClearFocus() end)
+        h:SetTextInsets(10, 10, 10, 10)
+        h:SetScript("OnEscapePressed", function(self) self:ClearFocus() end)
         sf:SetScrollChild(h)
 
         local bg = CreateFrame("Frame", nil, content, "BackdropTemplate")
-        bg:SetPoint("TOPLEFT", sf, -5, 5)
-        bg:SetPoint("BOTTOMRIGHT", sf, 25, -5)
+        bg:SetPoint("TOPLEFT", sf, "TOPLEFT", -5, 5)
+        bg:SetPoint("BOTTOMRIGHT", sf, "BOTTOMRIGHT", 25, -5)
         bg:SetBackdrop({
             bgFile = "Interface\\ChatFrame\\ChatFrameBackground",
             edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
@@ -103,7 +85,7 @@ end
 
 function AICoachUI:AddMessage(sender, text)
     if not text then return end
-    local prefix = (sender == "User") and "|cffffffffDu: |r" or (sender == "AI") and "|cff00ccffReal-AI: |r" or "|cff00ff00Coach: |r"
+    local prefix = (sender == "User") and "|cffffffffDu: |r" or "|cff00ff00Coach: |r"
     if DragonSkillDB then
         DragonSkillDB.history = DragonSkillDB.history or {}
         table.insert(DragonSkillDB.history, prefix .. tostring(text))
@@ -120,9 +102,13 @@ function AICoachUI:RefreshHistory()
             full = full .. tostring(m) .. "\n\n"
         end
     end
-    self.historyText:SetText(full == "" and "Willkommen beim Coach! Frag nach Upgrades, Farm-Routen oder Boss-Taktiken." or full)
+    if full == "" then
+        full = "|cffaaaaaaInterner Coach (nur Addon-Daten). Frag: upgrade, farm, talent, status oder Boss-Name.|r"
+    end
+    self.historyText:SetText(full)
     if self.scrollFrame then
-        local range = self.scrollFrame:GetVerticalScrollRange() or 0
-        if range > 0 then self.scrollFrame:SetVerticalScroll(range) end
+        self.scrollFrame:UpdateScrollChildRect()
+        local max = self.scrollFrame:GetVerticalScrollRange() or 0
+        self.scrollFrame:SetVerticalScroll(max)
     end
 end
