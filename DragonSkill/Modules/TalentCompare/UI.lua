@@ -21,7 +21,7 @@ local CONTENT_WIDTH = 590
 local COLOR_GOLD = "|cffffd100"
 local COLOR_GREY = "|cffaaaaaa"
 local COLOR_WHITE = "|cffffffff"
-local DEFAULT_GUILD_URL = "https://www.wowprogress.com/"
+local DEFAULT_GUILD_URL = "https://guildsofwow.com/dragon-lords"
 
 function UI:Init()
     if self.frame then return end
