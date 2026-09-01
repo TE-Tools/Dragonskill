@@ -1,31 +1,29 @@
--- Dragon Skill - Database Layer (v2.3.6)
--- Enhanced with Auto-Cleanup for Patch 12.1 Purity.
+-- Dragon Skill - Database Layer (v2.3.7)
+-- Schema-based cleanup instead of fragile string version compare.
 
 local Database = {}
+local DATA_SCHEMA = 3
 
 function Database:Init()
-    DragonSkillDB = DragonSkillDB or {
-        version = DragonSkill.version,
-        favorites = {},
-        history = {},
-        minimap = { hide = false, pos = 225 },
-        ai = { enabled = false, provider = "openai", apiKey = "", lastResponse = "", pendingQuery = nil },
-    }
-    DragonSkillCharDB = DragonSkillCharDB or {
-        lastComparedBuild = nil,
-    }
-
-    -- Cleanup Old Data (Purge Season 1 / TWW 11.0 entries)
-    if DragonSkillDB.version and DragonSkillDB.version < "2.3.0" then
-        print("|cff00ff00Dragon Skill:|r Säubere alte Daten für Patch 12.1...")
-        DragonSkillDB.history = {}
-        -- We keep favorites but they might be filtered by GearManager purity check anyway
-    end
+    DragonSkillDB = DragonSkillDB or {}
+    DragonSkillCharDB = DragonSkillCharDB or {}
 
     DragonSkillDB.favorites = DragonSkillDB.favorites or {}
     DragonSkillDB.history = DragonSkillDB.history or {}
     DragonSkillDB.minimap = DragonSkillDB.minimap or { hide = false, pos = 225 }
-    DragonSkillDB.version = DragonSkill.version or DragonSkillDB.version
+    DragonSkillDB.ai = DragonSkillDB.ai or {
+        enabled = false, provider = "openai", apiKey = "", lastResponse = "", pendingQuery = nil
+    }
+
+    -- One-time cleanup when schema bumps (replaces broken string version < compare)
+    if (DragonSkillDB.dataSchema or 0) < DATA_SCHEMA then
+        print("|cff00ff00Dragon Skill:|r Daten-Schema aktualisiert (Patch 12.1 Cleanup).")
+        DragonSkillDB.history = {}
+        DragonSkillDB.dataSchema = DATA_SCHEMA
+    end
+
+    DragonSkillDB.version = DragonSkill.version or DragonSkillDB.version or "2.3.7"
+    DragonSkillCharDB.lastComparedBuild = DragonSkillCharDB.lastComparedBuild
 
     self.account = DragonSkillDB
     self.char = DragonSkillCharDB

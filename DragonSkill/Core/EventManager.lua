@@ -1,22 +1,19 @@
--- Dragon Skill - Event Manager (v2.0.5)
--- Structural Fix for WoW 12.1 security.
+-- Dragon Skill - Event Manager (v2.3.7)
+-- pcall-safe registration for WoW 12.1
 
 local ADDON_NAME = ...
 local EventManager = {}
 DragonSkill = DragonSkill or {}
 DragonSkill.Events = EventManager
 
--- Use a local frame to avoid forbidden actions.
 local frame = CreateFrame("Frame")
 EventManager.listeners = {}
 
 function EventManager:On(event, callback)
     if not self.listeners[event] then
         self.listeners[event] = {}
-        -- WoW 12.1 Fix: Use pcall and avoid registering restricted combat events.
-        if event ~= "COMBAT_LOG_EVENT_UNFILTERED" then
-            pcall(function() frame:RegisterEvent(event) end)
-        end
+        -- Attempt register; CLEU may be restricted in some contexts – pcall avoids hard fail
+        pcall(function() frame:RegisterEvent(event) end)
     end
     table.insert(self.listeners[event], callback)
 end
