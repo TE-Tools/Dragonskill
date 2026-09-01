@@ -20,6 +20,7 @@ Data\GuideData.lua
 Data\GearDatabase.lua
 Data\RaidGuides.lua
 Data\TalentOverrides.lua
+Data\TalentOverrides2.lua
 
 Modules\TalentCompare\TalentCompare.lua
 Modules\StatPriority\StatPriority.lua
