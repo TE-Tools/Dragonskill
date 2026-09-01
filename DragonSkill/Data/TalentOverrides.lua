@@ -1,44 +1,24 @@
--- AUTO: Talent Overrides 12.1 (Method / Icy Veins) - applied after GuideData
+-- AUTO: Talent Builds part 1 (v2.3.8) - DK DH DRUID EVOKER HUNTER MAGE MONK
+-- Full builds restored after GuideData stub wipe
 DragonSkillData = DragonSkillData or {}
-DragonSkillData["PALADIN"] = DragonSkillData["PALADIN"] or {}
 
--- Holy Paladin (65)
-if DragonSkillData["PALADIN"][65] then
-    DragonSkillData["PALADIN"][65].talentBuilds = {
-        { provider = "method", label = "Raid", importString = "CEEAAAAAAAAAAAAAAAAAAAAAAAAAALAwMAAw2MzMjZMzYxYmZYZwMLmpJGGzMDjZLDADAbgNWmxMLz2Mzs1AAAAsAGYzwYGDmBAwMDzYMaA" },
-        { provider = "method", label = "Mythic+", importString = "CEEAAAAAAAAAAAAAAAAAAAAAAAAAALAwMAADWGzMzMjZmZBGDLjNzsY0EDjZmhxslBgBgNwGLzMzsMbzMzWDAAAwCLMzwmHAmxgZAAMzwMGjGA" },
-        { provider = "archon", label = "Alternative Class Tree #1", importString = "CEEAAAAAAAAAAAAAAAAAAAAAAAAAAYBAMDAwglxMzMzYmZWgxwyYbmZxMNxwYmZYY2yAwAwGYjlZmZWmtZmZrBAAAYhNMYzAzYGAAwMDzYMMA" },
-        { provider = "archon", label = "Alternative Class Tree #2", importString = "CEEAAAAAAAAAAAAAAAAAAAAAAAAAAYBAMDAwglxMzMzYmZWgxwyYbmZxMNxwYmZYY2yAwAwGYjtZmZWmtZmZrBAAAYhNMYzAzYGAAwMDzYMMA" },
-        { provider = "archon", label = "Alternative Class Tree #3", importString = "CEEAAAAAAAAAAAAAAAAAAAAAAAAAAMLAgZAAglxMzMzYmZWgxwyYbmZxMNxsMjZmhhZLDADAbgNWmZmZZ2mZmtGAAAgF2YGsBMMAAAzMMjxwA" },
-        { provider = "archon", label = "Recommended Class Tree", importString = "CEEAAAAAAAAAAAAAAAAAAAAAAAAAAYBAMDAAsMmZmZGzMzCMGWGbzMLmpJmlZMzMMMbZAYAYDsx2MzMLz2Mzs1AAAAswGPAsZgZYAAAzMMjxwA" },
+DragonSkillData["DEATHKNIGHT"] = DragonSkillData["DEATHKNIGHT"] or {}
+if DragonSkillData["DEATHKNIGHT"][250] then
+    DragonSkillData["DEATHKNIGHT"][250].talentBuilds = {
+        { provider = "wowhead", label = "Raid", importString = "CoPAAAAAAAAAAAAAAAAAAAAAAwYWGzMmxMjhZZmZmmZxYmxMmBAAAAmZmZmZmZYGjZAYMzMzAAAMmtBGwSw2wEYYBwMMAAMzAYYA" },
+        { provider = "wowhead", label = "Mythic+", importString = "CoPAAAAAAAAAAAAAAAAAAAAAAwMzyMzMmxMzMMLzMz0MLGjxMGAAAAwMmZmZmZYGDAYmZmZGAAgxsNwAWC2GmADLAmxMAAMzAYYA" },
+        { provider = "archon", label = "Recommended Class Tree", importString = "CoPAAAAAAAAAAAAAAAAAAAAAAwMzyMzMmxMGMLzMz0MLzMjZmBAAAAwgZmZmZMzMjBAzMzMzAAAMmtBGwCYZYCMsAYGDAAmZAYMA" },
     }
 end
-
--- Prot Paladin (66)
-if DragonSkillData["PALADIN"][66] then
-    DragonSkillData["PALADIN"][66].talentBuilds = {
-        { provider = "method", label = "Raid (Templar)", importString = "CIEAAAAAAAAAAAAAAAAAAAAAAsNDzyMzYmZmx2yYMLzithBAYAAAAAAQamZZmxMzYMbtBgBMwMYDAAMz02MzyMAAb22wAgxMMAAsMDwMDyYB" },
-        { provider = "method", label = "Mythic+ (Lightsmith)", importString = "CIEAAAAAAAAAAAAAAAAAAAAAAsZsNLjZMzMzMLLjxYWmlZMAADAAAAAAaamZZmxMDzMbtBgBGwAbAAAEgZmltlWmZsYbBDAYGGDAmZAwMDyYB" },
-        { provider = "icyveins", label = "Raid / ST (Templar)", importString = "CIEAAAAAAAAAAAAAAAAAAAAAAsZmtZbmZMzMzMWGjxw2MGAAAAAAAAINGmxMzYMbtBgBMwMYbAAgZm2mZWmBAYjNMAGjZYMAALzAmZGwYB" },
-        { provider = "icyveins", label = "Mythic+ Weekly (Templar)", importString = "CIEAAAAAAAAAAAAAAAAAAAAAAsZmlZbMjZmZmZZbMGjZZGDAAAAAAAA00MDzYmhxs1GAGAYGsNAAwMTbzMLzAAsxCGAjxMMGAglZAzMDYsA" },
-        { provider = "icyveins", label = "Mythic+ High Keys (Templar)", importString = "CIEAAAAAAAAAAAAAAAAAAAAAAsZmtZbMjZmZmZZbMGjZZGDAAAAAAAA00MDzYmhxs1GAGAYGsNAAwMTbzMLzAAsxCGAjxMMGAglZAzMDYsA" },
-        { provider = "archon", label = "Recommended Class Tree", importString = "CIEAAAAAAAAAAAAAAAAAAAAAAsNjBzyYbMjZmZZZMzwsMLzYAAGAAAAAA00MzyMjZGGegt2AwADYGsBAAAAzMLbLtMzYxMYAMYGGDAmZAwMDYA" },
-        { provider = "archon", label = "Alternative Class Tree #1", importString = "CIEAAAAAAAAAAAAAAAAAAAAAAsNjBzyYbMjZmZZZMzwsMLDDAwAAAAAAgmmZWmZMDGmt2AwADYGsBAAAAzMLbLtMzYxMYAMGzwYAwMDAmZAD" },
-        { provider = "archon", label = "Alternative Class Tree #2", importString = "CIEAAAAAAAAAAAAAAAAAAAAAAsNjBzyYbMjZmZZZMzwsMLzYAAGAAAAAA00MzyMjZwws1GAGYAzgNAAAAYmZZbplZGLmBDgBzwYAwMDAmZAD" },
-        { provider = "archon", label = "Alternative Class Tree #3", importString = "CIEAAAAAAAAAAAAAAAAAAAAAAsNjBzyYbMjZmZZZMzwsMLzYAAGAAAAAA00MzyMjZGGmt2AwADYGsBAAAAzMLbLtMzYxMYAAzwYAwMDAmZAD" },
+if DragonSkillData["DEATHKNIGHT"][251] then
+    DragonSkillData["DEATHKNIGHT"][251].talentBuilds = {
+        { provider = "wowhead", label = "Raid", importString = "CsPAAAAAAAAAAAAAAAAAAAAAAMGAzYMzMGLmZmtZmZGzYAAAAAAAAAgBAAAAzMzMmZYYmZmZmxMLzAAAAghZmZmxMzYGYmZGMGMA" },
+        { provider = "archon", label = "Recommended Class Tree", importString = "CsPAAAAAAAAAAAAAAAAAAAAAAMGAzMjxYsMzMbzMzMmZGAAAAAAAAAAAYAAAYmZmZGDmZmZmZMzyMAAAAYYmZGMzMmBmZmBjBDA" },
     }
 end
-
--- Ret Paladin (70)
-if DragonSkillData["PALADIN"][70] then
-    DragonSkillData["PALADIN"][70].talentBuilds = {
-        { provider = "method", label = "Raid (Templar)", importString = "CYEAAAAAAAAAAAAAAAAAAAAAAAAAAAANbbzMzywMDAAAAAAzUmtZYmx2Y2GmZbGjxMDzYhtBAAkZm2mZ2mBAsBYAwYGGYGjZDbzghxMGMA" },
-        { provider = "method", label = "Mythic+ (Templar)", importString = "CYEAAAAAAAAAAAAAAAAAAAAAAAAAAAwoZbbmZWGzMzAAAAAAYmyYGmZsNmthZ2mxYMGmxGbAAAZmptZmtZAAbAGAMmhBmxMzGWmBDjZMYA" },
-        { provider = "icyveins", label = "Raid ST (Templar)", importString = "CYEAAAAAAAAAAAAAAAAAAAAAAAAAAAANbbzMzywMDAAAAAAzUGzwMjtxsNMz2MGjZGmxCbDAAgZm2mZ2mBAsBYAwYGmBzYMbYbGMMmxgB" },
-        { provider = "icyveins", label = "AoE (Templar)", importString = "CYEAAAAAAAAAAAAAAAAAAAAAAAAAAAwoZbbmZWGzMzAAAAAAYmyYGmZsNmthZ2mxYMGmxGbAAAMz02Mz2MAgNADAGzwAzYmZDLzghxMGMA" },
-        { provider = "archon", label = "Recommended Class Tree", importString = "CYEAAAAAAAAAAAAAAAAAAAAAAAAAAAAMa22mZmlxYmBAAAAAwMlZZGmZsNMbDzsNjxYMMjN2AAAYmptZmtZAAbAGAMmhBmZmZ2wyMYYMMYA" },
-        { provider = "archon", label = "Alternative Class Tree #1", importString = "CYEAAAAAAAAAAAAAAAAAAAAAAAAAAAAMa22mZmlxYmBAAAAAwMlxMMzYbY2GmZbGjxYYGbsBAAwMTbzMbzAA2AMAYMDDMzMzshlZwwYGDG" },
-        { provider = "archon", label = "Alternative Class Tree #2", importString = "CYEAAAAAAAAAAAAAAAAAAAAAAAAAAAAQz22MzsMGzMAAAAAAmpMLzwMjthZbYmtZMGjhZsxGAAAzMtNzsNDAYDwAgxMMwMzMzGWmBDjZMYA" },
-        { provider = "archon", label = "Alternative Class Tree #3", importString = "CYEAAAAAAAAAAAAAAAAAAAAAAAAAAAAMa22mZmlxwMAAAAAAmpMLzwMjthZbYmtZMGjhZsxGAAAzMtNzsNDAYDwAgxMMwMzMzGWmBDjZMYA" },
+if DragonSkillData["DEATHKNIGHT"][252] then
+    DragonSkillData["DEATHKNIGHT"][252].talentBuilds = {
+        { provider = "wowhead", label = "Raid", importString = "CwPAAAAAAAAAAAAAAAAAAAAAAAgZGjZMGLzMz2MzMzYGAAAAAAAAAAAAYAAAYmZmZMzYZYmZmZmZGzYAAAAAAgZmZMzMzADMzMDGLA" },
+        { provider = "archon", label = "Recommended Class Tree", importString = "CwPAAAAAAAAAAAAAAAAAAAAAAAgZGjZmxYZmZ2mZmZGzAAAAAAAAAAAAYAAAYmZmZMzYZYmZmZmZGzYAAAAAAgZmZMzMzADMzMDGLA" },
     }
 end
