@@ -1,4 +1,4 @@
--- Dragon Skill - Main UI (v2.3.7)
+-- Dragon Skill - Main UI (v2.3.8)
 -- Midnight Modern + critical UI fixes (gold color, guild, popup, row index).
 
 local L = DragonSkill.L or {}
@@ -189,6 +189,23 @@ function UI:Update()
     self.text = self:EnsureText(content); self.text:SetText(""); self.text:Show()
     if self.frame.ScrollFrame then self.frame.ScrollFrame:SetVerticalScroll(0) end
 
+    -- Header: Guild + iLvl live aktualisieren
+    if self.frame.Header then
+        local h = self.frame.Header
+        local name = UnitName("player") or "Player"
+        local _, avgItemLevel = GetAverageItemLevel()
+        local guildName = GetGuildInfo("player") or "Keine Gilde"
+        local classColor = RAID_CLASS_COLORS[select(2, UnitClass("player"))] or { r=1, g=1, b=1 }
+        if h.nameText then
+            h.nameText:SetText(string.format("%s%s|r %s(%d)|r",
+                "|cff"..string.format("%02x%02x%02x", classColor.r*255, classColor.g*255, classColor.b*255),
+                name, COLOR_WHITE, math.floor(avgItemLevel or 0)))
+        end
+        if h.guildText then
+            h.guildText:SetText(COLOR_GREY .. "Gilde:|r " .. COLOR_GOLD .. tostring(guildName) .. "|r")
+        end
+    end
+
     local _, class = UnitClass("player"); local specID = GetSpecialization() and select(1, GetSpecializationInfo(GetSpecialization())) or 0
     local ok, err = pcall(function()
         if currentTab == TAB_DASHBOARD then self:DrawDashboard(content, class, specID)
@@ -309,21 +326,37 @@ end
 
 function UI:DrawTalents(content, gd)
     local y = -50
-    self.text:SetText(COLOR_GOLD .. "Optimierte Talent Builds|r")
-    if gd.talentBuilds then
+    self.text:SetText(COLOR_GOLD .. "Optimierte Talent Builds|r\n" .. COLOR_GREY .. "Linksklick = Import-String kopieren (Strg+C)|r")
+    -- hide previous buttons
+    for _, btn in pairs(self.talentBtns or {}) do btn:Hide() end
+    if gd and gd.talentBuilds and #gd.talentBuilds > 0 then
         for i, b in ipairs(gd.talentBuilds) do
             local btn = self.talentBtns[i] or CreateFrame("Button", nil, content, "UIPanelButtonTemplate")
             self.talentBtns[i] = btn; btn:SetSize(560, 32); btn:SetPoint("TOPLEFT", 15, y)
-            btn:SetText(string.format("[%s] %s", tostring(b.provider):upper(), tostring(b.label)))
+            local label = string.format("[%s] %s", tostring(b.provider or "?"):upper(), tostring(b.label or "Build"))
+            btn:SetText(label)
+            local importStr = b.importString
             btn:SetScript("OnClick", function()
-                StaticPopup_Show("DRAGONSKILL_COPY", nil, nil, b.importString)
+                if importStr and importStr ~= "" then
+                    StaticPopup_Show("DRAGONSKILL_COPY", nil, nil, importStr)
+                else
+                    print("|cffff0000Dragon Skill:|r Kein Import-String für diesen Build.")
+                end
             end)
+            btn:SetScript("OnEnter", function(s)
+                GameTooltip:SetOwner(s, "ANCHOR_RIGHT")
+                GameTooltip:SetText(label)
+                GameTooltip:AddLine("Klicken zum Kopieren des Import-Strings", 0.7, 0.7, 0.7)
+                GameTooltip:Show()
+            end)
+            btn:SetScript("OnLeave", function() GameTooltip:Hide() end)
             btn:Show(); y = y - 40
         end
+        content:SetHeight(math.abs(y) + 80)
     else
         local fs = self:GetExtraFS(70)
         fs:SetPoint("TOPLEFT", 15, y)
-        fs:SetText(COLOR_GREY .. "Keine Talent-Builds für diese Spec hinterlegt (aktuell: Paladin via TalentOverrides).|r")
+        fs:SetText(COLOR_GREY .. "Keine Talent-Builds für diese Spec hinterlegt.\nTalentOverrides + GuideData prüfen.|r")
         fs:Show()
     end
 end
