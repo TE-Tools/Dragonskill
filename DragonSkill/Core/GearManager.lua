@@ -1,5 +1,5 @@
--- Dragon Skill - Gear Manager Engine (v2.3.7)
--- Unified slot keys (DE/EN), purity filter, realistic upgrade compare.
+-- Dragon Skill - Gear Manager Engine (v2.3.9)
+-- Fix: BiS always lists GuideData items; upgrades show even if equipped ilvl unknown.
 
 local GearManager = DragonSkill:RegisterModule("GearManager", {})
 
@@ -8,7 +8,6 @@ local STAT_WEIGHTS_BASE = {
     intellect = 150, strength = 150, agility = 150, stamina = 50
 }
 
--- Canonical slot keys used everywhere in scoring
 local SLOT_CANON = {
     kopf = "Head", head = "Head",
     hals = "Neck", neck = "Neck",
@@ -67,22 +66,15 @@ end
 function GearManager:IsItemValidForSpec(itemId, specID)
     local item = DragonSkillGearData and DragonSkillGearData.items and DragonSkillGearData.items[itemId]
     if not item or not item.slot then return true end
-
     local _, class = UnitClass("player")
     local allowedTypes = CLASS_WEAPON_CHECK[class]
     if not allowedTypes then return true end
-
     local slotLower = item.slot:lower()
     local isWeaponOrShield = false
     for _, k in ipairs(WEAPON_KEYWORDS) do
-        if slotLower:find(k, 1, true) then
-            isWeaponOrShield = true
-            break
-        end
+        if slotLower:find(k, 1, true) then isWeaponOrShield = true; break end
     end
-
     if not isWeaponOrShield then return true end
-
     for _, allowed in ipairs(allowedTypes) do
         if slotLower:find(allowed, 1, true) then return true end
     end
@@ -93,7 +85,6 @@ function GearManager:GetStatWeights()
     local SP = DragonSkill:GetModule("StatPriority")
     local weights = {}
     for k, v in pairs(STAT_WEIGHTS_BASE) do weights[k] = v end
-
     local priorityData = SP and SP:GetForCurrentSpec()
     if priorityData and priorityData.wowhead then
         local str = tostring(priorityData.wowhead):lower()
@@ -114,14 +105,11 @@ end
 function GearManager:GetItemScore(itemId, itemLevel)
     local data = DragonSkillGearData and DragonSkillGearData.items and DragonSkillGearData.items[itemId]
     local ilvl = tonumber(itemLevel) or (data and data.ilvl) or 639
-    -- Primary signal: item level (Midnight Mythic baseline 639)
     local score = ilvl * 20
-    -- Known registry items get a small bias so BiS beats unknown same-ilvl junk
     if data then score = score + 50 end
     return score
 end
 
--- Alias used by Character inventory scan
 function GearManager:GetUpgradeScore(slot, itemId, itemLevel)
     local details = self:GetUpgradeDetails(slot or "Item", itemId, itemLevel)
     return details and details.score or 0
@@ -131,7 +119,6 @@ function GearManager:GetEquippedInSlot(canonSlot)
     local Char = DragonSkill:GetModule("Character")
     local currentGear = Char and Char:GetCurrentGear() or {}
     if currentGear[canonSlot] then return currentGear[canonSlot] end
-    -- Rings / Trinkets: take the weaker of the two for upgrade math
     if canonSlot == "Ring" then
         local a, b = currentGear.Ring, currentGear.Ring2
         if a and b then
@@ -160,7 +147,6 @@ function GearManager:GetUpgradeDetails(slot, targetItemId, targetIlvl)
     if current and current.itemId then
         currentScore = self:GetItemScore(current.itemId, current.ilvl)
     end
-
     local tIlvl = tonumber(targetIlvl) or 639
     local targetScore = self:GetItemScore(targetItemId, tIlvl)
     local diff = targetScore - currentScore
@@ -170,62 +156,63 @@ function GearManager:GetUpgradeDetails(slot, targetItemId, targetIlvl)
     elseif targetScore > 0 then
         percent = 100
     end
-
-    return {
-        score = diff,
-        percent = math.floor(percent * 10 + 0.5) / 10,
-        targetIlvl = tIlvl,
-        slot = canon,
-    }
+    return { score = diff, percent = math.floor(percent * 10 + 0.5) / 10, targetIlvl = tIlvl, slot = canon }
 end
 
 function GearManager:GetBiSList()
     local _, class = UnitClass("player")
     local specIndex = GetSpecialization()
     local specID = specIndex and select(1, GetSpecializationInfo(specIndex)) or 0
-    local list = {}
-    local seen = {}
+    local list, seen = {}, {}
 
     local function pushEntry(entry)
+        if not entry then return end
         local itemId = tonumber(entry.itemId)
-        if not itemId or itemId < 260000 or seen[itemId] then return end
+        if not itemId or itemId <= 0 or seen[itemId] then return end
         if not self:IsItemValidForSpec(itemId, specID) then return end
         local name = entry.name
         local slot = entry.slot or "Item"
-        if (not name or name == "") and DragonSkillGearData and DragonSkillGearData.items[itemId] then
+        if (not name or name == "") and DragonSkillGearData and DragonSkillGearData.items and DragonSkillGearData.items[itemId] then
             name = DragonSkillGearData.items[itemId].name
             slot = slot ~= "Item" and slot or (DragonSkillGearData.items[itemId].slot or "Item")
         end
-        table.insert(list, {
-            itemId = itemId,
-            name = name or ("Item " .. itemId),
-            slot = slot,
-            ilvl = entry.ilvl or 639,
-        })
+        table.insert(list, { itemId = itemId, name = name or ("Item " .. itemId), slot = slot, ilvl = entry.ilvl or 639 })
         seen[itemId] = true
     end
 
-    -- 1. GuideData (supports bisGear.wowhead AND legacy wowhead root)
-    if DragonSkillData and DragonSkillData[class] and DragonSkillData[class][specID] then
+    if DragonSkillData and class and DragonSkillData[class] then
         local specData = DragonSkillData[class][specID]
-        local wowhead = (specData.bisGear and specData.bisGear.wowhead) or specData.wowhead
-        if wowhead then
-            for _, entry in ipairs(wowhead) do pushEntry(entry) end
+        if specData then
+            local wowhead = (specData.bisGear and specData.bisGear.wowhead) or specData.wowhead
+            if type(wowhead) == "table" then
+                for _, entry in ipairs(wowhead) do pushEntry(entry) end
+            end
+            local archon = specData.bisGear and specData.bisGear.archon
+            if type(archon) == "table" then
+                for _, entry in ipairs(archon) do pushEntry(entry) end
+            end
         end
     end
 
-    -- 2. Role fallback from GearDatabase
-    if #list < 8 and DragonSkillGearData and DragonSkillGearData.specs and DragonSkillGearData.specs[specID] then
+    if #list < 6 and DragonSkillGearData and DragonSkillGearData.specs and DragonSkillGearData.specs[specID] then
         local overall = DragonSkillGearData.specs[specID].bis and DragonSkillGearData.specs[specID].bis.overall
         if overall then
             for _, itemId in ipairs(overall) do
-                local item = DragonSkillGearData.items[itemId]
-                pushEntry({
-                    itemId = itemId,
-                    name = item and item.name,
-                    slot = item and item.slot or "Item",
-                    ilvl = 639,
-                })
+                local item = DragonSkillGearData.items and DragonSkillGearData.items[itemId]
+                pushEntry({ itemId = itemId, name = item and item.name, slot = item and item.slot or "Item", ilvl = 639 })
+            end
+        end
+    end
+
+    if #list < 3 and DragonSkillGearData and DragonSkillGearData.specs then
+        local myRole = (DragonSkillGearData.specs[specID] and DragonSkillGearData.specs[specID].role) or "healer"
+        for sid, sdata in pairs(DragonSkillGearData.specs) do
+            if sdata.role == myRole and sdata.bis and sdata.bis.overall then
+                for _, itemId in ipairs(sdata.bis.overall) do
+                    local item = DragonSkillGearData.items and DragonSkillGearData.items[itemId]
+                    pushEntry({ itemId = itemId, name = item and item.name, slot = item and item.slot or "Item", ilvl = 639 })
+                end
+                break
             end
         end
     end
@@ -234,17 +221,12 @@ end
 
 function GearManager:GetBestUpgrades()
     local upgrades = {}
-    local bisList = self:GetBiSList()
-    for _, item in ipairs(bisList) do
+    for _, item in ipairs(self:GetBiSList()) do
         local details = self:GetUpgradeDetails(item.slot or "Item", item.itemId, item.ilvl or 639)
         if details.score > 0 then
             table.insert(upgrades, {
-                itemId = item.itemId,
-                name = item.name,
-                slot = item.slot or "Item",
-                score = details.score,
-                percent = details.percent,
-                ilvl = item.ilvl or 639,
+                itemId = item.itemId, name = item.name, slot = item.slot or "Item",
+                score = details.score, percent = details.percent, ilvl = item.ilvl or 639,
             })
         end
     end
@@ -257,24 +239,20 @@ function GearManager:GetFarmPlan()
     if not DragonSkillGearData or not DragonSkillGearData.dungeons then return plan end
     local specIndex = GetSpecialization()
     local specID = specIndex and select(1, GetSpecializationInfo(specIndex)) or 0
-
     for dName, dData in pairs(DragonSkillGearData.dungeons) do
         local items = {}
         for _, boss in ipairs(dData.bosses or {}) do
             for _, itemId in ipairs(boss.loot or {}) do
-                if itemId >= 260000 and self:IsItemValidForSpec(itemId, specID) then
-                    local reg = DragonSkillGearData.items[itemId]
+                if itemId and itemId > 0 and self:IsItemValidForSpec(itemId, specID) then
+                    local reg = DragonSkillGearData.items and DragonSkillGearData.items[itemId]
                     local slot = reg and reg.slot or "Item"
                     local details = self:GetUpgradeDetails(slot, itemId, 639)
-                    if details.score > 0 then
-                        table.insert(items, {
-                            itemId = itemId,
-                            name = reg and reg.name or "Unbekanntes Item",
-                            boss = boss.name,
-                            slot = slot,
-                            score = details.score,
-                        })
-                    end
+                    local score = details.score
+                    if score < 0 then score = 1 end
+                    table.insert(items, {
+                        itemId = itemId, name = reg and reg.name or ("Item " .. itemId),
+                        boss = boss.name, slot = slot, score = score,
+                    })
                 end
             end
         end
