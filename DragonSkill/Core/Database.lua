@@ -1,4 +1,4 @@
--- Dragon Skill - Database Layer (v2.3.7)
+-- Dragon Skill - Database Layer (v2.3.13)
 -- Schema-based cleanup instead of fragile string version compare.
 
 local Database = {}
@@ -12,8 +12,12 @@ function Database:Init()
     DragonSkillDB.history = DragonSkillDB.history or {}
     DragonSkillDB.minimap = DragonSkillDB.minimap or { hide = false, pos = 225 }
     DragonSkillDB.ai = DragonSkillDB.ai or {
-        enabled = false, provider = "openai", apiKey = "", lastResponse = "", pendingQuery = nil
+        enabled = false, provider = "internal", apiKey = "", lastResponse = "", pendingQuery = nil
     }
+    -- Force internal-only (never external network AI)
+    DragonSkillDB.ai.enabled = false
+    DragonSkillDB.ai.provider = "internal"
+    DragonSkillDB.ai.pendingQuery = nil
 
     -- One-time cleanup when schema bumps (replaces broken string version < compare)
     if (DragonSkillDB.dataSchema or 0) < DATA_SCHEMA then
