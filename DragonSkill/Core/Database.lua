@@ -1,4 +1,5 @@
--- Dragon Skill - Database Layer (v1.5.8)
+-- Dragon Skill - Database Layer (v2.3.6)
+-- Enhanced with Auto-Cleanup for Patch 12.1 Purity.
 
 local Database = {}
 
@@ -13,9 +14,17 @@ function Database:Init()
     DragonSkillCharDB = DragonSkillCharDB or {
         lastComparedBuild = nil,
     }
+
+    -- Cleanup Old Data (Purge Season 1 / TWW 11.0 entries)
+    if DragonSkillDB.version and DragonSkillDB.version < "2.3.0" then
+        print("|cff00ff00Dragon Skill:|r Säubere alte Daten für Patch 12.1...")
+        DragonSkillDB.history = {}
+        -- We keep favorites but they might be filtered by GearManager purity check anyway
+    end
+
     DragonSkillDB.favorites = DragonSkillDB.favorites or {}
     DragonSkillDB.history = DragonSkillDB.history or {}
-    DragonSkillDB.minimap = DragonSkillDB.minimap or { hide = false }
+    DragonSkillDB.minimap = DragonSkillDB.minimap or { hide = false, pos = 225 }
     DragonSkillDB.version = DragonSkill.version or DragonSkillDB.version
 
     self.account = DragonSkillDB
@@ -27,22 +36,6 @@ function Database:GetGuideData(class, spec)
     local classData = DragonSkillData[class]
     if not classData then return nil end
     return classData[spec]
-end
-
-function Database:GetBiSData(class, spec)
-    -- Try new structured GearData first
-    if DragonSkillGearData and DragonSkillGearData.specs[class] and DragonSkillGearData.specs[class][spec] then
-        return DragonSkillGearData.specs[class][spec]
-    end
-    -- Fallback to legacy GuideData format
-    local legacy = self:GetGuideData(class, spec)
-    if legacy and legacy.bisGear then
-        return {
-            items = legacy.bisGear.wowhead or {},
-            legacy = true
-        }
-    end
-    return nil
 end
 
 function Database:CreateSkilling(name, data)
@@ -81,7 +74,6 @@ function Database:GenerateAutoSkillingName(data)
     return string.format("%s: %s (%s)", tostring(provider), tostring(label), ts)
 end
 
--- filterCurrentSpec: wenn true, nur Skillungen der aktuellen Klasse/Spec
 function Database:GetSkillings(filterCurrentSpec)
     if not self.account then self:Init() end
     local list = {}
@@ -96,12 +88,9 @@ function Database:GetSkillings(filterCurrentSpec)
 
     for name, data in pairs(favs) do
         if filterCurrentSpec and class and data then
-            -- Einträge ohne class/specID weiter anzeigen (Legacy)
             local matchClass = not data.class or data.class == class
             local matchSpec = not data.specID or not specID or data.specID == specID
-            if not (matchClass and matchSpec) then
-                -- skip
-            else
+            if matchClass and matchSpec then
                 table.insert(list, { name = name, data = data })
             end
         else
@@ -126,12 +115,6 @@ function Database:DeleteSkilling(name)
         return true
     end
     return false
-end
-
-function Database:GetSkilling(name)
-    if not self.account then self:Init() end
-    if not name or not self.account.favorites then return nil end
-    return self.account.favorites[name]
 end
 
 DragonSkill = DragonSkill or {}

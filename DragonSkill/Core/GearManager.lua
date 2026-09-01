@@ -11,19 +11,19 @@ local STAT_WEIGHTS_BASE = {
 
 -- Spec-to-Weapon Mapping (Strictly Hard-blocked)
 local CLASS_WEAPON_CHECK = {
-    WARRIOR = { "Axt", "Streitkolben", "Schwert", "Stangenwaffe", "Stab", "Schild" },
-    PALADIN = { "Axt", "Streitkolben", "Schwert", "Stangenwaffe", "Schild" },
-    HUNTER = { "Bogen", "Armbrust", "Schusswaffe", "Stangenwaffe", "Stab", "Axt" },
-    ROGUE = { "Dolch", "Schwert", "Axt", "Streitkolben", "Faustwaffe" },
-    PRIEST = { "Dolch", "Streitkolben", "Stab", "Zauberstab" },
-    DEATHKNIGHT = { "Axt", "Streitkolben", "Schwert", "Stangenwaffe" },
-    SHAMAN = { "Axt", "Streitkolben", "Stab", "Dolch", "Schild" },
-    MAGE = { "Dolch", "Schwert", "Stab", "Zauberstab" },
-    WARLOCK = { "Dolch", "Schwert", "Stab", "Zauberstab" },
-    MONK = { "Faustwaffe", "Axt", "Streitkolben", "Schwert", "Stangenwaffe", "Stab" },
-    DRUID = { "Dolch", "Faustwaffe", "Streitkolben", "Stangenwaffe", "Stab" },
-    DEMONHUNTER = { "Kriegsgleive", "Schwert", "Axt", "Faustwaffe" },
-    EVOKER = { "Dolch", "Faustwaffe", "Streitkolben", "Schwert", "Stab" }
+    WARRIOR = { "axt", "streitkolben", "schwert", "stangenwaffe", "stab", "schild" },
+    PALADIN = { "axt", "streitkolben", "schwert", "stangenwaffe", "schild" },
+    HUNTER = { "bogen", "armbrust", "schusswaffe", "stangenwaffe", "stab", "axt" },
+    ROGUE = { "dolch", "schwert", "axt", "streitkolben", "faustwaffe" },
+    PRIEST = { "dolch", "streitkolben", "stab", "zauberstab" },
+    DEATHKNIGHT = { "axt", "streitkolben", "schwert", "stangenwaffe" },
+    SHAMAN = { "axt", "streitkolben", "stab", "dolch", "schild" },
+    MAGE = { "dolch", "schwert", "stab", "zauberstab" },
+    WARLOCK = { "dolch", "schwert", "stab", "zauberstab" },
+    MONK = { "faustwaffe", "axt", "streitkolben", "schwert", "stangenwaffe", "stab" },
+    DRUID = { "dolch", "faustwaffe", "streitkolben", "stangenwaffe", "stab" },
+    DEMONHUNTER = { "kriegsgleive", "schwert", "axt", "faustwaffe" },
+    EVOKER = { "dolch", "faustwaffe", "streitkolben", "schwert", "stab" }
 }
 
 function GearManager:IsItemValidForSpec(itemId, specID)
@@ -34,18 +34,19 @@ function GearManager:IsItemValidForSpec(itemId, specID)
     local allowedTypes = CLASS_WEAPON_CHECK[class]
     if not allowedTypes then return true end
 
-    -- Check if it's a weapon/shield slot and if it's allowed
-    local slot = item.slot:lower()
-    local isWeaponOrShield = slot:find("axt") or slot:find("streitkolben") or slot:find("schwert") or
-                             slot:find("stangenwaffe") or slot:find("stab") or slot:find("schild") or
-                             slot:find("bogen") or slot:find("armbrust") or slot:find("schusswaffe") or
-                             slot:find("dolch") or slot:find("gleive") or slot:find("faustwaffe") or
-                             slot:find("zauberstab")
+    local slotLower = item.slot:lower()
+
+    -- Weapon/Shield Keywords
+    local keywords = { "waffe", "stab", "dolch", "schild", "bogen", "armbrust", "schuss", "gleive", "kolben" }
+    local isWeaponOrShield = false
+    for _, k in ipairs(keywords) do
+        if slotLower:find(k) then isWeaponOrShield = true; break end
+    end
 
     if isWeaponOrShield then
         local found = false
         for _, allowed in ipairs(allowedTypes) do
-            if slot:find(allowed:lower()) then
+            if slotLower:find(allowed) then
                 found = true
                 break
             end
@@ -82,6 +83,7 @@ function GearManager:GetItemScore(itemId, itemLevel)
     local data = DragonSkillGearData.items[itemId]
     if not data then return 0 end
     local weights = self:GetStatWeights()
+    -- Midnight Season 2 Scaling (Strictly 639+)
     local ilvlScore = (itemLevel or 639) * 20
     return ilvlScore
 end
@@ -111,13 +113,14 @@ function GearManager:GetBiSList()
     local list = {}
     local seen = {}
 
-    -- 1. Try Clean 12.1 Manual Data first (With Absolute Purity Check)
+    -- 1. Try Manual Data (Pure 12.1 Check)
     if DragonSkillData and DragonSkillData[class] and DragonSkillData[class][specID] then
-        local bis = DragonSkillData[class][specID].bisGear
+        local specData = DragonSkillData[class][specID]
+        local bis = specData.bisGear
         if bis and bis.wowhead then
             for _, entry in ipairs(bis.wowhead) do
                 local itemId = tonumber(entry.itemId)
-                -- PURITY FIX: Ignore ID < 260000 and Hard-block invalid class items
+                -- PURITY FIX: Strictly Season 2 (IDs >= 260000)
                 if itemId and itemId >= 260000 and not seen[itemId] and self:IsItemValidForSpec(itemId, specID) then
                     table.insert(list, { itemId = itemId, name = entry.name, slot = entry.slot, ilvl = 639 })
                     seen[itemId] = true
@@ -126,8 +129,8 @@ function GearManager:GetBiSList()
         end
     end
 
-    -- 2. Fallback to Role Database (Filtering invalid types)
-    if #list < 5 and DragonSkillGearData.specs[specID] then
+    -- 2. Fallback to Role Database (Filtering invalid types & old IDs)
+    if #list < 8 and DragonSkillGearData.specs[specID] then
         for _, itemId in ipairs(DragonSkillGearData.specs[specID].bis.overall) do
             if not seen[itemId] and itemId >= 260000 and self:IsItemValidForSpec(itemId, specID) then
                 local item = DragonSkillGearData.items[itemId]
@@ -167,7 +170,7 @@ function GearManager:GetFarmPlan()
         local items = {}
         for _, boss in ipairs(dData.bosses) do
             for _, itemId in ipairs(boss.loot) do
-                -- PURITY FIX: Only process valid items for the spec and modern IDs
+                -- PURITY: Modern IDs and valid class types only
                 if itemId >= 260000 and self:IsItemValidForSpec(itemId, specID) then
                     local details = self:GetUpgradeDetails("Gear", itemId, 639)
                     if details.score > 0 then
