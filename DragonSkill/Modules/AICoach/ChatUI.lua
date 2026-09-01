@@ -1,5 +1,5 @@
--- Dragon Skill - Module: AI Coach Chat UI (v2.3.0)
--- Stability Master: Fixed ScrollChild and Font errors.
+-- Dragon Skill - Module: AI Coach Chat UI (v2.3.1)
+-- Absolute Stability Fix: Removed tonumber/width dependency in draw loop.
 
 local AICoachUI = {}
 DragonSkill.AICoachUI = AICoachUI
@@ -9,7 +9,7 @@ function AICoachUI:Draw(content, width)
     local Engine = DragonSkill:GetModule("AICoach")
     if not Engine then return end
 
-    local chatWidth = tonumber(width) or 580
+    local chatWidth = 580 -- Constant width for stability
 
     -- 1. Create Scrollable History Area
     if not self.scrollFrame then
@@ -24,18 +24,16 @@ function AICoachUI:Draw(content, width)
         h:SetTextInsets(10, 10, 10, 10)
         h:SetReadOnly(true)
         h:SetAutoFocus(false)
-        h:SetFontObject("GameFontHighlightSmall")
+        h:SetFontObject("ChatFontNormal")
 
-        h:SetScript("OnHyperlinkEnter", function(self, link)
-            if link then
-                GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+        h:SetScript("OnHyperlinkEnter", function(eb, link)
+            if link and eb then
+                GameTooltip:SetOwner(eb, "ANCHOR_RIGHT")
                 GameTooltip:SetHyperlink(link)
                 GameTooltip:Show()
             end
         end)
         h:SetScript("OnHyperlinkLeave", function() GameTooltip:Hide() end)
-
-        -- CRITICAL FIX: SetScrollChild MUST be called after sf and h are ready
         sf:SetScrollChild(h)
 
         local bg = CreateFrame("Frame", nil, content, "BackdropTemplate")
@@ -83,7 +81,7 @@ function AICoachUI:Draw(content, width)
         btn:SetPoint("LEFT", eb, "RIGHT", 5, 0)
         btn:SetText("Senden")
         btn:SetScript("OnClick", function()
-            if eb:GetScript("OnEnterPressed") then
+            if eb and eb:GetScript("OnEnterPressed") then
                 eb:GetScript("OnEnterPressed")(eb)
             end
         end)
@@ -96,7 +94,6 @@ end
 function AICoachUI:AddMessage(sender, text)
     if not text then return end
     local prefix = (sender == "User") and "|cffffffffDu: |r" or (sender == "AI") and "|cff00ccffReal-AI: |r" or "|cff00ff00Coach: |r"
-
     if DragonSkillDB then
         DragonSkillDB.history = DragonSkillDB.history or {}
         table.insert(DragonSkillDB.history, prefix .. tostring(text))
@@ -114,7 +111,6 @@ function AICoachUI:RefreshHistory()
         end
     end
     self.historyText:SetText(full == "" and "Willkommen beim Coach!" or full)
-
     if self.scrollFrame then
         local range = self.scrollFrame:GetVerticalScrollRange() or 0
         if range > 0 then self.scrollFrame:SetVerticalScroll(range) end
