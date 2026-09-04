@@ -1,91 +1,78 @@
--- Dragon Skill - Guide Data Master (v2.3.7)
--- Schema: each spec has bisGear.wowhead (+ optional talentBuilds via TalentOverrides)
--- Patch 12.1 Midnight Season 2 – role-based BiS with proper structure for consumers.
+-- Dragon Skill - Guide Data Master (v2.4.0)
+-- Patch 12.1 Midnight Season 2 (Venomous Abyss)
 
 DragonSkillData = DragonSkillData or {}
 
-local DEFAULT_BIS = {
-    bisGear = {
-        wowhead = {
-            { itemId = 271092, slot = "Waffe", name = "Ula'teks Stab" },
-            { itemId = 271528, slot = "Kopf", name = "Blick des gewundenen Wächters" },
-            { itemId = 270175, slot = "Schmuck", name = "Lebendige Sporenkapsel" },
-            { itemId = 270173, slot = "Schmuck", name = "Gieriges Herz von Ula'tek" },
-            { itemId = 268266, slot = "Ring", name = "Ring des Wellenrufers" },
-            { itemId = 268265, slot = "Hals", name = "Amani-Anhänger" },
-            { itemId = 268253, slot = "Rücken", name = "Umhang der gewundenen Seelen" },
-            { itemId = 268259, slot = "Taille", name = "Gurt des Vernichters" },
-            { itemId = 271600, slot = "Füße", name = "Stiefel des Wächters" },
-        }
-    }
+local HEALER_BIS = {
+    { itemId = 272003, slot = "Schmuckstück", name = "Seelenwinder-Ritualgefäß" },
+    { itemId = 270175, slot = "Schmuckstück", name = "Lebendige Sporenkapsel" },
+    { itemId = 272005, slot = "Kopf", name = "Helm des gewundenen Wächters [T-Set]" },
+    { itemId = 272006, slot = "Schulter", name = "Schultern des gewundenen Wächters [T-Set]" },
+    { itemId = 272007, slot = "Brust", name = "Brustschutz des gewundenen Wächters [T-Set]" },
+    { itemId = 272008, slot = "Hände", name = "Stulpen des gewundenen Wächters [T-Set]" },
+    { itemId = 272009, slot = "Beine", name = "Gamaschen des gewundenen Wächters [T-Set]" },
+    { itemId = 268265, slot = "Hals", name = "Amani-Anhänger" },
+    { itemId = 268253, slot = "Rücken", name = "Umhang der gewundenen Seelen" },
 }
 
 local TANK_BIS = {
-    bisGear = {
-        wowhead = {
-            { itemId = 268213, slot = "Waffe", name = "Maze-roa, Zorn des Kriegsfürsten" },
-            { itemId = 268262, slot = "Schild", name = "Nymrissas Wellenschutz" },
-            { itemId = 271528, slot = "Kopf", name = "Blick des gewundenen Wächters" },
-            { itemId = 270173, slot = "Schmuck", name = "Gieriges Herz von Ula'tek" },
-            { itemId = 270165, slot = "Schmuck", name = "Auge des Wächters" },
-            { itemId = 268249, slot = "Ring", name = "Siegel des Bösartigen" },
-            { itemId = 268265, slot = "Hals", name = "Amani-Anhänger" },
-            { itemId = 268253, slot = "Rücken", name = "Umhang der gewundenen Seelen" },
-            { itemId = 268259, slot = "Taille", name = "Gurt des Vernichters" },
+    { itemId = 272001, slot = "Waffe", name = "Maze-roa, Zorn des Kriegsfürsten" },
+    { itemId = 272002, slot = "Schmuckstück", name = "Gieriges Herz von Ula'tek" },
+    { itemId = 272005, slot = "Kopf", name = "Helm des gewundenen Wächters [T-Set]" },
+    { itemId = 272006, slot = "Schulter", name = "Schultern des gewundenen Wächters [T-Set]" },
+    { itemId = 272007, slot = "Brust", name = "Brustschutz des gewundenen Wächters [T-Set]" },
+    { itemId = 272008, slot = "Hände", name = "Stulpen des gewundenen Wächters [T-Set]" },
+    { itemId = 272009, slot = "Beine", name = "Gamaschen des gewundenen Wächters [T-Set]" },
+    { itemId = 268262, slot = "Schild", name = "Nymrissas Wellenschutz" },
+    { itemId = 268249, slot = "Ring", name = "Siegel des Bösartigen" },
+}
+
+local MELEE_BIS = {
+    { itemId = 272001, slot = "Waffe", name = "Maze-roa, Zorn des Kriegsfürsten" },
+    { itemId = 272002, slot = "Schmuckstück", name = "Gieriges Herz von Ula'tek" },
+    { itemId = 272005, slot = "Kopf", name = "Helm des gewundenen Wächters [T-Set]" },
+    { itemId = 272006, slot = "Schulter", name = "Schultern des gewundenen Wächters [T-Set]" },
+    { itemId = 272007, slot = "Brust", name = "Brustschutz des gewundenen Wächters [T-Set]" },
+    { itemId = 272008, slot = "Hände", name = "Stulpen des gewundenen Wächters [T-Set]" },
+    { itemId = 272009, slot = "Beine", name = "Gamaschen des gewundenen Wächters [T-Set]" },
+    { itemId = 268249, slot = "Ring", name = "Siegel des Bösartigen" },
+    { itemId = 271530, slot = "Faustwaffe", name = "Nekzalis Faust" },
+}
+
+local CASTER_BIS = {
+    { itemId = 272004, slot = "Schmuckstück", name = "Reißzahn der umbralen Bosheit" },
+    { itemId = 270160, slot = "Schmuckstück", name = "Kystias Versprechen" },
+    { itemId = 272005, slot = "Kopf", name = "Helm des gewundenen Wächters [T-Set]" },
+    { itemId = 272006, slot = "Schulter", name = "Schultern des gewundenen Wächters [T-Set]" },
+    { itemId = 272007, slot = "Brust", name = "Brustschutz des gewundenen Wächters [T-Set]" },
+    { itemId = 272008, slot = "Hände", name = "Stulpen des gewundenen Wächters [T-Set]" },
+    { itemId = 272009, slot = "Beine", name = "Gamaschen des gewundenen Wächters [T-Set]" },
+    { itemId = 268266, slot = "Ring", name = "Ring des Wellenrufers" },
+    { itemId = 271092, slot = "Stab", name = "Ula'teks Stab" },
+}
+
+local function GetBisForRole(role)
+    local source = (role == "healer" and HEALER_BIS) or (role == "tank" and TANK_BIS) or (role == "caster" and CASTER_BIS) or MELEE_BIS
+    return {
+        bisGear = {
+            wowhead = source,
+            raid = source,
+            mplus = source
         }
     }
-}
-
--- Shallow copy helper so each spec can later get talentBuilds independently
-local function CopyBis(src)
-    local t = { bisGear = { wowhead = {} } }
-    for i, e in ipairs(src.bisGear.wowhead) do
-        t.bisGear.wowhead[i] = {
-            itemId = e.itemId,
-            slot = e.slot,
-            name = e.name,
-        }
-    end
-    return t
 end
 
-DragonSkillData["DRUID"] = {
-    [102] = CopyBis(DEFAULT_BIS), [103] = CopyBis(DEFAULT_BIS),
-    [104] = CopyBis(TANK_BIS), [105] = CopyBis(DEFAULT_BIS),
-}
-DragonSkillData["WARRIOR"] = {
-    [71] = CopyBis(DEFAULT_BIS), [72] = CopyBis(DEFAULT_BIS), [73] = CopyBis(TANK_BIS),
-}
-DragonSkillData["PALADIN"] = {
-    [65] = CopyBis(DEFAULT_BIS), [66] = CopyBis(TANK_BIS), [70] = CopyBis(DEFAULT_BIS),
-}
-DragonSkillData["HUNTER"] = {
-    [253] = CopyBis(DEFAULT_BIS), [254] = CopyBis(DEFAULT_BIS), [255] = CopyBis(DEFAULT_BIS),
-}
-DragonSkillData["ROGUE"] = {
-    [259] = CopyBis(DEFAULT_BIS), [260] = CopyBis(DEFAULT_BIS), [261] = CopyBis(DEFAULT_BIS),
-}
-DragonSkillData["PRIEST"] = {
-    [256] = CopyBis(DEFAULT_BIS), [257] = CopyBis(DEFAULT_BIS), [258] = CopyBis(DEFAULT_BIS),
-}
-DragonSkillData["DEATHKNIGHT"] = {
-    [250] = CopyBis(TANK_BIS), [251] = CopyBis(DEFAULT_BIS), [252] = CopyBis(DEFAULT_BIS),
-}
-DragonSkillData["SHAMAN"] = {
-    [262] = CopyBis(DEFAULT_BIS), [263] = CopyBis(DEFAULT_BIS), [264] = CopyBis(DEFAULT_BIS),
-}
-DragonSkillData["MAGE"] = {
-    [62] = CopyBis(DEFAULT_BIS), [63] = CopyBis(DEFAULT_BIS), [64] = CopyBis(DEFAULT_BIS),
-}
-DragonSkillData["WARLOCK"] = {
-    [265] = CopyBis(DEFAULT_BIS), [266] = CopyBis(DEFAULT_BIS), [267] = CopyBis(DEFAULT_BIS),
-}
-DragonSkillData["MONK"] = {
-    [268] = CopyBis(TANK_BIS), [269] = CopyBis(DEFAULT_BIS), [270] = CopyBis(DEFAULT_BIS),
-}
-DragonSkillData["DEMONHUNTER"] = {
-    [577] = CopyBis(DEFAULT_BIS), [581] = CopyBis(TANK_BIS),
-}
-DragonSkillData["EVOKER"] = {
-    [1467] = CopyBis(DEFAULT_BIS), [1468] = CopyBis(DEFAULT_BIS), [1473] = CopyBis(DEFAULT_BIS),
-}
+-- Update for all classes and specs
+DragonSkillData["DRUID"] = { [102] = GetBisForRole("caster"), [103] = GetBisForRole("melee"), [104] = GetBisForRole("tank"), [105] = GetBisForRole("healer") }
+DragonSkillData["WARRIOR"] = { [71] = GetBisForRole("melee"), [72] = GetBisForRole("melee"), [73] = GetBisForRole("tank") }
+DragonSkillData["PALADIN"] = { [65] = GetBisForRole("healer"), [66] = GetBisForRole("tank"), [70] = GetBisForRole("melee") }
+DragonSkillData["HUNTER"] = { [253] = GetBisForRole("melee"), [254] = GetBisForRole("melee"), [255] = GetBisForRole("melee") }
+DragonSkillData["ROGUE"] = { [259] = GetBisForRole("melee"), [260] = GetBisForRole("melee"), [261] = GetBisForRole("melee") }
+DragonSkillData["PRIEST"] = { [256] = GetBisForRole("healer"), [257] = GetBisForRole("healer"), [258] = GetBisForRole("caster") }
+DragonSkillData["DEATHKNIGHT"] = { [250] = GetBisForRole("tank"), [251] = GetBisForRole("melee"), [252] = GetBisForRole("melee") }
+DragonSkillData["SHAMAN"] = { [262] = GetBisForRole("caster"), [263] = GetBisForRole("melee"), [264] = GetBisForRole("healer") }
+DragonSkillData["MAGE"] = { [62] = GetBisForRole("caster"), [63] = GetBisForRole("caster"), [64] = GetBisForRole("caster") }
+DragonSkillData["WARLOCK"] = { [265] = GetBisForRole("caster"), [266] = GetBisForRole("caster"), [267] = GetBisForRole("caster") }
+DragonSkillData["MONK"] = { [268] = GetBisForRole("tank"), [269] = GetBisForRole("melee"), [270] = GetBisForRole("healer") }
+DragonSkillData["DEMONHUNTER"] = { [577] = GetBisForRole("melee"), [581] = GetBisForRole("tank") }
+DragonSkillData["EVOKER"] = { [1467] = GetBisForRole("caster"), [1468] = GetBisForRole("healer"), [1473] = GetBisForRole("caster") }
