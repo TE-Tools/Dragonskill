@@ -1,0 +1,103 @@
+Dragon Skill v2.6.0 – Talente-Import repariert + neuer Reiter "VZ & Sockel"
+===========================================================================
+
+WAS WAR KAPUTT
+--------------
+Im Reiter "Talente" ging beim Klick nur ein Kopieren-Fenster auf, und der
+kopierte String liess sich in WoW nicht importieren. Dafuer gab es zwei
+unabhaengige Ursachen:
+
+1) FALSCHE DATEN
+   Ein Talent-Import-String ist kein beliebiger Text: in den ersten Bits
+   stecken die Formatversion und die Spezialisierungs-ID. WoW lehnt jeden
+   Import ab, dessen specID nicht zur aktuell gespielten Spezialisierung
+   passt.
+   In den Addon-Daten lagen genau solche Strings – unter Druide/Gleichgewicht
+   und Druide/Wildheit stand jeweils ein WIEDERHERSTELLUNGS-String (specID
+   105). Der Import konnte gar nicht funktionieren.
+   Ausserdem gab es ueberhaupt nur Daten fuer Druide und Paladin; alle
+   anderen Klassen zeigten "Keine Talent-Builds fuer diese Spec".
+
+2) TOTER CODE
+   Der Button rief die Import-Funktion nie auf. Und selbst wenn – die
+   Funktion sprach `ClassTalentFrame:ImportLoadout` an. Dieses Frame gibt es
+   seit Patch 11.0 nicht mehr, der Talentbaum liegt jetzt in
+   `PlayerSpellsFrame`. Der Aufruf waere also immer fehlgeschlagen.
+
+
+WAS JETZT ANDERS IST
+--------------------
+* Linksklick auf einen Build importiert die Skillung DIREKT in WoW
+  (ueber den Blizzard-Import-Dialog). Rechtsklick kopiert weiterhin den
+  String, falls du ihn woanders brauchst.
+
+* Jeder Build wird beim Anzeigen geprueft und bekommt ein Haekchen oder ein
+  Kreuz. Passt etwas nicht, steht im Tooltip und im Chat im Klartext warum
+  (z.B. "String gehoert zu 'Wiederherstellung', du spielst gerade
+  'Gleichgewicht'") – statt einer nichtssagenden Blizzard-Fehlermeldung.
+
+* 244 aktuelle Builds fuer ALLE 40 Spezialisierungen (Patch 12.1, Quelle
+  Wowhead), jeweils Raid / Mythic+ / Delves pro Heldentalent-Baum.
+  Jeder einzelne String wurde beim Erzeugen dekodiert und gegen die
+  Ziel-Spec geprueft – falsch zugeordnete Strings kommen gar nicht mehr in
+  die Datei.
+
+* NEUER REITER "VZ & Sockel": empfohlene Verzauberungen, Sockelsteine und
+  Verbrauchbare (Fläschchen, Traenke, Nahrung, Waffenöl, Erweiterungsrune)
+  fuer deine Spec. Bei den Verzauberungen zeigt das Addon zusaetzlich an,
+  welche deiner angelegten Teile noch NICHT verzaubert sind ("fehlt" in
+  Rot, "verzaubert" in Gruen). Klick auf eine Zeile oeffnet den Item-Tooltip.
+
+
+INSTALLATION – VARIANTE A (nur WoW aktualisieren, das Uebliche)
+---------------------------------------------------------------
+1. WoW komplett beenden.
+2. Ordner  addon-DragonSkill  aus diesem Archiv oeffnen.
+3. Seinen INHALT in deinen Addon-Ordner kopieren und ueberschreiben:
+      ...\World of Warcraft\_retail_\Interface\AddOns\DragonSkill\
+4. WICHTIG: die beiden alten Dateien loeschen, falls noch vorhanden:
+      Interface\AddOns\DragonSkill\Data\TalentOverrides.lua
+      Interface\AddOns\DragonSkill\Data\TalentOverrides2.lua
+   (Sie stehen nicht mehr in der .toc, wuerden aber nur Platz belegen.)
+5. WoW starten, /ds eingeben.
+
+
+INSTALLATION – VARIANTE B (Repository aktualisieren)
+----------------------------------------------------
+Ordner  repo-changed  enthaelt genau die geaenderten und neuen Dateien in
+der Ordnerstruktur des Repos. Einfach ueber dein lokales Repo kopieren und
+danach die beiden geloeschten Dateien entfernen:
+      DragonSkill/Data/TalentOverrides.lua
+      DragonSkill/Data/TalentOverrides2.lua
+
+Alternativ liegt der fertige Commit als Patch bei:
+      git am dragonskill-v2.6.0.patch
+
+
+DATEN SPAETER AKTUALISIEREN
+---------------------------
+Im Ordner scraper/ liegen drei neue Skripte:
+
+  loadout-validate.js     – dekodiert und prueft einen Import-String
+                            (auch direkt nutzbar:
+                             node loadout-validate.js <String> <specID>)
+  build-talent-builds.js  – erzeugt Data/TalentBuilds.lua aus
+                            scraper/data-raw/wowhead-all.txt
+  build-enchants.js       – erzeugt Data/EnchantsGems.lua aus
+                            scraper/data-raw/enchants-all.txt
+
+Beide Generatoren lassen nur validierte Strings durch. Damit kann der Bug
+"falsche Spec im String" nicht wieder unbemerkt in die Daten rutschen.
+
+Die Rohdaten in scraper/data-raw/ haben das Format
+  KLASSE|specID|quelle|Label|Heldentalent|ImportString
+bzw.
+  KLASSE|specID|art|Slot|itemId
+und lassen sich problemlos von Hand ergaenzen.
+
+
+NOCH OFFEN
+----------
+Archon.gg als zweite Quelle fuer Talent-Builds ist noch nicht drin – die
+Seite verlangt eine "Ich bin kein Bot"-Bestaetigung, die ich nicht selbst
+anklicken darf. Die Wowhead-Daten decken aber alle 40 Specs vollstaendig ab.

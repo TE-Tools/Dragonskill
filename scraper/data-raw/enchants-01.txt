@@ -1,0 +1,300 @@
+DEATHKNIGHT|250|enchant|Helm|243981
+DEATHKNIGHT|250|enchant|Shoulders|243963
+DEATHKNIGHT|250|enchant|Chest|243977
+DEATHKNIGHT|250|enchant|Legs|244641
+DEATHKNIGHT|250|enchant|Feet|244009
+DEATHKNIGHT|250|enchant|Ring|243987
+DEATHKNIGHT|250|gem|Diamond|240983
+DEATHKNIGHT|250|gem|Other Gems|240890
+DEATHKNIGHT|250|consumable|Flask|241324
+DEATHKNIGHT|250|consumable|Combat Potion|241288
+DEATHKNIGHT|250|consumable|Health Potion|271884
+DEATHKNIGHT|250|consumable|Weapon Buff|243734
+DEATHKNIGHT|250|consumable|Augment Rune|259085
+DEATHKNIGHT|250|consumable|Food|242273
+DEATHKNIGHT|251|enchant|Shoulders|243963
+DEATHKNIGHT|251|enchant|Chest|243977
+DEATHKNIGHT|251|enchant|Head|243981
+DEATHKNIGHT|251|enchant|Legs|244641
+DEATHKNIGHT|251|enchant|Boots|244009
+DEATHKNIGHT|251|enchant|Ring|243957
+DEATHKNIGHT|251|gem|Diamond|240983
+DEATHKNIGHT|251|gem|Other Gems|240908
+DEATHKNIGHT|251|consumable|Flask|241326
+DEATHKNIGHT|251|consumable|Combat Potion|241308
+DEATHKNIGHT|251|consumable|Health Potion|241304
+DEATHKNIGHT|251|consumable|Weapon Buff|243734
+DEATHKNIGHT|251|consumable|Augment Rune|259085
+DEATHKNIGHT|251|consumable|Food|242275
+DEATHKNIGHT|252|enchant|Helmet|243981
+DEATHKNIGHT|252|enchant|Shoulder|243963
+DEATHKNIGHT|252|enchant|Chest|243977
+DEATHKNIGHT|252|enchant|Legs|244641
+DEATHKNIGHT|252|enchant|Boots|244009
+DEATHKNIGHT|252|enchant|Ring|243957
+DEATHKNIGHT|252|consumable|Flask|241322
+DEATHKNIGHT|252|consumable|Combat Potion|241288
+DEATHKNIGHT|252|consumable|Health Potion|241304
+DEATHKNIGHT|252|consumable|Weapon Buff|243734
+DEATHKNIGHT|252|consumable|Augment Rune|259085
+DEATHKNIGHT|252|consumable|Food|255845
+DEATHKNIGHT|252|gem|Diamond|240983
+DEATHKNIGHT|252|gem|Other Gems|240908
+DEMONHUNTER|577|enchant|Weapon|273072
+DEMONHUNTER|577|enchant|Helm|244007
+DEMONHUNTER|577|enchant|Shoulder|243991
+DEMONHUNTER|577|enchant|Chest|243977
+DEMONHUNTER|577|enchant|Legs|244641
+DEMONHUNTER|577|enchant|Boots|243953
+DEMONHUNTER|577|enchant|Ring|243957
+DEMONHUNTER|577|gem|Eversong Diamond|240983
+DEMONHUNTER|577|gem|Other Gems|240908
+DEMONHUNTER|577|consumable|Flask|241326
+DEMONHUNTER|577|consumable|Combat Potion|241288
+DEMONHUNTER|577|consumable|Health Potion|271884
+DEMONHUNTER|577|consumable|Weapon Buffs|243734
+DEMONHUNTER|577|consumable|Augment Rune|259085
+DEMONHUNTER|577|consumable|Food|242275
+DEMONHUNTER|581|enchant|Helm|243981
+DEMONHUNTER|581|enchant|Chest|243977
+DEMONHUNTER|581|enchant|Shoulders|243963
+DEMONHUNTER|581|enchant|Legs|244641
+DEMONHUNTER|581|enchant|Boots|244009
+DEMONHUNTER|581|enchant|Ring|243957
+DEMONHUNTER|581|gem|Eversong Diamond|240983
+DEMONHUNTER|581|gem|Other Gems|240890
+DEMONHUNTER|581|consumable|Flask|241325
+DEMONHUNTER|581|consumable|Combat Potion|241308
+DEMONHUNTER|581|consumable|Health Potion|271884
+DEMONHUNTER|581|consumable|Weapon Buff|243734
+DEMONHUNTER|581|consumable|Augment Rune|259085
+DEMONHUNTER|581|consumable|Food|255846
+DEMONHUNTER|1480|enchant|Main Hand|273071
+DEMONHUNTER|1480|enchant|Off Hand|273071
+DEMONHUNTER|1480|enchant|Helm|244007
+DEMONHUNTER|1480|enchant|Chest|243977
+DEMONHUNTER|1480|enchant|Shoulders|243991
+DEMONHUNTER|1480|enchant|Legs|240133
+DEMONHUNTER|1480|enchant|Boots|243953
+DEMONHUNTER|1480|enchant|Ring|243957
+DEMONHUNTER|1480|gem|Diamond|240983
+DEMONHUNTER|1480|gem|Other Gems|240898
+DEMONHUNTER|1480|consumable|Flask|241322
+DEMONHUNTER|1480|consumable|Combat Potion|241288
+DEMONHUNTER|1480|consumable|Health Potion|271884
+DEMONHUNTER|1480|consumable|Weapon Buff|243734
+DEMONHUNTER|1480|consumable|Augment Rune|259085
+DEMONHUNTER|1480|consumable|Food|275266
+DRUID|102|enchant|Weapon|273072
+DRUID|102|enchant|Head|244007
+DRUID|102|enchant|Shoulders|243991
+DRUID|102|enchant|Chest|243977
+DRUID|102|enchant|Legs|240133
+DRUID|102|enchant|Boots|243953
+DRUID|102|enchant|Ring|243957
+DRUID|102|gem|Eversong Diamond|240983
+DRUID|102|gem|Other Gems|240900
+DRUID|102|consumable|Flask|241322
+DRUID|102|consumable|Combat Potion|241308
+DRUID|102|consumable|Health Potion|271884
+DRUID|102|consumable|Weapon Buff|243733
+DRUID|102|consumable|Augment Rune|259085
+DRUID|102|consumable|Food|255847
+DRUID|103|enchant|Weapon - Main Hand|244029
+DRUID|103|enchant|Head|244007
+DRUID|103|enchant|Shoulders|243991
+DRUID|103|enchant|Chest|243977
+DRUID|103|enchant|Legs|244641
+DRUID|103|enchant|Boots|243953
+DRUID|103|enchant|Ring|243957
+DRUID|103|gem|Eversong Diamond|240967
+DRUID|103|gem|Other Gems|240900
+DRUID|103|consumable|Flask|241326
+DRUID|103|consumable|Combat Potion|241288
+DRUID|103|consumable|Health Potion|271884
+DRUID|103|consumable|Weapon Buff (Main hand)|243734
+DRUID|103|consumable|Weapon Buff (Off hand)|243734
+DRUID|103|consumable|Augment Rune|259085
+DRUID|103|consumable|Food|255846
+DRUID|104|enchant|Weapon|243973
+DRUID|104|enchant|Shoulder|243963
+DRUID|104|enchant|Chest|243977
+DRUID|104|enchant|Head|243981
+DRUID|104|enchant|Legs|244641
+DRUID|104|enchant|Boots|244009
+DRUID|104|enchant|Ring|244015
+DRUID|104|gem|Algari Diamond|240983
+DRUID|104|gem|Other Gems|240894
+DRUID|104|consumable|Flask|241324
+DRUID|104|consumable|Combat Potion|241292
+DRUID|104|consumable|Health Potion|271884
+DRUID|104|consumable|Weapon Buff|243734
+DRUID|104|consumable|Augment Rune|259085
+DRUID|104|consumable|Food|255845
+DRUID|105|enchant|Weapon|243973
+DRUID|105|enchant|Helm|243951
+DRUID|105|enchant|Shoulders|244021
+DRUID|105|enchant|Chest|243977
+DRUID|105|enchant|Legs|240155
+DRUID|105|enchant|Boots|243983
+DRUID|105|enchant|Ring|244015
+DRUID|105|gem|Diamond (one of)|240983
+DRUID|105|gem|Other Gems|240892
+DRUID|105|consumable|Flask|241324
+DRUID|105|consumable|Combat Potion|241288
+DRUID|105|consumable|Health Potion|241304
+DRUID|105|consumable|Weapon Buff|243734
+DRUID|105|consumable|Augment Rune|259085
+DRUID|105|consumable|Food|255846
+EVOKER|1467|enchant|Weapon|244029
+EVOKER|1467|enchant|Head|244007
+EVOKER|1467|enchant|Shoulders|243991
+EVOKER|1467|enchant|Chest|243977
+EVOKER|1467|enchant|Legs|240133
+EVOKER|1467|enchant|Boots|243953
+EVOKER|1467|enchant|Rings|243987
+EVOKER|1467|consumable|Flask|241326
+EVOKER|1467|consumable|Combat Potion|241288
+EVOKER|1467|consumable|Health Potion|271884
+EVOKER|1467|consumable|Weapon Buff|243734
+EVOKER|1467|consumable|Augment Rune|259085
+EVOKER|1467|consumable|Food|255846
+EVOKER|1468|enchant|Weapon|244031
+EVOKER|1468|enchant|Helm|243951
+EVOKER|1468|enchant|Shoulders|244021
+EVOKER|1468|enchant|Chest|243977
+EVOKER|1468|enchant|Legs|240155
+EVOKER|1468|enchant|Boots|243983
+EVOKER|1468|enchant|Ring|243959
+EVOKER|1468|gem|Diamond (one of)|240983
+EVOKER|1468|gem|Other Gems|240900
+EVOKER|1468|consumable|Flask|241322
+EVOKER|1468|consumable|Combat Potion|241288
+EVOKER|1468|consumable|Health Potion|241304
+EVOKER|1468|consumable|Weapon Buff|243734
+EVOKER|1468|consumable|Augment Rune|259085
+EVOKER|1468|consumable|Food|255846
+EVOKER|1473|enchant|Weapon|244031
+EVOKER|1473|enchant|Helm|244007
+EVOKER|1473|enchant|Shoulders|243991
+EVOKER|1473|enchant|Chest|243977
+EVOKER|1473|enchant|Legs|240133
+EVOKER|1473|enchant|Boots|243953
+EVOKER|1473|enchant|Ring|243959
+EVOKER|1473|gem|Eversong Diamond|240983
+EVOKER|1473|gem|Other Gems|240898
+EVOKER|1473|consumable|Flask|241322
+EVOKER|1473|consumable|Combat Potion|241288
+EVOKER|1473|consumable|Health Potion|271884
+EVOKER|1473|consumable|Weapon Buff|243734
+EVOKER|1473|consumable|Augment Rune|259085
+EVOKER|1473|consumable|Food|266985
+HUNTER|253|enchant|Weapon|273072
+HUNTER|253|enchant|Head|244007
+HUNTER|253|enchant|Shoulders|243991
+HUNTER|253|enchant|Chest|243977
+HUNTER|253|enchant|Legs|244641
+HUNTER|253|enchant|Boots|243953
+HUNTER|253|enchant|Rings|243957
+HUNTER|253|consumable|Flask|241322
+HUNTER|253|consumable|Combat Potion|241308
+HUNTER|253|consumable|Health Potion|271884
+HUNTER|253|consumable|Augment Rune|259085
+HUNTER|253|consumable|Weapon Buff|243734
+HUNTER|254|enchant|Weapon|273072
+HUNTER|254|enchant|Helm|243951
+HUNTER|254|enchant|Shoulders|244021
+HUNTER|254|enchant|Chest|243977
+HUNTER|254|enchant|Legs|244641
+HUNTER|254|enchant|Boots|243983
+HUNTER|254|enchant|Ring|243957
+HUNTER|254|consumable|Flask|241326
+HUNTER|254|consumable|Combat Potion|241288
+HUNTER|254|consumable|Health Potion|271884
+HUNTER|254|consumable|Weapon Buff|243734
+HUNTER|254|consumable|Augment Rune|259085
+HUNTER|254|consumable|Food - Feast|255846
+HUNTER|254|consumable|Food - Personal|242747
+HUNTER|255|enchant|Weapon|273072
+HUNTER|255|enchant|Head|244007
+HUNTER|255|enchant|Shoulders|243991
+HUNTER|255|enchant|Chest|243977
+HUNTER|255|enchant|Legs|244641
+HUNTER|255|enchant|Boots|243953
+HUNTER|255|enchant|Rings|243957
+HUNTER|255|gem|Gems|240983
+HUNTER|255|consumable|Flask|245933
+HUNTER|255|consumable|Combat Potion|241288
+HUNTER|255|consumable|Health Potion|271884
+HUNTER|255|consumable|Augment Rune|259085
+HUNTER|255|consumable|Weapon Buff|243734
+HUNTER|255|consumable|Food|275265
+MAGE|62|enchant|Weapon|273071
+MAGE|62|enchant|Head|244007
+MAGE|62|enchant|Shoulders|244021
+MAGE|62|enchant|Chest|243977
+MAGE|62|enchant|Legs|240155
+MAGE|62|enchant|Boots|243983
+MAGE|62|enchant|Ring|243957
+MAGE|62|gem|Eversong Diamond|240967
+MAGE|62|gem|Other Gems|240900
+MAGE|62|consumable|Flask|241324
+MAGE|62|consumable|Combat Potion|241308
+MAGE|62|consumable|Health Potion|271884
+MAGE|62|consumable|Weapon Buff|243734
+MAGE|62|consumable|Augment Rune|259085
+MAGE|62|consumable|Food|255845
+MAGE|63|enchant|Weapon|244029
+MAGE|63|enchant|Head|244007
+MAGE|63|enchant|Shoulders|243991
+MAGE|63|enchant|Chest|243977
+MAGE|63|enchant|Legs|240133
+MAGE|63|enchant|Boots|243953
+MAGE|63|enchant|Rings|243957
+MAGE|63|consumable|Flask|241322
+MAGE|63|consumable|Combat Potion|241308
+MAGE|63|consumable|Health Potion|271884
+MAGE|63|consumable|Weapon Buff|243734
+MAGE|63|consumable|Augment Rune|259085
+MAGE|63|consumable|Food|255846
+MAGE|64|enchant|Weapon|244029
+MAGE|64|enchant|Head|244007
+MAGE|64|enchant|Shoulders|243991
+MAGE|64|enchant|Chest|243977
+MAGE|64|enchant|Legs|240133
+MAGE|64|enchant|Boots|243953
+MAGE|64|enchant|Ring|256739
+MAGE|64|gem|Thalassian Diamond|240967
+MAGE|64|gem|Other Gems|240898
+MAGE|64|consumable|Flask|241322
+MAGE|64|consumable|Combat Potion|241308
+MAGE|64|consumable|Health Potion|271884
+MAGE|64|consumable|Weapon Buff|243734
+MAGE|64|consumable|Augment Rune|259085
+MAGE|64|consumable|Food|255846
+MAGE|64|enchant|Tea|242298
+MONK|268|enchant|Weapons (2h & Dual-Wield)|244029
+MONK|268|enchant|Helm|243951
+MONK|268|enchant|Shoulders|244021
+MONK|268|enchant|Chest|243977
+MONK|268|enchant|Legs|244641
+MONK|268|enchant|Boots|243983
+MONK|268|enchant|Ring|243957
+MONK|268|gem|Eversong Diamond|240983
+MONK|268|gem|Other Gems|240914
+MONK|268|consumable|Flask|241320
+MONK|268|consumable|Combat Potion|271887
+MONK|268|consumable|Health Potion|271884
+MONK|268|consumable|Weapon Buff|243734
+MONK|268|consumable|Augment Rune|259085
+MONK|269|enchant|Weapon|273072
+MONK|269|enchant|Helm|244007
+MONK|269|enchant|Shoulders|243991
+MONK|269|enchant|Chest|243977
+MONK|269|enchant|Legs|244641
+MONK|269|enchant|Boots|243953
+MONK|269|enchant|Ring|243957
+MONK|269|gem|Diamond|240983
+MONK|269|gem|Other Gems|240890
+MONK|269|consumable|Flask|241324
+MONK|269|consumable|Combat Potion|241288
