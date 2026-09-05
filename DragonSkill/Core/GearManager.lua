@@ -1,4 +1,4 @@
--- Dragon Skill - Gear Manager Engine (v2.4.1)
+-- Dragon Skill - Gear Manager Engine (v2.4.2)
 -- Absolute Purity Mode: Block Season 1 items and invalid class gear.
 -- Designed for Patch 12.1 Midnight.
 
@@ -68,9 +68,24 @@ function GearManager:IsItemValidForSpec(itemId, specID, nameHint, slotHint)
     local name = nameHint or (item and item.name) or ""
     local slot = slotHint or (item and item.slot) or ""
 
+    -- Block Tabards and Shirts
+    local nameLower = name:lower()
+    local slotLower = slot:lower()
+    if nameLower:find("wappenrock") or nameLower:find("hemd") or
+       slotLower:find("wappenrock") or slotLower:find("hemd") then
+        return false
+    end
+
     -- Universal slots
     local canon = self:NormalizeSlot(slot)
     if canon == "Neck" or canon == "Back" or canon == "Ring" or canon == "Trinket" then
+        -- Healer Filter: No Agility/Strength trinkets
+        local isHealer = (specID == 105 or specID == 264 or specID == 256 or specID == 257 or specID == 65 or specID == 270 or specID == 1468)
+        if isHealer and canon == "Trinket" then
+            if nameLower:find("beweglichkeit") or nameLower:find("staerke") or nameLower:find("stärke") then
+                return false
+            end
+        end
         return true
     end
 

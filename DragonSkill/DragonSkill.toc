@@ -2,7 +2,7 @@
 ## Title: Dragon Skill
 ## Notes: Talent-Guides, Trinkets, Rotation, BiS-Farm-Upgrade Assistant - by wear-alleria
 ## Author: wear-alleria
-## Version: 2.3.14
+## Version: 2.4.2
 ## SavedVariables: DragonSkillDB
 ## SavedVariablesPerCharacter: DragonSkillCharDB
 
@@ -29,15 +29,3 @@ Modules\Rotation\Rotation.lua
 Modules\Crafting\Crafting.lua
 Modules\Tooltips\Tooltips.lua
 Modules\TalentCompare\UI.lua
-
-Modules\BossMechanics\Core.lua
-Modules\BossMechanics\UI.lua
-Modules\BossMechanics\Bosses\EntombedSentinels.lua
-Modules\BossMechanics\Bosses\Nekzali.lua
-Modules\BossMechanics\Bosses\LostExplorers.lua
-Modules\BossMechanics\Bosses\Vashnik.lua
-Modules\BossMechanics\Bosses\Sszorak.lua
-Modules\BossMechanics\Bosses\TwinFangs.lua
-Modules\BossMechanics\Bosses\CoiledAltar.lua
-Modules\BossMechanics\Bosses\Ulatek.lua
-Modules\BossMechanics\Bosses\Nymrissa.lua

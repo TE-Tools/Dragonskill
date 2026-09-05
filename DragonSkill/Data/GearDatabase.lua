@@ -1,4 +1,4 @@
--- Dragon Skill - Gear Database (v2.4.0)
+-- Dragon Skill - Gear Database (v2.4.2)
 -- Updated for Patch 12.1 Midnight Season 2 (Venomous Abyss)
 
 DragonSkillGearData = DragonSkillGearData or {
@@ -71,7 +71,7 @@ DragonSkillGearData.dungeons = {
 
 -- BiS Role Logic
 local roles = {
-    healer = { 272003, 272005, 272006, 272007, 272008, 272009, 268265, 268253, 271620 },
+    healer = { 271619, 272003, 272005, 272006, 272007, 272008, 272009, 268265, 268253, 268266 },
     tank   = { 272001, 272002, 272005, 272006, 272007, 272008, 272009, 268262, 268249 },
     melee  = { 272001, 272002, 272005, 272006, 272007, 272008, 272009, 268249, 271530 },
     caster = { 272004, 272005, 272006, 272007, 272008, 272009, 268266, 268253, 271092 },

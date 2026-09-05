@@ -1,9 +1,10 @@
--- Dragon Skill - Guide Data Master (v2.4.0)
+-- Dragon Skill - Guide Data Master (v2.4.2)
 -- Patch 12.1 Midnight Season 2 (Venomous Abyss)
 
 DragonSkillData = DragonSkillData or {}
 
 local HEALER_BIS = {
+    { itemId = 271619, slot = "Stab", name = "Stab der Wellenflüsterin" },
     { itemId = 272003, slot = "Schmuckstück", name = "Seelenwinder-Ritualgefäß" },
     { itemId = 270175, slot = "Schmuckstück", name = "Lebendige Sporenkapsel" },
     { itemId = 272005, slot = "Kopf", name = "Helm des gewundenen Wächters [T-Set]" },
@@ -11,6 +12,7 @@ local HEALER_BIS = {
     { itemId = 272007, slot = "Brust", name = "Brustschutz des gewundenen Wächters [T-Set]" },
     { itemId = 272008, slot = "Hände", name = "Stulpen des gewundenen Wächters [T-Set]" },
     { itemId = 272009, slot = "Beine", name = "Gamaschen des gewundenen Wächters [T-Set]" },
+    { itemId = 268266, slot = "Ring", name = "Ring des Wellenrufers" },
     { itemId = 268265, slot = "Hals", name = "Amani-Anhänger" },
     { itemId = 268253, slot = "Rücken", name = "Umhang der gewundenen Seelen" },
 }
