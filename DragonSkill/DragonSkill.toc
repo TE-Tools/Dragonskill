@@ -2,11 +2,12 @@
 ## Title: Dragon Skill
 ## Notes: Talent-Guides, Trinkets, Rotation, BiS-Farm-Upgrade Assistant - by wear-alleria
 ## Author: wear-alleria
-## Version: 2.4.2
+## Version: 2.5.0
 ## SavedVariables: DragonSkillDB
 ## SavedVariablesPerCharacter: DragonSkillCharDB
 
 Core\Namespace.lua
+Core\Theme.lua
 Core\EventManager.lua
 Core\Database.lua
 Core\Locale.lua

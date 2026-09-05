@@ -77,11 +77,15 @@ local roles = {
     caster = { 272004, 272005, 272006, 272007, 272008, 272009, 268266, 268253, 271092 },
 }
 
-local specList = { 102, 103, 104, 105, 250, 251, 252, 62, 63, 64, 71, 72, 73, 65, 66, 70, 253, 254, 255, 259, 260, 261, 256, 257, 258, 262, 263, 264, 265, 266, 267, 268, 269, 270, 577, 581, 1467, 1468, 1473 }
+-- Note: this table is only a last-resort fallback used by GearManager:GetBiSList()
+-- when a spec has zero real per-spec data in Data/GuideData.lua (see that file's
+-- header). Every spec below (including 1480, the new Devourer Demon Hunter spec)
+-- already HAS real per-spec data, so this fallback should normally never trigger.
+local specList = { 102, 103, 104, 105, 250, 251, 252, 62, 63, 64, 71, 72, 73, 65, 66, 70, 253, 254, 255, 259, 260, 261, 256, 257, 258, 262, 263, 264, 265, 266, 267, 268, 269, 270, 577, 581, 1480, 1467, 1468, 1473 }
 for _, id in ipairs(specList) do
     local role = (id == 105 or id == 65 or id == 257 or id == 264 or id == 270 or id == 1468) and "healer" or
         (id == 104 or id == 66 or id == 73 or id == 250 or id == 268 or id == 581) and "tank" or
-        (id == 102 or id == 62 or id == 63 or id == 64 or id == 258 or id == 262 or id == 265 or id == 266 or id == 267 or id == 1467 or id == 1473) and "caster" or "melee"
+        (id == 102 or id == 62 or id == 63 or id == 64 or id == 258 or id == 262 or id == 265 or id == 266 or id == 267 or id == 1467 or id == 1473 or id == 1480) and "caster" or "melee"
 
     DragonSkillGearData.specs[id] = {
         role = role,

@@ -1,7 +1,12 @@
--- Dragon Skill - Main UI (v2.3.11)
--- Fix: Copy-Popup nutzt self.data (12.1), EditBox unlimited, Chat-Fallback.
+-- Dragon Skill - Main UI (v2.5.0)
+-- Modern flat/dark redesign: class-color accent throughout, hairline-bordered
+-- cards instead of the classic beveled tooltip borders, underline tabs, and
+-- icon-forward two-line item rows (name + slot/source) instead of single
+-- plain text lines. All functional logic (module calls, popups, slash
+-- commands) is unchanged from v2.3.11 - this is a visual-layer rewrite.
 
 local L = DragonSkill.L or {}
+local Theme = DragonSkill.Theme
 local UI = {}
 local currentTab = 1
 local selectedBossIdx = 1
@@ -17,70 +22,103 @@ local TAB_RAIDGUIDES = 7
 
 local FRAME_WIDTH, FRAME_HEIGHT = 820, 680
 local CONTENT_WIDTH = 590
+local ROW_STEP = 44 -- vertical spacing between item rows (two-line cards)
 
-local COLOR_GOLD = "|cffffd100"
-local COLOR_GREY = "|cffaaaaaa"
 local COLOR_WHITE = "|cffffffff"
 local DEFAULT_GUILD_URL = "https://guildsofwow.com/dragon-lords"
 
+local function ShowUrlPopup(title, url)
+    StaticPopupDialogs["DRAGONSKILL_URL"] = {
+        text = title,
+        button1 = "OK",
+        hasEditBox = true,
+        editBoxWidth = 420,
+        maxLetters = 0,
+        preferredIndex = 3,
+        OnShow = function(self)
+            local u = tostring(self.data or "")
+            local eb = self.editBox or self.EditBox
+            if eb then
+                if eb.SetMaxLetters then eb:SetMaxLetters(0) end
+                eb:SetText(u)
+                eb:HighlightText()
+                eb:SetFocus()
+            end
+        end,
+        EditBoxOnEscapePressed = function(self) self:GetParent():Hide() end,
+        timeout = 0, whileDead = true, hideOnEscape = true,
+    }
+    StaticPopup_Show("DRAGONSKILL_URL", nil, nil, url)
+end
+
+-- Small debug helper: turns GearManager's self-diagnosing lookup info
+-- (see GetBiSList) into a one-line suffix so an empty-state message never
+-- just says "nothing here" without saying why.
+local function DiagSuffix(GM)
+    local d = GM and GM.lastLookup
+    if d and d.reason then
+        return "\n" .. Theme:Hex(Theme.textMuted) .. "Debug: " .. tostring(d.reason) .. "|r"
+    end
+    return ""
+end
+
 function UI:Init()
     if self.frame then return end
-    local f = CreateFrame("Frame", "DragonSkillMainFrame", UIParent, "BackdropTemplate")
+    local f = CreateFrame("Frame", "DragonSkillMainFrame", UIParent)
     f:SetSize(FRAME_WIDTH, FRAME_HEIGHT); f:SetPoint("CENTER"); f:SetMovable(true); f:EnableMouse(true); f:SetClampedToScreen(true)
     f:RegisterForDrag("LeftButton"); f:SetScript("OnDragStart", f.StartMoving); f:SetScript("OnDragStop", f.StopMovingOrSizing)
-    f:SetBackdrop({ bgFile = "Interface\\ChatFrame\\ChatFrameBackground", edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border", tile = true, tileSize = 16, edgeSize = 20, insets = { left = 4, right = 4, top = 4, bottom = 4 } })
-    f:SetBackdropColor(0.02, 0.02, 0.05, 0.95)
-    f:SetBackdropBorderColor(0.2, 0.2, 0.2, 1)
+    f:SetFrameStrata("HIGH")
 
-    local header = CreateFrame("Frame", nil, f, "BackdropTemplate")
-    header:SetSize(FRAME_WIDTH - 28, 82)
-    header:SetPoint("TOPLEFT", 14, -14)
-    header:SetBackdrop({ bgFile = "Interface\\Buttons\\WHITE8X8", insets = { left = 0, right = 0, top = 0, bottom = 0 } })
-    header:SetBackdropColor(0.1, 0.1, 0.1, 0.3)
+    local skin = Theme:Panel(f, Theme.bgDeep, Theme.hairlineStrong)
+    skin:SetAllPoints(f)
+    f.Skin = skin
+
+    -- Thin accent strip across the very top - the one recurring "brand"
+    -- element that ties the whole window to the player's class color.
+    -- NOTE: must be drawn on `skin` (not `f`), because WoW stacks whole
+    -- child frames by frame level - `skin` is a higher-level child of `f`
+    -- with an opaque full-frame background, so anything textured directly
+    -- on `f` itself would render underneath it and never be visible.
+    local accentBar = skin:CreateTexture(nil, "OVERLAY")
+    accentBar:SetPoint("TOPLEFT", 1, -1); accentBar:SetPoint("TOPRIGHT", -1, -1); accentBar:SetHeight(3)
+    accentBar:SetColorTexture(Theme:GetAccent())
+    f.AccentBar = accentBar
+
+    local header = Theme:Panel(f, Theme.bgPanel, Theme.hairline)
+    header:SetSize(FRAME_WIDTH - 28, 78)
+    header:SetPoint("TOPLEFT", 14, -18)
 
     local name = UnitName("player") or "Player"
     local _, avgItemLevel = GetAverageItemLevel()
     local guildName = GetGuildInfo("player") or "Keine Gilde"
-    local classColor = RAID_CLASS_COLORS[select(2, UnitClass("player"))] or { r=1, g=1, b=1 }
+    local classColor = RAID_CLASS_COLORS[select(2, UnitClass("player"))] or { r = 1, g = 1, b = 1 }
 
     header.nameText = header:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
-    header.nameText:SetPoint("TOPLEFT", 15, -10)
-    header.nameText:SetText(string.format("%s%s|r %s(%d)|r", "|cff"..string.format("%02x%02x%02x", classColor.r*255, classColor.g*255, classColor.b*255), name, COLOR_WHITE, math.floor(avgItemLevel or 0)))
+    header.nameText:SetPoint("TOPLEFT", 16, -12)
+    header.nameText:SetText(string.format("%s%s|r", "|cff" .. string.format("%02x%02x%02x", classColor.r * 255, classColor.g * 255, classColor.b * 255), name))
 
-    header.guildText = header:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-    header.guildText:SetPoint("TOPLEFT", header.nameText, "BOTTOMLEFT", 0, -3)
-    header.guildText:SetText(COLOR_GREY .. "Gilde:|r " .. COLOR_GOLD .. tostring(guildName) .. "|r")
+    -- Item-level badge: a small tinted pill next to the name instead of a
+    -- plain "(639)" suffix.
+    header.ilvlBadge = Theme:Panel(header, { 0, 0, 0, 0.001 }, Theme.hairlineStrong)
+    header.ilvlBadge:SetHeight(20)
+    header.ilvlBadge:SetPoint("LEFT", header.nameText, "RIGHT", 8, 1)
+    header.ilvlBadge.text = header.ilvlBadge:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+    header.ilvlBadge.text:SetPoint("CENTER", 0, 0)
 
-    header.guildLink = header:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-    header.guildLink:SetPoint("TOPLEFT", header.guildText, "BOTTOMLEFT", 0, -1)
-    header.guildLink:SetText("|cff00aaff[Gilden-Website]|r")
+    header.guildText = header:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+    header.guildText:SetPoint("TOPLEFT", header.nameText, "BOTTOMLEFT", 0, -6)
+    header.guildText:SetText(Theme:Hex(Theme.textSecondary) .. "Gilde:|r " .. COLOR_WHITE .. tostring(guildName) .. "|r")
+
+    header.guildLink = header:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+    header.guildLink:SetPoint("TOPLEFT", header.guildText, "BOTTOMLEFT", 0, -4)
+    header.guildLink:SetText(Theme:GetAccentHex() .. "Gilden-Website ›|r")
 
     header.guildBtn = CreateFrame("Button", nil, header)
     header.guildBtn:SetPoint("TOPLEFT", header.guildLink, "TOPLEFT", -2, 2)
     header.guildBtn:SetPoint("BOTTOMRIGHT", header.guildLink, "BOTTOMRIGHT", 2, -2)
     header.guildBtn:SetScript("OnClick", function()
         local url = (DragonSkillDB and DragonSkillDB.guildUrl) or DEFAULT_GUILD_URL
-        StaticPopupDialogs["DRAGONSKILL_URL"] = {
-            text = "Gilden-Website (Strg+C zum Kopieren):",
-            button1 = "OK",
-            hasEditBox = true,
-            editBoxWidth = 420,
-            maxLetters = 0,
-            preferredIndex = 3,
-            OnShow = function(self)
-                local u = tostring(self.data or "")
-                local eb = self.editBox or self.EditBox
-                if eb then
-                    if eb.SetMaxLetters then eb:SetMaxLetters(0) end
-                    eb:SetText(u)
-                    eb:HighlightText()
-                    eb:SetFocus()
-                end
-            end,
-            EditBoxOnEscapePressed = function(self) self:GetParent():Hide() end,
-            timeout = 0, whileDead = true, hideOnEscape = true,
-        }
-        StaticPopup_Show("DRAGONSKILL_URL", nil, nil, url)
+        ShowUrlPopup("Gilden-Website (Strg+C zum Kopieren):", url)
     end)
     header.guildBtn:SetScript("OnEnter", function(s)
         GameTooltip:SetOwner(s, "ANCHOR_RIGHT")
@@ -89,18 +127,39 @@ function UI:Init()
         GameTooltip:Show()
     end)
     header.guildBtn:SetScript("OnLeave", function() GameTooltip:Hide() end)
-
-    local line = header:CreateTexture(nil, "ARTWORK")
-    line:SetSize(header:GetWidth() - 30, 1)
-    line:SetPoint("BOTTOMLEFT", 15, 5)
-    line:SetColorTexture(0.3, 0.3, 0.3, 0.5)
     f.Header = header
 
-    local inset = CreateFrame("Frame", nil, f, "BackdropTemplate")
-    inset:SetPoint("TOPLEFT", 14, -100); inset:SetPoint("BOTTOMRIGHT", -14, 55)
-    inset:SetBackdrop({ bgFile = "Interface\\Buttons\\WHITE8X8", edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border", edgeSize = 14, insets = { left = 3, right = 3, top = 3, bottom = 3 } })
-    inset:SetBackdropColor(0.05, 0.05, 0.05, 0.6)
-    inset:SetBackdropBorderColor(0.15, 0.15, 0.15, 1)
+    -- Underline-style tabs: no boxed backdrop, just text + a colored
+    -- underline segment for the active tab, sitting on one shared baseline.
+    local TAB_Y = -18 - 78 - 10
+    f.Tabs = {}
+    local tabWidth = (FRAME_WIDTH - 40) / #tabs
+    for i, tabName in ipairs(tabs) do
+        local tab = CreateFrame("Button", "DragonSkillTabBtn" .. i, f)
+        tab:SetSize(tabWidth, 30)
+        tab:SetID(i)
+        tab.text = tab:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+        tab.text:SetPoint("CENTER")
+        tab.text:SetText(tabName)
+        tab.underline = tab:CreateTexture(nil, "OVERLAY")
+        tab.underline:SetPoint("BOTTOMLEFT", 6, 0)
+        tab.underline:SetPoint("BOTTOMRIGHT", -6, 0)
+        tab.underline:SetHeight(2)
+        tab.underline:Hide()
+        tab:SetScript("OnClick", function(selfBtn) UI:SelectTab(selfBtn:GetID()) end)
+        tab:SetScript("OnEnter", function(s) if currentTab ~= s:GetID() then s.text:SetTextColor(unpack(Theme.textPrimary)) end end)
+        tab:SetScript("OnLeave", function(s) if currentTab ~= s:GetID() then s.text:SetTextColor(unpack(Theme.textSecondary)) end end)
+        f.Tabs[i] = tab
+        if i == 1 then tab:SetPoint("TOPLEFT", f, "TOPLEFT", 14, TAB_Y) else tab:SetPoint("LEFT", f.Tabs[i - 1], "RIGHT", 0, 0) end
+    end
+    local baseline = skin:CreateTexture(nil, "BORDER") -- same reason as accentBar above
+    baseline:SetColorTexture(unpack(Theme.hairline))
+    baseline:SetPoint("TOPLEFT", f.Tabs[1], "BOTTOMLEFT", 0, 0)
+    baseline:SetPoint("TOPRIGHT", f.Tabs[#tabs], "BOTTOMRIGHT", 0, 0)
+    baseline:SetHeight(1)
+
+    local inset = Theme:Panel(f, Theme.bgPanelAlt, Theme.hairline)
+    inset:SetPoint("TOPLEFT", 14, TAB_Y - 40); inset:SetPoint("BOTTOMRIGHT", -14, 16)
     f.Inset = inset
 
     local sf = CreateFrame("ScrollFrame", "DragonSkillScrollFrame", f.Inset, "UIPanelScrollFrameTemplate")
@@ -108,24 +167,6 @@ function UI:Init()
     local content = CreateFrame("Frame", "DragonSkillContentFrame", sf)
     content:SetSize(CONTENT_WIDTH, 5000); sf:SetScrollChild(content)
     f.Content = content; f.ScrollFrame = sf
-
-    f.Tabs = {}
-    for i, tabName in ipairs(tabs) do
-        local tab = CreateFrame("Button", "DragonSkillTabBtn" .. i, f, "BackdropTemplate")
-        tab:SetSize((FRAME_WIDTH - 40) / #tabs, 32)
-        tab:SetID(i)
-        tab:SetBackdrop({ bgFile = "Interface\\Buttons\\WHITE8X8", edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border", edgeSize = 12, insets = { left = 2, right = 2, top = 2, bottom = 2 } })
-        tab:SetBackdropColor(0.1, 0.1, 0.1, 0.8)
-        tab:SetBackdropBorderColor(0.2, 0.2, 0.2, 1)
-        tab.text = tab:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-        tab.text:SetPoint("CENTER")
-        tab.text:SetText(tabName)
-        tab:SetScript("OnClick", function(selfBtn) UI:SelectTab(selfBtn:GetID()) end)
-        tab:SetScript("OnEnter", function(s) if currentTab ~= s:GetID() then s:SetBackdropColor(0.2, 0.2, 0.2, 1) end end)
-        tab:SetScript("OnLeave", function(s) if currentTab == s:GetID() then s:SetBackdropColor(0.25, 0.18, 0, 1) else s:SetBackdropColor(0.1, 0.1, 0.1, 0.8) end end)
-        f.Tabs[i] = tab
-        if i == 1 then tab:SetPoint("BOTTOMLEFT", f, "BOTTOMLEFT", 15, 12) else tab:SetPoint("LEFT", f.Tabs[i - 1], "RIGHT", 2, 0) end
-    end
 
     local cb = CreateFrame("Button", nil, f, "UIPanelCloseButton")
     cb:SetPoint("TOPRIGHT", -4, -4); cb:SetSize(30, 30)
@@ -136,21 +177,54 @@ end
 
 function UI:SelectTab(id)
     currentTab = id
+    local r, g, b = Theme:GetAccent()
     for i, tab in ipairs(self.frame.Tabs) do
-        if i == id then tab:SetBackdropColor(0.25, 0.18, 0, 1); tab:SetBackdropBorderColor(1, 0.82, 0, 1); tab.text:SetTextColor(1, 0.82, 0)
-        else tab:SetBackdropColor(0.1, 0.1, 0.1, 0.8); tab:SetBackdropBorderColor(0.2, 0.2, 0.2, 1); tab.text:SetTextColor(0.8, 0.8, 0.8) end
+        if i == id then
+            tab.text:SetTextColor(r, g, b)
+            tab.underline:SetColorTexture(r, g, b, 1)
+            tab.underline:Show()
+        else
+            tab.text:SetTextColor(unpack(Theme.textSecondary))
+            tab.underline:Hide()
+        end
     end
     self:Update()
 end
 
+-- Icon-forward, two-line item row: icon (with a hairline frame) on the
+-- left, item name on top, slot/source as a small muted subtitle below it,
+-- and an optional colored value tag on the right.
 function UI:GetRow(index)
     if not self.rows[index] then
         local row = CreateFrame("Button", nil, self.frame.Content)
-        row:SetSize(570, 30)
-        row.icon = row:CreateTexture(nil, "ARTWORK"); row.icon:SetSize(26, 26); row.icon:SetPoint("LEFT", 5, 0)
-        row.text = row:CreateFontString(nil, "OVERLAY", "GameFontHighlight"); row.text:SetPoint("LEFT", row.icon, "RIGHT", 10, 0)
-        row.val = row:CreateFontString(nil, "OVERLAY", "GameFontNormal"); row.val:SetPoint("RIGHT", -10, 0)
-        local bg = row:CreateTexture(nil, "BACKGROUND"); bg:SetAllPoints(); bg:SetColorTexture(1, 1, 1, 0.03); row.bg = bg
+        row:SetSize(566, 40)
+
+        local iconBorder = row:CreateTexture(nil, "BORDER")
+        iconBorder:SetSize(34, 34); iconBorder:SetPoint("LEFT", 2, 0)
+        iconBorder:SetColorTexture(1, 1, 1, 0.08)
+        row.iconBorder = iconBorder
+
+        row.icon = row:CreateTexture(nil, "ARTWORK")
+        row.icon:SetSize(30, 30); row.icon:SetPoint("CENTER", iconBorder, "CENTER", 0, 0)
+
+        row.title = row:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+        row.title:SetPoint("BOTTOMLEFT", iconBorder, "RIGHT", 10, 2)
+        row.title:SetJustifyH("LEFT")
+
+        row.subtitle = row:CreateFontString(nil, "OVERLAY", "GameFontDisableSmall")
+        row.subtitle:SetPoint("TOPLEFT", row.title, "BOTTOMLEFT", 0, -3)
+        row.subtitle:SetJustifyH("LEFT")
+        row.subtitle:SetTextColor(unpack(Theme.textSecondary))
+
+        row.val = row:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+        row.val:SetPoint("RIGHT", -8, 0)
+
+        local sep = row:CreateTexture(nil, "BORDER")
+        sep:SetColorTexture(unpack(Theme.hairline)); sep:SetHeight(1)
+        sep:SetPoint("BOTTOMLEFT", 2, -4); sep:SetPoint("BOTTOMRIGHT", -2, -4)
+        row.sep = sep
+
+        local bg = row:CreateTexture(nil, "BACKGROUND"); bg:SetAllPoints(); bg:SetColorTexture(0, 0, 0, 0); row.bg = bg
         self.rows[index] = row
     end
     return self.rows[index]
@@ -166,16 +240,24 @@ end
 function UI:ClearContent()
     if not self.frame or not self.frame.Content then return end
     local content = self.frame.Content
-    for _, child in ipairs({ content:GetChildren() }) do if child ~= self.text then child:Hide() end end
-    for _, region in ipairs({ content:GetRegions() }) do if region ~= self.text then region:Hide() end end
+    for _, child in ipairs({ content:GetChildren() }) do if child ~= self.text and child ~= self.title then child:Hide() end end
+    for _, region in ipairs({ content:GetRegions() }) do if region ~= self.text and region ~= self.title then region:Hide() end end
     for _, row in pairs(self.rows) do row:Hide() end
     for _, fs in pairs(self.extraFS) do fs:Hide() end
 end
 
 function UI:EnsureText(content)
+    if not content.title then
+        content.title = content:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+        content.title:SetPoint("TOPLEFT", 15, -14); content.title:SetWidth(CONTENT_WIDTH - 40); content.title:SetJustifyH("LEFT")
+    end
     if not content.text then
         content.text = content:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
-        content.text:SetPoint("TOPLEFT", 15, -15); content.text:SetWidth(CONTENT_WIDTH - 40); content.text:SetJustifyH("LEFT"); content.text:SetSpacing(5)
+        -- Anchored BELOW the title (not on top of it - content.title sits at
+        -- -14 with a large font, so a hardcoded -15 here used to draw the
+        -- subtitle directly on top of the title text, garbling both).
+        content.text:SetPoint("TOPLEFT", content.title, "BOTTOMLEFT", 0, -6)
+        content.text:SetWidth(CONTENT_WIDTH - 40); content.text:SetJustifyH("LEFT"); content.text:SetSpacing(5)
     end
     return content.text
 end
@@ -184,6 +266,7 @@ function UI:Update()
     if not self.frame or not self.frame.Content then return end
     local content = self.frame.Content; self:ClearContent()
     self.text = self:EnsureText(content); self.text:SetText(""); self.text:Show()
+    self.title = content.title; self.title:SetText(""); self.title:Hide()
     if self.frame.ScrollFrame then self.frame.ScrollFrame:SetVerticalScroll(0) end
 
     if self.frame.Header then
@@ -191,12 +274,19 @@ function UI:Update()
         local name = UnitName("player") or "Player"
         local _, avgItemLevel = GetAverageItemLevel()
         local guildName = GetGuildInfo("player") or "Keine Gilde"
-        local classColor = RAID_CLASS_COLORS[select(2, UnitClass("player"))] or { r=1, g=1, b=1 }
+        local classColor = RAID_CLASS_COLORS[select(2, UnitClass("player"))] or { r = 1, g = 1, b = 1 }
         if h.nameText then
-            h.nameText:SetText(string.format("%s%s|r %s(%d)|r", "|cff"..string.format("%02x%02x%02x", classColor.r*255, classColor.g*255, classColor.b*255), name, COLOR_WHITE, math.floor(avgItemLevel or 0)))
+            h.nameText:SetText(string.format("%s%s|r", "|cff" .. string.format("%02x%02x%02x", classColor.r * 255, classColor.g * 255, classColor.b * 255), name))
+        end
+        if h.ilvlBadge then
+            local r, g, b = Theme:GetAccent()
+            h.ilvlBadge.bg:SetColorTexture(r, g, b, 0.14)
+            h.ilvlBadge:SetBorderColor(r, g, b, 0.4)
+            h.ilvlBadge.text:SetText(string.format("%sILVL %d|r", Theme:GetAccentHex(), math.floor(avgItemLevel or 0)))
+            h.ilvlBadge:SetWidth(h.ilvlBadge.text:GetStringWidth() + 16)
         end
         if h.guildText then
-            h.guildText:SetText(COLOR_GREY .. "Gilde:|r " .. COLOR_GOLD .. tostring(guildName) .. "|r")
+            h.guildText:SetText(Theme:Hex(Theme.textSecondary) .. "Gilde:|r " .. COLOR_WHITE .. tostring(guildName) .. "|r")
         end
     end
 
@@ -211,29 +301,54 @@ function UI:Update()
         elseif currentTab == TAB_BIS then self:DrawBiSList(content)
         elseif currentTab == TAB_TALENTS then
             local gd = DragonSkill.Database and DragonSkill.Database:GetGuideData(class, specID)
-            if gd then self:DrawTalents(content, gd) else self.text:SetText("Keine Guide-Daten.") end
+            if gd then self:DrawTalents(content, gd) else self:SetHeader("Talente", "Keine Guide-Daten.") end
         end
     end)
-    if not ok then self.text:SetText("|cffff0000UI Fehler:|r " .. tostring(err)) end
+    if not ok then self:SetHeader("Fehler", nil); self.text:SetText(Theme:Hex(Theme.danger) .. "UI Fehler:|r " .. tostring(err)) end
+
+    if UIFrameFadeIn then UIFrameFadeIn(content, 0.15, 0, 1) end
 end
 
-function UI:AddInteractiveRow(index, itemData, yOffset, labelPrefix, valueText)
+-- Sets the tab's bold accent-colored title line and an optional muted
+-- subtitle line beneath it, replacing the old single hardcoded-gold block
+-- of text every Draw* function used to build by hand.
+function UI:SetHeader(title, subtitle)
+    self.title:SetText(Theme:GetAccentHex() .. tostring(title) .. "|r")
+    self.title:Show()
+    if subtitle and subtitle ~= "" then
+        self.text:SetText(Theme:Hex(Theme.textSecondary) .. subtitle .. "|r")
+    else
+        self.text:SetText("")
+    end
+end
+
+function UI:AddInteractiveRow(index, itemData, yOffset, subtitleOverride, valueText)
     if not itemData or not itemData.itemId then return index end
     local row = self:GetRow(index); row:SetParent(self.frame.Content); row:ClearAllPoints(); row:SetPoint("TOPLEFT", 10, yOffset)
     local iid = tonumber(itemData.itemId) or 0
     local name = itemData.name or ("Item " .. iid)
     local texture = (C_Item and C_Item.GetItemIconByID and C_Item.GetItemIconByID(iid)) or "Interface\\Icons\\Inv_misc_questionmark"
     row.icon:SetTexture(texture)
-    local prefix = labelPrefix or (itemData.slot and ("|cff00ff00" .. tostring(itemData.slot) .. ":|r ") or "")
-    row.text:SetText(tostring(prefix) .. tostring(name))
+
+    row.title:SetText(name)
+    local sub = subtitleOverride
+    if not sub then
+        sub = tostring(itemData.slot or "")
+        if itemData.source and itemData.source ~= "" then
+            sub = sub .. (sub ~= "" and "  ·  " or "") .. tostring(itemData.source)
+        end
+    end
+    row.subtitle:SetText(sub)
+
     if valueText then row.val:SetText(tostring(valueText)); row.val:Show() else row.val:Hide() end
     row:SetScript("OnEnter", function(s)
-        s.bg:SetColorTexture(1, 0.82, 0, 0.1)
+        local r, g, b = Theme:GetAccent()
+        s.bg:SetColorTexture(r, g, b, 0.08)
         GameTooltip:SetOwner(s, "ANCHOR_RIGHT")
         if iid > 0 then GameTooltip:SetItemByID(iid) else GameTooltip:SetText(name) end
         GameTooltip:Show()
     end)
-    row:SetScript("OnLeave", function(s) s.bg:SetColorTexture(1, 1, 1, 0.03); GameTooltip:Hide() end)
+    row:SetScript("OnLeave", function(s) s.bg:SetColorTexture(0, 0, 0, 0); GameTooltip:Hide() end)
     row:Show()
     return index + 1
 end
@@ -242,36 +357,34 @@ function UI:DrawDashboard(content, class, specID)
     local GM = DragonSkill:GetModule("GearManager")
     local specName = specID > 0 and select(2, GetSpecializationInfo(GetSpecialization() or 0)) or "Spec"
     local gUrl = (DragonSkillDB and DragonSkillDB.guildUrl) or DEFAULT_GUILD_URL
-    self.text:SetText(COLOR_GOLD .. tostring(class) .. ": " .. tostring(specName) .. " Overview|r\n\n"
-        .. COLOR_GREY .. "Gilde:|r " .. COLOR_GOLD .. (GetGuildInfo("player") or "–") .. "|r\n"
-        .. "|cffffffffNÄCHSTE SCHRITTE (Season 2 Fokus):|r")
+    self:SetHeader(tostring(class) .. " · " .. tostring(specName), "Nächste Schritte (Season 2 Fokus)")
 
     local ups = GM and GM:GetBestUpgrades() or {}
-    local y, ri = -100, 1
+    local y, ri = -55, 1
     if ups and #ups > 0 then
         for i = 1, math.min(5, #ups) do
-            ri = self:AddInteractiveRow(ri, ups[i], y, nil, string.format("|cff00ff00+%.1f%%|r", ups[i].percent or 0))
-            y = y - 35
+            ri = self:AddInteractiveRow(ri, ups[i], y, nil, string.format(Theme:Hex(Theme.success) .. "+%.1f%%|r", ups[i].percent or 0))
+            y = y - ROW_STEP
         end
     else
         local bis = GM and GM:GetBiSList() or {}
         if bis and #bis > 0 then
             local fs = self:GetExtraFS(50); fs:SetPoint("TOPLEFT", 15, y)
-            fs:SetText(COLOR_GREY .. "Top BiS-Ziele:|r"); fs:Show(); y = y - 25
+            fs:SetText(Theme:Hex(Theme.textSecondary) .. "Top BiS-Ziele:|r"); fs:Show(); y = y - 24
             for i = 1, math.min(5, #bis) do
-                ri = self:AddInteractiveRow(ri, bis[i], y, nil, "|cffa335ee639|r")
-                y = y - 35
+                ri = self:AddInteractiveRow(ri, bis[i], y, nil, Theme:Hex(Theme.bis) .. "BiS|r")
+                y = y - ROW_STEP
             end
         else
-            local fs = self:GetExtraFS(50); fs:SetPoint("TOPLEFT", 25, y)
-            fs:SetText(COLOR_GREY .. "Kein BiS-Datenstand geladen.|r"); fs:Show(); y = y - 35
+            local fs = self:GetExtraFS(50); fs:SetPoint("TOPLEFT", 15, y)
+            fs:SetText(Theme:Hex(Theme.textMuted) .. "Kein BiS-Datenstand geladen.|r" .. DiagSuffix(GM)); fs:Show(); y = y - ROW_STEP
         end
     end
 
-    y = y - 20
+    y = y - 16
     local gT = self:GetExtraFS(1000, "GameFontNormalLarge")
     gT:SetPoint("TOPLEFT", 15, y)
-    gT:SetText(COLOR_GOLD .. "STATUS: BEREIT FÜR RAID|r")
+    gT:SetText(Theme:Hex(Theme.success) .. "STATUS: BEREIT FÜR RAID|r")
     gT:Show()
 
     y = y - 40
@@ -280,27 +393,7 @@ function UI:DrawDashboard(content, class, specID)
     webBtn:SetPoint("TOPLEFT", 15, y)
     webBtn:SetText("Gilden-Website")
     webBtn:SetScript("OnClick", function()
-        StaticPopupDialogs["DRAGONSKILL_URL"] = {
-            text = "Gilden-Website (Strg+C):",
-            button1 = "OK",
-            hasEditBox = true,
-            editBoxWidth = 420,
-            maxLetters = 0,
-            preferredIndex = 3,
-            OnShow = function(self)
-                local u = tostring(self.data or "")
-                local eb = self.editBox or self.EditBox
-                if eb then
-                    if eb.SetMaxLetters then eb:SetMaxLetters(0) end
-                    eb:SetText(u)
-                    eb:HighlightText()
-                    eb:SetFocus()
-                end
-            end,
-            EditBoxOnEscapePressed = function(self) self:GetParent():Hide() end,
-            timeout = 0, whileDead = true, hideOnEscape = true,
-        }
-        StaticPopup_Show("DRAGONSKILL_URL", nil, nil, gUrl)
+        ShowUrlPopup("Gilden-Website (Strg+C):", gUrl)
     end)
     webBtn:Show()
 end
@@ -308,22 +401,22 @@ end
 function UI:DrawFarm(content)
     local GM = DragonSkill:GetModule("GearManager")
     local plan = GM and GM:GetFarmPlan() or {}
-    self.text:SetText(COLOR_GOLD .. "OPTIMALE FARM-ROUTE (Mythic 12.1 Targets)|r")
-    local y, fsIdx, rowIndex = -50, 300, 1000
+    self:SetHeader("Optimale Farm-Route", "Mythic 12.1 Targets, gruppiert nach Quelle")
+    local y, fsIdx, rowIndex = -55, 300, 1000
     if plan and #plan > 0 then
         for i, d in ipairs(plan) do
             local fs = self:GetExtraFS(fsIdx, "GameFontNormal")
             fs:SetPoint("TOPLEFT", 15, y)
-            fs:SetText(string.format(COLOR_GOLD .. "%d. %s|r (Score: %d)", i, d.name, d.score))
-            fs:Show(); y = y - 30; fsIdx = fsIdx + 1
+            fs:SetText(string.format("%s%d. %s|r  %s(%d Items)|r", Theme:GetAccentHex(), i, d.name, Theme:Hex(Theme.textMuted), #d.items))
+            fs:Show(); y = y - 26; fsIdx = fsIdx + 1
             for _, item in ipairs(d.items or {}) do
-                rowIndex = self:AddInteractiveRow(rowIndex, item, y, "   " .. COLOR_GREY .. "Boss: " .. tostring(item.boss) .. ":|r ")
-                y = y - 32
+                rowIndex = self:AddInteractiveRow(rowIndex, item, y, nil, nil)
+                y = y - ROW_STEP
             end
-            y = y - 10
+            y = y - 12
         end
     else
-        self.text:SetText(self.text:GetText() .. "\n\n" .. COLOR_GREY .. "Keine Dungeon-Loot-Daten geladen.|r")
+        self.text:SetText(self.text:GetText() .. "\n" .. Theme:Hex(Theme.textMuted) .. "Keine Farm-Daten geladen.|r" .. DiagSuffix(GM))
     end
     content:SetHeight(math.abs(y) + 500)
 end
@@ -331,50 +424,51 @@ end
 function UI:DrawUpgrades(content)
     local GM = DragonSkill:GetModule("GearManager")
     local items = GM and GM:GetBestUpgrades() or {}
-    self.text:SetText(COLOR_GOLD .. "UPGRADE MATRIX (Vergleich vs. Mythic 639)|r")
-    local y, ri = -80, 2000
+    self:SetHeader("Upgrade Matrix", "Vergleich gegen Mythic 639")
+    local y, ri = -55, 2000
     if #items > 0 then
         for _, item in ipairs(items) do
-            ri = self:AddInteractiveRow(ri, item, y, nil, string.format("|cff00ff00+%.1f%%|r", item.percent or 0))
-            y = y - 35
+            ri = self:AddInteractiveRow(ri, item, y, nil, string.format(Theme:Hex(Theme.success) .. "+%.1f%%|r", item.percent or 0))
+            y = y - ROW_STEP
         end
     else
         local bis = GM and GM:GetBiSList() or {}
         if #bis > 0 then
             local fs = self:GetExtraFS(60); fs:SetPoint("TOPLEFT", 15, y)
-            fs:SetText(COLOR_GREY .. "Keine Score-Upgrades – BiS-Liste:|r"); fs:Show(); y = y - 30
+            fs:SetText(Theme:Hex(Theme.textSecondary) .. "Keine Score-Upgrades – BiS-Liste:|r"); fs:Show(); y = y - 26
             for _, item in ipairs(bis) do
-                ri = self:AddInteractiveRow(ri, item, y, nil, "|cffa335ee639|r")
-                y = y - 35
+                ri = self:AddInteractiveRow(ri, item, y, nil, Theme:Hex(Theme.bis) .. "BiS|r")
+                y = y - ROW_STEP
             end
         else
-            local fs = self:GetExtraFS(60); fs:SetPoint("TOPLEFT", 25, y); fs:SetText(COLOR_GREY .. "Keine Upgrades verfügbar.|r"); fs:Show()
+            local fs = self:GetExtraFS(60); fs:SetPoint("TOPLEFT", 15, y); fs:SetText(Theme:Hex(Theme.textMuted) .. "Keine Upgrades verfügbar.|r" .. DiagSuffix(GM)); fs:Show()
         end
     end
+    content:SetHeight(math.abs(y) + 500)
 end
 
 function UI:DrawBiSList(content)
     local GM = DragonSkill:GetModule("GearManager")
     local items = GM and GM:GetBiSList() or {}
-    self.text:SetText(COLOR_GOLD .. "MYTHIC BIS LIST (Midnight Season 2 - 639+)|r")
-    local y, ri = -50, 3000
+    self:SetHeader("Mythic BiS List", "Midnight Season 2 · Ziel 639+")
+    local y, ri = -55, 3000
     if not items or #items == 0 then
         local fs = self:GetExtraFS(80)
         fs:SetPoint("TOPLEFT", 15, y)
-        fs:SetText(COLOR_GREY .. "Keine BiS-Einträge geladen.\nGuideData / GearDatabase prüfen.|r")
+        fs:SetText(Theme:Hex(Theme.textMuted) .. "Keine BiS-Einträge geladen.\nGuideData / GearDatabase prüfen.|r" .. DiagSuffix(GM))
         fs:Show()
         return
     end
     for _, item in ipairs(items) do
-        ri = self:AddInteractiveRow(ri, item, y, nil, "|cffa335ee639|r")
-        y = y - 35
+        ri = self:AddInteractiveRow(ri, item, y, nil, Theme:Hex(Theme.bis) .. "BiS|r")
+        y = y - ROW_STEP
     end
     content:SetHeight(math.abs(y) + 500)
 end
 
 function UI:DrawTalents(content, gd)
-    local y = -50
-    self.text:SetText(COLOR_GOLD .. "Optimierte Talent Builds|r\n" .. COLOR_GREY .. "Linksklick = Import-String kopieren (Strg+C)|r")
+    local y = -55
+    self:SetHeader("Optimierte Talent Builds", "Linksklick = Import-String kopieren (Strg+C)")
     for _, btn in pairs(self.talentBtns or {}) do btn:Hide() end
     if gd and gd.talentBuilds and #gd.talentBuilds > 0 then
         for i, b in ipairs(gd.talentBuilds) do
@@ -400,13 +494,14 @@ function UI:DrawTalents(content, gd)
     else
         local fs = self:GetExtraFS(70)
         fs:SetPoint("TOPLEFT", 15, y)
-        fs:SetText(COLOR_GREY .. "Keine Talent-Builds für diese Spec.|r")
+        fs:SetText(Theme:Hex(Theme.textMuted) .. "Keine Talent-Builds für diese Spec.|r")
         fs:Show()
     end
 end
 
 function UI:DrawRaidGuides(content)
     local guides = DragonSkillRaidGuides
+    self:SetHeader("Raid Guides", nil)
     local lw, y, fi = 180, -55, 4000
     if not guides then return end
     for i, g in ipairs(guides) do
@@ -420,13 +515,13 @@ function UI:DrawRaidGuides(content)
     end
     local g = guides[selectedBossIdx]
     if not g then return end
-    local ti = self:GetExtraFS(fi); ti:SetPoint("TOPLEFT", lw + 25, -55); ti:SetText(COLOR_GOLD .. tostring(g.name) .. "|r"); ti:Show(); fi = fi + 1; y = -85
+    local ti = self:GetExtraFS(fi); ti:SetPoint("TOPLEFT", lw + 25, -55); ti:SetText(Theme:GetAccentHex() .. tostring(g.name) .. "|r"); ti:Show(); fi = fi + 1; y = -85
     for _, p in ipairs(g.phases or {}) do
-        local pt = self:GetExtraFS(fi); pt:SetPoint("TOPLEFT", lw + 25, y); pt:SetText("|cffffff00" .. tostring(p.name) .. "|r"); pt:Show(); fi = fi + 1; y = y - 25
+        local pt = self:GetExtraFS(fi); pt:SetPoint("TOPLEFT", lw + 25, y); pt:SetText(Theme:Hex(Theme.warn) .. tostring(p.name) .. "|r"); pt:Show(); fi = fi + 1; y = y - 25
         local pd = self:GetExtraFS(fi, "GameFontHighlightSmall"); pd:SetPoint("TOPLEFT", lw + 35, y); pd:SetText(tostring(p.desc)); pd:Show(); fi = fi + 1; y = y - 35
         for _, m in ipairs(p.mechanics or {}) do
             local mt = self:GetExtraFS(fi, "GameFontHighlightSmall"); mt:SetPoint("TOPLEFT", lw + 45, y)
-            mt:SetText(COLOR_GOLD .. tostring(m.name) .. ":|r " .. tostring(m.tip)); mt:Show(); fi = fi + 1; y = y - 40
+            mt:SetText(Theme:GetAccentHex() .. tostring(m.name) .. ":|r " .. tostring(m.tip)); mt:Show(); fi = fi + 1; y = y - 40
         end
         y = y - 10
     end

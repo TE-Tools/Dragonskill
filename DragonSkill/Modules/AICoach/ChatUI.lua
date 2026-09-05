@@ -1,5 +1,7 @@
--- Dragon Skill - Module: AI Coach Chat UI (v2.3.13)
+-- Dragon Skill - Module: AI Coach Chat UI (v2.5.0)
 -- Fix: EditBox has no SetReadOnly in 12.1 – use EnableKeyboard(false) + mouse only.
+-- v2.5.0: matches the main window's flat/hairline-border theme instead of
+-- the classic tiled chat-frame background.
 
 local AICoachUI = {}
 DragonSkill.AICoachUI = AICoachUI
@@ -24,16 +26,11 @@ function AICoachUI:Draw(content, width)
         h:SetScript("OnEscapePressed", function(self) self:ClearFocus() end)
         sf:SetScrollChild(h)
 
-        local bg = CreateFrame("Frame", nil, content, "BackdropTemplate")
+        local Theme = DragonSkill.Theme
+        local bg = Theme and Theme:Panel(content, Theme.bgPanelAlt, Theme.hairline)
+            or CreateFrame("Frame", nil, content)
         bg:SetPoint("TOPLEFT", sf, "TOPLEFT", -5, 5)
         bg:SetPoint("BOTTOMRIGHT", sf, "BOTTOMRIGHT", 25, -5)
-        bg:SetBackdrop({
-            bgFile = "Interface\\ChatFrame\\ChatFrameBackground",
-            edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
-            tile = true, tileSize = 16, edgeSize = 12,
-            insets = { left = 3, right = 3, top = 3, bottom = 3 }
-        })
-        bg:SetBackdropColor(0, 0, 0, 0.8)
         self.historyBg = bg
 
         self.scrollFrame = sf
@@ -85,7 +82,9 @@ end
 
 function AICoachUI:AddMessage(sender, text)
     if not text then return end
-    local prefix = (sender == "User") and "|cffffffffDu: |r" or "|cff00ff00Coach: |r"
+    local Theme = DragonSkill.Theme
+    local coachHex = Theme and Theme:GetAccentHex() or "|cff00ff00"
+    local prefix = (sender == "User") and "|cffffffffDu: |r" or (coachHex .. "Coach: |r")
     if DragonSkillDB then
         DragonSkillDB.history = DragonSkillDB.history or {}
         table.insert(DragonSkillDB.history, prefix .. tostring(text))
@@ -103,7 +102,9 @@ function AICoachUI:RefreshHistory()
         end
     end
     if full == "" then
-        full = "|cffaaaaaaInterner Coach (nur Addon-Daten). Frag: upgrade, farm, talent, status oder Boss-Name.|r"
+        local Theme = DragonSkill.Theme
+        local mutedHex = Theme and Theme:Hex(Theme.textSecondary) or "|cffaaaaaa"
+        full = mutedHex .. "Interner Coach (nur Addon-Daten). Frag: upgrade, farm, talent, status oder Boss-Name.|r"
     end
     self.historyText:SetText(full)
     if self.scrollFrame then

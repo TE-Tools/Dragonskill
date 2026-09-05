@@ -47,7 +47,7 @@ function writeItemList(luaParts, name, providers) {
             item.spellId
           )}, slot = ${luaEscape(item.slot || null)}, rank = ${luaEscape(
             item.rank || null
-          )} },`
+          )}, source = ${luaEscape(item.source || null)} },`
         );
       }
     }
@@ -59,7 +59,7 @@ function writeItemList(luaParts, name, providers) {
 function buildLuaTable(entries) {
   const parts = [];
   parts.push("-- AUTO-GENERATED - nicht manuell bearbeiten");
-  parts.push("-- build-data.js v1.5.4\n");
+  parts.push("-- build-data.js v2.5.0 (real per-spec Wowhead BiS data, Patch 12.1)\n");
   parts.push("DragonSkillData = DragonSkillData or {}\n");
 
   for (const [classToken, specs] of Object.entries(entries)) {
